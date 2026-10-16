@@ -1,0 +1,21 @@
+{
+  "short_name": "Neoservice",
+  "name": "Neoservice — Щоденний Довідник та Сервіс",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/1006/1006771.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/1006/1006771.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "./index.html",
+  "background_color": "#ffffff",
+  "theme_color": "#1a365d",
+  "display": "standalone",
+  "orientation": "portrait"
+}

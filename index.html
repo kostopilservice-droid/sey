@@ -125,17 +125,28 @@
       <p style="font-size: 0.85rem; color: #64748b; margin-top: 15px; font-style: italic;">Можливий виїзд до замовника</p>
     </div>
 
-    <!-- Картка 3: Особистий кабінет -->
+   <!-- Картка 3: Особистий кабінет -->
     <div class="card" id="auth-section">
       <h2>🔒 Особистий кабінет</h2>
 
       <!-- Стан 1: Якщо користувач НЕ авторизований -->
-      <div id="loggedOutView" style="text-align: center; padding: 10px 0;">
-        <p style="color: #64748b; font-size: 0.85rem; margin-bottom: 15px;">
-          Увійдіть через Google, щоб залишати заявки та відстежувати стан замовлень.
-        </p>
-        <button id="googleLoginBtn" class="btn btn-google" style="width: 100%;">
-          Увійдіть через Google
+      <div id="loggedOutView">
+        <form id="emailAuthForm" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">
+          <input type="email" id="authEmail" placeholder="Електронна пошта" style="padding: 8px; border-radius: 4px; border: 1px solid #cbd5e1; outline: none; font-size: 0.85rem;" required />
+          <input type="password" id="authPassword" placeholder="Пароль" style="padding: 8px; border-radius: 4px; border: 1px solid #cbd5e1; outline: none; font-size: 0.85rem;" required />
+          
+          <div style="display: flex; gap: 8px;">
+            <button type="button" id="loginEmailBtn" class="btn btn-primary" style="flex: 1; padding: 8px; font-size: 0.85rem;">
+              Увійти
+            </button>
+            <button type="button" id="registerEmailBtn" class="btn btn-success" style="flex: 1; padding: 8px; font-size: 0.85rem;">
+              Зареєструватися
+            </button>
+          </div>
+        </form>
+
+        <button id="googleLoginBtn" class="btn btn-google" style="width: 100%; padding: 8px; font-size: 0.85rem;">
+          Увійти через Google
         </button>
       </div>
 
@@ -189,7 +200,6 @@
         </div>
       </div>
     </div>
-  </div>
 
 <br><br><br><br><br><br><br><br><br><br>
 
@@ -202,10 +212,9 @@
     <!-- Скрипти Firebase SDK -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   import { getFirestore, collection, addDoc, query, where, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-  // Ключі конфігурації Firebase
   const firebaseConfig = {
     apiKey: "AIzaSyBlKoP6-M8tdrKq88bSdnWSnak5Gpddnpk",
     authDomain: "neoservice-ks-ua.firebaseapp.com",
@@ -216,19 +225,44 @@
     measurementId: "G-BYGHEHVYY3"
   };
 
-  // Ініціалізація Firebase
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  // Елементи інтерфейсу
   const loggedOutView = document.getElementById('loggedOutView');
   const loggedInView = document.getElementById('loggedInView');
   const userEmailDisplay = document.getElementById('userEmailDisplay');
   const googleLoginBtn = document.getElementById('googleLoginBtn');
+  const loginEmailBtn = document.getElementById('loginEmailBtn');
+  const registerEmailBtn = document.getElementById('registerEmailBtn');
   const logoutBtn = document.getElementById('logoutBtn');
   const newRequestForm = document.getElementById('newRequestForm');
   const ordersTableBody = document.getElementById('ordersTableBody');
+
+  // Вхід через Email / Пароль
+  loginEmailBtn?.addEventListener('click', async () => {
+    const email = document.getElementById('authEmail').value;
+    const password = document.getElementById('authPassword').value;
+    if (!email || !password) return alert('Заповніть email та пароль!');
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+    } catch (err) {
+      alert('Помилка входу: ' + err.message);
+    }
+  });
+
+  // Реєстрація через Email / Пароль
+  registerEmailBtn?.addEventListener('click', async () => {
+    const email = document.getElementById('authEmail').value;
+    const password = document.getElementById('authPassword').value;
+    if (!email || !password) return alert('Заповніть email та пароль!');
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+      alert('Реєстрація успішна!');
+    } catch (err) {
+      alert('Помилка реєстрації: ' + err.message);
+    }
+  });
 
   // Вхід через Google
   googleLoginBtn?.addEventListener('click', async () => {
@@ -240,10 +274,10 @@
     }
   });
 
-  // Вихід з акаунта
+  // Вихід
   logoutBtn?.addEventListener('click', () => signOut(auth));
 
-  // Відстеження стану авторизації
+  // Відстеження стану входу
   onAuthStateChanged(auth, (user) => {
     if (user) {
       if (loggedOutView) loggedOutView.style.display = 'none';
@@ -256,7 +290,7 @@
     }
   });
 
-  // Подача нової заявки
+  // Додавання нової заявки
   newRequestForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const user = auth.currentUser;
@@ -277,11 +311,11 @@
       newRequestForm.reset();
       alert('Вашу заявку створено!');
     } catch (err) {
-      alert('Помилка створення заявки: ' + err.message);
+      alert('Помилка: ' + err.message);
     }
   });
 
-  // Завантаження замовлень користувача в реальному часі
+  // Завантаження замовлень
   function loadUserOrders(email) {
     const q = query(
       collection(db, "requests"),
@@ -294,7 +328,7 @@
       ordersTableBody.innerHTML = '';
 
       if (snapshot.empty) {
-        ordersTableBody.innerHTML = `<tr><td colspan="4" style="text-align: center; padding: 15px; color: #64748b;">У вас поки немає замовлень.</td></tr>`;
+        ordersTableBody.innerHTML = `<tr><td colspan="4" style="text-align: center; padding: 10px; color: #64748b;">У вас поки немає замовлень.</td></tr>`;
         return;
       }
 
@@ -314,10 +348,10 @@
         const row = document.createElement('tr');
         row.style.borderBottom = '1px solid #e2e8f0';
         row.innerHTML = `
-          <td style="padding: 6px; color: #64748b; white-space: nowrap;">${dateStr}</td>
-          <td style="padding: 6px;"><b>${data.category}</b><br><span style="color: #475569;">${data.description}</span></td>
-          <td style="padding: 6px;">${statusBadge}</td>
-          <td style="padding: 6px; color: #334155;">${data.adminNote || '—'}</td>
+          <td style="padding: 4px; color: #64748b; white-space: nowrap;">${dateStr}</td>
+          <td style="padding: 4px;"><b>${data.category}</b><br><span style="color: #475569;">${data.description}</span></td>
+          <td style="padding: 4px;">${statusBadge}</td>
+          <td style="padding: 4px; color: #334155;">${data.adminNote || '—'}</td>
         `;
         ordersTableBody.appendChild(row);
       });

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Чат спільноти — NEOSERVICE.KS.UA</title>
+  <link rel="manifest" href="manifest.json">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #f1f5f9;
+      color: #1e293b;
+    }
+    header {
+      background: #1e3a8a;
+      color: white;
+      text-align: center;
+      padding: 20px 10px 15px;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 1.5rem;
+      letter-spacing: 1px;
+    }
+    header p {
+      margin: 5px 0 0;
+      font-size: 0.85rem;
+      font-style: italic;
+      color: #93c5fd;
+    }
+    nav {
+      background: #0f172a;
+      padding: 10px;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    nav a {
+      color: #cbd5e1;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+    nav a:hover, nav a.active {
+      color: #60a5fa;
+    }
+    .container {
+      max-width: 800px;
+      margin: 30px auto;
+      padding: 0 15px;
+    }
+    .chat-card {
+      background: #ffffff;
+      border-radius: 10px;
+      border: 1px solid #e2e8f0;
+      padding: 20px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+    .chat-card h2 {
+      margin-top: 0;
+      color: #1e3a8a;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    #chatMessages {
+      height: 380px;
+      overflow-y: auto;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 12px;
+      background: #f8fafc;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    .msg-bubble {
+      padding: 10px 14px;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 0.92rem;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+    }
+    .msg-author {
+      font-weight: bold;
+      color: #1e3a8a;
+      font-size: 0.85rem;
+      margin-bottom: 3px;
+    }
+    .msg-text {
+      color: #334155;
+      word-break: break-word;
+    }
+    .msg-date {
+      font-size: 0.7rem;
+      color: #94a3b8;
+      float: right;
+      margin-top: 4px;
+    }
+    .chat-form {
+      display: flex;
+      gap: 10px;
+    }
+    .chat-input {
+      flex: 1;
+      padding: 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      outline: none;
+    }
+    .chat-input:focus {
+      border-color: #1e3a8a;
+    }
+    .chat-btn {
+      background: #1e3a8a;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .chat-btn:disabled, .chat-input:disabled {
+      background: #e2e8f0;
+      color: #94a3b8;
+      cursor: not-allowed;
+    }
+    .auth-alert {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #dc2626;
+      padding: 12px;
+      border-radius: 6px;
+      text-align: center;
+      font-size: 0.9rem;
+      margin-bottom: 15px;
+    }
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: #64748b;
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>NEOSERVICE.KS.UA</h1>
+    <p>«Ісус — дорога, істина і життя» | Сервіс, Знання та Допомога</p>
+  </header>
+
+  <nav>
+    <a href="index.html">📖 Слово Дня</a>
+    <a href="index.html">🛠️ Сервіс Мої Дари</a>
+    <a href="chat.html" class="active">💬 Чат спільноти</a>
+    <a href="index.html#auth-section">🔒 Акаунт</a>
+  </nav>
+
+  <div class="container">
+    <div class="chat-card">
+      <h2>💬 Чат технічної та духовної спільноти</h2>
+      <p style="color: #64748b; font-size: 0.88rem; margin-top: -5px; margin-bottom: 15px;">
+        Простір для спілкування, взаємодопомоги та обміну досвідом авторизованих учасників.
+      </p>
+
+      <div id="authNotice" class="auth-alert">
+        ⚠️ Для того щоб залишати повідомлення в чаті, будь ласка, <a href="index.html#auth-section" style="color: #dc2626; font-weight: bold;">увійдіть через Google</a> на головній сторінці.
+      </div>
+
+      <div id="chatMessages">
+        <div style="color: #64748b; text-align: center; font-size: 0.9rem; margin: auto;">
+          Завантаження повідомлень...
+        </div>
+      </div>
+
+      <form id="chatForm" class="chat-form">
+        <input type="text" id="chatInput" class="chat-input" placeholder="Напишіть ваше повідомлення..." required disabled>
+        <button type="submit" id="chatSendBtn" class="chat-btn" disabled>Надіслати</button>
+      </form>
+    </div>
+  </div>
+
+  <footer>
+    © 2026 Neoservice.ks.ua — Ваш щоденний довідник та помічник.
+  </footer>
+
+  <!-- Firebase Integration -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyBlKoP6-M8tdrKq88bSdnWSnak5Gpddnpk",
+  authDomain: "neoservice-ks-ua.firebaseapp.com",
+  projectId: "neoservice-ks-ua",
+  storageBucket: "neoservice-ks-ua.firebasestorage.app",
+  messagingSenderId: "528941827813",
+  appId: "1:528941827813:web:354ef989d200087634b60c",
+  measurementId: "G-BYGHEHVYY3"
+};
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const chatMessagesDiv = document.getElementById('chatMessages');
+    const chatForm = document.getElementById('chatForm');
+    const chatInput = document.getElementById('chatInput');
+    const chatSendBtn = document.getElementById('chatSendBtn');
+    const authNotice = document.getElementById('authNotice');
+
+    // Перевірка авторизації
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        chatInput.disabled = false;
+        chatSendBtn.disabled = false;
+        authNotice.style.display = 'none';
+      } else {
+        chatInput.disabled = true;
+        chatSendBtn.disabled = true;
+        authNotice.style.display = 'block';
+      }
+    });
+
+    // Отримання повідомлень у реальному часі
+    const q = query(collection(db, "chat_messages"), orderBy("createdAt", "asc"));
+
+    onSnapshot(q, (snapshot) => {
+      chatMessagesDiv.innerHTML = '';
+
+      if (snapshot.empty) {
+        chatMessagesDiv.innerHTML = '<div style="color: #64748b; text-align: center; font-size: 0.9rem; margin: auto;">Ще немає повідомлень. Напишіть першим!</div>';
+        return;
+      }
+
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        const msgEl = document.createElement('div');
+        msgEl.className = 'msg-bubble';
+
+        const sender = data.userEmail ? data.userEmail.split('@')[0] : 'Гість';
+        const dateStr = data.createdAt ? new Date(data.createdAt.toDate()).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : '';
+
+        msgEl.innerHTML = `
+          <div class="msg-author">${sender} <span class="msg-date">${dateStr}</span></div>
+          <div class="msg-text">${escapeHtml(data.text)}</div>
+        `;
+
+        chatMessagesDiv.appendChild(msgEl);
+      });
+
+      chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
+    });
+
+    // Відправка повідомлення
+    chatForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const text = chatInput.value.trim();
+      const user = auth.currentUser;
+
+      if (!text || !user) return;
+
+      chatSendBtn.disabled = true;
+
+      try {
+        await addDoc(collection(db, "chat_messages"), {
+          text: text,
+          userEmail: user.email,
+          createdAt: serverTimestamp()
+        });
+        chatInput.value = '';
+      } catch (err) {
+        alert('Помилка відправки: ' + err.message);
+      } finally {
+        chatSendBtn.disabled = false;
+        chatInput.focus();
+      }
+    });
+
+    function escapeHtml(unsafe) {
+      return unsafe
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+  </script>
+</body>
+</html>

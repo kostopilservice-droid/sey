@@ -66,7 +66,6 @@
       border-radius: 6px;
       cursor: pointer;
       font-weight: bold;
-      text-decoration: none;
       font-size: 0.9rem;
     }
     .btn:hover {
@@ -88,11 +87,136 @@
       font-size: 0.8rem;
       font-weight: bold;
     }
+    .hidden {
+      display: none !important;
+    }
     @keyframes marquee {
       0% { transform: translateX(100%); }
       100% { transform: translateX(-100%); }
     }
   </style>
+
+  <!-- Підключення модулів Firebase -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    // ⚙️ Конфігурація вашого Firebase
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT_ID.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Відстеження стану авторизації
+    onAuthStateChanged(auth, async (user) => {
+      const authRequiredBlock = document.getElementById('auth-required');
+      const accountContentBlock = document.getElementById('account-content');
+
+      if (user) {
+        // Користувач увійшов
+        authRequiredBlock.classList.add('hidden');
+        accountContentBlock.classList.remove('hidden');
+
+        // Завантаження профілю з Firestore
+        await loadUserProfile(user.uid, user.email);
+        // Завантаження замовлень користувача
+        await loadUserRequests(user.uid);
+      } else {
+        // Користувач НЕ авторизований
+        authRequiredBlock.classList.remove('hidden');
+        accountContentBlock.classList.add('hidden');
+      }
+    });
+
+    // Завантаження профілю та балів
+    async function loadUserProfile(uid, email) {
+      const userRef = doc(db, "users", uid);
+      const docSnap = await getDoc(userRef);
+
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        document.getElementById('profileName').value = data.name || '';
+        document.getElementById('profilePhone').value = data.phone || '';
+        document.getElementById('profileAddress').value = data.address || '';
+        document.getElementById('userPoints').innerText = `${data.points || 0} 🪙`;
+      } else {
+        // Новий користувач — створюємо початковий запис
+        document.getElementById('profileName').value = email.split('@')[0];
+        document.getElementById('userPoints').innerText = '0 🪙';
+      }
+    }
+
+    // Збереження профілю при натисканні «Зберегти зміни»
+    document.getElementById('profileForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const user = auth.currentUser;
+      if (!user) return;
+
+      const btn = document.getElementById('saveBtn');
+      btn.innerText = 'Збереження...';
+
+      try {
+        await setDoc(doc(db, "users", user.uid), {
+          name: document.getElementById('profileName').value,
+          phone: document.getElementById('profilePhone').value,
+          address: document.getElementById('profileAddress').value,
+          updatedAt: new Date()
+        }, { merge: true });
+
+        alert('✅ Дані успішно збережено!');
+      } catch (err) {
+        console.error(err);
+        alert('❌ Помилка при збереженні даних');
+      } finally {
+        btn.innerText = 'Зберегти зміни';
+      }
+    });
+
+    // Завантаження замовлень конкретного користувача
+    async function loadUserRequests(uid) {
+      const q = query(collection(db, "requests"), where("userId", "==", uid));
+      const querySnapshot = await getDocs(q);
+      const tableBody = document.getElementById('requestsTableBody');
+      tableBody.innerHTML = '';
+
+      if (querySnapshot.empty) {
+        tableBody.innerHTML = `<tr><td colspan="3" style="padding: 15px; text-align: center; color: #94a3b8;">У вас поки немає збережених звернень</td></tr>`;
+        return;
+      }
+
+      querySnapshot.forEach((docSnap) => {
+        const data = docSnap.data();
+        const dateStr = data.createdAt ? new Date(data.createdAt.seconds * 1000).toLocaleDateString() : '—';
+        const isCompleted = data.status === 'completed';
+        const badgeClass = isCompleted ? 'badge-completed' : 'badge-pending';
+        const badgeText = isCompleted ? '🟢 Завершено' : '🟡 В обробці';
+
+        tableBody.innerHTML += `
+          <tr style="border-bottom: 1px solid #f1f5f9;">
+            <td style="padding: 10px 5px;"><b>#${docSnap.id.substring(0, 5)}</b> — ${data.serviceName || 'Послуга'}</td>
+            <td style="padding: 10px 5px;">${dateStr}</td>
+            <td style="padding: 10px 5px;"><span class="${badgeClass}">${badgeText}</span></td>
+          </tr>
+        `;
+      });
+    }
+
+    // Вихід з акаунта
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      signOut(auth).then(() => {
+        window.location.href = 'index.html';
+      });
+    });
+  </script>
 </head>
 <body>
 
@@ -108,7 +232,6 @@
       «Ісус — дорога, істина і життя» | Сервіс, Знання та Допомога
     </p>
 
-    <!-- Навігаційне меню -->
     <nav style="margin-top: 15px; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; font-size: 0.9rem;">
       <a href="index.html#knowledge-section" style="color: #cbd5e1; text-decoration: none;">📖 База знань</a>
       <a href="index.html#services-section" style="color: #cbd5e1; text-decoration: none;">🛠️ Сервіс Мої Дари</a>
@@ -118,74 +241,81 @@
   </header>
 
   <div class="container">
-    <div class="grid">
-      
-      <!-- Блок 1: Профіль та дані для різдвяних подарунків -->
-      <div class="card">
-        <h2 class="card-title">👤 Мої дані та доставка</h2>
-        <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 15px;">
-          Вкажіть актуальні дані для участі у різдвяній програмі подарунків спільноти.
-        </p>
-        <form id="profileForm">
-          <div class="form-group">
-            <label>ПІБ або ім'я в спільноті:</label>
-            <input type="text" placeholder="Ваше ім'я" value="Учасник спільноти">
-          </div>
-          <div class="form-group">
-            <label>Телефон для зв'язку:</label>
-            <input type="tel" placeholder="+380...">
-          </div>
-          <div class="form-group">
-            <label>Населений пункт / Відділення доставки:</label>
-            <input type="text" placeholder="Костопіль, Нова Пошта №...">
-          </div>
-          <button type="submit" class="btn">Зберегти зміни</button>
-        </form>
-      </div>
-
-      <!-- Блок 2: Різдвяна програма лояльності -->
-      <div class="card" style="background: linear-gradient(180deg, #ffffff 0%, #f0fdf4 100%); border-color: #bbf7d0;">
-        <h2 class="card-title" style="color: #166534;">🎁 Різдвяна програма лояльності</h2>
-        <div style="text-align: center; padding: 15px 0;">
-          <div style="font-size: 2.5rem; font-weight: bold; color: #15803d;">150 🪙</div>
-          <div style="font-size: 0.9rem; color: #166534; margin-top: 5px;">Ваші різдвяні бали вдячності</div>
-        </div>
-        <p style="font-size: 0.85rem; color: #475569; line-height: 1.4;">
-          Бали нараховуються за активність у базі знань, допомогу іншим у чаті та замовлення послуг. На Різдво їх можна буде обміняти на святкові сувеніри та бонуси!
-        </p>
-      </div>
-
+    
+    <!-- Повідомлення для НЕАВТОРИЗОВАНИХ користувачів -->
+    <div id="auth-required" class="card style="text-align: center; padding: 40px 20px;">
+      <h2 style="color: #1e3a8a; margin-top: 0;">🔒 Доступ обмежено</h2>
+      <p style="color: #64748b; margin-bottom: 20px;">Будь ласка, увійдіть або зареєструйтесь на головній сторінці, щоб переглянути особистий кабінет та програму лояльності.</p>
+      <a href="index.html" class="btn">Перейти до входу на головну</a>
     </div>
 
-    <!-- Блок 3: Історія замовлень та статусів -->
-    <div class="card" style="margin-top: 20px;">
-      <h2 class="card-title">📋 Мої звернення та замовлення</h2>
-      <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem; text-align: left;">
-        <thead>
-          <tr style="border-bottom: 2px solid #e2e8f0; color: #64748b;">
-            <th style="padding: 10px 5px;">№ / Послуга</th>
-            <th style="padding: 10px 5px;">Дата</th>
-            <th style="padding: 10px 5px;">Статус</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr style="border-bottom: 1px solid #f1f5f9;">
-            <td style="padding: 10px 5px;"><b>#1024</b> — Діагностика та профілактика ПК</td>
-            <td style="padding: 10px 5px;">12.10.2026</td>
-            <td style="padding: 10px 5px;"><span class="badge-completed">🟢 Завершено</span></td>
-          </tr>
-          <tr style="border-bottom: 1px solid #f1f5f9;">
-            <td style="padding: 10px 5px;"><b>#1025</b> — Консультація з автоелектрики</td>
-            <td style="padding: 10px 5px;">16.10.2026</td>
-            <td style="padding: 10px 5px;"><span class="badge-completed">🟢 Завершено</span></td>
-          </tr>
-        </tbody>
-      </table>
+    <!-- Контент для АВТОРИЗОВАНИХ користувачів -->
+    <div id="account-content" class="hidden">
+      
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2 style="margin: 0; color: #1e3a8a;">Вітаємо в особистому кабінеті!</h2>
+        <button id="logoutBtn" style="background: #ef4444; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold;">Вийти з акаунта</button>
+      </div>
+
+      <div class="grid">
+        <!-- Блок 1: Форма даних та доставки -->
+        <div class="card">
+          <h2 class="card-title">👤 Мої дані та доставка</h2>
+          <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 15px;">
+            Вкажіть дані для доставки різдвяних подарунків.
+          </p>
+          <form id="profileForm">
+            <div class="form-group">
+              <label>ПІБ або ім'я в спільноті:</label>
+              <input type="text" id="profileName" placeholder="Ваше ім'я" required>
+            </div>
+            <div class="form-group">
+              <label>Телефон для зв'язку:</label>
+              <input type="tel" id="profilePhone" placeholder="+380...">
+            </div>
+            <div class="form-group">
+              <label>Населений пункт / Відділення доставки:</label>
+              <input type="text" id="profileAddress" placeholder="Костопіль, Нова Пошта №...">
+            </div>
+            <button type="submit" id="saveBtn" class="btn">Зберегти зміни</button>
+          </form>
+        </div>
+
+        <!-- Блок 2: Динамічні різдвяні бали -->
+        <div class="card" style="background: linear-gradient(180deg, #ffffff 0%, #f0fdf4 100%); border-color: #bbf7d0;">
+          <h2 class="card-title" style="color: #166534;">🎁 Різдвяна програма лояльності</h2>
+          <div style="text-align: center; padding: 15px 0;">
+            <div id="userPoints" style="font-size: 2.5rem; font-weight: bold; color: #15803d;">0 🪙</div>
+            <div style="font-size: 0.9rem; color: #166534; margin-top: 5px;">Ваші різдвяні бали вдячності</div>
+          </div>
+          <p style="font-size: 0.85rem; color: #475569; line-height: 1.4;">
+            Бали нараховуються адміном або автоматично за активність. На Різдво їх можна обміняти на подарунки!
+          </p>
+        </div>
+      </div>
+
+      <!-- Блок 3: Динамічний список послуг користувача -->
+      <div class="card" style="margin-top: 20px;">
+        <h2 class="card-title">📋 Мої звернення та замовлення</h2>
+        <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem; text-align: left;">
+          <thead>
+            <tr style="border-bottom: 2px solid #e2e8f0; color: #64748b;">
+              <th style="padding: 10px 5px;">№ / Послуга</th>
+              <th style="padding: 10px 5px;">Дата</th>
+              <th style="padding: 10px 5px;">Статус</th>
+            </tr>
+          </thead>
+          <tbody id="requestsTableBody">
+            <!-- Завантажується автоматично з Firestore -->
+          </tbody>
+        </table>
+      </div>
+
     </div>
 
   </div>
 
-  <!-- Біжучий рядок зі Святим Писанням -->
+  <!-- Біжучий рядок -->
   <div style="width: 100%; background: linear-gradient(90deg, #1e3a8a, #3b82f6, #1e3a8a); color: white; padding: 12px 0; overflow: hidden; white-space: nowrap; box-shadow: inset 0 2px 5px rgba(0,0,0,0.2); margin-top: 40px; border-top: 2px solid #60a5fa; border-bottom: 2px solid #60a5fa;">
     <div style="display: inline-block; animation: marquee 25s linear infinite; font-size: 1rem; font-style: italic; letter-spacing: 0.5px;">
       ✨ «Світильник нозі моїй — слово Твоє, і світло для стежки моєї» &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 🕊️ «Ісус — дорога, істина і життя» &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 🙏 «Блаженні миротворці, бо вони синами Божими назвуться» &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

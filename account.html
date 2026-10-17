@@ -96,67 +96,65 @@
     }
   </style>
 
-  <!-- Підключення модулів Firebase -->
+  <!-- Підключення Firebase -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { getFirestore, doc, getDoc, setDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    // ⚙️ Конфігурація вашого Firebase
     const firebaseConfig = {
-apiKey: "AIzaSyBlKoP6-M8tdrKq88bSdnWSnak5Gpddnpk",
-    authDomain: "neoservice-ks-ua.firebaseapp.com",
-    projectId: "neoservice-ks-ua",
-    storageBucket: "neoservice-ks-ua.firebasestorage.app",
-    messagingSenderId: "528941827813",
-    appId: "1:528941827813:web:354ef989d200087634b60c",
-    measurementId: "G-BYGHEHVYY3"
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT_ID.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
     };
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // Відстеження стану авторизації
     onAuthStateChanged(auth, async (user) => {
       const authRequiredBlock = document.getElementById('auth-required');
       const accountContentBlock = document.getElementById('account-content');
 
       if (user) {
-        // Користувач увійшов
+        console.log("✅ Користувач увійшов:", user.email);
         authRequiredBlock.classList.add('hidden');
         accountContentBlock.classList.remove('hidden');
 
-        // Завантаження профілю з Firestore
         await loadUserProfile(user.uid, user.email);
-        // Завантаження замовлень користувача
-        await loadUserRequests(user.uid);
+        await loadUserRequests(user.email); // Шукаємо замовлення за поштою
       } else {
-        // Користувач НЕ авторизований
+        console.log("❌ Користувач не авторизований");
         authRequiredBlock.classList.remove('hidden');
         accountContentBlock.classList.add('hidden');
       }
     });
 
-    // Завантаження профілю та балів
     async function loadUserProfile(uid, email) {
-      const userRef = doc(db, "users", uid);
-      const docSnap = await getDoc(userRef);
+      try {
+        const userRef = doc(db, "users", uid);
+        const docSnap = await getDoc(userRef);
 
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        document.getElementById('profileName').value = data.name || '';
-        document.getElementById('profilePhone').value = data.phone || '';
-        document.getElementById('profileAddress').value = data.address || '';
-        document.getElementById('userPoints').innerText = `${data.points || 0} 🪙`;
-      } else {
-        // Новий користувач — створюємо початковий запис
-        document.getElementById('profileName').value = email.split('@')[0];
-        document.getElementById('userPoints').innerText = '0 🪙';
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          document.getElementById('profileName').value = data.name || '';
+          document.getElementById('profilePhone').value = data.phone || '';
+          document.getElementById('profileAddress').value = data.address || '';
+          
+          const points = data.points !== undefined ? data.points : 0;
+          document.getElementById('userPoints').innerText = `${points} 🪙`;
+        } else {
+          document.getElementById('profileName').value = email ? email.split('@')[0] : '';
+          document.getElementById('userPoints').innerText = '0 🪙';
+        }
+      } catch (err) {
+        console.error("Помилка завантаження профілю:", err);
       }
     }
 
-    // Збереження профілю при натисканні «Зберегти зміни»
     document.getElementById('profileForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const user = auth.currentUser;
@@ -175,43 +173,61 @@ apiKey: "AIzaSyBlKoP6-M8tdrKq88bSdnWSnak5Gpddnpk",
 
         alert('✅ Дані успішно збережено!');
       } catch (err) {
-        console.error(err);
+        console.error("Помилка збереження:", err);
         alert('❌ Помилка при збереженні даних');
       } finally {
         btn.innerText = 'Зберегти зміни';
       }
     });
 
-    // Завантаження замовлень конкретного користувача
-    async function loadUserRequests(uid) {
-      const q = query(collection(db, "requests"), where("userId", "==", uid));
-      const querySnapshot = await getDocs(q);
+    // Завантаження замовлень за полем userEmail
+    async function loadUserRequests(userEmail) {
       const tableBody = document.getElementById('requestsTableBody');
-      tableBody.innerHTML = '';
+      tableBody.innerHTML = `<tr><td colspan="3" style="padding: 15px; text-align: center; color: #64748b;">Завантаження звернень...</td></tr>`;
 
-      if (querySnapshot.empty) {
-        tableBody.innerHTML = `<tr><td colspan="3" style="padding: 15px; text-align: center; color: #94a3b8;">У вас поки немає збережених звернень</td></tr>`;
-        return;
+      try {
+        const q = query(collection(db, "requests"), where("userEmail", "==", userEmail));
+        const querySnapshot = await getDocs(q);
+        
+        tableBody.innerHTML = '';
+
+        if (querySnapshot.empty) {
+          tableBody.innerHTML = `<tr><td colspan="3" style="padding: 15px; text-align: center; color: #94a3b8;">У вас поки немає збережених звернень</td></tr>`;
+          return;
+        }
+
+        querySnapshot.forEach((docSnap) => {
+          const data = docSnap.data();
+
+          let dateStr = '—';
+          if (data.createdAt) {
+            if (data.createdAt.seconds) {
+              dateStr = new Date(data.createdAt.seconds * 1000).toLocaleDateString();
+            } else {
+              dateStr = new Date(data.createdAt).toLocaleDateString();
+            }
+          }
+
+          const isCompleted = data.status === 'completed' || data.status === 'Виконано';
+          const badgeClass = isCompleted ? 'badge-completed' : 'badge-pending';
+          const statusText = data.status || 'В обробці';
+          const badgeText = isCompleted ? `🟢 ${statusText}` : `🟡 ${statusText}`;
+          const serviceTitle = data.category || data.description || 'Послуга спільноти';
+
+          tableBody.innerHTML += `
+            <tr style="border-bottom: 1px solid #f1f5f9;">
+              <td style="padding: 10px 5px;"><b>#${docSnap.id.substring(0, 5)}</b> — ${serviceTitle}</td>
+              <td style="padding: 10px 5px;">${dateStr}</td>
+              <td style="padding: 10px 5px;"><span class="${badgeClass}">${badgeText}</span></td>
+            </tr>
+          `;
+        });
+      } catch (err) {
+        console.error("Помилка завантаження звернень:", err);
+        tableBody.innerHTML = `<tr><td colspan="3" style="padding: 15px; text-align: center; color: #ef4444;">Помилка завантаження даних з бази</td></tr>`;
       }
-
-      querySnapshot.forEach((docSnap) => {
-        const data = docSnap.data();
-        const dateStr = data.createdAt ? new Date(data.createdAt.seconds * 1000).toLocaleDateString() : '—';
-        const isCompleted = data.status === 'completed';
-        const badgeClass = isCompleted ? 'badge-completed' : 'badge-pending';
-        const badgeText = isCompleted ? '🟢 Завершено' : '🟡 В обробці';
-
-        tableBody.innerHTML += `
-          <tr style="border-bottom: 1px solid #f1f5f9;">
-            <td style="padding: 10px 5px;"><b>#${docSnap.id.substring(0, 5)}</b> — ${data.serviceName || 'Послуга'}</td>
-            <td style="padding: 10px 5px;">${dateStr}</td>
-            <td style="padding: 10px 5px;"><span class="${badgeClass}">${badgeText}</span></td>
-          </tr>
-        `;
-      });
     }
 
-    // Вихід з акаунта
     document.getElementById('logoutBtn').addEventListener('click', () => {
       signOut(auth).then(() => {
         window.location.href = 'index.html';
@@ -243,14 +259,14 @@ apiKey: "AIzaSyBlKoP6-M8tdrKq88bSdnWSnak5Gpddnpk",
 
   <div class="container">
     
-    <!-- Повідомлення для НЕАВТОРИЗОВАНИХ користувачів -->
-    <div id="auth-required" class="card style="text-align: center; padding: 40px 20px;">
+    <!-- Неавторизованим -->
+    <div id="auth-required" class="card" style="text-align: center; padding: 40px 20px;">
       <h2 style="color: #1e3a8a; margin-top: 0;">🔒 Доступ обмежено</h2>
       <p style="color: #64748b; margin-bottom: 20px;">Будь ласка, увійдіть або зареєструйтесь на головній сторінці, щоб переглянути особистий кабінет та програму лояльності.</p>
       <a href="index.html" class="btn">Перейти до входу на головну</a>
     </div>
 
-    <!-- Контент для АВТОРИЗОВАНИХ користувачів -->
+    <!-- Авторизованим -->
     <div id="account-content" class="hidden">
       
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
@@ -259,7 +275,7 @@ apiKey: "AIzaSyBlKoP6-M8tdrKq88bSdnWSnak5Gpddnpk",
       </div>
 
       <div class="grid">
-        <!-- Блок 1: Форма даних та доставки -->
+        <!-- Блок 1: Профіль -->
         <div class="card">
           <h2 class="card-title">👤 Мої дані та доставка</h2>
           <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 15px;">
@@ -282,7 +298,7 @@ apiKey: "AIzaSyBlKoP6-M8tdrKq88bSdnWSnak5Gpddnpk",
           </form>
         </div>
 
-        <!-- Блок 2: Динамічні різдвяні бали -->
+        <!-- Блок 2: Бали -->
         <div class="card" style="background: linear-gradient(180deg, #ffffff 0%, #f0fdf4 100%); border-color: #bbf7d0;">
           <h2 class="card-title" style="color: #166534;">🎁 Різдвяна програма лояльності</h2>
           <div style="text-align: center; padding: 15px 0;">
@@ -295,7 +311,7 @@ apiKey: "AIzaSyBlKoP6-M8tdrKq88bSdnWSnak5Gpddnpk",
         </div>
       </div>
 
-      <!-- Блок 3: Динамічний список послуг користувача -->
+      <!-- Блок 3: Замовлення -->
       <div class="card" style="margin-top: 20px;">
         <h2 class="card-title">📋 Мої звернення та замовлення</h2>
         <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem; text-align: left;">
@@ -307,7 +323,7 @@ apiKey: "AIzaSyBlKoP6-M8tdrKq88bSdnWSnak5Gpddnpk",
             </tr>
           </thead>
           <tbody id="requestsTableBody">
-            <!-- Завантажується автоматично з Firestore -->
+            <!-- Завантажується автоматично -->
           </tbody>
         </table>
       </div>
@@ -316,7 +332,7 @@ apiKey: "AIzaSyBlKoP6-M8tdrKq88bSdnWSnak5Gpddnpk",
 
   </div>
 
-  <!-- Біжучий рядок -->
+  <!-- Футер / Бігучий рядок -->
   <div style="width: 100%; background: linear-gradient(90deg, #1e3a8a, #3b82f6, #1e3a8a); color: white; padding: 12px 0; overflow: hidden; white-space: nowrap; box-shadow: inset 0 2px 5px rgba(0,0,0,0.2); margin-top: 40px; border-top: 2px solid #60a5fa; border-bottom: 2px solid #60a5fa;">
     <div style="display: inline-block; animation: marquee 25s linear infinite; font-size: 1rem; font-style: italic; letter-spacing: 0.5px;">
       ✨ «Світильник нозі моїй — слово Твоє, і світло для стежки моєї» &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 🕊️ «Ісус — дорога, істина і життя» &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 🙏 «Блаженні миротворці, бо вони синами Божими назвуться» &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

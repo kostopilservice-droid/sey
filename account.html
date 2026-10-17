@@ -115,24 +115,26 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    onAuthStateChanged(auth, async (user) => {
-      const authRequiredBlock = document.getElementById('auth-required');
-      const accountContentBlock = document.getElementById('account-content');
+    // Ховаємо обоє блоків перед перевіркою стану авторизації
+    const authRequiredBlock = document.getElementById('auth-required');
+    const accountContentBlock = document.getElementById('account-content');
 
+    onAuthStateChanged(auth, async (user) => {
       if (user) {
         console.log("✅ Користувач увійшов:", user.email);
         authRequiredBlock.classList.add('hidden');
         accountContentBlock.classList.remove('hidden');
 
         await loadUserProfile(user.uid, user.email);
-        await loadUserRequests(user.email); // Шукаємо замовлення за поштою
+        await loadUserRequests(user.email); // Шукаємо замовлення за email
       } else {
         console.log("❌ Користувач не авторизований");
-        authRequiredBlock.classList.remove('hidden');
         accountContentBlock.classList.add('hidden');
+        authRequiredBlock.classList.remove('hidden');
       }
     });
 
+    // Завантаження даних профілю
     async function loadUserProfile(uid, email) {
       try {
         const userRef = doc(db, "users", uid);
@@ -155,6 +157,7 @@
       }
     }
 
+    // Збереження даних профілю
     document.getElementById('profileForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const user = auth.currentUser;
@@ -228,6 +231,7 @@
       }
     }
 
+    // Вихід з акаунта
     document.getElementById('logoutBtn').addEventListener('click', () => {
       signOut(auth).then(() => {
         window.location.href = 'index.html';
@@ -259,14 +263,14 @@
 
   <div class="container">
     
-    <!-- Неавторизованим -->
-    <div id="auth-required" class="card" style="text-align: center; padding: 40px 20px;">
+    <!-- Повідомлення для неавторизованих -->
+    <div id="auth-required" class="card hidden" style="text-align: center; padding: 40px 20px;">
       <h2 style="color: #1e3a8a; margin-top: 0;">🔒 Доступ обмежено</h2>
       <p style="color: #64748b; margin-bottom: 20px;">Будь ласка, увійдіть або зареєструйтесь на головній сторінці, щоб переглянути особистий кабінет та програму лояльності.</p>
       <a href="index.html" class="btn">Перейти до входу на головну</a>
     </div>
 
-    <!-- Авторизованим -->
+    <!-- Контент для авторизованих -->
     <div id="account-content" class="hidden">
       
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
@@ -275,7 +279,7 @@
       </div>
 
       <div class="grid">
-        <!-- Блок 1: Профіль -->
+        <!-- Блок 1: Профіль та доставка -->
         <div class="card">
           <h2 class="card-title">👤 Мої дані та доставка</h2>
           <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 15px;">

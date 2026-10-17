@@ -235,7 +235,7 @@
   </div>
 </div>
 
-<BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR>
+
 
 <style>
 @keyframes marquee {
@@ -248,6 +248,9 @@
     </footer>
 
     <!-- Скрипти Firebase SDK -->
+
+
+    
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -352,6 +355,8 @@
       alert('Помилка: ' + err.message);
     }
   });
+
+  
 
   // Завантаження та відображення замовлень
   function loadUserOrders(email) {

@@ -11,6 +11,10 @@
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  
   <script>
     tailwind.config = {
       theme: {
@@ -438,6 +442,9 @@
         </div>
       </article>
 
+      <!-- СЮДИ АВТОМАТИЧНО ДОДАВАТИМУТЬСЯ СТАТТІ З FIREBASE -->
+      <div id="dynamicArticles" class="contents"></div>
+
     </div>
 
   </main>
@@ -459,7 +466,7 @@
       <h2 id="modalTitle" class="text-2xl font-black text-slate-900 mb-2">Заголовок</h2>
       <p id="modalDate" class="text-xs text-slate-400 mb-4"><i class="fa-regular fa-calendar mr-1"></i> 18 Жовтня, 2026</p>
 
-      <div class="rounded-xl overflow-hidden h-56 sm:h-64 mb-5 bg-slate-100">
+      <div class="rounded-xl overflow-hidden h-56 sm:h-64 mb-5 bg-slate-100" id="modalMedia">
         <img id="modalImg" src="" alt="Article" class="w-full h-full object-cover">
       </div>
 
@@ -526,8 +533,23 @@
   <!-- JAVASCRIPT CODE                            -->
   <!-- ========================================== -->
   <script>
+const firebaseConfig = {
+    apiKey: "AIzaSyBlKoP6-M8tdrKq88bSdnWSnak5Gpddnpk",
+    authDomain: "neoservice-ks-ua.firebaseapp.com",
+    projectId: "neoservice-ks-ua",
+    storageBucket: "neoservice-ks-ua.firebasestorage.app",
+    messagingSenderId: "528941827813",
+    appId: "1:528941827813:web:354ef989d200087634b60c",
+    measurementId: "G-BYGHEHVYY3"
+  };
+
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    const db = firebase.firestore();
+
     // Articles Database
-    const articles = {
+    const staticArticles = {
       1: {
         title: "Пошук витоку струму акумулятора: Повний посібник",
         cat: "Автодіагностика",
@@ -555,84 +577,166 @@
         cat: "Комп'ютери",
         date: "16 Жовтня, 2026",
         img: "https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?auto=format&fit=crop&w=600&q=80",
-        body: `<p>Висока температура та шум вентилятора є сигнал про необхідність чистки та заміни термоінтерфейсу.</p>
-               <p>Рекомендується проводити процедуру принаймні один раз на рік.</p>`
+        body: `<p>Основна причина перегріву ПК або ноутбука — забиті пилом радіатори та висохла термопаста.</p>
+               <p>Заміну рекомендується проводити 1 раз на 1-2 роки для запобігання відвалу чипів.</p>`
       },
       5: {
         title: "Як відновити картридж лазерного принтера",
         cat: "Оргтехніка",
         date: "11 Жовтня, 2026",
         img: "https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?auto=format&fit=crop&w=600&q=80",
-        body: `<p>Чорні смуги на аркуші вказують на знос фотобарабана. Його заміна дозволяє суттєво заощадити на купівлі нового картриджа.</p>`
+        body: `<p>Поява темних смуг при друку свідчить про знос фотобарабана (OPC Drum). Заміна барабана та ракеля повертає ідеальну якість друку.</p>`
       },
       6: {
         title: "Збереження акумулятора електросамоката взимку",
         cat: "Електротранспорт",
         date: "14 Жовтня, 2026",
         img: "https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=600&q=80",
-        body: `<p>Зберігайте Li-ion батареї при заряді 50-70% у сухому приміщенні з температурою +10...+20°C.</p>`
+        body: `<p>Зберігайте батарею з зарядом 50-70% у сухому приміщенні при температурі +15..+20°C. Не залишайте повністю розрядженою!</p>`
       }
     };
 
-    // Carousel Slider Logic
-    let currentSlide = 0;
-    const slides = document.querySelectorAll('.carousel-slide');
-    const dots = document.querySelectorAll('.carousel-dot');
-    let carouselInterval = setInterval(nextSlide, 5000);
+    let dynamicDbArticles = {};
 
-    function updateCarousel() {
-      slides.forEach((slide, idx) => {
-        slide.style.opacity = idx === currentSlide ? '1' : '0';
-      });
-      dots.forEach((dot, idx) => {
-        if (idx === currentSlide) {
-          dot.className = 'carousel-dot w-3 h-3 rounded-full bg-amber-500 transition-all';
-        } else {
-          dot.className = 'carousel-dot w-3 h-3 rounded-full bg-white/40 hover:bg-white transition-all';
-        }
-      });
+    // Map categories to UI styles
+    const catMap = {
+      autodiagnostics: { name: 'Автодіагностика', filter: 'auto', bg: 'bg-amber-500', text: 'text-slate-950' },
+      pc: { name: 'Комп\'ютери', filter: 'pc', bg: 'bg-indigo-600', text: 'text-white' },
+      office: { name: 'Оргтехніка', filter: 'print', bg: 'bg-blue-600', text: 'text-white' },
+      radio: { name: 'Радіозв\'язок', filter: 'auto', bg: 'bg-emerald-600', text: 'text-white' }
+    };
+
+    // Load from Firestore
+    async function loadFirestoreArticles() {
+      try {
+        const snapshot = await db.collection('articles').orderBy('createdAt', 'desc').get();
+        const dynamicContainer = document.getElementById('dynamicArticles');
+        dynamicContainer.innerHTML = '';
+
+        snapshot.docs.forEach(doc => {
+          const item = doc.data();
+          const id = doc.id;
+          const catInfo = catMap[item.category] || { name: item.category, filter: 'all', bg: 'bg-blue-600', text: 'text-white' };
+
+          dynamicDbArticles[id] = {
+            title: item.title,
+            cat: catInfo.name,
+            date: item.createdAt ? new Date(item.createdAt.toDate()).toLocaleDateString('uk-UA') : 'Нещодавно',
+            img: item.imageUrl,
+            youtubeId: item.youtubeId,
+            body: item.content
+          };
+
+          const card = document.createElement('article');
+          card.setAttribute('data-category', catInfo.filter);
+          card.className = 'bing-card feed-item bg-white rounded-2xl border border-slate-200 overflow-hidden flex flex-col justify-between shadow-sm';
+          card.innerHTML = `
+            <div>
+              <div class="h-40 w-full overflow-hidden relative bg-slate-900">
+                <img src="${item.imageUrl}" alt="${item.title}" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/600x400?text=Neoservice'">
+                <span class="absolute top-3 left-3 ${catInfo.bg} ${catInfo.text} text-[10px] font-bold px-2.5 py-0.5 rounded-full shadow">
+                  ${catInfo.name}
+                </span>
+              </div>
+              <div class="p-4">
+                <span class="text-[10px] text-slate-400 block mb-1">Опубліковано</span>
+                <h3 class="font-bold text-slate-900 text-sm leading-snug hover:text-blue-600 cursor-pointer" onclick="openArticleModal('${id}')">
+                  ${escapeHtml(item.title)}
+                </h3>
+                <p class="text-slate-600 text-xs mt-1.5 line-clamp-2">
+                  ${escapeHtml(item.summary)}
+                </p>
+              </div>
+            </div>
+            <div class="p-4 pt-0 border-t border-slate-100 mt-2 flex items-center justify-between">
+              <div class="flex items-center space-x-2 text-xs">
+                <button onclick="handleReaction(this, 'like')" class="text-slate-500 hover:text-rose-600">
+                  <i class="fa-regular fa-thumbs-up"></i> <span class="count">0</span>
+                </button>
+              </div>
+              <button onclick="openArticleModal('${id}')" class="text-xs font-bold text-blue-600">Читати <i class="fa-solid fa-chevron-right text-[10px]"></i></button>
+            </div>
+          `;
+          dynamicContainer.appendChild(card);
+        });
+      } catch (err) {
+        console.log("Динамічні статті не завантажено або Firestore порожній.", err);
+      }
     }
 
-    function nextSlide() {
-      currentSlide = (currentSlide + 1) % slides.length;
-      updateCarousel();
+    // Modal Handling
+    function openArticleModal(id) {
+      const art = staticArticles[id] || dynamicDbArticles[id];
+      if (!art) return;
+
+      document.getElementById('modalTitle').innerText = art.title;
+      document.getElementById('modalCat').innerText = art.cat;
+      document.getElementById('modalDate').innerHTML = `<i class="fa-regular fa-calendar mr-1"></i> ${art.date}`;
+      
+      const mediaContainer = document.getElementById('modalMedia');
+      if (art.youtubeId) {
+        mediaContainer.innerHTML = `<iframe src="https://www.youtube.com/embed/${art.youtubeId}" class="w-full h-full rounded-xl" frameborder="0" allowfullscreen></iframe>`;
+      } else {
+        mediaContainer.innerHTML = `<img id="modalImg" src="${art.img}" class="w-full h-full object-cover">`;
+      }
+
+      document.getElementById('modalBody').innerHTML = art.body;
+
+      const modal = document.getElementById('articleModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
     }
 
-    function prevSlide() {
-      currentSlide = (currentSlide - 1 + slides.length) % slides.length;
-      updateCarousel();
+    function closeArticleModal() {
+      const modal = document.getElementById('articleModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
     }
 
-    function goToSlide(index) {
-      currentSlide = index;
-      updateCarousel();
+    function openAdOrderModal() {
+      const modal = document.getElementById('adModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
     }
 
-    function pauseCarousel() {
-      clearInterval(carouselInterval);
+    function closeAdModal() {
+      const modal = document.getElementById('adModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
     }
 
-    function resumeCarousel() {
-      carouselInterval = setInterval(nextSlide, 5000);
+    function submitAdForm(e) {
+      e.preventDefault();
+      alert('Дякуємо! Вашу заявку надіслано. Ми зв\'яжемося з вами найближчим часом.');
+      closeAdModal();
     }
 
-    // Category Filter
+    // Reactions
+    function handleReaction(btn, type) {
+      const countEl = btn.querySelector('.count');
+      let count = parseInt(countEl.innerText) || 0;
+      count++;
+      countEl.innerText = count;
+      btn.classList.add('text-rose-600');
+    }
+
+    // Filter Logic
     function filterFeed(category) {
       document.querySelectorAll('.filter-tab').forEach(btn => {
-        btn.classList.remove('bg-blue-600', 'text-white');
-        btn.classList.add('bg-white', 'text-slate-600');
+        btn.classList.remove('bg-blue-600', 'text-white', 'shadow-sm');
+        btn.classList.add('bg-white', 'text-slate-600', 'border', 'border-slate-200');
       });
 
-      const activeBtn = document.getElementById(`tab-${category}`);
+      const activeBtn = document.getElementById('tab-' + category);
       if (activeBtn) {
-        activeBtn.classList.remove('bg-white', 'text-slate-600');
-        activeBtn.classList.add('bg-blue-600', 'text-white');
+        activeBtn.classList.remove('bg-white', 'text-slate-600', 'border', 'border-slate-200');
+        activeBtn.classList.add('bg-blue-600', 'text-white', 'shadow-sm');
       }
 
       const items = document.querySelectorAll('.feed-item');
       items.forEach(item => {
-        const cat = item.getAttribute('data-category');
-        if (category === 'all' || cat === category) {
+        const itemCat = item.getAttribute('data-category');
+        if (category === 'all' || itemCat === category) {
           item.style.display = 'flex';
         } else {
           item.style.display = 'none';
@@ -640,53 +744,66 @@
       });
     }
 
-    // Modal Control
-    function openArticleModal(id) {
-      const data = articles[id];
-      if (!data) return;
+    // Carousel Logic
+    let currentSlide = 0;
+    let carouselInterval;
+    const slides = document.querySelectorAll('.carousel-slide');
+    const dots = document.querySelectorAll('.carousel-dot');
 
-      document.getElementById('modalTitle').innerText = data.title;
-      document.getElementById('modalCat').innerText = data.cat;
-      document.getElementById('modalDate').innerText = data.date;
-      document.getElementById('modalImg').src = data.img;
-      document.getElementById('modalBody').innerHTML = data.body;
-
-      document.getElementById('articleModal').classList.remove('hidden');
-      document.getElementById('articleModal').classList.add('flex');
+    function showSlide(index) {
+      slides.forEach((slide, i) => {
+        slide.style.opacity = i === index ? '1' : '0';
+        slide.style.pointerEvents = i === index ? 'auto' : 'none';
+      });
+      dots.forEach((dot, i) => {
+        if (i === index) {
+          dot.classList.remove('bg-white/40');
+          dot.classList.add('bg-amber-500');
+        } else {
+          dot.classList.remove('bg-amber-500');
+          dot.classList.add('bg-white/40');
+        }
+      });
+      currentSlide = index;
     }
 
-    function closeArticleModal() {
-      document.getElementById('articleModal').classList.add('hidden');
-      document.getElementById('articleModal').classList.remove('flex');
+    function nextSlide() {
+      showSlide((currentSlide + 1) % slides.length);
     }
 
-    function openAdOrderModal() {
-      document.getElementById('adModal').classList.remove('hidden');
-      document.getElementById('adModal').classList.add('flex');
+    function prevSlide() {
+      showSlide((currentSlide - 1 + slides.length) % slides.length);
     }
 
-    function closeAdModal() {
-      document.getElementById('adModal').classList.add('hidden');
-      document.getElementById('adModal').classList.remove('flex');
+    function goToSlide(index) {
+      showSlide(index);
     }
 
-    function submitAdForm(e) {
-      e.preventDefault();
-      alert("✅ Вашу заявку успішно відправлено! Ми зв'яжемося з вами найближчим часом.");
-      closeAdModal();
+    function startCarousel() {
+      carouselInterval = setInterval(nextSlide, 5000);
     }
 
-    function handleReaction(btn, type) {
-      const countSpan = btn.querySelector('.count');
-      let count = parseInt(countSpan.innerText);
-      countSpan.innerText = count + 1;
-      btn.classList.add('text-rose-600', 'font-bold');
+    function pauseCarousel() {
+      clearInterval(carouselInterval);
+    }
+
+    function resumeCarousel() {
+      startCarousel();
     }
 
     function toggleMobileMenu() {
       const menu = document.getElementById('mobileMenu');
       menu.classList.toggle('hidden');
     }
+
+    function escapeHtml(text) {
+      if (!text) return '';
+      return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    }
+
+    // Init
+    startCarousel();
+    loadFirestoreArticles();
   </script>
 </body>
-</html> 
+</html>

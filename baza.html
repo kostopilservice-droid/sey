@@ -448,9 +448,16 @@
         </div>
       </article>
 
-      <!-- СЮДИ АВТОМАТИЧНО ДОДАВАТИМУТЬСЯ СТАТТІ З FIREBASE -->
+      <!-- ДИНАМІЧНІ СТАТТІ З FIREBASE (ПОРЦІЯМИ ПО 12 ШТУК) -->
       <div id="dynamicArticles" class="contents"></div>
 
+    </div>
+
+    <!-- КНОПКА «ЗАВАНТАЖИТИ ЩЕ» ДЛЯ ПАГІНАЦІЇ -->
+    <div id="loadMoreContainer" class="text-center mt-10 hidden">
+      <button onclick="loadFirestoreArticles()" class="px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-2xl shadow-md transition-all">
+        Завантажити ще статті <i class="fa-solid fa-chevron-down ml-1"></i>
+      </button>
     </div>
 
   </main>
@@ -604,6 +611,8 @@ const firebaseConfig = {
     };
 
     let dynamicDbArticles = {};
+    let lastVisibleDoc = null; // Змінна для пагінації у Firestore
+    const PAGE_LIMIT = 12; // Кількість статей за 1 завантаження
 
     const catMap = {
       autodiagnostics: { name: 'Автодіагностика', filter: 'auto', bg: 'bg-amber-500', text: 'text-slate-950' },
@@ -630,12 +639,25 @@ const firebaseConfig = {
       });
     }
 
-    // Load from Firestore
+    // Завантаження статей з Firestore порціями (пагінація)
     async function loadFirestoreArticles() {
       try {
-        const snapshot = await db.collection('articles').orderBy('createdAt', 'desc').get();
+        let query = db.collection('articles').orderBy('createdAt', 'desc').limit(PAGE_LIMIT);
+
+        if (lastVisibleDoc) {
+          query = query.startAfter(lastVisibleDoc);
+        }
+
+        const snapshot = await query.get();
+        if (snapshot.empty) {
+          document.getElementById('loadMoreContainer').classList.add('hidden');
+          return;
+        }
+
+        // Зберігаємо останній документ для наступної сторінки
+        lastVisibleDoc = snapshot.docs[snapshot.docs.length - 1];
+
         const dynamicContainer = document.getElementById('dynamicArticles');
-        dynamicContainer.innerHTML = '';
 
         snapshot.docs.forEach(doc => {
           const item = doc.data();
@@ -683,6 +705,14 @@ const firebaseConfig = {
           `;
           dynamicContainer.appendChild(card);
         });
+
+        // Показуємо кнопку «Завантажити ще», якщо є ймовірність наявності наступних статей
+        if (snapshot.docs.length === PAGE_LIMIT) {
+          document.getElementById('loadMoreContainer').classList.remove('hidden');
+        } else {
+          document.getElementById('loadMoreContainer').classList.add('hidden');
+        }
+
       } catch (err) {
         console.log("Динамічні статті не завантажено або Firestore порожній.", err);
       }

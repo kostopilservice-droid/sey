@@ -34,7 +34,6 @@
   </script>
 
   <style>
-    /* Custom Scrollbar */
     .hide-scrollbar::-webkit-scrollbar {
       display: none;
     }
@@ -43,7 +42,6 @@
       scrollbar-width: none;
     }
 
-    /* Smooth transitions for cards */
     .bing-card {
       transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     }
@@ -52,7 +50,6 @@
       box-shadow: 0 12px 28px -6px rgba(15, 23, 42, 0.15);
     }
 
-    /* Slide animation */
     .carousel-slide {
       transition: opacity 0.6s ease-in-out;
     }
@@ -108,7 +105,7 @@
     <div id="mobileMenu" class="hidden md:hidden bg-slate-900 border-t border-slate-800 px-4 py-3 space-y-2 text-sm">
       <a href="index.html" class="block py-2 text-slate-300"><i class="fa-solid fa-house mr-2 text-blue-400"></i> Головна</a>
       <a href="#" class="block py-2 text-white font-bold"><i class="fa-solid fa-book-open mr-2 text-blue-400"></i> База знань</a>
-      <a href="service.html" class="block py-2 text-slate-300"><i class="fa-solid fa-wrench mr-2 text-amber-400"></i> Параметри</a>
+      <a href="admin.html" class="block py-2 text-slate-300"><i class="fa-solid fa-wrench mr-2 text-amber-400"></i> Параметри</a>
       <a href="chat.html" class="block py-2 text-slate-300"><i class="fa-solid fa-comments mr-2 text-emerald-400"></i> Чат спільноти</a>
       <a href="account.html" class="block py-2 text-slate-300"><i class="fa-solid fa-user mr-2 text-indigo-400"></i> Особистий кабінет</a>
     </div>
@@ -127,6 +124,17 @@
       </marquee>
     </div>
   </div>
+
+  <!-- ========================================== -->
+  <!-- MSN GLOBAL SEARCH BAR                      -->
+  <!-- ========================================== -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+    <div class="relative w-full">
+      <input type="text" id="searchInput" onkeyup="searchArticles()" placeholder="Шукати тему, прилад чи статтю у Базі знань..." 
+             class="w-full pl-12 pr-4 py-3 bg-white rounded-2xl border border-slate-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600 text-sm font-medium">
+      <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-base"></i>
+    </div>
+  </section>
 
   <!-- MAIN CONTAINER -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow w-full">
@@ -236,7 +244,7 @@
         <p class="text-xs text-slate-500">Стрічка корисних статей, інструкцій та партнерських матеріалів</p>
       </div>
 
-      <!-- Filter Buttons (Додано кнопку Радіозв'язок) -->
+      <!-- Filter Buttons -->
       <div class="flex items-center space-x-2 overflow-x-auto hide-scrollbar w-full sm:w-auto py-1">
         <button onclick="filterFeed('all')" id="tab-all" class="filter-tab active px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap bg-blue-600 text-white shadow-sm transition-all">
           <i class="fa-solid fa-border-all mr-1"></i> Всі
@@ -279,7 +287,7 @@
               <span>•</span>
               <span>Автор: Neoservice</span>
             </div>
-            <h3 class="text-xl font-extrabold text-slate-900 hover:text-blue-600 transition-colors cursor-pointer mb-2" onclick="openArticleModal(1)">
+            <h3 class="article-title text-xl font-extrabold text-slate-900 hover:text-blue-600 transition-colors cursor-pointer mb-2" onclick="openArticleModal(1)">
               Пошук витоку струму акумулятора: Повний посібник
             </h3>
             <p class="text-slate-600 text-xs sm:text-sm line-clamp-2">
@@ -288,7 +296,6 @@
           </div>
         </div>
 
-        <!-- Interactions -->
         <div class="p-5 pt-0 border-t border-slate-100 mt-2 flex items-center justify-between">
           <div class="flex items-center space-x-3 text-xs">
             <button onclick="handleReaction(this, 'like')" class="flex items-center space-x-1 text-slate-500 hover:text-rose-600 transition-colors">
@@ -306,7 +313,7 @@
         </div>
       </article>
 
-      <!-- CARD 2: SPONSORED CONTENT (Monetization Block) -->
+      <!-- CARD 2: SPONSORED CONTENT -->
       <article data-category="sponsored" class="bing-card feed-item bg-amber-50/70 rounded-2xl border border-amber-200/90 overflow-hidden flex flex-col justify-between shadow-sm">
         <div class="p-5">
           <div class="flex items-center justify-between mb-3">
@@ -320,11 +327,11 @@
             <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=600&q=80" alt="Партнер" class="w-full h-full object-cover">
           </div>
 
-          <h3 class="font-bold text-slate-900 text-sm leading-snug hover:text-amber-700 cursor-pointer" onclick="openArticleModal(2)">
+          <h3 class="article-title font-bold text-slate-900 text-sm leading-snug hover:text-amber-700 cursor-pointer" onclick="openArticleModal(2)">
             Надійний хмарний хостинг та сервери для бізнесу
           </h3>
           <p class="text-slate-600 text-xs mt-2 line-clamp-3">
-            Огляд сучасних серверних рішень із гарантированным аптаймом та швидкою підтримкою. Спеціальні умови для наших читачів.
+            Огляд сучасних серверних рішень із гарантованим аптаймом та швидкою підтримкою. Спеціальні умови для наших читачів.
           </p>
         </div>
 
@@ -346,7 +353,7 @@
           </div>
           <div class="p-4">
             <span class="text-[10px] text-slate-400 block mb-1">16 Жовтня, 2026</span>
-            <h3 class="font-bold text-slate-900 text-sm leading-snug hover:text-blue-600 cursor-pointer" onclick="openArticleModal(3)">
+            <h3 class="article-title font-bold text-slate-900 text-sm leading-snug hover:text-blue-600 cursor-pointer" onclick="openArticleModal(3)">
               Чому гріється ноутбук і коли міняти термопасту?
             </h3>
             <p class="text-slate-600 text-xs mt-1.5 line-clamp-2">
@@ -372,7 +379,7 @@
             <span class="text-[10px] uppercase font-bold text-amber-400 tracking-wider">Реклама у фіді</span>
             <i class="fa-solid fa-bullhorn text-amber-400"></i>
           </div>
-          <h3 class="text-base font-bold text-white mb-2">Хочете розмістити статтю чи пропозицію?</h3>
+          <h3 class="article-title text-base font-bold text-white mb-2">Хочете розмістити статтю чи пропозицію?</h3>
           <p class="text-slate-300 text-xs leading-relaxed">
             Залучайте нових клієнтів через наш інформаційний блок. Розміщення платних та нативних статей.
           </p>
@@ -396,7 +403,7 @@
           </div>
           <div class="p-4">
             <span class="text-[10px] text-slate-400 block mb-1">11 Жовтня, 2026</span>
-            <h3 class="font-bold text-slate-900 text-sm leading-snug hover:text-blue-600 cursor-pointer" onclick="openArticleModal(5)">
+            <h3 class="article-title font-bold text-slate-900 text-sm leading-snug hover:text-blue-600 cursor-pointer" onclick="openArticleModal(5)">
               Як відновити картридж лазерного принтера
             </h3>
             <p class="text-slate-600 text-xs mt-1.5 line-clamp-2">
@@ -426,7 +433,7 @@
           </div>
           <div class="p-4">
             <span class="text-[10px] text-slate-400 block mb-1">14 Жовтня, 2026</span>
-            <h3 class="font-bold text-slate-900 text-sm leading-snug hover:text-blue-600 cursor-pointer" onclick="openArticleModal(6)">
+            <h3 class="article-title font-bold text-slate-900 text-sm leading-snug hover:text-blue-600 cursor-pointer" onclick="openArticleModal(6)">
               Збереження акумулятора електросамоката взимку
             </h3>
             <p class="text-slate-600 text-xs mt-1.5 line-clamp-2">
@@ -536,7 +543,6 @@
   <!-- JAVASCRIPT CODE                            -->
   <!-- ========================================== -->
   <script>
-    // Configuration for Firebase
 const firebaseConfig = {
     apiKey: "AIzaSyBlKoP6-M8tdrKq88bSdnWSnak5Gpddnpk",
     authDomain: "neoservice-ks-ua.firebaseapp.com",
@@ -602,13 +608,27 @@ const firebaseConfig = {
 
     let dynamicDbArticles = {};
 
-    // Map categories to UI styles (Включно з радіозв'язком)
     const catMap = {
       autodiagnostics: { name: 'Автодіагностика', filter: 'auto', bg: 'bg-amber-500', text: 'text-slate-950' },
       pc: { name: 'Комп\'ютери', filter: 'pc', bg: 'bg-indigo-600', text: 'text-white' },
       office: { name: 'Оргтехніка', filter: 'print', bg: 'bg-blue-600', text: 'text-white' },
       radio: { name: 'Радіозв\'язок', filter: 'radio', bg: 'bg-emerald-600', text: 'text-white' }
     };
+
+    // ПОШУК ПО СТАТТЯХ В РЕАЛЬНОМУ ЧАСІ
+    function searchArticles() {
+      const query = document.getElementById('searchInput').value.toLowerCase().trim();
+      const items = document.querySelectorAll('.feed-item');
+
+      items.forEach(item => {
+        const text = item.innerText.toLowerCase();
+        if (text.includes(query)) {
+          item.style.display = 'flex';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    }
 
     // Load from Firestore
     async function loadFirestoreArticles() {
@@ -644,7 +664,7 @@ const firebaseConfig = {
               </div>
               <div class="p-4">
                 <span class="text-[10px] text-slate-400 block mb-1">Опубліковано</span>
-                <h3 class="font-bold text-slate-900 text-sm leading-snug hover:text-blue-600 cursor-pointer" onclick="openArticleModal('${id}')">
+                <h3 class="article-title font-bold text-slate-900 text-sm leading-snug hover:text-blue-600 cursor-pointer" onclick="openArticleModal('${id}')">
                   ${escapeHtml(item.title)}
                 </h3>
                 <p class="text-slate-600 text-xs mt-1.5 line-clamp-2">

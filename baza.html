@@ -3,256 +3,690 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>База знань Neoservice</title>
-  <!-- Tailwind CSS -->
+  <title>База знань & Інформаційний Фід — Neoservice.ks.ua</title>
+  
+  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-</head>
-<body class="bg-[#f4f7fc] min-h-screen text-slate-800 font-sans pb-16">
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              dark: '#0c192c',
+              header: '#11223f',
+              accent: '#1d4ed8',
+              hover: '#2563eb',
+              gold: '#f59e0b'
+            }
+          }
+        }
+      }
+    }
+  </script>
 
-  <!-- ВЕРХНЯ НАВІГАЦІЙНА ПАНЕЛЬ (NAVBAR) -->
-  <header class="bg-[#10192e] text-white shadow-md">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-      <div class="flex items-center space-x-3">
-        <div class="bg-blue-600 text-white w-9 h-9 rounded-xl flex items-center justify-center font-bold text-base shadow">
-          NS
-        </div>
-        <div>
-          <span class="text-lg font-bold tracking-tight text-white">NEOSERVICE.KS.UA</span>
-          <span class="hidden sm:inline text-xs text-slate-400 ml-2">«Курс — дорога, істина і життя» | Сервіс, Знання та Допомога</span>
-        </div>
+  <style>
+    /* Custom Scrollbar */
+    .hide-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .hide-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    /* Smooth transitions for cards */
+    .bing-card {
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .bing-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 28px -6px rgba(15, 23, 42, 0.15);
+    }
+
+    /* Slide animation */
+    .carousel-slide {
+      transition: opacity 0.6s ease-in-out;
+    }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans antialiased min-h-screen flex flex-col justify-between">
+
+  <!-- ========================================== -->
+  <!-- HEADER & NAVIGATION                        -->
+  <!-- ========================================== -->
+  <header class="bg-brand-header text-white shadow-lg sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        
+        <!-- Logo / Title -->
+        <a href="index.html" class="flex items-center space-x-3 group">
+          <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center font-bold text-xl shadow-md group-hover:bg-blue-500 transition-colors">
+            🧙‍♂️
+          </div>
+          <div>
+            <div class="font-extrabold text-lg sm:text-xl tracking-tight text-white group-hover:text-blue-300 transition-colors">NEOSERVICE.KS.UA</div>
+            <div class="text-[10px] text-blue-200 tracking-wider font-light">«Ісус — дорога, істина і життя» | Сервіс, Знання та Допомога</div>
+          </div>
+        </a>
+
+        <!-- Navigation Menu -->
+        <nav class="hidden md:flex items-center space-x-1 lg:space-x-4 text-xs font-semibold">
+          <a href="index.html" class="px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 transition-all flex items-center gap-1.5">
+            <i class="fa-solid fa-house text-blue-400"></i> Головна
+          </a>
+          <a href="#" class="px-3 py-2 rounded-lg bg-blue-600 text-white shadow-sm flex items-center gap-1.5">
+            <i class="fa-solid fa-book-open"></i> База знань
+          </a>
+          <a href="service.html" class="px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 transition-all flex items-center gap-1.5">
+            <i class="fa-solid fa-wrench text-amber-400"></i> Параметри
+          </a>
+          <a href="chat.html" class="px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 transition-all flex items-center gap-1.5">
+            <i class="fa-solid fa-comments text-emerald-400"></i> Чат спільноти
+          </a>
+          <a href="account.html" class="px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 transition-all flex items-center gap-1.5">
+            <i class="fa-solid fa-user text-indigo-400"></i> Особистий
+          </a>
+        </nav>
+
+        <!-- Mobile Menu Icon -->
+        <button onclick="toggleMobileMenu()" class="md:hidden text-slate-300 hover:text-white p-2 text-xl focus:outline-none">
+          <i class="fa-solid fa-bars"></i>
+        </button>
       </div>
-      
-      <nav class="hidden md:flex items-center space-x-6 text-xs font-semibold text-slate-300">
-        <a href="#" class="hover:text-white transition flex items-center gap-1.5"><span class="text-blue-400">🏠</span> Головна</a>
-        <a href="baza.html" class="text-white transition flex items-center gap-1.5"><span class="text-blue-400">📚</span> База знань</a>
-        <a href="admin.html" class="hover:text-white transition flex items-center gap-1.5"><span class="text-blue-400">⚙️</span> Адмінка</a>
-        <a href="#" class="hover:text-white transition flex items-center gap-1.5"><span class="text-blue-400">💬</span> Чат спільноти</a>
-        <a href="#" class="hover:text-white transition flex items-center gap-1.5"><span class="text-blue-400">👤</span> Особистий</a>
-      </nav>
+    </div>
+
+    <!-- Mobile Navigation Drawer -->
+    <div id="mobileMenu" class="hidden md:hidden bg-slate-900 border-t border-slate-800 px-4 py-3 space-y-2 text-sm">
+      <a href="index.html" class="block py-2 text-slate-300"><i class="fa-solid fa-house mr-2 text-blue-400"></i> Головна</a>
+      <a href="#" class="block py-2 text-white font-bold"><i class="fa-solid fa-book-open mr-2 text-blue-400"></i> База знань</a>
+      <a href="service.html" class="block py-2 text-slate-300"><i class="fa-solid fa-wrench mr-2 text-amber-400"></i> Параметри</a>
+      <a href="chat.html" class="block py-2 text-slate-300"><i class="fa-solid fa-comments mr-2 text-emerald-400"></i> Чат спільноти</a>
+      <a href="account.html" class="block py-2 text-slate-300"><i class="fa-solid fa-user mr-2 text-indigo-400"></i> Особистий кабінет</a>
     </div>
   </header>
 
-  <!-- СТРІЧКА НОВИН ТА БЕГУЧИЙ СТРИЧКОВИЙ БЛОК -->
-  <div class="bg-amber-400 text-slate-900 text-xs font-bold py-2 px-4 shadow-inner">
-    <div class="max-w-7xl mx-auto flex items-center justify-between overflow-x-auto whitespace-nowrap gap-6">
-      <div class="flex items-center gap-2 uppercase tracking-wide bg-amber-500/80 px-2.5 py-1 rounded-md text-[10px]">
-        🔥 Фід новин
-      </div>
-      <div class="flex items-center space-x-8 text-slate-900 font-medium">
-        <span>⚡ «Світильник новій моїй — слово Твоє, і світло для стежки моєї»</span>
-        <span>📢 Новий розділ «База знань» тепер доступний на сайті</span>
-      </div>
+  <!-- ========================================== -->
+  <!-- TICKER / RUNNING LINE                      -->
+  <!-- ========================================== -->
+  <div class="bg-blue-900 text-white text-xs font-medium py-2 px-4 shadow-inner">
+    <div class="max-w-7xl mx-auto flex items-center space-x-3 overflow-hidden">
+      <span class="bg-amber-500 text-slate-950 text-[10px] px-2 py-0.5 rounded font-black uppercase tracking-wider shrink-0">Фід новини</span>
+      <marquee behavior="scroll" direction="left" class="w-full text-blue-100">
+        ✨ «Світильник нозі моїй — слово Твоє, і світло для стежки моєї» &nbsp;&nbsp;•&nbsp;&nbsp; 
+        🛠️ Новий розділ «База знань» у стилі MSN/Bing: читайте актуальні статті з автодіагностики та ремонту ПК! &nbsp;&nbsp;•&nbsp;&nbsp; 
+        🪙 Отримуйте бонусні бали за активне обговорення матеріалів у чаті.
+      </marquee>
     </div>
   </div>
 
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+  <!-- MAIN CONTAINER -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow w-full">
 
-    <!-- ТОП-БАНЕР (ГОЛОВНА ТЕМА) -->
-    <section class="bg-[#10192e] rounded-3xl overflow-hidden shadow-xl mb-8 relative text-white flex flex-col md:flex-row min-h-[340px]">
-      <div class="p-6 md:p-10 flex flex-col justify-between z-10 md:w-3/5">
-        <div>
-          <span class="inline-block bg-amber-500 text-slate-900 font-bold text-[10px] uppercase tracking-wider px-3 py-1 rounded-lg mb-4">
-            🚗 ТОП ТЕМА: АВТОДІАГНОСТИКА
-          </span>
-          <h2 class="text-2xl md:text-3xl font-extrabold tracking-tight mb-3 text-white leading-tight">
-            Пошук витоку струму акумулятора: Повний посібник для автовласників
-          </h2>
-          <p class="text-slate-300 text-xs md:text-sm line-clamp-3 mb-6">
-            Як правильно використовувати мультиметр для виявлення прихованих споживачів бортової мережі в домашніх умовах та запобігти розрядці АКБ.
-          </p>
+    <!-- ========================================== -->
+    <!-- 1. HERO CAROUSEL / ROLLOVER BANNER (Bing)  -->
+    <!-- ========================================== -->
+    <section class="mb-10 relative group rounded-2xl overflow-hidden shadow-xl bg-slate-900 border border-slate-700/60" 
+             onmouseenter="pauseCarousel()" 
+             onmouseleave="resumeCarousel()">
+      
+      <!-- Slides Container -->
+      <div id="carouselSlides" class="relative h-80 sm:h-96 md:h-[420px] w-full">
+        
+        <!-- Slide 1: Auto Electrics -->
+        <div class="carousel-slide absolute inset-0 opacity-100 transition-opacity duration-700 flex items-end p-6 sm:p-10 bg-cover bg-center" 
+             style="background-image: linear-gradient(to top, rgba(15,23,42,0.95), rgba(15,23,42,0.3)), url('https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1200&q=80');">
+          <div class="max-w-2xl text-white">
+            <span class="bg-amber-500 text-slate-950 font-bold text-xs px-3 py-1 rounded-full uppercase tracking-wider inline-block mb-3 shadow">
+              <i class="fa-solid fa-car-battery mr-1"></i> Топ Тема: Автодіагностика
+            </span>
+            <h1 class="text-2xl sm:text-4xl font-extrabold leading-tight mb-3 hover:text-amber-300 transition-colors cursor-pointer" onclick="openArticleModal(1)">
+              Пошук витоку струму акумулятора: Повний посібник для автовласників
+            </h1>
+            <p class="text-slate-300 text-xs sm:text-sm line-clamp-2 mb-5">
+              Як правильно використовувати мультиметр для виявлення прихованих споживачів бортової мережі в домашніх умовах.
+            </p>
+            <div class="flex items-center space-x-4">
+              <button onclick="openArticleModal(1)" class="px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs sm:text-sm rounded-xl shadow-lg transition-all flex items-center gap-2">
+                Читати повністю <i class="fa-solid fa-arrow-right"></i>
+              </button>
+              <span class="text-xs text-slate-400"><i class="fa-regular fa-clock mr-1"></i> 18 Жовтня, 2026</span>
+            </div>
+          </div>
         </div>
-        <div class="flex items-center justify-between pt-4 border-t border-slate-800 text-xs text-slate-400">
-          <a href="admin.html" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-5 py-2.5 rounded-xl transition flex items-center gap-2 shadow">
-            Читати повністю <span>→</span>
-          </a>
-          <span>📅 18 Жовтня, 2026</span>
+
+        <!-- Slide 2: PC Service -->
+        <div class="carousel-slide absolute inset-0 opacity-0 transition-opacity duration-700 flex items-end p-6 sm:p-10 bg-cover bg-center" 
+             style="background-image: linear-gradient(to top, rgba(15,23,42,0.95), rgba(15,23,42,0.3)), url('https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?auto=format&fit=crop&w=1200&q=80');">
+          <div class="max-w-2xl text-white">
+            <span class="bg-indigo-600 text-white font-bold text-xs px-3 py-1 rounded-full uppercase tracking-wider inline-block mb-3 shadow">
+              <i class="fa-solid fa-laptop-code mr-1"></i> Комп'ютерний сервіс
+            </span>
+            <h1 class="text-2xl sm:text-4xl font-extrabold leading-tight mb-3 hover:text-indigo-300 transition-colors cursor-pointer" onclick="openArticleModal(3)">
+              Перегрів ноутбука: Симптоми, наслідки та профілактика
+            </h1>
+            <p class="text-slate-300 text-xs sm:text-sm line-clamp-2 mb-5">
+              Чому важливо вчасно замінювати термопасту та проводити чистку радіаторів охолодження від пилу.
+            </p>
+            <div class="flex items-center space-x-4">
+              <button onclick="openArticleModal(3)" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs sm:text-sm rounded-xl shadow-lg transition-all flex items-center gap-2">
+                Читати повністю <i class="fa-solid fa-arrow-right"></i>
+              </button>
+              <span class="text-xs text-slate-400"><i class="fa-regular fa-clock mr-1"></i> 16 Жовтня, 2026</span>
+            </div>
+          </div>
         </div>
+
+        <!-- Slide 3: Electric Transport -->
+        <div class="carousel-slide absolute inset-0 opacity-0 transition-opacity duration-700 flex items-end p-6 sm:p-10 bg-cover bg-center" 
+             style="background-image: linear-gradient(to top, rgba(15,23,42,0.95), rgba(15,23,42,0.3)), url('https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=1200&q=80');">
+          <div class="max-w-2xl text-white">
+            <span class="bg-emerald-600 text-white font-bold text-xs px-3 py-1 rounded-full uppercase tracking-wider inline-block mb-3 shadow">
+              <i class="fa-solid fa-bolt mr-1"></i> Електротранспорт
+            </span>
+            <h1 class="text-2xl sm:text-4xl font-extrabold leading-tight mb-3 hover:text-emerald-300 transition-colors cursor-pointer" onclick="openArticleModal(6)">
+              Обслуговування батарей електросамокатів у зимовий період
+            </h1>
+            <p class="text-slate-300 text-xs sm:text-sm line-clamp-2 mb-5">
+              Правильне зберігання Li-ion акумуляторів взимку, щоб зберегти їх максимальну ємність.
+            </p>
+            <div class="flex items-center space-x-4">
+              <button onclick="openArticleModal(6)" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm rounded-xl shadow-lg transition-all flex items-center gap-2">
+                Читати повністю <i class="fa-solid fa-arrow-right"></i>
+              </button>
+              <span class="text-xs text-slate-400"><i class="fa-regular fa-clock mr-1"></i> 14 Жовтня, 2026</span>
+            </div>
+          </div>
+        </div>
+
       </div>
-      <div class="md:w-2/5 relative min-h-[220px] md:min-h-full">
-        <img src="https://images.unsplash.com/photo-1486006920555-c77dce18193b?auto=format&fit=crop&q=80&w=800" alt="Автодіагностика" class="absolute inset-0 w-full h-full object-cover opacity-80 mix-blend-luminosity hover:mix-blend-normal transition duration-500">
-        <div class="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-[#10192e] via-transparent to-transparent"></div>
+
+      <!-- Arrow Controls -->
+      <button onclick="prevSlide()" class="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-slate-900/60 hover:bg-slate-900 text-white flex items-center justify-center transition-all border border-slate-700 opacity-0 group-hover:opacity-100">
+        <i class="fa-solid fa-chevron-left"></i>
+      </button>
+      <button onclick="nextSlide()" class="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-slate-900/60 hover:bg-slate-900 text-white flex items-center justify-center transition-all border border-slate-700 opacity-0 group-hover:opacity-100">
+        <i class="fa-solid fa-chevron-right"></i>
+      </button>
+
+      <!-- Carousel Indicators (Dots) -->
+      <div class="absolute bottom-4 right-6 flex space-x-2 z-10">
+        <button onclick="goToSlide(0)" class="carousel-dot w-3 h-3 rounded-full bg-amber-500 transition-all"></button>
+        <button onclick="goToSlide(1)" class="carousel-dot w-3 h-3 rounded-full bg-white/40 hover:bg-white transition-all"></button>
+        <button onclick="goToSlide(2)" class="carousel-dot w-3 h-3 rounded-full bg-white/40 hover:bg-white transition-all"></button>
       </div>
     </section>
 
-    <!-- ІНФОРМАЦІЙНИЙ ФІД ТА КАТЕГОРІЇ -->
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-6 pb-4 border-b border-slate-200 gap-4">
-      <div class="flex items-center gap-3">
-        <div class="bg-blue-600 text-white p-2 rounded-xl text-sm font-bold shadow">📂</div>
-        <div>
-          <h2 class="text-lg font-bold text-slate-900">Інформаційний Фід</h2>
-          <p class="text-xs text-slate-500">Стрічка корисних статей, інструкцій та партнерських матеріалів</p>
-        </div>
+    <!-- ========================================== -->
+    <!-- 2. CATEGORY FILTERS & BAR                  -->
+    <!-- ========================================== -->
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b border-slate-200 mb-8">
+      <div>
+        <h2 class="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
+          <i class="fa-solid fa-newspaper text-blue-600"></i> Інформаційний Фід
+        </h2>
+        <p class="text-xs text-slate-500">Стрічка корисних статей, інструкцій та партнерських матеріалів</p>
       </div>
 
-      <!-- ФІЛЬТРИ КАТЕГОРІЙ -->
-      <div class="flex flex-wrap gap-2" id="categoryFilters">
-        <button data-category="all" class="filter-btn bg-blue-600 text-white px-4 py-2 rounded-xl text-xs font-semibold shadow transition">Усі</button>
-        <button data-category="autodiagnostics" class="filter-btn bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 px-3.5 py-2 rounded-xl text-xs font-semibold transition">🚗 Автодіагностика</button>
-        <button data-category="pc" class="filter-btn bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 px-3.5 py-2 rounded-xl text-xs font-semibold transition">💻 Комп'ютери</button>
-        <button data-category="office" class="filter-btn bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 px-3.5 py-2 rounded-xl text-xs font-semibold transition">🖨️ Оргтехніка</button>
-        <button data-category="radio" class="filter-btn bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 px-3.5 py-2 rounded-xl text-xs font-semibold transition">📻 Радіозв'язок</button>
+      <!-- Filter Buttons -->
+      <div class="flex items-center space-x-2 overflow-x-auto hide-scrollbar w-full sm:w-auto py-1">
+        <button onclick="filterFeed('all')" id="tab-all" class="filter-tab active px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap bg-blue-600 text-white shadow-sm transition-all">
+          <i class="fa-solid fa-border-all mr-1"></i> Всі
+        </button>
+        <button onclick="filterFeed('auto')" id="tab-auto" class="filter-tab px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap bg-white text-slate-600 hover:bg-slate-200 border border-slate-200 transition-all">
+          <i class="fa-solid fa-car text-amber-500 mr-1"></i> Автодіагностика
+        </button>
+        <button onclick="filterFeed('pc')" id="tab-pc" class="filter-tab px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap bg-white text-slate-600 hover:bg-slate-200 border border-slate-200 transition-all">
+          <i class="fa-solid fa-laptop text-indigo-500 mr-1"></i> Комп'ютери
+        </button>
+        <button onclick="filterFeed('print')" id="tab-print" class="filter-tab px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap bg-white text-slate-600 hover:bg-slate-200 border border-slate-200 transition-all">
+          <i class="fa-solid fa-print text-blue-500 mr-1"></i> Оргтехніка
+        </button>
+        <button onclick="filterFeed('sponsored')" id="tab-sponsored" class="filter-tab px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap bg-amber-100 text-amber-800 hover:bg-amber-200 border border-amber-300 transition-all">
+          <i class="fa-solid fa-rectangle-ad text-amber-600 mr-1"></i> Спонсоровано
+        </button>
       </div>
     </div>
 
-    <!-- СІТКА СТАТЕЙ (ДИНАМІЧНА З FIREBASE) -->
-    <div id="articlesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <div class="col-span-full text-center py-16 text-slate-400 font-medium">Завантаження стрічки статей...</div>
+    <!-- ========================================== -->
+    <!-- 3. MSN/BING FEED GRID LAYOUT               -->
+    <!-- ========================================== -->
+    <div id="feedGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+
+      <!-- CARD 1: MAIN FEATURED (2 Cols) -->
+      <article data-category="auto" class="bing-card feed-item md:col-span-2 bg-white rounded-2xl border border-slate-200 overflow-hidden flex flex-col justify-between shadow-sm">
+        <div>
+          <div class="relative h-60 sm:h-72 w-full overflow-hidden bg-slate-900">
+            <img src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1000&q=80" alt="Автоелектрика" class="w-full h-full object-cover">
+            <span class="absolute top-4 left-4 bg-amber-500 text-slate-950 text-xs font-black px-3 py-1 rounded-full uppercase tracking-wider shadow">
+              Автодіагностика
+            </span>
+          </div>
+          <div class="p-5">
+            <div class="flex items-center space-x-2 text-xs text-slate-400 mb-2">
+              <span><i class="fa-regular fa-clock mr-1"></i> 18 Жовтня, 2026</span>
+              <span>•</span>
+              <span>Автор: Neoservice</span>
+            </div>
+            <h3 class="text-xl font-extrabold text-slate-900 hover:text-blue-600 transition-colors cursor-pointer mb-2" onclick="openArticleModal(1)">
+              Пошук витоку струму акумулятора: Повний посібник
+            </h3>
+            <p class="text-slate-600 text-xs sm:text-sm line-clamp-2">
+              Детальний покроковий посібник із пошуку прихованих споживачів електрики в автомобілі за допомогою мультиметра.
+            </p>
+          </div>
+        </div>
+
+        <!-- Interactions -->
+        <div class="p-5 pt-0 border-t border-slate-100 mt-2 flex items-center justify-between">
+          <div class="flex items-center space-x-3 text-xs">
+            <button onclick="handleReaction(this, 'like')" class="flex items-center space-x-1 text-slate-500 hover:text-rose-600 transition-colors">
+              <i class="fa-regular fa-thumbs-up"></i>
+              <span class="count">28</span>
+            </button>
+            <button onclick="handleReaction(this, 'dislike')" class="flex items-center space-x-1 text-slate-500 hover:text-slate-800 transition-colors">
+              <i class="fa-regular fa-thumbs-down"></i>
+              <span class="count">2</span>
+            </button>
+          </div>
+          <button onclick="openArticleModal(1)" class="text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1">
+            Читати <i class="fa-solid fa-chevron-right text-[10px]"></i>
+          </button>
+        </div>
+      </article>
+
+      <!-- CARD 2: SPONSORED CONTENT (Monetization Block) -->
+      <article data-category="sponsored" class="bing-card feed-item bg-amber-50/70 rounded-2xl border border-amber-200/90 overflow-hidden flex flex-col justify-between shadow-sm">
+        <div class="p-5">
+          <div class="flex items-center justify-between mb-3">
+            <span class="bg-amber-500 text-slate-950 text-[10px] font-black px-2.5 py-0.5 rounded uppercase tracking-wider shadow-sm">
+              <i class="fa-solid fa-rectangle-ad mr-1"></i> Спонсоровано
+            </span>
+            <span class="text-slate-400 text-[10px]">Партнер</span>
+          </div>
+
+          <div class="h-36 -mx-5 -mt-1 mb-3 overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=600&q=80" alt="Партнер" class="w-full h-full object-cover">
+          </div>
+
+          <h3 class="font-bold text-slate-900 text-sm leading-snug hover:text-amber-700 cursor-pointer" onclick="openArticleModal(2)">
+            Надійний хмарний хостинг та сервери для бізнесу
+          </h3>
+          <p class="text-slate-600 text-xs mt-2 line-clamp-3">
+            Огляд сучасних серверних рішень із гарантированным аптаймом та швидкою підтримкою. Спеціальні умови для наших читачів.
+          </p>
+        </div>
+
+        <div class="p-5 pt-0">
+          <button onclick="openArticleModal(2)" class="w-full py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold rounded-xl shadow transition-colors">
+            Дізнатися більше
+          </button>
+        </div>
+      </article>
+
+      <!-- CARD 3: PC SERVICE -->
+      <article data-category="pc" class="bing-card feed-item bg-white rounded-2xl border border-slate-200 overflow-hidden flex flex-col justify-between shadow-sm">
+        <div>
+          <div class="h-40 w-full overflow-hidden relative">
+            <img src="https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?auto=format&fit=crop&w=600&q=80" alt="ПК" class="w-full h-full object-cover">
+            <span class="absolute top-3 left-3 bg-indigo-600 text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full">
+              Комп'ютери
+            </span>
+          </div>
+          <div class="p-4">
+            <span class="text-[10px] text-slate-400 block mb-1">16 Жовтня, 2026</span>
+            <h3 class="font-bold text-slate-900 text-sm leading-snug hover:text-blue-600 cursor-pointer" onclick="openArticleModal(3)">
+              Чому гріється ноутбук і коли міняти термопасту?
+            </h3>
+            <p class="text-slate-600 text-xs mt-1.5 line-clamp-2">
+              Ознаки висихання термоінтерфейсу та алгоритм чистки від пилу.
+            </p>
+          </div>
+        </div>
+
+        <div class="p-4 pt-0 border-t border-slate-100 mt-2 flex items-center justify-between">
+          <div class="flex items-center space-x-2 text-xs">
+            <button onclick="handleReaction(this, 'like')" class="text-slate-500 hover:text-rose-600">
+              <i class="fa-regular fa-thumbs-up"></i> <span class="count">19</span>
+            </button>
+          </div>
+          <button onclick="openArticleModal(3)" class="text-xs font-bold text-blue-600">Читати <i class="fa-solid fa-chevron-right text-[10px]"></i></button>
+        </div>
+      </article>
+
+      <!-- CARD 4: ADVERT ORDER BANNER -->
+      <article data-category="sponsored" class="bing-card feed-item bg-gradient-to-br from-slate-900 to-slate-800 text-white rounded-2xl p-5 flex flex-col justify-between border border-slate-700 shadow-sm">
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-[10px] uppercase font-bold text-amber-400 tracking-wider">Реклама у фіді</span>
+            <i class="fa-solid fa-bullhorn text-amber-400"></i>
+          </div>
+          <h3 class="text-base font-bold text-white mb-2">Хочете розмістити статтю чи пропозицію?</h3>
+          <p class="text-slate-300 text-xs leading-relaxed">
+            Залучайте нових клієнтів через наш інформаційний блок. Розміщення платних та нативних статей.
+          </p>
+        </div>
+
+        <div class="mt-4 pt-3 border-t border-slate-700">
+          <button onclick="openAdOrderModal()" class="w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-xl transition-all shadow text-center">
+            Замовити розміщення
+          </button>
+        </div>
+      </article>
+
+      <!-- CARD 5: PRINT & PRINTERS -->
+      <article data-category="print" class="bing-card feed-item bg-white rounded-2xl border border-slate-200 overflow-hidden flex flex-col justify-between shadow-sm">
+        <div>
+          <div class="h-40 w-full overflow-hidden relative">
+            <img src="https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?auto=format&fit=crop&w=600&q=80" alt="Принтер" class="w-full h-full object-cover">
+            <span class="absolute top-3 left-3 bg-blue-600 text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full">
+              Оргтехніка
+            </span>
+          </div>
+          <div class="p-4">
+            <span class="text-[10px] text-slate-400 block mb-1">11 Жовтня, 2026</span>
+            <h3 class="font-bold text-slate-900 text-sm leading-snug hover:text-blue-600 cursor-pointer" onclick="openArticleModal(5)">
+              Як відновити картридж лазерного принтера
+            </h3>
+            <p class="text-slate-600 text-xs mt-1.5 line-clamp-2">
+              Основні причини появи смуг при друці та методи їх усунення.
+            </p>
+          </div>
+        </div>
+
+        <div class="p-4 pt-0 border-t border-slate-100 mt-2 flex items-center justify-between">
+          <div class="flex items-center space-x-2 text-xs">
+            <button onclick="handleReaction(this, 'like')" class="text-slate-500 hover:text-rose-600">
+              <i class="fa-regular fa-thumbs-up"></i> <span class="count">12</span>
+            </button>
+          </div>
+          <button onclick="openArticleModal(5)" class="text-xs font-bold text-blue-600">Читати <i class="fa-solid fa-chevron-right text-[10px]"></i></button>
+        </div>
+      </article>
+
+      <!-- CARD 6: ELECTRIC TRANSPORT -->
+      <article data-category="auto" class="bing-card feed-item bg-white rounded-2xl border border-slate-200 overflow-hidden flex flex-col justify-between shadow-sm">
+        <div>
+          <div class="h-40 w-full overflow-hidden relative">
+            <img src="https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=600&q=80" alt="Електротранспорт" class="w-full h-full object-cover">
+            <span class="absolute top-3 left-3 bg-emerald-600 text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full">
+              Електротранспорт
+            </span>
+          </div>
+          <div class="p-4">
+            <span class="text-[10px] text-slate-400 block mb-1">14 Жовтня, 2026</span>
+            <h3 class="font-bold text-slate-900 text-sm leading-snug hover:text-blue-600 cursor-pointer" onclick="openArticleModal(6)">
+              Збереження акумулятора електросамоката взимку
+            </h3>
+            <p class="text-slate-600 text-xs mt-1.5 line-clamp-2">
+              Правила консервації батарей на холодний період.
+            </p>
+          </div>
+        </div>
+
+        <div class="p-4 pt-0 border-t border-slate-100 mt-2 flex items-center justify-between">
+          <div class="flex items-center space-x-2 text-xs">
+            <button onclick="handleReaction(this, 'like')" class="text-slate-500 hover:text-rose-600">
+              <i class="fa-regular fa-thumbs-up"></i> <span class="count">25</span>
+            </button>
+          </div>
+          <button onclick="openArticleModal(6)" class="text-xs font-bold text-blue-600">Читати <i class="fa-solid fa-chevron-right text-[10px]"></i></button>
+        </div>
+      </article>
+
     </div>
 
   </main>
 
-  <!-- МОДАЛЬНЕ ВІКНО ПЕРЕГЛЯДУ СТАТТІ -->
-  <div id="articleModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 md:p-8 shadow-2xl relative border border-slate-100">
-      <button id="closeModal" class="absolute top-6 right-6 bg-slate-100 hover:bg-slate-200 text-slate-600 w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg transition">✕</button>
-      
-      <div id="modalCategory" class="inline-block bg-blue-50 text-blue-600 font-semibold text-xs px-3 py-1 rounded-xl mb-3"></div>
-      <h2 id="modalTitle" class="text-2xl font-bold text-slate-900 mb-4"></h2>
-      
-      <div id="modalMediaContainer" class="mb-6 rounded-2xl overflow-hidden shadow-md hidden"></div>
+  <!-- ========================================== -->
+  <!-- MODAL: READ ARTICLE                        -->
+  <!-- ========================================== -->
+  <div id="articleModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 overflow-y-auto">
+    <div class="fixed inset-0 bg-slate-950/75 backdrop-blur-sm" onclick="closeArticleModal()"></div>
 
-      <div id="modalContent" class="text-slate-600 text-sm leading-relaxed space-y-4 whitespace-pre-line"></div>
+    <div class="relative bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl z-10 p-6 sm:p-8 my-auto">
+      <button onclick="closeArticleModal()" class="absolute top-4 right-4 bg-slate-100 hover:bg-slate-200 text-slate-600 w-8 h-8 rounded-full flex items-center justify-center transition-colors">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <span id="modalCat" class="inline-block bg-blue-100 text-blue-700 text-xs font-bold px-3 py-1 rounded-full mb-3">
+        Категорія
+      </span>
+      <h2 id="modalTitle" class="text-2xl font-black text-slate-900 mb-2">Заголовок</h2>
+      <p id="modalDate" class="text-xs text-slate-400 mb-4"><i class="fa-regular fa-calendar mr-1"></i> 18 Жовтня, 2026</p>
+
+      <div class="rounded-xl overflow-hidden h-56 sm:h-64 mb-5 bg-slate-100">
+        <img id="modalImg" src="" alt="Article" class="w-full h-full object-cover">
+      </div>
+
+      <div id="modalBody" class="text-slate-700 text-sm leading-relaxed space-y-3">
+        <!-- Text content loaded via JS -->
+      </div>
+
+      <div class="mt-6 pt-4 border-t border-slate-200 flex items-center justify-between">
+        <button onclick="handleReaction(this, 'like')" class="px-4 py-2 bg-rose-50 text-rose-600 text-xs font-bold rounded-xl flex items-center gap-1.5 hover:bg-rose-100">
+          <i class="fa-solid fa-heart"></i> Сподобалося
+        </button>
+        <a href="chat.html" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl transition-colors">
+          <i class="fa-solid fa-comments mr-1"></i> Обговорити в чаті
+        </a>
+      </div>
     </div>
   </div>
 
+  <!-- ========================================== -->
+  <!-- MODAL: ORDER ADVERTISEMENT                 -->
+  <!-- ========================================== -->
+  <div id="adModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
+    <div class="fixed inset-0 bg-slate-950/75 backdrop-blur-sm" onclick="closeAdModal()"></div>
+
+    <div class="relative bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl z-10">
+      <button onclick="closeAdModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+
+      <h3 class="text-xl font-black text-slate-900 mb-1">Замовити статтю / рекламу</h3>
+      <p class="text-xs text-slate-500 mb-4">Заповніть форму для розміщення вашого матеріалу у фіді</p>
+
+      <form onsubmit="submitAdForm(event)" class="space-y-3">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Ваше ім'я / Організація</label>
+          <input type="text" required placeholder="Наприклад: Автомагазин" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-600">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Телефон або Месенджер</label>
+          <input type="text" required placeholder="+380..." class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-600">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Опис публікації</label>
+          <textarea rows="3" placeholder="Коротко опишіть тему або товар..." class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-600"></textarea>
+        </div>
+        <button type="submit" class="w-full py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow transition-colors">
+          Надіслати заявку
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- FOOTER                                     -->
+  <!-- ========================================== -->
+  <footer class="bg-brand-header text-slate-400 text-xs py-6 border-t border-slate-800 mt-12">
+    <div class="max-w-7xl mx-auto px-4 text-center">
+      <p class="text-slate-300 font-medium">© 2026 Neoservice.ks.ua — Ваш щоденний довідник та помічник.</p>
+      <p class="text-slate-500 mt-1">Сервіс, Знання та Християнська Допомога для кожного.</p>
+    </div>
+  </footer>
+
+  <!-- ========================================== -->
+  <!-- JAVASCRIPT CODE                            -->
+  <!-- ========================================== -->
   <script>
-const firebaseConfig = {
-    apiKey: "AIzaSyBlKoP6-M8tdrKq88bSdnWSnak5Gpddnpk",
-    authDomain: "neoservice-ks-ua.firebaseapp.com",
-    projectId: "neoservice-ks-ua",
-    storageBucket: "neoservice-ks-ua.firebasestorage.app",
-    messagingSenderId: "528941827813",
-    appId: "1:528941827813:web:354ef989d200087634b60c",
-    measurementId: "G-BYGHEHVYY3"
-  }; 
-
-    if (!firebase.apps.length) {
-      firebase.initializeApp(firebaseConfig);
-    }
-    const db = firebase.firestore();
-
-    let allArticles = [];
-    let currentCategory = 'all';
-
-    const articlesGrid = document.getElementById('articlesGrid');
-    const articleModal = document.getElementById('articleModal');
-    const closeModal = document.getElementById('closeModal');
-    const modalTitle = document.getElementById('modalTitle');
-    const modalCategory = document.getElementById('modalCategory');
-    const modalContent = document.getElementById('modalContent');
-    const modalMediaContainer = document.getElementById('modalMediaContainer');
-
-    const categoryNames = {
-      autodiagnostics: '🚗 Автодіагностика',
-      pc: '💻 Комп\'ютери',
-      office: '🖨️ Оргтехніка',
-      radio: '📻 Радіозв\'язок'
+    // Articles Database
+    const articles = {
+      1: {
+        title: "Пошук витоку струму акумулятора: Повний посібник",
+        cat: "Автодіагностика",
+        date: "18 Жовтня, 2026",
+        img: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1000&q=80",
+        body: `<p>Якщо акумулятор вашого авто швидко розряджається після стоянки, ймовірно в мережі є прихований витік струму.</p>
+               <p><strong>Алгоритм діагностики:</strong></p>
+               <ol class="list-decimal pl-5 space-y-1">
+                 <li>Вимкніть запалювання та зачекайте 10 хвилин.</li>
+                 <li>Увімкніть мультиметр у режим вимірювання струму (10A).</li>
+                 <li>Підключіть прилад у розрив мінусової клеми.</li>
+                 <li>Норма — до 0.05А. Якщо більше — по черзі виймайте запобіжники для пошуку проблемної лінії.</li>
+               </ol>`
+      },
+      2: {
+        title: "Надійний хмарний хостинг та сервери для бізнесу",
+        cat: "Спонсоровано",
+        date: "17 Жовтня, 2026",
+        img: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=600&q=80",
+        body: `<p>Партнерський огляд сучасних серверних рішень із гарантованим аптаймом 99.9%.</p>
+               <p>Швидкі NVMe диски та підтримка 24/7 для забезпечення стабільності вашого веб-проекту.</p>`
+      },
+      3: {
+        title: "Чому гріється ноутбук і коли міняти термопасту?",
+        cat: "Комп'ютери",
+        date: "16 Жовтня, 2026",
+        img: "https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?auto=format&fit=crop&w=600&q=80",
+        body: `<p>Висока температура та шум вентилятора є сигнал про необхідність чистки та заміни термоінтерфейсу.</p>
+               <p>Рекомендується проводити процедуру принаймні один раз на рік.</p>`
+      },
+      5: {
+        title: "Як відновити картридж лазерного принтера",
+        cat: "Оргтехніка",
+        date: "11 Жовтня, 2026",
+        img: "https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?auto=format&fit=crop&w=600&q=80",
+        body: `<p>Чорні смуги на аркуші вказують на знос фотобарабана. Його заміна дозволяє суттєво заощадити на купівлі нового картриджа.</p>`
+      },
+      6: {
+        title: "Збереження акумулятора електросамоката взимку",
+        cat: "Електротранспорт",
+        date: "14 Жовтня, 2026",
+        img: "https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=600&q=80",
+        body: `<p>Зберігайте Li-ion батареї при заряді 50-70% у сухому приміщенні з температурою +10...+20°C.</p>`
+      }
     };
 
-    // Завантаження з Firestore
-    async function fetchArticles() {
-      try {
-        const snapshot = await db.collection('articles').orderBy('createdAt', 'desc').get();
-        allArticles = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        renderArticles();
-      } catch (error) {
-        console.error("Помилка завантаження:", error);
-        articlesGrid.innerHTML = `<div class="col-span-full text-center py-12 text-red-500 font-medium">Помилка завантаження бази даних.</div>`;
-      }
-    }
+    // Carousel Slider Logic
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.carousel-slide');
+    const dots = document.querySelectorAll('.carousel-dot');
+    let carouselInterval = setInterval(nextSlide, 5000);
 
-    // Рендер карток у стилі дизайну
-    function renderArticles() {
-      const filtered = currentCategory === 'all' 
-        ? allArticles 
-        : allArticles.filter(item => item.category === currentCategory);
-
-      if (filtered.length === 0) {
-        articlesGrid.innerHTML = `<div class="col-span-full text-center py-16 text-slate-400">У цій категорії поки немає опублікованих матеріалів.</div>`;
-        return;
-      }
-
-      articlesGrid.innerHTML = filtered.map(item => `
-        <div class="bg-white rounded-3xl shadow-sm border border-slate-200/80 overflow-hidden flex flex-col hover:shadow-md transition duration-200 group">
-          <div class="h-48 overflow-hidden bg-slate-100 relative">
-            <img src="${item.imageUrl}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='https://via.placeholder.com/600x400?text=Neoservice'">
-            <span class="absolute top-3 left-3 bg-white/90 backdrop-blur-md text-slate-800 text-[11px] font-semibold px-3 py-1 rounded-xl shadow-xs">
-              ${categoryNames[item.category] || item.category}
-            </span>
-          </div>
-          <div class="p-6 flex flex-col flex-grow">
-            <div class="text-[11px] text-slate-400 mb-1.5 flex items-center justify-between">
-              <span>Neoservice</span>
-            </div>
-            <h3 class="text-base font-bold text-slate-900 mb-2 group-hover:text-blue-600 transition">${escapeHtml(item.title)}</h3>
-            <p class="text-slate-500 text-xs leading-relaxed line-clamp-3 mb-6 flex-grow">${escapeHtml(item.summary)}</p>
-            <div class="flex items-center justify-between pt-4 border-t border-slate-100">
-              <span class="text-[11px] text-slate-400 flex items-center gap-1">👍 28</span>
-              <button onclick="openArticle('${item.id}')" class="text-blue-600 hover:text-blue-700 font-bold text-xs flex items-center gap-1">
-                Читати <span>→</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    // Модальне вікно
-    window.openArticle = function(id) {
-      const article = allArticles.find(item => item.id === id);
-      if (!article) return;
-
-      modalTitle.innerText = article.title;
-      modalCategory.innerText = categoryNames[article.category] || article.category;
-      modalContent.innerText = article.content;
-
-      modalMediaContainer.classList.remove('hidden');
-      if (article.youtubeId) {
-        modalMediaContainer.innerHTML = `
-          <div class="aspect-video w-full">
-            <iframe src="https://www.youtube.com/embed/${article.youtubeId}" class="w-full h-full rounded-2xl" frameborder="0" allowfullscreen></iframe>
-          </div>
-        `;
-      } else if (article.imageUrl) {
-        modalMediaContainer.innerHTML = `
-          <img src="${article.imageUrl}" alt="${article.title}" class="w-full max-h-80 object-cover rounded-2xl">
-        `;
-      } else {
-        modalMediaContainer.classList.add('hidden');
-      }
-
-      articleModal.classList.remove('hidden');
-    }
-
-    closeModal.addEventListener('click', () => articleModal.classList.add('hidden'));
-    articleModal.addEventListener('click', (e) => {
-      if (e.target === articleModal) articleModal.classList.add('hidden');
-    });
-
-    // Фільтри
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        document.querySelectorAll('.filter-btn').forEach(b => {
-          b.classList.remove('bg-blue-600', 'text-white', 'shadow');
-          b.classList.add('bg-white', 'text-slate-700', 'border', 'border-slate-200');
-        });
-        e.currentTarget.classList.remove('bg-white', 'text-slate-700', 'border', 'border-slate-200');
-        e.currentTarget.classList.add('bg-blue-600', 'text-white', 'shadow');
-
-        currentCategory = e.currentTarget.getAttribute('data-category');
-        renderArticles();
+    function updateCarousel() {
+      slides.forEach((slide, idx) => {
+        slide.style.opacity = idx === currentSlide ? '1' : '0';
       });
-    });
-
-    function escapeHtml(text) {
-      if (!text) return '';
-      return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+      dots.forEach((dot, idx) => {
+        if (idx === currentSlide) {
+          dot.className = 'carousel-dot w-3 h-3 rounded-full bg-amber-500 transition-all';
+        } else {
+          dot.className = 'carousel-dot w-3 h-3 rounded-full bg-white/40 hover:bg-white transition-all';
+        }
+      });
     }
 
-    fetchArticles();
+    function nextSlide() {
+      currentSlide = (currentSlide + 1) % slides.length;
+      updateCarousel();
+    }
+
+    function prevSlide() {
+      currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+      updateCarousel();
+    }
+
+    function goToSlide(index) {
+      currentSlide = index;
+      updateCarousel();
+    }
+
+    function pauseCarousel() {
+      clearInterval(carouselInterval);
+    }
+
+    function resumeCarousel() {
+      carouselInterval = setInterval(nextSlide, 5000);
+    }
+
+    // Category Filter
+    function filterFeed(category) {
+      document.querySelectorAll('.filter-tab').forEach(btn => {
+        btn.classList.remove('bg-blue-600', 'text-white');
+        btn.classList.add('bg-white', 'text-slate-600');
+      });
+
+      const activeBtn = document.getElementById(`tab-${category}`);
+      if (activeBtn) {
+        activeBtn.classList.remove('bg-white', 'text-slate-600');
+        activeBtn.classList.add('bg-blue-600', 'text-white');
+      }
+
+      const items = document.querySelectorAll('.feed-item');
+      items.forEach(item => {
+        const cat = item.getAttribute('data-category');
+        if (category === 'all' || cat === category) {
+          item.style.display = 'flex';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    }
+
+    // Modal Control
+    function openArticleModal(id) {
+      const data = articles[id];
+      if (!data) return;
+
+      document.getElementById('modalTitle').innerText = data.title;
+      document.getElementById('modalCat').innerText = data.cat;
+      document.getElementById('modalDate').innerText = data.date;
+      document.getElementById('modalImg').src = data.img;
+      document.getElementById('modalBody').innerHTML = data.body;
+
+      document.getElementById('articleModal').classList.remove('hidden');
+      document.getElementById('articleModal').classList.add('flex');
+    }
+
+    function closeArticleModal() {
+      document.getElementById('articleModal').classList.add('hidden');
+      document.getElementById('articleModal').classList.remove('flex');
+    }
+
+    function openAdOrderModal() {
+      document.getElementById('adModal').classList.remove('hidden');
+      document.getElementById('adModal').classList.add('flex');
+    }
+
+    function closeAdModal() {
+      document.getElementById('adModal').classList.add('hidden');
+      document.getElementById('adModal').classList.remove('flex');
+    }
+
+    function submitAdForm(e) {
+      e.preventDefault();
+      alert("✅ Вашу заявку успішно відправлено! Ми зв'яжемося з вами найближчим часом.");
+      closeAdModal();
+    }
+
+    function handleReaction(btn, type) {
+      const countSpan = btn.querySelector('.count');
+      let count = parseInt(countSpan.innerText);
+      countSpan.innerText = count + 1;
+      btn.classList.add('text-rose-600', 'font-bold');
+    }
+
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobileMenu');
+      menu.classList.toggle('hidden');
+    }
   </script>
 </body>
-</html>
+</html> 

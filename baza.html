@@ -58,25 +58,32 @@
 <body class="bg-slate-100 text-slate-800 font-sans antialiased min-h-screen flex flex-col justify-between">
 
   <!-- ========================================== -->
-  <!-- HEADER & NAVIGATION                        -->
+  <!-- HEADER & NAVIGATION WITH INTEGRATED SEARCH -->
   <!-- ========================================== -->
   <header class="bg-brand-header text-white shadow-lg sticky top-0 z-40">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-16">
+      <div class="flex items-center justify-between h-16 gap-4">
         
         <!-- Logo / Title -->
-        <a href="index.html" class="flex items-center space-x-3 group">
+        <a href="index.html" class="flex items-center space-x-3 group shrink-0">
           <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center font-bold text-xl shadow-md group-hover:bg-blue-500 transition-colors">
             🧙‍♂️
           </div>
-          <div>
-            <div class="font-extrabold text-lg sm:text-xl tracking-tight text-white group-hover:text-blue-300 transition-colors">NEOSERVICE.KS.UA</div>
-            <div class="text-[10px] text-blue-200 tracking-wider font-light">«Ісус — дорога, істина і життя» | Сервіс, Знання та Допомога</div>
+          <div class="hidden sm:block">
+            <div class="font-extrabold text-base lg:text-lg tracking-tight text-white group-hover:text-blue-300 transition-colors">NEOSERVICE.KS.UA</div>
+            <div class="text-[9px] text-blue-200 tracking-wider font-light">«Ісус — дорога, істина і життя» | Сервіс, Знання та Допомога</div>
           </div>
         </a>
 
+        <!-- MSN-STYLE SEARCH BAR IN HEADER -->
+        <div class="relative flex-1 max-w-md mx-2">
+          <input type="text" id="searchInput" oninput="searchArticles()" placeholder="Пошук у Базі знань (Hantek, ПК, прилади)..." 
+                 class="w-full pl-10 pr-4 py-2 bg-slate-800/90 text-white placeholder-slate-400 rounded-full border border-slate-700/80 focus:bg-slate-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-xs transition-all shadow-inner">
+          <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+        </div>
+
         <!-- Navigation Menu -->
-        <nav class="hidden md:flex items-center space-x-1 lg:space-x-4 text-xs font-semibold">
+        <nav class="hidden lg:flex items-center space-x-1 text-xs font-semibold shrink-0">
           <a href="index.html" class="px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 transition-all flex items-center gap-1.5">
             <i class="fa-solid fa-house text-blue-400"></i> Головна
           </a>
@@ -95,14 +102,14 @@
         </nav>
 
         <!-- Mobile Menu Icon -->
-        <button onclick="toggleMobileMenu()" class="md:hidden text-slate-300 hover:text-white p-2 text-xl focus:outline-none">
+        <button onclick="toggleMobileMenu()" class="lg:hidden text-slate-300 hover:text-white p-2 text-xl focus:outline-none">
           <i class="fa-solid fa-bars"></i>
         </button>
       </div>
     </div>
 
     <!-- Mobile Navigation Drawer -->
-    <div id="mobileMenu" class="hidden md:hidden bg-slate-900 border-t border-slate-800 px-4 py-3 space-y-2 text-sm">
+    <div id="mobileMenu" class="hidden lg:hidden bg-slate-900 border-t border-slate-800 px-4 py-3 space-y-2 text-sm">
       <a href="index.html" class="block py-2 text-slate-300"><i class="fa-solid fa-house mr-2 text-blue-400"></i> Головна</a>
       <a href="#" class="block py-2 text-white font-bold"><i class="fa-solid fa-book-open mr-2 text-blue-400"></i> База знань</a>
       <a href="admin.html" class="block py-2 text-slate-300"><i class="fa-solid fa-wrench mr-2 text-amber-400"></i> Параметри</a>
@@ -125,17 +132,6 @@
     </div>
   </div>
 
-  <!-- ========================================== -->
-  <!-- MSN GLOBAL SEARCH BAR                      -->
-  <!-- ========================================== -->
-  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
-    <div class="relative w-full">
-      <input type="text" id="searchInput" onkeyup="searchArticles()" placeholder="Шукати тему, прилад чи статтю у Базі знань..." 
-             class="w-full pl-12 pr-4 py-3 bg-white rounded-2xl border border-slate-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600 text-sm font-medium">
-      <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-base"></i>
-    </div>
-  </section>
-
   <!-- MAIN CONTAINER -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow w-full">
 
@@ -157,10 +153,10 @@
               <i class="fa-solid fa-car-battery mr-1"></i> Топ Тема: Автодіагностика
             </span>
             <h1 class="text-2xl sm:text-4xl font-extrabold leading-tight mb-3 hover:text-amber-300 transition-colors cursor-pointer" onclick="openArticleModal(1)">
-              Пошук витоку струму акумулятора: Повний посібник для автовласників
+              Пошук витоку струму акумулятора: Повний посібник для автовласників (Hantek)
             </h1>
             <p class="text-slate-300 text-xs sm:text-sm line-clamp-2 mb-5">
-              Як правильно використовувати мультиметр для виявлення прихованих споживачів бортової мережі в домашніх умовах.
+              Як правильно використовувати осцилограф Hantek та мультиметр для виявлення прихованих споживачів бортової мережі.
             </p>
             <div class="flex items-center space-x-4">
               <button onclick="openArticleModal(1)" class="px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs sm:text-sm rounded-xl shadow-lg transition-all flex items-center gap-2">
@@ -288,10 +284,10 @@
               <span>Автор: Neoservice</span>
             </div>
             <h3 class="article-title text-xl font-extrabold text-slate-900 hover:text-blue-600 transition-colors cursor-pointer mb-2" onclick="openArticleModal(1)">
-              Пошук витоку струму акумулятора: Повний посібник
+              Пошук витоку струму акумулятора: Повний посібник (Hantek, Hantec)
             </h3>
             <p class="text-slate-600 text-xs sm:text-sm line-clamp-2">
-              Детальний покроковий посібник із пошуку прихованих споживачів електрики в автомобілі за допомогою мультиметра.
+              Детальний покроковий посібник із пошуку прихованих споживачів електрики в автомобілі за допомогою осцилографа Hantek (Hantec) та мультиметра.
             </p>
           </div>
         </div>
@@ -543,6 +539,7 @@
   <!-- JAVASCRIPT CODE                            -->
   <!-- ========================================== -->
   <script>
+    // Configuration for Firebase
 const firebaseConfig = {
     apiKey: "AIzaSyBlKoP6-M8tdrKq88bSdnWSnak5Gpddnpk",
     authDomain: "neoservice-ks-ua.firebaseapp.com",
@@ -561,15 +558,15 @@ const firebaseConfig = {
     // Articles Database
     const staticArticles = {
       1: {
-        title: "Пошук витоку струму акумулятора: Повний посібник",
+        title: "Пошук витоку струму акумулятора: Повний посібник (Hantek, Hantec)",
         cat: "Автодіагностика",
         date: "18 Жовтня, 2026",
         img: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1000&q=80",
         body: `<p>Якщо акумулятор вашого авто швидко розряджається після стоянки, ймовірно в мережі є прихований витік струму.</p>
-               <p><strong>Алгоритм діагностики:</strong></p>
+               <p><strong>Алгоритм діагностики з Hantek (Hantec):</strong></p>
                <ol class="list-decimal pl-5 space-y-1">
                  <li>Вимкніть запалювання та зачекайте 10 хвилин.</li>
-                 <li>Увімкніть мультиметр у режим вимірювання струму (10A).</li>
+                 <li>Увімкніть мультиметр або осцилограф Hantek у режим вимірювання струму.</li>
                  <li>Підключіть прилад у розрив мінусової клеми.</li>
                  <li>Норма — до 0.05А. Якщо більше — по черзі виймайте запобіжники для пошуку проблемної лінії.</li>
                </ol>`
@@ -615,14 +612,17 @@ const firebaseConfig = {
       radio: { name: 'Радіозв\'язок', filter: 'radio', bg: 'bg-emerald-600', text: 'text-white' }
     };
 
-    // ПОШУК ПО СТАТТЯХ В РЕАЛЬНОМУ ЧАСІ
+    // ФУНКЦІЯ ПОШУКУ ПО ВСІХ ЕЛЕМЕНТАХ СТОРІНКИ
     function searchArticles() {
-      const query = document.getElementById('searchInput').value.toLowerCase().trim();
+      const rawQuery = document.getElementById('searchInput').value.toLowerCase().trim();
       const items = document.querySelectorAll('.feed-item');
 
+      const query = rawQuery.replace(/hantec/g, 'hantek');
+
       items.forEach(item => {
-        const text = item.innerText.toLowerCase();
-        if (text.includes(query)) {
+        const textContent = item.textContent.toLowerCase().replace(/hantec/g, 'hantek');
+        
+        if (!query || textContent.includes(query) || textContent.includes(rawQuery)) {
           item.style.display = 'flex';
         } else {
           item.style.display = 'none';

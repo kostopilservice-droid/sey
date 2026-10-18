@@ -122,7 +122,7 @@
       <span class="bg-amber-500 text-slate-950 text-[10px] px-2 py-0.5 rounded font-black uppercase tracking-wider shrink-0">Фід новини</span>
       <marquee behavior="scroll" direction="left" class="w-full text-blue-100">
         ✨ «Світильник нозі моїй — слово Твоє, і світло для стежки моєї» &nbsp;&nbsp;•&nbsp;&nbsp; 
-        🛠️ Новий розділ «База знань» у стилі MSN/Bing: читайте актуальні статті з автодіагностики та ремонту ПК! &nbsp;&nbsp;•&nbsp;&nbsp; 
+        🛠️ Новий розділ «База знань» у стилі MSN/Bing: читайте актуальні статті з автодіагностики, ремонту ПК та радіозв'язку! &nbsp;&nbsp;•&nbsp;&nbsp; 
         🪙 Отримуйте бонусні бали за активне обговорення матеріалів у чаті.
       </marquee>
     </div>
@@ -236,7 +236,7 @@
         <p class="text-xs text-slate-500">Стрічка корисних статей, інструкцій та партнерських матеріалів</p>
       </div>
 
-      <!-- Filter Buttons -->
+      <!-- Filter Buttons (Додано кнопку Радіозв'язок) -->
       <div class="flex items-center space-x-2 overflow-x-auto hide-scrollbar w-full sm:w-auto py-1">
         <button onclick="filterFeed('all')" id="tab-all" class="filter-tab active px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap bg-blue-600 text-white shadow-sm transition-all">
           <i class="fa-solid fa-border-all mr-1"></i> Всі
@@ -249,6 +249,9 @@
         </button>
         <button onclick="filterFeed('print')" id="tab-print" class="filter-tab px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap bg-white text-slate-600 hover:bg-slate-200 border border-slate-200 transition-all">
           <i class="fa-solid fa-print text-blue-500 mr-1"></i> Оргтехніка
+        </button>
+        <button onclick="filterFeed('radio')" id="tab-radio" class="filter-tab px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap bg-white text-slate-600 hover:bg-slate-200 border border-slate-200 transition-all">
+          <i class="fa-solid fa-tower-broadcast text-emerald-500 mr-1"></i> Радіозв'язок
         </button>
         <button onclick="filterFeed('sponsored')" id="tab-sponsored" class="filter-tab px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap bg-amber-100 text-amber-800 hover:bg-amber-200 border border-amber-300 transition-all">
           <i class="fa-solid fa-rectangle-ad text-amber-600 mr-1"></i> Спонсоровано
@@ -533,6 +536,7 @@
   <!-- JAVASCRIPT CODE                            -->
   <!-- ========================================== -->
   <script>
+    // Configuration for Firebase
 const firebaseConfig = {
     apiKey: "AIzaSyBlKoP6-M8tdrKq88bSdnWSnak5Gpddnpk",
     authDomain: "neoservice-ks-ua.firebaseapp.com",
@@ -598,12 +602,12 @@ const firebaseConfig = {
 
     let dynamicDbArticles = {};
 
-    // Map categories to UI styles
+    // Map categories to UI styles (Включно з радіозв'язком)
     const catMap = {
       autodiagnostics: { name: 'Автодіагностика', filter: 'auto', bg: 'bg-amber-500', text: 'text-slate-950' },
       pc: { name: 'Комп\'ютери', filter: 'pc', bg: 'bg-indigo-600', text: 'text-white' },
       office: { name: 'Оргтехніка', filter: 'print', bg: 'bg-blue-600', text: 'text-white' },
-      radio: { name: 'Радіозв\'язок', filter: 'auto', bg: 'bg-emerald-600', text: 'text-white' }
+      radio: { name: 'Радіозв\'язок', filter: 'radio', bg: 'bg-emerald-600', text: 'text-white' }
     };
 
     // Load from Firestore

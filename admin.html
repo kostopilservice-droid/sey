@@ -4,102 +4,149 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Адмін-панель — Neoservice</title>
-  <!-- Tailwind CSS -->
+  
+  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 </head>
-<body class="bg-slate-100 min-h-screen text-slate-800 font-sans p-4 md:p-8 flex items-center justify-center">
+<body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex flex-col justify-between">
 
-  <!-- БЛОК АВТОРИЗАЦІЇ (ФОРМА ВХОДУ) -->
-  <div id="authContainer" class="bg-white rounded-3xl max-w-md w-full p-8 shadow-xl border border-slate-200 hidden">
-    <div class="text-center mb-6">
-      <h1 class="text-2xl font-bold text-slate-900">Вхід в Адмін-панель</h1>
-      <p class="text-xs text-slate-500 mt-1">Neoservice Security</p>
-    </div>
-    
-    <form id="loginForm" class="space-y-4">
-      <div>
-        <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Email адміністратора</label>
-        <input type="email" id="adminEmail" value="kostopilservice@gmail.com" required class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-blue-600 transition">
-      </div>
-      <div>
-        <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Пароль</label>
-        <input type="password" id="adminPassword" required placeholder="Введіть пароль" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-blue-600 transition">
-      </div>
-      <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3.5 rounded-2xl shadow transition text-sm">
-        Увійти в систему
-      </button>
-      <div id="loginError" class="text-red-500 text-xs text-center font-medium mt-2"></div>
-    </form>
-    <div class="mt-6 text-center">
-      <a href="baza.html" class="text-xs text-blue-600 hover:underline font-semibold">← Назад до Бази знань</a>
-    </div>
-  </div>
-
-  <!-- ОСНОВНА АДМІН-ПАНЕЛЬ (ПОКАЗУЄТЬСЯ ТІЛЬКИ ПІСЛЯ ВВЕДЕННЯ ПАРОЛЯ) -->
-  <div id="adminPanel" class="max-w-4xl w-full bg-white rounded-3xl shadow-xl border border-slate-200 p-6 md:p-10 relative hidden">
-    <div class="flex items-center justify-between mb-8 pb-4 border-b border-slate-100">
-      <div>
-        <h1 class="text-2xl font-bold text-slate-900">Публікація статті</h1>
-        <p class="text-xs text-slate-500 mt-0.5">Адмін: <span id="userEmailDisplay" class="font-semibold text-slate-700"></span></p>
-      </div>
+  <!-- ШАПКА АДМІНКИ -->
+  <header class="bg-slate-900 text-white shadow-md">
+    <div class="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
       <div class="flex items-center space-x-3">
-        <a href="baza.html" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-4 py-2 rounded-2xl transition text-xs">Переглянути базу</a>
-        <button id="logoutBtn" class="bg-red-50 hover:bg-red-100 text-red-600 font-semibold px-4 py-2 rounded-2xl transition text-xs">Вийти з адмінки</button>
+        <div class="w-9 h-9 bg-amber-500 text-slate-950 font-bold rounded-xl flex items-center justify-center text-lg shadow">
+          ⚙️
+        </div>
+        <div>
+          <h1 class="font-extrabold text-base tracking-tight">Адмін-панель Neoservice</h1>
+          <p class="text-[10px] text-slate-400">Публікація статей у Базу знань</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <a href="baza.html" class="text-xs text-slate-300 hover:text-white transition flex items-center gap-1">
+          <i class="fa-solid fa-arrow-left"></i> До Бази знань
+        </a>
+        <button id="logoutBtn" onclick="logout()" class="hidden bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition">
+          Вийти
+        </button>
       </div>
     </div>
+  </header>
 
-    <!-- ФОРМА СТВОРЕННЯ СТАТТІ -->
-    <form id="articleForm" class="space-y-6">
-      <div>
-        <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Заголовок статті</label>
-        <input type="text" id="title" required placeholder="Наприклад: Діагностика осцилографом Hantek..." class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-blue-600 transition">
-      </div>
+  <main class="max-w-4xl mx-auto px-4 py-8 flex-grow w-full">
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- ФОРМА АВТОРИЗАЦІЇ -->
+    <div id="loginSection" class="bg-white rounded-2xl p-6 sm:p-8 shadow-md border border-slate-200 max-w-md mx-auto">
+      <h2 class="text-xl font-black text-slate-900 mb-2 text-center">Вхід в панель керування</h2>
+      <p class="text-xs text-slate-500 mb-6 text-center">Введіть ваші дані для доступ у систему</p>
+
+      <form onsubmit="handleLogin(event)" class="space-y-4">
         <div>
-          <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Категорія</label>
-          <select id="category" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-blue-600 transition">
-            <option value="autodiagnostics">🚗 Автодіагностика</option>
-            <option value="pc">💻 Ремонт ПК</option>
-            <option value="office">🖨️ Оргтехніка</option>
-            <option value="radio">📻 Радіозв'язок</option>
-          </select>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Email адміністратора</label>
+          <input type="email" id="loginEmail" required class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-600" placeholder="kostopilservice@gmail.com">
         </div>
         <div>
-          <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">URL обкладинки (зображення)</label>
-          <input type="url" id="imageUrl" required placeholder="https://..." class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-blue-600 transition">
+          <label class="block text-xs font-bold text-slate-700 mb-1">Пароль</label>
+          <input type="password" id="loginPassword" required class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-600" placeholder="••••••••">
         </div>
+        <div id="loginError" class="text-rose-600 text-xs font-bold hidden"></div>
+        <button type="submit" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow transition">
+          Увійти
+        </button>
+      </form>
+    </div>
+
+    <!-- ОСНОВНА ПАНЕЛЬ ПУБЛІКАЦІЇ (ПРИХОВАНО ДО АВТОРИЗАЦІЇ) -->
+    <div id="adminPanel" class="hidden bg-white rounded-2xl p-6 sm:p-8 shadow-md border border-slate-200 space-y-6">
+      
+      <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+        <h2 class="text-lg font-black text-slate-900 flex items-center gap-2">
+          <i class="fa-solid fa-pen-to-square text-blue-600"></i> Створити нову статтю
+        </h2>
+        <span class="text-xs text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-lg font-bold border border-emerald-200">
+          ● Авторизовано
+        </span>
       </div>
 
-      <div>
-        <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Посилання на YouTube відео (необов'язково)</label>
-        <input type="text" id="youtubeUrl" placeholder="https://www.youtube.com/watch?v=..." class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-blue-600 transition">
-      </div>
+      <form onsubmit="publishArticle(event)" class="space-y-5">
+        
+        <!-- Заголовок -->
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Заголовок статті *</label>
+          <input type="text" id="postTitle" required placeholder="Наприклад: Діагностика осцилографом Hantek..." class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-600">
+        </div>
 
-      <div>
-        <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Короткий анонс (для картки у стрічці)</label>
-        <textarea id="summary" rows="2" required placeholder="Короткий опис проблеми та шляхи вирішення..." class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-blue-600 transition"></textarea>
-      </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Категорія -->
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Категорія *</label>
+            <select id="postCategory" required class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-600">
+              <option value="autodiagnostics">🚗 Автодіагностика</option>
+              <option value="pc">💻 Комп'ютери</option>
+              <option value="office">🖨️ Оргтехніка</option>
+              <option value="radio">📻 Радіозв'язок</option>
+            </select>
+          </div>
 
-      <div>
-        <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Повний текст статті</label>
-        <textarea id="content" rows="6" required placeholder="Детальний опис процедури, замірів, схем..." class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-blue-600 transition"></textarea>
-      </div>
+          <!-- URL Зображення -->
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">URL обкладинки (зображення)</label>
+            <input type="url" id="postImageUrl" oninput="updateMediaPreview()" placeholder="https://..." class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-600">
+          </div>
+        </div>
 
-      <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 rounded-2xl shadow-lg shadow-blue-600/20 transition duration-200 text-sm">
-        🚀 Опублікувати у Базу знань
-      </button>
+        <!-- Посилання на YouTube -->
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Посилання на YouTube відео (необов'язково)</label>
+          <input type="url" id="postYoutubeUrl" oninput="updateMediaPreview()" placeholder="https://www.youtube.com/watch?v=..." class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-600">
+        </div>
 
-      <div id="statusMessage" class="text-center text-sm font-semibold hidden"></div>
-    </form>
-  </div>
+        <!-- ЖИВИЙ ПОПЕРЕДНІЙ ПЕРЕГЛЯД ЗОБРАЖЕННЯ ТА МЕДІА -->
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-2">Попередній перегляд медіа:</label>
+          <div id="mediaPreviewBox" class="w-full h-48 sm:h-64 rounded-xl bg-slate-100 border-2 border-dashed border-slate-300 flex items-center justify-center overflow-hidden relative">
+            <span id="previewPlaceholder" class="text-slate-400 text-xs font-medium">Введіть посилання на зображення або YouTube відео вище для перегляду</span>
+            <img id="imagePreview" src="" class="hidden w-full h-full object-cover">
+            <iframe id="youtubePreview" class="hidden w-full h-full" frameborder="0" allowfullscreen></iframe>
+          </div>
+        </div>
+
+        <!-- Короткий анонс -->
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Короткий анонс (для картки у стрічці) *</label>
+          <textarea id="postSummary" required rows="2" placeholder="Короткий опис проблеми та шляхи вирішення..." class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-600"></textarea>
+        </div>
+
+        <!-- Повний текст статті -->
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Повний текст статті *</label>
+          <textarea id="postContent" required rows="6" placeholder="Детальний покроковий посібник..." class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-600"></textarea>
+        </div>
+
+        <!-- Статус публікації -->
+        <div id="publishStatus" class="text-xs font-bold hidden"></div>
+
+        <button type="submit" id="submitBtn" class="w-full py-3 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow transition flex items-center justify-center gap-2">
+          <i class="fa-solid fa-paper-plane"></i> Опублікувати у Базу знань
+        </button>
+      </form>
+    </div>
+
+  </main>
+
+  <footer class="bg-slate-900 text-slate-500 text-xs py-4 text-center">
+    © 2026 Neoservice.ks.ua — Адмін-панель
+  </footer>
 
   <script>
-    // Конфігурація Firebase
+    // Firebase Config
 const firebaseConfig = {
     apiKey: "AIzaSyBlKoP6-M8tdrKq88bSdnWSnak5Gpddnpk",
     authDomain: "neoservice-ks-ua.firebaseapp.com",
@@ -113,105 +160,134 @@ const firebaseConfig = {
     if (!firebase.apps.length) {
       firebase.initializeApp(firebaseConfig);
     }
-    const db = firebase.firestore();
     const auth = firebase.auth();
+    const db = firebase.firestore();
 
-    const authContainer = document.getElementById('authContainer');
-    const adminPanel = document.getElementById('adminPanel');
-    const loginForm = document.getElementById('loginForm');
-    const loginError = document.getElementById('loginError');
-    const userEmailDisplay = document.getElementById('userEmailDisplay');
-    const logoutBtn = document.getElementById('logoutBtn');
-
-    // Налаштовуємо режим роботи сесії: вона збережеться лише до закриття вкладки
+    // Встановити сесію
     auth.setPersistence(firebase.auth.Auth.Persistence.SESSION);
 
-    // Відстеження стану авторизації
-    auth.onAuthStateChanged((user) => {
-      if (user) {
-        // Увійшов — показуємо форму створення статті
-        authContainer.classList.add('hidden');
-        adminPanel.classList.remove('hidden');
-        userEmailDisplay.innerText = user.email;
+    // Відстеження стану входу
+    auth.onAuthStateChanged(user => {
+      if (user && user.email === 'kostopilservice@gmail.com') {
+        document.getElementById('loginSection').classList.add('hidden');
+        document.getElementById('adminPanel').classList.remove('hidden');
+        document.getElementById('logoutBtn').classList.remove('hidden');
       } else {
-        // Не увійшов — показуємо форма входу з вимогою пароля
-        adminPanel.classList.add('hidden');
-        authContainer.classList.remove('hidden');
+        document.getElementById('loginSection').classList.remove('hidden');
+        document.getElementById('adminPanel').classList.add('hidden');
+        document.getElementById('logoutBtn').classList.add('hidden');
       }
     });
 
-    // Обробка входу
-    loginForm.addEventListener('submit', async (e) => {
+    // Логін
+    async function handleLogin(e) {
       e.preventDefault();
-      loginError.innerText = '';
-      const email = document.getElementById('adminEmail').value;
-      const password = document.getElementById('adminPassword').value;
+      const email = document.getElementById('loginEmail').value;
+      const pass = document.getElementById('loginPassword').value;
+      const errEl = document.getElementById('loginError');
 
+      errEl.classList.add('hidden');
       try {
-        await auth.signInWithEmailAndPassword(email, password);
-      } catch (error) {
-        console.error(error);
-        loginError.innerText = "Помилка входу: невірний Email або пароль.";
+        await auth.signInWithEmailAndPassword(email, pass);
+      } catch (err) {
+        errEl.innerText = 'Помилка авторизації: перевірте email та пароль.';
+        errEl.classList.remove('hidden');
       }
-    });
-
-    // Вихід із системи (при натисканні "Вийти з адмінки")
-    logoutBtn.addEventListener('click', () => {
-      auth.signOut();
-    });
-
-    // Допоміжна функція для YouTube ID
-    function extractYouTubeId(url) {
-      if (!url) return '';
-      const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-      const match = url.match(regExp);
-      return (match && match[2].length === 11) ? match[2] : '';
     }
 
-    // Відправка статті
-    const articleForm = document.getElementById('articleForm');
-    const statusMessage = document.getElementById('statusMessage');
+    // Вихід
+    function logout() {
+      auth.signOut();
+    }
 
-    articleForm.addEventListener('submit', async (e) => {
+    // ФУНКЦІЯ ЖИВОГО ПОПЕРЕДНЬОГО ПЕРЕГЛЯДУ МЕДІА
+    function updateMediaPreview() {
+      const imgUrl = document.getElementById('postImageUrl').value.trim();
+      const ytUrl = document.getElementById('postYoutubeUrl').value.trim();
+      
+      const imgPreview = document.getElementById('imagePreview');
+      const ytPreview = document.getElementById('youtubePreview');
+      const placeholder = document.getElementById('previewPlaceholder');
+
+      let ytId = extractYoutubeId(ytUrl);
+
+      if (ytId) {
+        ytPreview.src = `https://www.youtube.com/embed/${ytId}`;
+        ytPreview.classList.remove('hidden');
+        imgPreview.classList.add('hidden');
+        placeholder.classList.add('hidden');
+      } else if (imgUrl) {
+        imgPreview.src = imgUrl;
+        imgPreview.classList.remove('hidden');
+        ytPreview.classList.add('hidden');
+        placeholder.classList.add('hidden');
+
+        imgPreview.onerror = function() {
+          imgPreview.classList.add('hidden');
+          placeholder.classList.remove('hidden');
+          placeholder.innerText = 'Неможливо завантажити зображення за вказаним посиланням';
+        };
+      } else {
+        imgPreview.classList.add('hidden');
+        ytPreview.classList.add('hidden');
+        placeholder.classList.remove('hidden');
+        placeholder.innerText = 'Введіть посилання на зображення або YouTube відео вище для перегляду';
+      }
+    }
+
+    // Витягування ID відео з посилання YouTube
+    function extractYoutubeId(url) {
+      if (!url) return null;
+      const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+      const match = url.match(regExp);
+      return (match && match[2].length === 11) ? match[2] : null;
+    }
+
+    // Публікація статті в Firestore
+    async function publishArticle(e) {
       e.preventDefault();
-      
-      const title = document.getElementById('title').value;
-      const category = document.getElementById('category').value;
-      const imageUrl = document.getElementById('imageUrl').value;
-      const youtubeUrl = document.getElementById('youtubeUrl').value;
-      const summary = document.getElementById('summary').value;
-      const content = document.getElementById('content').value;
-      
-      const youtubeId = extractYouTubeId(youtubeUrl);
+      const btn = document.getElementById('submitBtn');
+      const status = document.getElementById('publishStatus');
 
-      statusMessage.classList.remove('hidden', 'text-green-600', 'text-red-600');
-      statusMessage.innerText = 'Збереження у Firebase...';
+      btn.disabled = true;
+      status.className = 'text-xs font-bold text-blue-600 block';
+      status.innerText = 'Зачекайте, зберігаємо статтю...';
+
+      const title = document.getElementById('postTitle').value.trim();
+      const category = document.getElementById('postCategory').value;
+      const imageUrl = document.getElementById('postImageUrl').value.trim() || 'https://via.placeholder.com/600x400?text=Neoservice';
+      const youtubeUrl = document.getElementById('postYoutubeUrl').value.trim();
+      const summary = document.getElementById('postSummary').value.trim();
+      const content = document.getElementById('postContent').value.trim();
+
+      const youtubeId = extractYoutubeId(youtubeUrl);
 
       try {
         await db.collection('articles').add({
           title,
           category,
           imageUrl,
-          youtubeId,
+          youtubeId: youtubeId || '',
           summary,
           content,
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
 
-        statusMessage.classList.add('text-green-600');
-        statusMessage.innerText = '✅ Статтю успішно опубліковано у Базі знань!';
-        articleForm.reset();
+        status.className = 'text-xs font-bold text-emerald-600 block';
+        status.innerText = 'Успішно опубліковано! Стаття з\'явилася в Базі знань.';
 
-        setTimeout(() => {
-          statusMessage.classList.add('hidden');
-        }, 4000);
+        // Скидання форми
+        e.target.reset();
+        updateMediaPreview();
 
-      } catch (error) {
-        console.error("Помилка публікації:", error);
-        statusMessage.classList.add('text-red-600');
-        statusMessage.innerText = '❌ Помилка збереження: недостатньо прав або втрачено з\'єднання.';
+      } catch (err) {
+        console.error(err);
+        status.className = 'text-xs font-bold text-rose-600 block';
+        status.innerText = 'Помилка при збереженні: ' + err.message;
+      } finally {
+        btn.disabled = false;
       }
-    });
+    }
   </script>
 </body>
 </html>

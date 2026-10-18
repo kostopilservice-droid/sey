@@ -10,19 +10,20 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 </head>
-<body class="bg-slate-50 min-h-screen text-slate-800 font-sans">
+<body class="bg-[#f0f4f9] min-h-screen text-slate-800 font-sans">
 
-  <!-- ХЕПЕР / ШАПКА -->
-  <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+  <!-- ХЕДЕР В СТИЛІ BING -->
+  <header class="bg-white/80 backdrop-blur-md sticky top-0 z-30 border-b border-slate-200/60">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
       <div class="flex items-center space-x-3">
-        <div class="bg-blue-600 text-white p-2.5 rounded-2xl shadow-md font-bold text-lg">NS</div>
+        <div class="bg-gradient-to-tr from-blue-600 to-indigo-500 text-white w-11 h-11 rounded-2xl flex items-center justify-center font-bold text-lg shadow-md shadow-blue-500/20">
+          NS
+        </div>
         <div>
           <h1 class="text-xl font-bold text-slate-900 tracking-tight">База знань Neoservice</h1>
           <p class="text-xs text-slate-500">Практичні рішення, інструкції та поради</p>
         </div>
       </div>
-      <!-- Кнопку адмінки прибрано з публічного доступу -->
     </div>
   </header>
 
@@ -30,33 +31,40 @@
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     
     <!-- ФІЛЬТРИ КАТЕГОРІЙ -->
-    <div class="flex flex-wrap gap-2 mb-8 pb-4 border-b border-slate-200" id="categoryFilters">
-      <button data-category="all" class="filter-btn bg-blue-600 text-white px-4 py-2 rounded-xl text-sm font-semibold shadow transition">Усі категорії</button>
-      <button data-category="autodiagnostics" class="filter-btn bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 px-4 py-2 rounded-xl text-sm font-semibold transition">🚗 Автодіагностика</button>
-      <button data-category="pc" class="filter-btn bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 px-4 py-2 rounded-xl text-sm font-semibold transition">💻 Комп'ютери</button>
-      <button data-category="office" class="filter-btn bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 px-4 py-2 rounded-xl text-sm font-semibold transition">🖨️ Оргтехніка</button>
-      <button data-category="radio" class="filter-btn bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 px-4 py-2 rounded-xl text-sm font-semibold transition">📻 Радіозв'язок</button>
+    <div class="flex flex-wrap gap-3 mb-8" id="categoryFilters">
+      <button data-category="all" class="filter-btn bg-blue-600 text-white px-5 py-2.5 rounded-2xl text-sm font-semibold shadow-sm transition-all duration-200">
+        Усі категорії
+      </button>
+      <button data-category="autodiagnostics" class="filter-btn bg-white hover:bg-slate-100/80 text-slate-700 border border-slate-200/80 px-5 py-2.5 rounded-2xl text-sm font-semibold transition-all duration-200 flex items-center gap-2">
+        🚗 Автодіагностика
+      </button>
+      <button data-category="pc" class="filter-btn bg-white hover:bg-slate-100/80 text-slate-700 border border-slate-200/80 px-5 py-2.5 rounded-2xl text-sm font-semibold transition-all duration-200 flex items-center gap-2">
+        💻 Комп'ютери
+      </button>
+      <button data-category="office" class="filter-btn bg-white hover:bg-slate-100/80 text-slate-700 border border-slate-200/80 px-5 py-2.5 rounded-2xl text-sm font-semibold transition-all duration-200 flex items-center gap-2">
+        🖨️ Оргтехніка
+      </button>
+      <button data-category="radio" class="filter-btn bg-white hover:bg-slate-100/80 text-slate-700 border border-slate-200/80 px-5 py-2.5 rounded-2xl text-sm font-semibold transition-all duration-200 flex items-center gap-2">
+        📻 Радіозв'язок
+      </button>
     </div>
 
-    <!-- СТРИЧКА СТАТЕЙ -->
+    <!-- СТРІЧКА СТАТЕЙ В СТИЛІ BING -->
     <div id="articlesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <!-- Стьожки завантажуватимуться з Firestore -->
-      <div class="col-span-full text-center py-12 text-slate-400">Завантаження статей...</div>
+      <div class="col-span-full text-center py-16 text-slate-400 font-medium">Завантаження статей...</div>
     </div>
 
   </main>
 
   <!-- МОДАЛЬНЕ ВІКНО ПЕРЕГЛЯДУ СТАТТІ -->
-  <div id="articleModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+  <div id="articleModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 md:p-8 shadow-2xl relative border border-slate-100">
       <button id="closeModal" class="absolute top-6 right-6 bg-slate-100 hover:bg-slate-200 text-slate-600 w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg transition">✕</button>
       
-      <div id="modalCategory" class="inline-block bg-blue-50 text-blue-600 font-semibold text-xs px-3 py-1 rounded-lg mb-3"></div>
+      <div id="modalCategory" class="inline-block bg-blue-50 text-blue-600 font-semibold text-xs px-3 py-1 rounded-xl mb-3"></div>
       <h2 id="modalTitle" class="text-2xl font-bold text-slate-900 mb-4"></h2>
       
-      <div id="modalMediaContainer" class="mb-6 rounded-2xl overflow-hidden shadow-md hidden">
-        <!-- Зображення або YouTube відео -->
-      </div>
+      <div id="modalMediaContainer" class="mb-6 rounded-2xl overflow-hidden shadow-sm hidden"></div>
 
       <div id="modalContent" class="text-slate-600 text-sm leading-relaxed space-y-4 whitespace-pre-line"></div>
     </div>
@@ -72,7 +80,7 @@ const firebaseConfig = {
     messagingSenderId: "528941827813",
     appId: "1:528941827813:web:354ef989d200087634b60c",
     measurementId: "G-BYGHEHVYY3"
-  };;
+  };
 
     if (!firebase.apps.length) {
       firebase.initializeApp(firebaseConfig);
@@ -90,7 +98,6 @@ const firebaseConfig = {
     const modalContent = document.getElementById('modalContent');
     const modalMediaContainer = document.getElementById('modalMediaContainer');
 
-    // Мапа категорій для красивих назв
     const categoryNames = {
       autodiagnostics: '🚗 Автодіагностика',
       pc: '💻 Комп\'ютери',
@@ -98,7 +105,6 @@ const firebaseConfig = {
       radio: '📻 Радіозв\'язок'
     };
 
-    // Завантаження статей з Firestore
     async function fetchArticles() {
       try {
         const snapshot = await db.collection('articles').orderBy('createdAt', 'desc').get();
@@ -110,29 +116,28 @@ const firebaseConfig = {
       }
     }
 
-    // Рендер карток
     function renderArticles() {
       const filtered = currentCategory === 'all' 
         ? allArticles 
         : allArticles.filter(item => item.category === currentCategory);
 
       if (filtered.length === 0) {
-        articlesGrid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-400">У цій категорії поки немає опублікованих статей.</div>`;
+        articlesGrid.innerHTML = `<div class="col-span-full text-center py-16 text-slate-400">У цій категорії поки немає опублікованих статей.</div>`;
         return;
       }
 
       articlesGrid.innerHTML = filtered.map(item => `
-        <div class="bg-white rounded-3xl shadow-sm border border-slate-200/80 overflow-hidden flex flex-col hover:shadow-md transition duration-200 group">
-          <div class="h-48 overflow-hidden bg-slate-100 relative">
-            <img src="${item.imageUrl}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='https://via.placeholder.com/600x400?text=Neoservice'">
-            <span class="absolute top-3 left-3 bg-white/90 backdrop-blur-md text-slate-800 text-xs font-semibold px-3 py-1 rounded-xl shadow-sm">
+        <div class="bg-white rounded-3xl p-4 border border-slate-200/60 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col group">
+          <div class="h-48 rounded-2xl overflow-hidden bg-slate-100 relative mb-4">
+            <img src="${item.imageUrl}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://via.placeholder.com/600x400?text=Neoservice'">
+            <span class="absolute top-3 left-3 bg-white/90 backdrop-blur-md text-slate-800 text-xs font-semibold px-3 py-1 rounded-xl shadow-xs">
               ${categoryNames[item.category] || item.category}
             </span>
           </div>
-          <div class="p-6 flex flex-col flex-grow">
-            <h3 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-blue-600 transition">${escapeHtml(item.title)}</h3>
-            <p class="text-slate-500 text-xs line-clamp-3 mb-6 flex-grow">${escapeHtml(item.summary)}</p>
-            <button onclick="openArticle('${item.id}')" class="w-full bg-slate-100 hover:bg-blue-600 hover:text-white text-slate-700 font-semibold py-2.5 rounded-2xl transition text-xs">
+          <div class="flex flex-col flex-grow px-1">
+            <h3 class="text-base font-bold text-slate-900 mb-2 group-hover:text-blue-600 transition-colors">${escapeHtml(item.title)}</h3>
+            <p class="text-slate-500 text-xs leading-relaxed line-clamp-3 mb-5 flex-grow">${escapeHtml(item.summary)}</p>
+            <button onclick="openArticle('${item.id}')" class="w-full bg-slate-100/80 hover:bg-slate-200/80 text-slate-700 font-semibold py-2.5 rounded-2xl transition text-xs">
               Читати далі
             </button>
           </div>
@@ -140,7 +145,6 @@ const firebaseConfig = {
       `).join('');
     }
 
-    // Відкриття модального вікна
     window.openArticle = function(id) {
       const article = allArticles.find(item => item.id === id);
       if (!article) return;
@@ -149,7 +153,6 @@ const firebaseConfig = {
       modalCategory.innerText = categoryNames[article.category] || article.category;
       modalContent.innerText = article.content;
 
-      // Медіа (зображення або YouTube)
       modalMediaContainer.classList.remove('hidden');
       if (article.youtubeId) {
         modalMediaContainer.innerHTML = `
@@ -168,34 +171,30 @@ const firebaseConfig = {
       articleModal.classList.remove('hidden');
     }
 
-    // Закриття модального вікна
     closeModal.addEventListener('click', () => articleModal.classList.add('hidden'));
     articleModal.addEventListener('click', (e) => {
       if (e.target === articleModal) articleModal.classList.add('hidden');
     });
 
-    // Фільтрація
     document.querySelectorAll('.filter-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
         document.querySelectorAll('.filter-btn').forEach(b => {
-          b.classList.remove('bg-blue-600', 'text-white', 'shadow');
-          b.classList.add('bg-white', 'text-slate-700', 'border', 'border-slate-200');
+          b.classList.remove('bg-blue-600', 'text-white', 'shadow-sm');
+          b.classList.add('bg-white', 'text-slate-700', 'border', 'border-slate-200/80');
         });
-        e.target.classList.remove('bg-white', 'text-slate-700', 'border', 'border-slate-200');
-        e.target.classList.add('bg-blue-600', 'text-white', 'shadow');
+        e.currentTarget.classList.remove('bg-white', 'text-slate-700', 'border', 'border-slate-200/80');
+        e.currentTarget.classList.add('bg-blue-600', 'text-white', 'shadow-sm');
 
-        currentCategory = e.target.getAttribute('data-category');
+        currentCategory = e.currentTarget.getAttribute('data-category');
         renderArticles();
       });
     });
 
-    // Захист від XSS
     function escapeHtml(text) {
       if (!text) return '';
       return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
     }
 
-    // Стартове завантаження
     fetchArticles();
   </script>
 </body>

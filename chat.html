@@ -3,353 +3,306 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Спільнота, Чат та Фід Facebook — Neoservice.ks.ua</title>
-  
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  
-  <!-- Font Awesome Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-  
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            brand: {
-              dark: '#0c192c',
-              header: '#11223f',
-              accent: '#1d4ed8',
-              hover: '#2563eb',
-              gold: '#f59e0b'
-            }
-          }
-        }
-      }
-    }
-  </script>
-
+  <title>Чат спільноти — NEOSERVICE.KS.UA</title>
+  <link rel="manifest" href="manifest.json">
   <style>
-    .hide-scrollbar::-webkit-scrollbar {
-      display: none;
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #f1f5f9;
+      color: #1e293b;
     }
-    .hide-scrollbar {
-      -ms-overflow-style: none;
-      scrollbar-width: none;
+    header {
+      background: #1e3a8a;
+      color: white;
+      text-align: center;
+      padding: 20px 10px 15px;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 1.5rem;
+      letter-spacing: 1px;
+    }
+    header p {
+      margin: 5px 0 0;
+      font-size: 0.85rem;
+      font-style: italic;
+      color: #93c5fd;
+    }
+    nav {
+      background: #0f172a;
+      padding: 10px;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    nav a {
+      color: #cbd5e1;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+    nav a:hover, nav a.active {
+      color: #60a5fa;
+    }
+    .container {
+      max-width: 800px;
+      margin: 30px auto;
+      padding: 0 15px;
+    }
+    .chat-card {
+      background: #ffffff;
+      border-radius: 10px;
+      border: 1px solid #e2e8f0;
+      padding: 20px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+    .chat-card h2 {
+      margin-top: 0;
+      color: #1e3a8a;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    #chatMessages {
+      height: 380px;
+      overflow-y: auto;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 12px;
+      background: #f8fafc;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    .msg-bubble {
+      padding: 10px 14px;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 0.92rem;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+    }
+    .msg-author {
+      font-weight: bold;
+      color: #1e3a8a;
+      font-size: 0.85rem;
+      margin-bottom: 3px;
+    }
+    .msg-text {
+      color: #334155;
+      word-break: break-word;
+    }
+    .msg-date {
+      font-size: 0.7rem;
+      color: #94a3b8;
+      float: right;
+      margin-top: 4px;
+    }
+    .chat-form {
+      display: flex;
+      gap: 10px;
+    }
+    .chat-input {
+      flex: 1;
+      padding: 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      outline: none;
+    }
+    .chat-input:focus {
+      border-color: #1e3a8a;
+    }
+    .chat-btn {
+      background: #1e3a8a;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .chat-btn:disabled, .chat-input:disabled {
+      background: #e2e8f0;
+      color: #94a3b8;
+      cursor: not-allowed;
+    }
+    .auth-alert {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #dc2626;
+      padding: 12px;
+      border-radius: 6px;
+      text-align: center;
+      font-size: 0.9rem;
+      margin-bottom: 15px;
+    }
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: #64748b;
+      font-size: 0.85rem;
     }
   </style>
 </head>
-<body class="bg-slate-100 text-slate-800 font-sans antialiased min-h-screen flex flex-col justify-between">
+<body>
 
-  <!-- ========================================== -->
-  <!-- HEADER & NAVIGATION                        -->
-  <!-- ========================================== -->
-  <header class="bg-brand-header text-white shadow-lg sticky top-0 z-40">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-16">
-        
-        <!-- Logo / Title -->
-        <a href="index.html" class="flex items-center space-x-3 group">
-          <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center font-bold text-xl shadow-md group-hover:bg-blue-500 transition-colors">
-            🧙‍♂️
-          </div>
-          <div>
-            <div class="font-extrabold text-lg sm:text-xl tracking-tight text-white group-hover:text-blue-300 transition-colors">NEOSERVICE.KS.UA</div>
-            <div class="text-[10px] text-blue-200 tracking-wider font-light">«Ісус — дорога, істина і життя» | Спільнота та Обговорення</div>
-          </div>
-        </a>
-
-        <!-- Navigation Menu -->
-        <nav class="hidden md:flex items-center space-x-1 lg:space-x-4 text-xs font-semibold">
-          <a href="index.html" class="px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 transition-all flex items-center gap-1.5">
-            <i class="fa-solid fa-house text-blue-400"></i> Головна
-          </a>
-          <a href="baza.html" class="px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 transition-all flex items-center gap-1.5">
-            <i class="fa-solid fa-book-open text-amber-400"></i> База знань
-          </a>
-          <a href="admin.html" class="px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 transition-all flex items-center gap-1.5">
-            <i class="fa-solid fa-wrench text-amber-400"></i> Параметри
-          </a>
-          <a href="#" class="px-3 py-2 rounded-lg bg-blue-600 text-white shadow-sm flex items-center gap-1.5">
-            <i class="fa-solid fa-comments"></i> Чат спільноти
-          </a>
-          <a href="account.html" class="px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 transition-all flex items-center gap-1.5">
-            <i class="fa-solid fa-user text-indigo-400"></i> Особистий
-          </a>
-        </nav>
-
-        <!-- Mobile Menu Icon -->
-        <button onclick="toggleMobileMenu()" class="md:hidden text-slate-300 hover:text-white p-2 text-xl focus:outline-none">
-          <i class="fa-solid fa-bars"></i>
-        </button>
-      </div>
+  <header style="background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%); color: white; padding: 25px 15px; text-align: center; border-bottom: 3px solid #3b82f6;">
+  <div style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 6px;">
+    <!-- Іконка Собору/Храму -->
+    <div style="background: rgba(255, 255, 255, 0.15); border-radius: 50%; padding: 8px 12px; display: inline-flex; align-items: center; justify-content: center; font-size: 1.8rem; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">
+      ⛪
     </div>
+    <h1 style="margin: 0; font-size: 2rem; letter-spacing: 1px; font-weight: 800; text-transform: uppercase;">NEOSERVICE.KS.UA</h1>
+  </div>
+  <p style="margin: 0; font-style: italic; opacity: 0.9; font-size: 0.95rem; color: #e2e8f0;">
+    «Ісус — дорога, істина і життя» | Сервіс, Знання та Допомога
+  </p>
 
-    <!-- Mobile Navigation Drawer -->
-    <div id="mobileMenu" class="hidden md:hidden bg-slate-900 border-t border-slate-800 px-4 py-3 space-y-2 text-sm">
-      <a href="index.html" class="block py-2 text-slate-300"><i class="fa-solid fa-house mr-2 text-blue-400"></i> Головна</a>
-      <a href="baza.html" class="block py-2 text-slate-300"><i class="fa-solid fa-book-open mr-2 text-amber-400"></i> База знань</a>
-      <a href="admin.html" class="block py-2 text-slate-300"><i class="fa-solid fa-wrench mr-2 text-amber-400"></i> Параметри</a>
-      <a href="#" class="block py-2 text-white font-bold"><i class="fa-solid fa-comments mr-2 text-emerald-400"></i> Чат спільноти</a>
-      <a href="account.html" class="block py-2 text-slate-300"><i class="fa-solid fa-user mr-2 text-indigo-400"></i> Особистий кабінет</a>
-    </div>
-  </header>
+  <!-- Навігаційне меню -->
+  <nav style="margin-top: 15px; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; font-size: 0.9rem;">
+    <a href="baza.html" style="color: #cbd5e1; text-decoration: none; display: flex; align-items: center; gap: 5px;">📖 База знань</a>
+    <a href="index.html#services-section" style="color: #cbd5e1; text-decoration: none; display: flex; align-items: center; gap: 5px;">🛠️ Сервіс Мої Дари</a>
+    <a href="chat.html" style="color: #ffffff; font-weight: bold; text-decoration: none; display: flex; align-items: center; gap: 5px;">💬 Чат спільноти</a>
+    <a href="account.html" style="color: #cbd5e1; text-decoration: none; display: flex; align-items: center; gap: 5px;">🔒 Особистий кабінет</a>
+  </nav>
+</header>
 
-  <!-- ========================================== -->
-  <!-- MAIN CONTAINER (ГРИД ДЛЯ ЧАТУ ТА FACEBOOK) -->
-  <!-- ========================================== -->
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow w-full">
+  <div class="container">
+    <div class="chat-card">
+      <h2>💬 Чат технічної та духовної спільноти</h2>
+      <p style="color: #64748b; font-size: 0.88rem; margin-top: -5px; margin-bottom: 15px;">
+        Простір для спілкування, взаємодопомоги та обміну досвідом авторизованих учасників.
+      </p>
 
-    <!-- Заголовок сторінки та вибір вкладок для мобільних -->
-    <div class="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-200">
-      <div>
-        <h1 class="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-          <i class="fa-solid fa-comments text-emerald-600"></i> Центр спільноти та соцмереж
-        </h1>
-        <p class="text-xs text-slate-500">Спілкуйтеся в чаті та слідкуйте за оновленнями у стрічках Facebook та спільнотах</p>
+      <div id="authNotice" class="auth-alert">
+        ⚠️ Для того щоб залишати повідомлення в чаті, будь ласка, <a href="index.html#auth-section" style="color: #dc2626; font-weight: bold;">увійдіть через Google</a> на головній сторінці.
       </div>
 
-      <!-- Вкладки перемикання на мобільних пристроях -->
-      <div class="flex items-center space-x-2 overflow-x-auto hide-scrollbar">
-        <button onclick="switchTab('chat')" id="btnTabChat" class="tab-btn px-4 py-2 rounded-xl text-xs font-bold bg-blue-600 text-white shadow-sm transition-all whitespace-nowrap">
-          <i class="fa-solid fa-comments mr-1"></i> Чат сайту
-        </button>
-        <button onclick="switchTab('fb-page')" id="btnTabPage" class="tab-btn px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-600 border border-slate-200 hover:bg-slate-100 transition-all whitespace-nowrap">
-          <i class="fa-brands fa-facebook mr-1 text-blue-600"></i> Стрічка FB
-        </button>
-        <button onclick="switchTab('fb-tech')" id="btnTabTech" class="tab-btn px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-600 border border-slate-200 hover:bg-slate-100 transition-all whitespace-nowrap">
-          <i class="fa-solid fa-wrench mr-1 text-amber-600"></i> Банда технарей
-        </button>
-      </div>
-    </div>
-
-    <!-- ДВЕ КОЛОНКИ: ЛІВА (ЧАТ), ПРАВА (FACEBOOK ВІДЖЕТИ) -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-      <!-- КОЛОНКА 1: ОНЛАЙН ЧАТ СПІЛЬНОТИ (Займає 2 колонки на ПК) -->
-      <section id="paneChat" class="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-slate-200 flex flex-col h-[650px]">
-        
-        <!-- Шапка чату -->
-        <div class="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50 rounded-t-2xl">
-          <div class="flex items-center space-x-3">
-            <div class="w-3 h-3 bg-emerald-500 rounded-full animate-pulse"></div>
-            <div>
-              <h3 class="font-bold text-slate-900 text-xs sm:text-sm">Живий чат учасників</h3>
-              <p class="text-[10px] text-slate-500">Діліться досвідом, задавайте питання по ремонту</p>
-            </div>
-          </div>
-          <span class="bg-blue-100 text-blue-700 text-[10px] font-extrabold px-2.5 py-1 rounded-full">
-            <i class="fa-solid fa-coins text-amber-500 mr-1"></i> +5 балів за активність
-          </span>
+      <div id="chatMessages">
+        <div style="color: #64748b; text-align: center; font-size: 0.9rem; margin: auto;">
+          Завантаження повідомлень...
         </div>
-
-        <!-- Вікно повідомлень -->
-        <div id="chatMessages" class="flex-grow p-4 overflow-y-auto space-y-3 bg-slate-50/50">
-          <div class="text-center text-xs text-slate-400 py-4">Завантаження повідомлень чату...</div>
-        </div>
-
-        <!-- Поле введення повідомлення -->
-        <div class="p-4 border-t border-slate-100 bg-white rounded-b-2xl">
-          <form onsubmit="sendChatMessage(event)" class="flex gap-2">
-            <input type="text" id="chatInput" required placeholder="Напишіть повідомлення у чат..." 
-                   class="flex-grow px-4 py-2.5 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-600">
-            <button type="submit" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow transition-colors flex items-center gap-1.5">
-              <span>Надіслати</span> <i class="fa-solid fa-paper-plane"></i>
-            </button>
-          </form>
-        </div>
-      </section>
-
-      <!-- КОЛОНКА 2: FACEBOOK СТРІЧКИ ТА ГРУПИ (Займає 1 колонку на ПК) -->
-      <div id="paneSocial" class="space-y-6 lg:block">
-        
-        <!-- БЛОК 1: Особиста сторінка / Стрічка Facebook -->
-        <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200">
-          <div class="flex items-center justify-between mb-3 pb-2 border-b border-slate-100">
-            <h4 class="font-bold text-slate-900 text-xs flex items-center gap-2">
-              <i class="fa-brands fa-facebook text-blue-600 text-base"></i> Особиста стрічка Facebook
-            </h4>
-            <a href="https://www.facebook.com/valeriy.anatoliievich" target="_blank" class="text-[10px] text-blue-600 hover:underline font-bold">Відкрити <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i></a>
-          </div>
-          
-          <!-- Facebook Page Plugin (Адаптивний iframe / плагін) -->
-          <div class="overflow-hidden rounded-xl border border-slate-100 flex justify-center bg-slate-50 min-h-[300px]">
-            <iframe src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fvaleriy.anatoliievich&tabs=timeline&width=380&height=500&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true&appId" 
-                    width="380" height="500" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
-          </div>
-        </div>
-
-        <!-- БЛОК 2: Група «Банда технарей» -->
-        <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200">
-          <div class="flex items-center justify-between mb-3 pb-2 border-b border-slate-100">
-            <h4 class="font-bold text-slate-900 text-xs flex items-center gap-2">
-              <i class="fa-solid fa-wrench text-amber-600 text-base"></i> Група «Банда технарей»
-            </h4>
-            <a href="https://www.facebook.com/groups/YOUR_GROUP_ID" target="_blank" class="text-[10px] text-blue-600 hover:underline font-bold">Перейти <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i></a>
-          </div>
-          
-          <div class="p-4 bg-slate-50 rounded-xl text-center border border-slate-100">
-            <p class="text-xs text-slate-600 mb-3">Спільнота для обговорення автоелектрики, діагностики та технічних нюансів.</p>
-            <a href="https://www.facebook.com/groups/YOUR_GROUP_ID" target="_blank" class="inline-block px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl transition-colors shadow">
-              <i class="fa-solid fa-users mr-1"></i> Відкрити групу у Facebook
-            </a>
-          </div>
-        </div>
-
       </div>
 
+      <form id="chatForm" class="chat-form">
+        <input type="text" id="chatInput" class="chat-input" placeholder="Напишіть ваше повідомлення..." required disabled>
+        <button type="submit" id="chatSendBtn" class="chat-btn" disabled>Надіслати</button>
+      </form>
     </div>
+  </div>
 
-  </main>
-
-  <!-- ========================================== -->
-  <!-- FOOTER                                     -->
-  <!-- ========================================== -->
-  <footer class="bg-brand-header text-slate-400 text-xs py-6 border-t border-slate-800 mt-12">
-    <div class="max-w-7xl mx-auto px-4 text-center">
-      <p class="text-slate-300 font-medium">© 2026 Neoservice.ks.ua — Ваш щоденний довідник та помічник.</p>
-      <p class="text-slate-500 mt-1">Сервіс, Знання та Християнська Допомога для кожного.</p>
-    </div>
+  <footer>
+    © 2026 Neoservice.ks.ua — Ваш щоденний довідник та помічник.
   </footer>
 
-  <!-- ========================================== -->
-  <!-- JAVASCRIPT CODE                            -->
-  <!-- ========================================== -->
-  <script>
-    // Configuration for Firebase
+  <!-- Firebase Integration -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-    apiKey: "AIzaSyBlKoP6-M8tdrKq88bSdnWSnak5Gpddnpk",
-    authDomain: "neoservice-ks-ua.firebaseapp.com",
-    projectId: "neoservice-ks-ua",
-    storageBucket: "neoservice-ks-ua.firebasestorage.app",
-    messagingSenderId: "528941827813",
-    appId: "1:528941827813:web:354ef989d200087634b60c",
-    measurementId: "G-BYGHEHVYY3"
-  };
+  apiKey: "AIzaSyBlKoP6-M8tdrKq88bSdnWSnak5Gpddnpk",
+  authDomain: "neoservice-ks-ua.firebaseapp.com",
+  projectId: "neoservice-ks-ua",
+  storageBucket: "neoservice-ks-ua.firebasestorage.app",
+  messagingSenderId: "528941827813",
+  appId: "1:528941827813:web:354ef989d200087634b60c",
+  measurementId: "G-BYGHEHVYY3"
+};
 
-    if (!firebase.apps.length) {
-      firebase.initializeApp(firebaseConfig);
-    }
-    const db = firebase.firestore();
-    const auth = firebase.auth();
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-    // Завантаження повідомлень чату в реальному часі
-    db.collection('chat').orderBy('createdAt', 'asc').onSnapshot(snapshot => {
-      const chatContainer = document.getElementById('chatMessages');
-      chatContainer.innerHTML = '';
+    const chatMessagesDiv = document.getElementById('chatMessages');
+    const chatForm = document.getElementById('chatForm');
+    const chatInput = document.getElementById('chatInput');
+    const chatSendBtn = document.getElementById('chatSendBtn');
+    const authNotice = document.getElementById('authNotice');
+
+    // Перевірка авторизації
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        chatInput.disabled = false;
+        chatSendBtn.disabled = false;
+        authNotice.style.display = 'none';
+      } else {
+        chatInput.disabled = true;
+        chatSendBtn.disabled = true;
+        authNotice.style.display = 'block';
+      }
+    });
+
+    // Отримання повідомлень у реальному часі
+    const q = query(collection(db, "chat_messages"), orderBy("createdAt", "asc"));
+
+    onSnapshot(q, (snapshot) => {
+      chatMessagesDiv.innerHTML = '';
 
       if (snapshot.empty) {
-        chatContainer.innerHTML = `<div class="text-center text-xs text-slate-400 py-6">Ще немає повідомлень. Напишіть першим!</div>`;
+        chatMessagesDiv.innerHTML = '<div style="color: #64748b; text-align: center; font-size: 0.9rem; margin: auto;">Ще немає повідомлень. Напишіть першим!</div>';
         return;
       }
 
-      snapshot.docs.forEach(doc => {
-        const msg = doc.data();
-        const msgDiv = document.createElement('div');
-        msgDiv.className = 'bg-white p-3 rounded-2xl border border-slate-200 shadow-sm max-w-[85%]';
-        
-        const timeStr = msg.createdAt ? new Date(msg.createdAt.toDate()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
-        
-        msgDiv.innerHTML = `
-          <div class="flex items-center justify-between mb-1">
-            <span class="font-bold text-xs text-blue-600">${escapeHtml(msg.userEmail || 'Гість')}</span>
-            <span class="text-[9px] text-slate-400">${timeStr}</span>
-          </div>
-          <p class="text-xs text-slate-700 break-words">${escapeHtml(msg.text)}</p>
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        const msgEl = document.createElement('div');
+        msgEl.className = 'msg-bubble';
+
+        const sender = data.userEmail ? data.userEmail.split('@')[0] : 'Гість';
+        const dateStr = data.createdAt ? new Date(data.createdAt.toDate()).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : '';
+
+        msgEl.innerHTML = `
+          <div class="msg-author">${sender} <span class="msg-date">${dateStr}</span></div>
+          <div class="msg-text">${escapeHtml(data.text)}</div>
         `;
-        chatContainer.appendChild(msgDiv);
+
+        chatMessagesDiv.appendChild(msgEl);
       });
 
-      chatContainer.scrollTop = chatContainer.scrollHeight;
+      chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
     });
 
-    // Надсилання повідомлення у чат + нарахування бонусних балів
-    async function sendChatMessage(e) {
+    // Відправка повідомлення
+    chatForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const input = document.getElementById('chatInput');
-      const text = input.value.trim();
-      if (!text) return;
-
+      const text = chatInput.value.trim();
       const user = auth.currentUser;
-      const userEmail = user ? user.email : 'Гість';
+
+      if (!text || !user) return;
+
+      chatSendBtn.disabled = true;
 
       try {
-        // Додаємо повідомлення в чат
-        await db.collection('chat').add({
-          text,
-          userEmail,
-          userId: user ? user.uid : 'anonymous',
-          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        await addDoc(collection(db, "chat_messages"), {
+          text: text,
+          userEmail: user.email,
+          createdAt: serverTimestamp()
         });
-
-        // Нараховуємо бонусні бали, якщо користувач авторизований
-        if (user) {
-          const userRef = db.collection('users').doc(user.uid);
-          await userRef.set({
-            points: firebase.firestore.FieldValue.increment(5)
-          }, { merge: true });
-        }
-
-        input.value = '';
+        chatInput.value = '';
       } catch (err) {
-        console.error("Помилка відправки:", err);
-        alert("Не вдалося надіслати повідомлення.");
+        alert('Помилка відправки: ' + err.message);
+      } finally {
+        chatSendBtn.disabled = false;
+        chatInput.focus();
       }
-    }
+    });
 
-    // Перемикання вкладок на мобільних пристроях
-    function switchTab(tab) {
-      const paneChat = document.getElementById('paneChat');
-      const paneSocial = document.getElementById('paneSocial');
-      const btnChat = document.getElementById('btnTabChat');
-      const btnPage = document.getElementById('btnTabPage');
-      const btnTech = document.getElementById('btnTabTech');
-
-      // Скидаємо стилі кнопок
-      [btnChat, btnPage, btnTech].forEach(b => {
-        b.className = "tab-btn px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-600 border border-slate-200 hover:bg-slate-100 transition-all whitespace-nowrap";
-      });
-
-      if (tab === 'chat') {
-        paneChat.style.display = 'flex';
-        paneSocial.style.display = 'none';
-        btnChat.className = "tab-btn px-4 py-2 rounded-xl text-xs font-bold bg-blue-600 text-white shadow-sm transition-all whitespace-nowrap";
-      } else {
-        paneChat.style.display = 'none';
-        paneSocial.style.display = 'block';
-        if (tab === 'fb-page') {
-          btnPage.className = "tab-btn px-4 py-2 rounded-xl text-xs font-bold bg-blue-600 text-white shadow-sm transition-all whitespace-nowrap";
-        } else {
-          btnTech.className = "tab-btn px-4 py-2 rounded-xl text-xs font-bold bg-blue-600 text-white shadow-sm transition-all whitespace-nowrap";
-        }
-      }
-    }
-
-    // На мобільних за замовчуванням показуємо чат, на ПК — обидві колонки
-    function checkWindowWidth() {
-      if (window.innerWidth < 1024) {
-        switchTab('chat');
-      } else {
-        document.getElementById('paneChat').style.display = 'flex';
-        document.getElementById('paneSocial').style.display = 'block';
-      }
-    }
-    window.addEventListener('resize', checkWindowWidth);
-    checkWindowWidth();
-
-    function toggleMobileMenu() {
-      const menu = document.getElementById('mobileMenu');
-      menu.classList.toggle('hidden');
-    }
-
-    function escapeHtml(text) {
-      if (!text) return '';
-      return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    function escapeHtml(unsafe) {
+      return unsafe
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
     }
   </script>
 </body>

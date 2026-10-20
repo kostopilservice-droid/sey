@@ -67,10 +67,24 @@
   <!-- ========================================== -->
   <!-- MAIN CONTAINER                             -->
   <!-- ========================================== -->
-  <main class="max-w-4xl mx-auto px-4 py-8 flex-grow w-full">
+  <main class="max-w-4xl mx-auto px-4 py-8 flex-grow w-full space-y-6">
     
+    <!-- БЛОК АВТОРИЗАЦІЇ (якщо не увійшли) -->
+    <div id="loginCard" class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hidden">
+      <h2 class="text-sm font-black text-slate-900 mb-3 flex items-center gap-2">
+        <i class="fa-solid fa-lock text-blue-600"></i> Авторизація адміністратора
+      </h2>
+      <div class="flex flex-col sm:flex-row gap-3">
+        <input type="email" id="loginEmail" placeholder="Email адміністратора" class="px-3 py-2 text-xs border border-slate-300 rounded-xl flex-1 focus:outline-none focus:ring-2 focus:ring-blue-600">
+        <input type="password" id="loginPassword" placeholder="Пароль" class="px-3 py-2 text-xs border border-slate-300 rounded-xl flex-1 focus:outline-none focus:ring-2 focus:ring-blue-600">
+        <button onclick="loginWithEmail()" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow transition-colors">
+          Увійти
+        </button>
+      </div>
+    </div>
+
     <!-- ФОРМА СТВОРЕННЯ СТАТТІ -->
-    <div class="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm mb-8">
+    <div class="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm">
       <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-100">
         <h1 class="text-xl font-black text-slate-900 flex items-center gap-2">
           <i class="fa-solid fa-pen-to-square text-blue-600"></i> Створити нову статтю
@@ -166,7 +180,7 @@ const firebaseConfig = {
     messagingSenderId: "528941827813",
     appId: "1:528941827813:web:354ef989d200087634b60c",
     measurementId: "G-BYGHEHVYY3"
-  };
+  }; 
 
     if (!firebase.apps.length) {
       firebase.initializeApp(firebaseConfig);
@@ -174,20 +188,43 @@ const firebaseConfig = {
     const db = firebase.firestore();
     const auth = firebase.auth();
 
-    // Відстеження авторизації
+    // Відстеження стану авторизації
     auth.onAuthStateChanged(user => {
       const status = document.getElementById('authStatus');
       const logoutBtn = document.getElementById('logoutBtn');
+      const loginCard = document.getElementById('loginCard');
+      
       if (user) {
-        status.textContent = '● Авторизовано';
+        status.textContent = '● Авторизовано (' + user.email + ')';
         status.className = 'text-[11px] font-bold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200';
         logoutBtn.classList.remove('hidden');
+        loginCard.classList.add('hidden');
       } else {
-        status.textContent = '● Не авторизовано (Увійдіть через кабінет)';
+        status.textContent = '● Не авторизовано';
         status.className = 'text-[11px] font-bold px-2.5 py-1 rounded-full bg-rose-50 text-rose-600 border border-rose-200';
         logoutBtn.classList.add('hidden');
+        loginCard.classList.remove('hidden'); // Показуємо форму входу
       }
     });
+
+    // Функція входу через пошту та пароль
+    function loginWithEmail() {
+      const email = document.getElementById('loginEmail').value;
+      const pass = document.getElementById('loginPassword').value;
+      
+      auth.signInWithEmailAndPassword(email, pass)
+        .then(() => {
+          alert('Успішний вхід!');
+        })
+        .catch(err => {
+          alert('Помилка входу: ' + err.message);
+        });
+    }
+
+    // Функція виходу
+    function logout() {
+      auth.signOut().then(() => location.reload());
+    }
 
     // Функція великого прев'ю зображення
     function previewImage(url) {
@@ -216,7 +253,7 @@ const firebaseConfig = {
       event.preventDefault();
       const user = auth.currentUser;
       if (!user) {
-        alert('Будь ласка, увійдіть у систему через Особистий кабінет для публікації матеріалів!');
+        alert('Будь ласка, увійдіть у систему вище для публікації матеріалів!');
         return;
       }
 
@@ -247,11 +284,6 @@ const firebaseConfig = {
         btn.disabled = false;
         btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Опублікувати статтю в Базу знань';
       }
-    }
-
-    // Вихід
-    function logout() {
-      auth.signOut().then(() => location.reload());
     }
 
     // Резервне копіювання

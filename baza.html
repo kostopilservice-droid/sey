@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>База знань — Neoservice.ks.ua</title>
+  <title>База знань & Інформаційний Фід — Neoservice.ks.ua</title>
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -42,30 +42,49 @@
       -ms-overflow-style: none;
       scrollbar-width: none;
     }
+
+    .bing-card {
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .bing-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 28px -6px rgba(15, 23, 42, 0.15);
+    }
+
+    .carousel-slide {
+      transition: opacity 0.6s ease-in-out;
+    }
   </style>
 </head>
 <body class="bg-slate-100 text-slate-800 font-sans antialiased min-h-screen flex flex-col justify-between">
 
   <!-- ========================================== -->
-  <!-- HEADER & NAVIGATION                        -->
+  <!-- HEADER & NAVIGATION WITH INTEGRATED SEARCH -->
   <!-- ========================================== -->
   <header class="bg-brand-header text-white shadow-lg sticky top-0 z-40">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-16">
+      <div class="flex items-center justify-between h-16 gap-4">
         
         <!-- Logo / Title -->
-        <a href="index.html" class="flex items-center space-x-3 group">
+        <a href="index.html" class="flex items-center space-x-3 group shrink-0">
           <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center font-bold text-xl shadow-md group-hover:bg-blue-500 transition-colors">
             🧙‍♂️
           </div>
-          <div>
-            <div class="font-extrabold text-lg sm:text-xl tracking-tight text-white group-hover:text-blue-300 transition-colors">NEOSERVICE.KS.UA</div>
-            <div class="text-[10px] text-blue-200 tracking-wider font-light">«Ісус — дорога, істина і життя» | Технічна База Знань</div>
+          <div class="hidden sm:block">
+            <div class="font-extrabold text-base lg:text-lg tracking-tight text-white group-hover:text-blue-300 transition-colors">NEOSERVICE.KS.UA</div>
+            <div class="text-[9px] text-blue-200 tracking-wider font-light">«Ісус — дорога, істина і життя» | Сервіс, Знання та Допомога</div>
           </div>
         </a>
 
+        <!-- MSN-STYLE SEARCH BAR IN HEADER -->
+        <div class="relative flex-1 max-w-md mx-2">
+          <input type="text" id="searchInput" oninput="searchArticles()" placeholder="Пошук у Базі знань (Hantek, ПК, прилади)..." 
+                 class="w-full pl-10 pr-4 py-2 bg-slate-800/90 text-white placeholder-slate-400 rounded-full border border-slate-700/80 focus:bg-slate-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-xs transition-all shadow-inner">
+          <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+        </div>
+
         <!-- Navigation Menu -->
-        <nav class="hidden md:flex items-center space-x-1 lg:space-x-4 text-xs font-semibold">
+        <nav class="hidden lg:flex items-center space-x-1 text-xs font-semibold shrink-0">
           <a href="index.html" class="px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 transition-all flex items-center gap-1.5">
             <i class="fa-solid fa-house text-blue-400"></i> Головна
           </a>
@@ -84,16 +103,16 @@
         </nav>
 
         <!-- Mobile Menu Icon -->
-        <button onclick="toggleMobileMenu()" class="md:hidden text-slate-300 hover:text-white p-2 text-xl focus:outline-none">
+        <button onclick="toggleMobileMenu()" class="lg:hidden text-slate-300 hover:text-white p-2 text-xl focus:outline-none">
           <i class="fa-solid fa-bars"></i>
         </button>
       </div>
     </div>
 
     <!-- Mobile Navigation Drawer -->
-    <div id="mobileMenu" class="hidden md:hidden bg-slate-900 border-t border-slate-800 px-4 py-3 space-y-2 text-sm">
+    <div id="mobileMenu" class="hidden lg:hidden bg-slate-900 border-t border-slate-800 px-4 py-3 space-y-2 text-sm">
       <a href="index.html" class="block py-2 text-slate-300"><i class="fa-solid fa-house mr-2 text-blue-400"></i> Головна</a>
-      <a href="#" class="block py-2 text-white font-bold"><i class="fa-solid fa-book-open mr-2 text-amber-400"></i> База знань</a>
+      <a href="#" class="block py-2 text-white font-bold"><i class="fa-solid fa-book-open mr-2 text-blue-400"></i> База знань</a>
       <a href="admin.html" class="block py-2 text-slate-300"><i class="fa-solid fa-wrench mr-2 text-amber-400"></i> Параметри</a>
       <a href="chat.html" class="block py-2 text-slate-300"><i class="fa-solid fa-comments mr-2 text-emerald-400"></i> Чат спільноти</a>
       <a href="account.html" class="block py-2 text-slate-300"><i class="fa-solid fa-user mr-2 text-indigo-400"></i> Особистий кабінет</a>
@@ -101,67 +120,81 @@
   </header>
 
   <!-- ========================================== -->
-  <!-- MAIN CONTENT                               -->
+  <!-- TICKER / RUNNING LINE                      -->
   <!-- ========================================== -->
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
+  <div class="bg-blue-900 text-white text-xs font-medium py-2 px-4 shadow-inner">
+    <div class="max-w-7xl mx-auto flex items-center space-x-3 overflow-hidden">
+      <span class="bg-amber-500 text-slate-950 text-[10px] px-2 py-0.5 rounded font-black uppercase tracking-wider shrink-0">Фід матеріалів</span>
+      <marquee behavior="scroll" direction="left" class="w-full text-blue-100">
+        ✨ «Світильник нозі моїй — слово Твоє, і світло для стежки моєї» &nbsp;&nbsp;•&nbsp;&nbsp; 
+        🛠️ Технічна База Знань Neoservice: обирайте потрібну категорію та читайте перевірені інструкції з ремонту та діагностики!
+      </marquee>
+    </div>
+  </div>
 
-    <!-- ІНФОРМАЦІЙНИЙ ФІД З КАТЕГОРІЯМИ -->
-    <div class="mb-6 pb-4 border-b border-slate-200">
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-3">
-        <div>
-          <h1 class="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-            <i class="fa-solid fa-book-open text-blue-600"></i> База знань та технічні мануали
-          </h1>
-          <p class="text-xs text-slate-500">Довідники, схеми, інструкції з ремонту та партнерські матеріали</p>
-        </div>
+  <!-- MAIN CONTAINER -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow w-full">
 
-        <!-- Кнопка створення матеріалу -->
-        <a href="admin.html#addArticle" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow transition-all flex items-center gap-1.5 self-start md:self-auto">
-          <i class="fa-solid fa-plus"></i> Опублікувати матеріал
-        </a>
+    <!-- ========================================== -->
+    <!-- CATEGORY FILTERS & BAR (ОНОВЛЕНИЙ СПИСОК)    -->
+    <!-- ========================================== -->
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b border-slate-200 mb-8">
+      <div>
+        <h2 class="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
+          <i class="fa-solid fa-book-open text-blue-600"></i> База знань та технічні мануали
+        </h2>
+        <p class="text-xs text-slate-500">Довідники, схеми, інструкції з ремонту та партнерські матеріали</p>
       </div>
 
-      <!-- КНОПКИ КАТЕГОРІЙ (З СКРОЛОМ) -->
-      <div class="flex items-center gap-2 overflow-x-auto pb-2 pt-1 hide-scrollbar">
-        <button onclick="filterArticles('all', this)" class="category-btn px-4 py-2 bg-blue-600 text-white font-bold text-xs rounded-xl shadow transition-all whitespace-nowrap flex items-center gap-1.5">
-          <i class="fa-solid fa-border-all"></i> Всі
-        </button>
-
-        <button onclick="filterArticles('auto', this)" class="category-btn px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs rounded-xl border border-slate-200 transition-all whitespace-nowrap flex items-center gap-1.5">
-          <i class="fa-solid fa-car text-amber-500"></i> Автодіагностика & ECU
-        </button>
-
-        <button onclick="filterArticles('computers', this)" class="category-btn px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs rounded-xl border border-slate-200 transition-all whitespace-nowrap flex items-center gap-1.5">
-          <i class="fa-solid fa-laptop text-blue-500"></i> Комп'ютери
-        </button>
-
-        <button onclick="filterArticles('printers', this)" class="category-btn px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs rounded-xl border border-slate-200 transition-all whitespace-nowrap flex items-center gap-1.5">
-          <i class="fa-solid fa-print text-indigo-500"></i> Оргтехніка
-        </button>
-
-        <button onclick="filterArticles('engineering', this)" class="category-btn px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs rounded-xl border border-slate-200 transition-all whitespace-nowrap flex items-center gap-1.5">
-          <i class="fa-solid fa-microchip text-purple-500"></i> Інженерія & Схеми
-        </button>
-
-        <button onclick="filterArticles('radio', this)" class="category-btn px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs rounded-xl border border-slate-200 transition-all whitespace-nowrap flex items-center gap-1.5">
-          <i class="fa-solid fa-tower-cell text-emerald-500"></i> Радіозв'язок
-        </button>
-
-        <button onclick="filterArticles('ev_battery', this)" class="category-btn px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs rounded-xl border border-slate-200 transition-all whitespace-nowrap flex items-center gap-1.5">
-          <i class="fa-solid fa-bolt text-red-500"></i> Електротранспорт & АКБ
-        </button>
-
-        <button onclick="filterArticles('sponsored', this)" class="category-btn px-4 py-2 bg-amber-50 hover:bg-amber-100 text-amber-800 font-bold text-xs rounded-xl border border-amber-200 transition-all whitespace-nowrap flex items-center gap-1.5">
-          <i class="fa-solid fa-rectangle-ad text-amber-600"></i> Спонсоровано
-        </button>
-      </div>
+      <!-- Кнопка створення матеріалу для адміністратора -->
+      <a href="admin.html#addArticle" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow transition-all flex items-center gap-1.5 shrink-0">
+        <i class="fa-solid fa-plus"></i> Опублікувати матеріал
+      </a>
     </div>
 
-    <!-- КОНТЕЙНЕР ДЛЯ ВІДОБРАЖЕННЯ СТАТЕЙ -->
-    <div id="articlesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <div class="col-span-full text-center py-12 text-slate-400 text-xs">
-        <i class="fa-solid fa-spinner fa-spin text-lg mb-2"></i><br>Завантаження матеріалів...
-      </div>
+    <!-- КНОПКИ КАТЕГОРІЙ (З ГОРИЗОНТАЛЬНИМ СКРОЛОМ) -->
+    <div class="flex items-center space-x-2 overflow-x-auto hide-scrollbar w-full pb-4 mb-6">
+      <button onclick="filterFeed('all')" id="tab-all" class="filter-tab active px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap bg-blue-600 text-white shadow-sm transition-all flex items-center gap-1.5">
+        <i class="fa-solid fa-border-all"></i> Всі
+      </button>
+
+      <button onclick="filterFeed('auto')" id="tab-auto" class="filter-tab px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap bg-white text-slate-600 hover:bg-slate-200 border border-slate-200 transition-all flex items-center gap-1.5">
+        <i class="fa-solid fa-car text-amber-500"></i> Автодіагностика & ECU
+      </button>
+
+      <button onclick="filterFeed('computers')" id="tab-computers" class="filter-tab px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap bg-white text-slate-600 hover:bg-slate-200 border border-slate-200 transition-all flex items-center gap-1.5">
+        <i class="fa-solid fa-laptop text-blue-500"></i> Комп'ютери
+      </button>
+
+      <button onclick="filterFeed('printers')" id="tab-printers" class="filter-tab px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap bg-white text-slate-600 hover:bg-slate-200 border border-slate-200 transition-all flex items-center gap-1.5">
+        <i class="fa-solid fa-print text-indigo-500"></i> Оргтехніка
+      </button>
+
+      <button onclick="filterFeed('engineering')" id="tab-engineering" class="filter-tab px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap bg-white text-slate-600 hover:bg-slate-200 border border-slate-200 transition-all flex items-center gap-1.5">
+        <i class="fa-solid fa-microchip text-purple-500"></i> Інженерія & Схеми
+      </button>
+
+      <button onclick="filterFeed('radio')" id="tab-radio" class="filter-tab px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap bg-white text-slate-600 hover:bg-slate-200 border border-slate-200 transition-all flex items-center gap-1.5">
+        <i class="fa-solid fa-tower-cell text-emerald-500"></i> Радіозв'язок
+      </button>
+
+      <button onclick="filterFeed('ev_battery')" id="tab-ev_battery" class="filter-tab px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap bg-white text-slate-600 hover:bg-slate-200 border border-slate-200 transition-all flex items-center gap-1.5">
+        <i class="fa-solid fa-bolt text-red-500"></i> Електротранспорт & АКБ
+      </button>
+
+      <button onclick="filterFeed('sponsored')" id="tab-sponsored" class="filter-tab px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap bg-amber-100 text-amber-800 hover:bg-amber-200 border border-amber-300 transition-all flex items-center gap-1.5">
+        <i class="fa-solid fa-rectangle-ad text-amber-600"></i> Спонсоровано
+      </button>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- FEED GRID LAYOUT                           -->
+    <!-- ========================================== -->
+    <div id="feedGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+
+      <!-- СТАТТИ ТА ДИНАМІЧНІ ДАНІ -->
+      <div id="dynamicArticles" class="contents"></div>
+
     </div>
 
   </main>
@@ -194,120 +227,39 @@ const firebaseConfig = {
     const db = firebase.firestore();
 
     let currentCategory = 'all';
-    let allArticles = [];
 
-    // Завантаження статей з Firestore
-    db.collection('articles').orderBy('createdAt', 'desc').onSnapshot(snapshot => {
-      allArticles = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      renderArticles();
-    }, error => {
-      console.error("Помилка завантаження матеріалів:", error);
-      document.getElementById('articlesGrid').innerHTML = `
-        <div class="col-span-full text-center py-12 text-rose-500 text-xs">
-          Не вдалося завантажити матеріали з бази даних.
-        </div>
-      `;
-    });
-
-    // Фільтрація статей за категорією
-    function filterArticles(category, btnElement) {
+    function filterFeed(category) {
       currentCategory = category;
-
-      // Скидання класів кнопок
-      document.querySelectorAll('.category-btn').forEach(btn => {
-        btn.className = "category-btn px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs rounded-xl border border-slate-200 transition-all whitespace-nowrap flex items-center gap-1.5";
+      
+      // Зміна активного стилю кнопок
+      document.querySelectorAll('.filter-tab').forEach(btn => {
+        btn.className = "filter-tab px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap bg-white text-slate-600 hover:bg-slate-200 border border-slate-200 transition-all flex items-center gap-1.5";
       });
 
-      // Підсвічування вибраної кнопки
-      if (btnElement) {
+      const activeBtn = document.getElementById('tab-' + category);
+      if (activeBtn) {
         if (category === 'sponsored') {
-          btnElement.className = "category-btn px-4 py-2 bg-amber-500 text-white font-bold text-xs rounded-xl shadow transition-all whitespace-nowrap flex items-center gap-1.5";
+          activeBtn.className = "filter-tab px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap bg-amber-500 text-slate-950 shadow-sm transition-all flex items-center gap-1.5";
         } else {
-          btnElement.className = "category-btn px-4 py-2 bg-blue-600 text-white font-bold text-xs rounded-xl shadow transition-all whitespace-nowrap flex items-center gap-1.5";
+          activeBtn.className = "filter-tab px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap bg-blue-600 text-white shadow-sm transition-all flex items-center gap-1.5";
         }
       }
 
-      renderArticles();
-    }
-
-    // Відображення статей у сітці
-    function renderArticles() {
-      const container = document.getElementById('articlesGrid');
-      container.innerHTML = '';
-
-      const filtered = allArticles.filter(item => {
-        if (currentCategory === 'all') return true;
-        return item.category === currentCategory;
+      // Фільтрація елементів на сторінці
+      const items = document.querySelectorAll('.feed-item');
+      items.forEach(item => {
+        const itemCat = item.getAttribute('data-category');
+        if (category === 'all' || itemCat === category) {
+          item.style.display = 'flex';
+        } else {
+          item.style.display = 'none';
+        }
       });
-
-      if (filtered.length === 0) {
-        container.innerHTML = `
-          <div class="col-span-full text-center py-16 bg-white rounded-2xl border border-slate-200 p-8">
-            <i class="fa-solid fa-folder-open text-3xl text-slate-300 mb-2"></i>
-            <p class="text-xs font-semibold text-slate-500">У цій категорії поки немає матеріалів.</p>
-          </div>
-        `;
-        return;
-      }
-
-      filtered.forEach(item => {
-        const card = document.createElement('article');
-        card.className = "bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between";
-
-        const categoryBadge = getCategoryBadge(item.category);
-
-        card.innerHTML = `
-          <div>
-            <div class="flex items-center justify-between mb-3">
-              ${categoryBadge}
-              <span class="text-[10px] text-slate-400">${item.date || 'Нещодавно'}</span>
-            </div>
-            <h3 class="font-bold text-slate-900 text-sm mb-2 hover:text-blue-600 transition-colors cursor-pointer">
-              ${escapeHtml(item.title || 'Без назви')}
-            </h3>
-            <p class="text-xs text-slate-500 leading-relaxed line-clamp-3 mb-4">
-              ${escapeHtml(item.summary || item.text || '')}
-            </p>
-          </div>
-          <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] font-bold text-blue-600">
-            <span>Читати повністю</span>
-            <i class="fa-solid fa-arrow-right text-[10px]"></i>
-          </div>
-        `;
-        container.appendChild(card);
-      });
-    }
-
-    // Іконки та теги категорій
-    function getCategoryBadge(cat) {
-      switch (cat) {
-        case 'auto':
-          return `<span class="bg-amber-50 text-amber-700 text-[10px] font-bold px-2.5 py-1 rounded-lg border border-amber-200"><i class="fa-solid fa-car mr-1"></i>Автодіагностика</span>`;
-        case 'computers':
-          return `<span class="bg-blue-50 text-blue-700 text-[10px] font-bold px-2.5 py-1 rounded-lg border border-blue-200"><i class="fa-solid fa-laptop mr-1"></i>Комп'ютери</span>`;
-        case 'printers':
-          return `<span class="bg-indigo-50 text-indigo-700 text-[10px] font-bold px-2.5 py-1 rounded-lg border border-indigo-200"><i class="fa-solid fa-print mr-1"></i>Оргтехніка</span>`;
-        case 'engineering':
-          return `<span class="bg-purple-50 text-purple-700 text-[10px] font-bold px-2.5 py-1 rounded-lg border border-purple-200"><i class="fa-solid fa-microchip mr-1"></i>Інженерія</span>`;
-        case 'radio':
-          return `<span class="bg-emerald-50 text-emerald-700 text-[10px] font-bold px-2.5 py-1 rounded-lg border border-emerald-200"><i class="fa-solid fa-tower-cell mr-1"></i>Радіозв'язок</span>`;
-        case 'ev_battery':
-          return `<span class="bg-red-50 text-red-700 text-[10px] font-bold px-2.5 py-1 rounded-lg border border-red-200"><i class="fa-solid fa-bolt mr-1"></i>АКБ & Електранспорт</span>`;
-        case 'sponsored':
-          return `<span class="bg-amber-100 text-amber-900 text-[10px] font-bold px-2.5 py-1 rounded-lg border border-amber-300"><i class="fa-solid fa-rectangle-ad mr-1"></i>Спонсоровано</span>`;
-        default:
-          return `<span class="bg-slate-100 text-slate-700 text-[10px] font-bold px-2.5 py-1 rounded-lg"><i class="fa-solid fa-folder mr-1"></i>Загальне</span>`;
-      }
     }
 
     function toggleMobileMenu() {
       const menu = document.getElementById('mobileMenu');
       menu.classList.toggle('hidden');
-    }
-
-    function escapeHtml(text) {
-      if (!text) return '';
-      return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
     }
   </script>
 </body>

@@ -66,7 +66,7 @@
           </div>
         </div>
 
-        <!-- Навігаційні кнопки як на скріншоті -->
+        <!-- Навігаційні кнопки -->
         <div class="flex items-center gap-2 text-xs">
           <a href="index.html" class="px-3 py-1.5 hover:bg-slate-800 text-slate-300 rounded-lg transition-colors flex items-center gap-1.5">
             <i class="fa-solid fa-house"></i> Головна
@@ -148,7 +148,7 @@
       <button onclick="filterCategory('printers', this)" class="cat-btn px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl whitespace-nowrap transition-colors">
         🖨️ Оргтехніка
       </button>
-      <button onclick="filterCategory('engineering', this)" class="cat-btn px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl whitespace-nowrap transition-colors">
+      <button onclick="filterGradeCategory('engineering', this)" class="cat-btn px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl whitespace-nowrap transition-colors" onclick="filterCategory('engineering', this)">
         ⚙️ Інженерія & Схеми
       </button>
       <button onclick="filterCategory('radio', this)" class="cat-btn px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl whitespace-nowrap transition-colors">
@@ -162,9 +162,9 @@
       </button>
     </div>
 
-    <!-- СІТКА СТАТЕЙ (Сюди підвантажуються всі статті з бази Firebase) -->
+    <!-- СІТКА СТАТЕЙ -->
     <div id="articlesGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-      <!-- Динамічні картки з'являються тут -->
+      <!-- Картки генеруються автоматично (статичні + Firebase) -->
     </div>
 
   </main>
@@ -216,31 +216,89 @@ const firebaseConfig = {
     messagingSenderId: "528941827813",
     appId: "1:528941827813:web:354ef989d200087634b60c",
     measurementId: "G-BYGHEHVYY3"
-  };
+  }; 
 
     if (!firebase.apps.length) {
       firebase.initializeApp(firebaseConfig);
     }
     const db = firebase.firestore();
 
-    let articlesList = [];
+    // Базові (статичні) статті вашого шаблону
+    const staticArticles = [
+      {
+        id: 'static-1',
+        category: 'auto',
+        title: 'Пошук витоку струму акумулятора: Повний посібник для автовласників (Hantek)',
+        summary: 'Детальний покроковий посібник із пошуку прихованих споживачів в електриці автомобіля за допомогою осцилографа Hantek та мультиметра.',
+        text: 'Комплексна перевірка бортової мережі на наявність витоків струму. Використання кліщів та осцилографа для діагностики.',
+        imageUrl: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80',
+        date: '20 жовтня, 2026 р.',
+        author: 'Admin Neoservice'
+      },
+      {
+        id: 'static-2',
+        category: 'sponsored',
+        title: 'Надійний хмарний хостинг та сервери для бізнесу',
+        summary: 'Швидкі віртуальні сервери для розміщення сайтів і баз даних із захистом від DDoS. Спеціальні умови для наших користувачів.',
+        text: 'Оренда надійних серверів для корпоративних клієнтів з повною підтримкою та високим аптаймом.',
+        imageUrl: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=600&q=80',
+        date: '15 жовтня, 2026 р.',
+        author: 'Партнер'
+      },
+      {
+        id: 'static-3',
+        category: 'computers',
+        title: 'Чому гріється ноутбук і коли пора його обслуговувати?',
+        summary: 'Ознаки забивання системи охолодження та алгоритм повної чистки з заміною термопасти.',
+        text: 'Правильний догляд за ноутбуком подовжує термін служби компонентів материнської плати та процесора.',
+        imageUrl: 'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?auto=format&fit=crop&w=600&q=80',
+        date: '12 жовтня, 2026 р.',
+        author: 'Admin Neoservice'
+      },
+      {
+        id: 'static-4',
+        category: 'printers',
+        title: 'Як відновити картридж лазерного принтера',
+        summary: 'Покрокові правила заправки тонером при друці на виходах із прасуванням.',
+        text: 'Інструкція щодо очищення бункера та заміни фотобарабана для збереження якості друку.',
+        imageUrl: 'https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?auto=format&fit=crop&w=600&q=80',
+        date: '10 жовтня, 2026 р.',
+        author: 'Сервіс-центр'
+      },
+      {
+        id: 'static-5',
+        category: 'ev_battery',
+        title: 'Збереження акумулятора електротранспорту взимку',
+        summary: 'Правила експлуатації батарей на холодний період року.',
+        text: 'Як правильно заряджати та зберігати тягові акумулятори електровелосипедів та самокатів.',
+        imageUrl: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=600&q=80',
+        date: '5 жовтня, 2026 р.',
+        author: 'Admin'
+      }
+    ];
+
+    let allArticles = [...staticArticles];
     let activeCategory = 'all';
 
-    // Завантаження статей із Firebase
+    // Завантаження статей із Firebase та об'єднання зі статичними
     async function fetchArticles() {
       try {
         const snapshot = await db.collection('articles').orderBy('createdAt', 'desc').get();
-        articlesList = [];
+        const firebaseArticles = [];
         snapshot.forEach(doc => {
-          articlesList.push({ id: doc.id, ...doc.data() });
+          firebaseArticles.push({ id: doc.id, ...doc.data() });
         });
-        renderGrid(articlesList);
+        
+        // Об'єднуємо: спочатку нові з Firebase, потім статичні
+        allArticles = [...firebaseArticles, ...staticArticles];
+        renderGrid(allArticles);
       } catch (err) {
-        console.error("Помилка завантаження:", err);
+        console.error("Помилка завантаження з Firebase:", err);
+        renderGrid(allArticles);
       }
     }
 
-    // Відображення карток
+    // Відображення карток у сітці
     function renderGrid(data) {
       const grid = document.getElementById('articlesGrid');
       grid.innerHTML = '';
@@ -306,7 +364,7 @@ const firebaseConfig = {
     // Пошук і фільтрація
     function filterArticles() {
       const query = document.getElementById('searchInput').value.toLowerCase();
-      const filtered = articlesList.filter(art => {
+      const filtered = allArticles.filter(art => {
         const matchesCat = (activeCategory === 'all' || art.category === activeCategory);
         const matchesQuery = art.title.toLowerCase().includes(query) || art.summary.toLowerCase().includes(query);
         return matchesCat && matchesQuery;
@@ -317,8 +375,8 @@ const firebaseConfig = {
     // Модальне вікно для головного банера
     function openHeroModal() {
       document.getElementById('modalTitle').textContent = "Пошук витоку струму акумулятора: Повний посібник для автовласників (Hantek)";
-      document.getElementById('modalDate').textContent = "20 жовтня, 2026";
-      document.getElementById('modalAuthor').textContent = "Admin";
+      document.getElementById('modalDate').textContent = "20 жовтня, 2026 р.";
+      document.getElementById('modalAuthor').textContent = "Admin Neoservice";
       document.getElementById('modalCategory').textContent = "АВТОДІАГНОСТИКА";
       document.getElementById('modalText').innerHTML = "Детальний посібник з використання осцилографа Hantek та мультиметра для виявлення прихованих витоків струму в автомобільній проводці. Покрокова інструкція діагностики запобіжників та блоків управління.";
       
@@ -332,9 +390,9 @@ const firebaseConfig = {
       modal.classList.add('flex');
     }
 
-    // Модальне вікно для звичайних статей
+    // Модальне вікно для карток
     function openModal(id) {
-      const art = articlesList.find(a => a.id === id);
+      const art = allArticles.find(a => a.id === id);
       if (!art) return;
 
       document.getElementById('modalTitle').textContent = art.title;

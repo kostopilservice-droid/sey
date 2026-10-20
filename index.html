@@ -2,10 +2,14 @@
 <html lang="uk">
 <head>
     <link rel="manifest" href="./manifest.json">
-<meta name="theme-color" content="#1a365d">
+    <meta name="theme-color" content="#1a365d">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Neoservice — Щоденний Довідник та Сервіс</title>
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
         :root {
             --primary: #1e3a8a;
@@ -21,26 +25,23 @@
             background-color: var(--bg);
             color: var(--text);
         }
-        header {
-            background-color: var(--primary);
-            color: white;
-            padding: 20px;
-            text-align: center;
-        }
-        header h1 { margin: 0; font-size: 24px; }
-        header p { margin: 5px 0 0; opacity: 0.9; font-style: italic; }
         
+        /* Навігація одразу під шапкою */
         nav {
             display: flex;
             justify-content: center;
             background: #0f172a;
             overflow-x: auto;
+            border-bottom: 2px solid #1e3a8a;
         }
         nav a {
             color: white;
-            padding: 14px 20px;
+            padding: 10px 20px;
             text-decoration: none;
             white-space: nowrap;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: background 0.2s;
         }
         nav a:hover { background-color: var(--accent); }
 
@@ -60,14 +61,9 @@
             box-shadow: 0 4px 6px rgba(0,0,0,0.05);
             border-top: 4px solid var(--primary);
         }
-        .card.spiritual { border-top-color: var(--accent); }
-        .card.sports { border-top-color: #16a34a; }
         .card h2 { margin-top: 0; font-size: 18px; }
 
-        /* Стилі для форми авторизації */
-        .input-group { margin-bottom: 12px; text-align: left; }
-        .input-group label { display: block; margin-bottom: 4px; font-size: 13px; color: #555; }
-        .input-group input { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
+        /* Стилі кнопок та форм авторизації */
         .btn { width: 100%; padding: 10px; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; margin-top: 8px; font-weight: bold; color: white; }
         .btn-primary { background: var(--primary); }
         .btn-success { background: #16a34a; }
@@ -81,182 +77,238 @@
             color: white;
             margin-top: 40px;
         }
+
+        @keyframes marquee {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
 <body>
 
-    <header>
-        <header style="background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%); color: white; padding: 25px 15px; text-align: center; border-bottom: 3px solid #3b82f6;">
-  <div style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 6px;">
-    <!-- Іконка / логотип Ангела -->
-    <div style="background: rgba(255, 255, 255, 0.15); border-radius: 50%; padding: 8px 12px; display: inline-flex; align-items: center; justify-content: center; font-size: 1.8rem; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">
-      👼
-    </div>
-    <h1 style="margin: 0; font-size: 2rem; letter-spacing: 1px; font-weight: 800; text-transform: uppercase;">NEOSERVICE.KS.UA</h1>
-  </div>
-  <p style="margin: 0; font-style: italic; opacity: 0.9; font-size: 0.95rem; color: #e2e8f0;">
-    «Ісус — дорога, істина і життя» | Сервіс, Знання та Допомога
-  </p>
-</header>
+    <!-- ================= СТИЛЬНА ШАПКА З ПОШУКОМ ================= -->
+    <header style="background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); color: white; padding: 15px 20px; border-bottom: 3px solid #3b82f6; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+      <div style="max-width: 1100px; margin: 0 auto; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 15px;">
+        
+        <!-- Логотип + Заголовок -->
+        <a href="index.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none; color: white;">
+          <div style="background: rgba(255, 255, 255, 0.12); border: 1px solid rgba(255,255,255,0.2); border-radius: 14px; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">
+            👼
+          </div>
+          <div>
+            <div style="font-size: 1.4rem; font-weight: 900; letter-spacing: 0.8px; text-transform: uppercase; line-height: 1.1;">
+              NEOSERVICE<span style="color: #60a5fa;">.KS.UA</span>
+            </div>
+            <div style="font-size: 0.78rem; color: #cbd5e1; font-style: italic; margin-top: 2px;">
+              «Ісус — дорога, істина і життя» | Сервіс, Знання та Допомога
+            </div>
+          </div>
+        </a>
+
+        <!-- Активний рядок пошуку -->
+        <div style="flex: 1; max-width: 320px; min-width: 240px;">
+          <div style="position: relative; width: 100%;">
+            <span style="position: absolute; inset-y: 0; left: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8; pointer-events: none; font-size: 0.85rem;">
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </span>
+            <input type="text" id="mainSearch" placeholder="Пошук у довіднику... (натисніть Enter)" style="width: 100%; box-sizing: border-box; padding: 8px 12px 8px 34px; font-size: 0.82rem; background: rgba(255, 255, 255, 0.08); color: white; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 10px; outline: none;" />
+          </div>
+        </div>
+
+      </div>
     </header>
 
+    <!-- НАВІГАЦІЯ -->
     <nav>
-        <a href="baza.html">📖 База знань</a>
-        <a href="#services">🛠️ Сервіс - Service</a>
-        <a href="chat.html">💬 Чат спільноти</a>
-        <a href="account.html">🔐 Особистий</a>
+        <a href="baza.html"><i class="fa-solid fa-book-open mr-1"></i> База знань</a>
+        <a href="#services"><i class="fa-solid fa-screwdriver-wrench mr-1"></i> Сервіс - Service</a>
+        <a href="chat.html"><i class="fa-solid fa-comments mr-1"></i> Чат спільноти</a>
+        <a href="account.html"><i class="fa-solid fa-user-lock mr-1"></i> Особистий</a>
     </nav>
 
-
-<style>
-@keyframes marquee {
-  0% { transform: translateX(100%); }
-  100% { transform: translateX(-100%); }
-}
-</style>
-
+    <!-- ОСНОВНІ КАРТКИ -->
     <div class="container">
-    <!-- Картка 1: Слово на сьогодні -->
-    <div class="card">
-      <h2>📖 Слово на сьогодні</h2>
-      <p>«Благодать вам і мир від Бога Отця нашого й Господа Ісуса Христа!»</p>
       
-      <div style="background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 8px; padding: 15px; margin-top: 15px; text-align: center;">
-  <h3 style="margin-top: 0; font-size: 0.95rem; color: #1e3a8a;">▶ Наш YouTube-канал</h3>
-  <p style="font-size: 0.8rem; color: #64748b; margin-bottom: 12px;">Дивіться нові випуски та духовні роздуми щодня.</p>
-  <a href="https://www.youtube.com/@NeoService-3" target="_blank" style="display: inline-block; width: auto; padding: 8px 20px; background-color: #dc2626; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 0.85rem;">
-    Дивитися YouTube
-  </a>
-</div>
-    </div>
-
-    <!-- Картка 2: Сервіс Мої Дари -->
-    <div class="card">
-      <h2>🛠️ Сервіс </h2>
-      <ul style="padding-left: 20px; font-size: 0.9rem; line-height: 1.6; color: #334155;">
-        <li>💻 Ремонт комп'ютерів та оргтехніки</li>
-        <li>🖨️ Обслуговування принтерів та друк</li>
-        <li>🚗 Автоелектрика та діагностика</li>
-        <li>⚡ Ремонт та збірка електротранспорту</li>
-        <li>🌐 Веброзробка та дизайн</li>
-        <li>📄 Поліграфічні послуги</li>
-        <li>🖼️ Виготовлення макетів реклами, стенди</li>
-      </ul>
-      <p style="font-size: 0.85rem; color: #64748b; margin-top: 15px; font-style: italic;">Можливий виїзд до замовника</p>
-    </div>
-
-   <!-- Картка 3: Особистий кабінет -->
-    <div class="card" id="auth-section">
-      <h2>🔒 Особистий кабінет</h2>
-
-      <!-- Стан 1: Якщо користувач НЕ авторизований -->
-      <div id="loggedOutView">
-        <form id="emailAuthForm" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">
-          <input type="email" id="authEmail" placeholder="Електронна пошта" style="padding: 8px; border-radius: 4px; border: 1px solid #cbd5e1; outline: none; font-size: 0.85rem;" required />
-          <input type="password" id="authPassword" placeholder="Пароль" style="padding: 8px; border-radius: 4px; border: 1px solid #cbd5e1; outline: none; font-size: 0.85rem;" required />
-          
-          <div style="display: flex; gap: 8px;">
-            <button type="button" id="loginEmailBtn" class="btn btn-primary" style="flex: 1; padding: 8px; font-size: 0.85rem;">
-              Увійти
-            </button>
-            <button type="button" id="registerEmailBtn" class="btn btn-success" style="flex: 1; padding: 8px; font-size: 0.85rem;">
-              Зареєструватися
-            </button>
-          </div>
-          
-        </form>
-
-        <button id="googleLoginBtn" class="btn btn-google" style="width: 100%; padding: 8px; font-size: 0.85rem;">
-          Увійти через Google
-        </button>
-      </div>
-
-      <!-- Стан 2: Якщо користувач УВІЙШОВ -->
-      <div id="loggedInView" style="display: none;">
-        <div style="display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 8px 10px; border-radius: 6px; border: 1px solid #e2e8f0; margin-bottom: 12px;">
-          <div>
-            <span style="font-size: 0.75rem; color: #64748b;">Вітаємо,</span>
-            <div id="userEmailDisplay" style="font-weight: bold; color: #16a34a; font-size: 0.85rem; word-break: break-all;"></div>
-          </div>
-          <button id="logoutBtn" class="btn btn-danger" style="padding: 4px 8px; font-size: 0.75rem;">
-            Вийти
-          </button>
-        </div>
-
-        <!-- Форма створення нової заявки -->
-        <details style="margin-bottom: 12px; background: #f1f5f9; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1;">
-          <summary style="font-weight: bold; color: #1e3a8a; cursor: pointer; font-size: 0.85rem;">➕ Подати нову заявку</summary>
-          <form id="newRequestForm" style="margin-top: 8px; display: flex; flex-direction: column; gap: 6px;">
-            <select id="reqCategory" style="padding: 6px; border-radius: 4px; border: 1px solid #cbd5e1; outline: none; background: white; font-size: 0.8rem;" required>
-              <option value="Сервіс ПК/Оргтехніки">💻 Ремонт ПК / Оргтехніки</option>
-              <option value="Автоелектрика">🚗 Автоелектрика та діагностика</option>
-              <option value="Поліграфія/Реклама">📐 Веб, Поліграфія, Реклама</option>
-              <option value="Скарга/Пропозиція">💬 Скарга або пропозиція</option>
-            </select>
-            <textarea id="reqDescription" placeholder="Опишіть проблему..." rows="2" style="padding: 6px; border-radius: 4px; border: 1px solid #cbd5e1; outline: none; font-family: inherit; font-size: 0.8rem;" required></textarea>
-            <button type="submit" class="btn btn-primary" style="padding: 6px; font-size: 0.8rem;">
-              Надіслати
-            </button>
-          </form>
-        </details>
-
-        <!-- Таблиця замовлень -->
-        <h3 style="font-size: 0.85rem; color: #1e3a8a; margin-bottom: 6px;">📋 Історія замовлень</h3>
-        <div style="overflow-x: auto;">
-          <table style="width: 100%; border-collapse: collapse; font-size: 0.75rem; text-align: left;">
-            <thead>
-              <tr style="background: #e2e8f0; color: #334155;">
-                <th style="padding: 4px;">Дата</th>
-                <th style="padding: 4px;">Опис</th>
-                <th style="padding: 4px;">Статус</th>
-                <th style="padding: 4px;">Коментар</th>
-              </tr>
-            </thead>
-            <tbody id="ordersTableBody">
-              <tr>
-                <td colspan="4" style="text-align: center; padding: 10px; color: #64748b;">Завантаження...</td>
-              </tr>
-            </tbody>
-          </table>
-
-        </div>
+      <!-- Картка 1: Слово на сьогодні -->
+      <div class="card">
+        <h2>📖 Слово на сьогодні</h2>
+        <p>«Благодать вам і мир від Бога Отця нашого й Господа Ісуса Христа!»</p>
         
+        <div style="background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 8px; padding: 15px; margin-top: 15px; text-align: center;">
+          <h3 style="margin-top: 0; font-size: 0.95rem; color: #1e3a8a;">▶ Наш YouTube-канал</h3>
+          <p style="font-size: 0.8rem; color: #64748b; margin-bottom: 12px;">Дивіться нові випуски та духовні роздуми щодня.</p>
+          <a href="https://www.youtube.com/@NeoService-3" target="_blank" style="display: inline-block; padding: 8px 20px; background-color: #dc2626; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 0.85rem;">
+            Дивитися YouTube
+          </a>
+        </div>
       </div>
-      
+
+      <!-- Картка 2: Сервіс Мої Дари -->
+      <div class="card" id="services">
+        <h2>🛠️ Сервіс</h2>
+        <ul style="padding-left: 20px; font-size: 0.9rem; line-height: 1.6; color: #334155;">
+          <li>💻 Ремонт комп'ютерів та оргтехніки</li>
+          <li>🖨️ Обслуговування принтерів та друк</li>
+          <li>🚗 Автоелектрика та діагностика</li>
+          <li>⚡ Ремонт та збірка електротранспорту</li>
+          <li>🌐 Веброзробка та дизайн</li>
+          <li>📄 Поліграфічні послуги</li>
+          <li>🖼️ Виготовлення макетів реклами, стенди</li>
+        </ul>
+        <p style="font-size: 0.85rem; color: #64748b; margin-top: 15px; font-style: italic;">Можливий виїзд до замовника</p>
+      </div>
+
+      <!-- Картка 3: Особистий кабінет -->
+      <div class="card" id="auth-section">
+        <h2>🔒 Особистий кабінет</h2>
+
+        <!-- Стан 1: Не авторизований -->
+        <div id="loggedOutView">
+          <form id="emailAuthForm" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">
+            <input type="email" id="authEmail" placeholder="Електронна пошта" style="padding: 8px; border-radius: 4px; border: 1px solid #cbd5e1; outline: none; font-size: 0.85rem;" required />
+            <input type="password" id="authPassword" placeholder="Пароль" style="padding: 8px; border-radius: 4px; border: 1px solid #cbd5e1; outline: none; font-size: 0.85rem;" required />
+            
+            <div style="display: flex; gap: 8px;">
+              <button type="button" id="loginEmailBtn" class="btn btn-primary" style="flex: 1; padding: 8px; font-size: 0.85rem;">Увійти</button>
+              <button type="button" id="registerEmailBtn" class="btn btn-success" style="flex: 1; padding: 8px; font-size: 0.85rem;">Реєстрація</button>
+            </div>
+          </form>
+          <button id="googleLoginBtn" class="btn btn-google" style="width: 100%; padding: 8px; font-size: 0.85rem;">Увійти через Google</button>
+        </div>
+
+        <!-- Стан 2: Увійшов -->
+        <div id="loggedInView" style="display: none;">
+          <div style="display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 8px 10px; border-radius: 6px; border: 1px solid #e2e8f0; margin-bottom: 12px;">
+            <div>
+              <span style="font-size: 0.75rem; color: #64748b;">Вітаємо,</span>
+              <div id="userEmailDisplay" style="font-weight: bold; color: #16a34a; font-size: 0.85rem; word-break: break-all;"></div>
+            </div>
+            <button id="logoutBtn" class="btn btn-danger" style="padding: 4px 8px; font-size: 0.75rem;">Вийти</button>
+          </div>
+
+          <details style="margin-bottom: 12px; background: #f1f5f9; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1;">
+            <summary style="font-weight: bold; color: #1e3a8a; cursor: pointer; font-size: 0.85rem;">➕ Подати нову заявку</summary>
+            <form id="newRequestForm" style="margin-top: 8px; display: flex; flex-direction: column; gap: 6px;">
+              <select id="reqCategory" style="padding: 6px; border-radius: 4px; border: 1px solid #cbd5e1; outline: none; background: white; font-size: 0.8rem;" required>
+                <option value="Сервіс ПК/Оргтехніки">💻 Ремонт ПК / Оргтехніки</option>
+                <option value="Автоелектрика">🚗 Автоелектрика та діагностика</option>
+                <option value="Поліграфія/Реклама">📐 Веб, Поліграфія, Реклама</option>
+                <option value="Скарга/Пропозиція">💬 Скарга або пропозиція</option>
+              </select>
+              <textarea id="reqDescription" placeholder="Опишіть проблему..." rows="2" style="padding: 6px; border-radius: 4px; border: 1px solid #cbd5e1; outline: none; font-family: inherit; font-size: 0.8rem;" required></textarea>
+              <button type="submit" class="btn btn-primary" style="padding: 6px; font-size: 0.8rem;">Надіслати</button>
+            </form>
+          </details>
+
+          <h3 style="font-size: 0.85rem; color: #1e3a8a; margin-bottom: 6px;">📋 Історія замовлень</h3>
+          <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; font-size: 0.75rem; text-align: left;">
+              <thead>
+                <tr style="background: #e2e8f0; color: #334155;">
+                  <th style="padding: 4px;">Дата</th>
+                  <th style="padding: 4px;">Опис</th>
+                  <th style="padding: 4px;">Статус</th>
+                  <th style="padding: 4px;">Коментар</th>
+                </tr>
+              </thead>
+              <tbody id="ordersTableBody">
+                <tr><td colspan="4" style="text-align: center; padding: 10px; color: #64748b;">Завантаження...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
     </div>
 
-
-
+    <!-- ================= БІЖУЧИЙ РЯДОК ================= -->
+    <div style="width: 100%; background: linear-gradient(90deg, #1e3a8a, #3b82f6, #1e3a8a); color: white; padding: 12px 0; overflow: hidden; white-space: nowrap; box-shadow: inset 0 2px 5px rgba(0,0,0,0.2); margin: 30px 0 0 0; border-top: 2px solid #60a5fa; border-bottom: 2px solid #60a5fa;">
+      <div style="display: inline-block; animation: marquee 25s linear infinite; font-size: 1rem; font-style: italic; letter-spacing: 0.5px;">
+        ✨ «Світильник нозі моїй — слово Твоє, і світло для стежки моєї» &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 🕊️ «Ісус — дорога, істина і життя» &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 🙏 «Блаженні миротворці, бо вони синами Божими назвуться» &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      </div>
     </div>
-<!-- Біжучий рядок зі Святим Писанням (розміщується знизу під усіма картками) -->
-<div style="width: 100%; background: linear-gradient(90deg, #1e3a8a, #3b82f6, #1e3a8a); color: white; padding: 12px 0; overflow: hidden; white-space: nowrap; box-shadow: inset 0 2px 5px rgba(0,0,0,0.2); margin: 30px 0 0 0; border-top: 2px solid #60a5fa; border-bottom: 2px solid #60a5fa;">
-  <div style="display: inline-block; animation: marquee 25s linear infinite; font-size: 1rem; font-style: italic; letter-spacing: 0.5px;">
-    ✨ «Світильник нозі моїй — слово Твоє, і світло для стежки моєї» &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 🕊️ «Ісус — дорога, істина і життя» &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 🙏 «Блаженні миротворці, бо вони синами Божими назвуться» &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  </div>
-</div>
 
+    <!-- ================= 5 SEO-ТЕМАТИЧНИХ РОЗДІЛІВ В РЯД ================= -->
+    <section style="max-width: 1100px; margin: 30px auto; padding: 0 15px;">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 15px;">
+        
+        <!-- Розділ 1: Автодіагностика -->
+        <a href="baza.html" style="text-decoration: none; color: inherit;">
+          <div style="background: white; border-radius: 12px; padding: 15px; border-top: 4px solid #d97706; box-shadow: 0 4px 6px rgba(0,0,0,0.04); height: 100%; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='translateY(0)'">
+            <div>
+              <div style="font-size: 1.5rem; margin-bottom: 8px;">🚗</div>
+              <h3 style="font-size: 0.95rem; font-weight: bold; color: #1e3a8a; margin: 0 0 6px 0;">Автодіагностика & ECU</h3>
+              <p style="font-size: 0.75rem; color: #64748b; margin: 0; line-height: 1.4;">Сканери, осцилографи Hantek, пошук витоків струму, прошивка ЕБУ.</p>
+            </div>
+            <span style="font-size: 0.75rem; color: #d97706; font-weight: bold; margin-top: 12px; display: inline-block;">Перейти &rarr;</span>
+          </div>
+        </a>
 
+        <!-- Розділ 2: Спорт та аналітика -->
+        <a href="baza.html" style="text-decoration: none; color: inherit;">
+          <div style="background: white; border-radius: 12px; padding: 15px; border-top: 4px solid #16a34a; box-shadow: 0 4px 6px rgba(0,0,0,0.04); height: 100%; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='translateY(0)'">
+            <div>
+              <div style="font-size: 1.5rem; margin-bottom: 8px;">⚽</div>
+              <h3 style="font-size: 0.95rem; font-weight: bold; color: #1e3a8a; margin: 0 0 6px 0;">Спорт та Аналітика</h3>
+              <p style="font-size: 0.75rem; color: #64748b; margin: 0; line-height: 1.4;">Статистика матчів, європейські футбольні ліги, аналіз та прогнози.</p>
+            </div>
+            <span style="font-size: 0.75rem; color: #16a34a; font-weight: bold; margin-top: 12px; display: inline-block;">Огляд &rarr;</span>
+          </div>
+        </a>
 
-<style>
-@keyframes marquee {
-  0% { transform: translateX(100%); }
-  100% { transform: translateX(-100%); }
-}
-</style>
+        <!-- Розділ 3: Комп'ютери та IT -->
+        <a href="baza.html" style="text-decoration: none; color: inherit;">
+          <div style="background: white; border-radius: 12px; padding: 15px; border-top: 4px solid #2563eb; box-shadow: 0 4px 6px rgba(0,0,0,0.04); height: 100%; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='translateY(0)'">
+            <div>
+              <div style="font-size: 1.5rem; margin-bottom: 8px;">💻</div>
+              <h3 style="font-size: 0.95rem; font-weight: bold; color: #1e3a8a; margin: 0 0 6px 0;">Комп'ютери та IT</h3>
+              <p style="font-size: 0.75rem; color: #64748b; margin: 0; line-height: 1.4;">Ремонт заліза, програматори, обслуговування ноутбуків та оргтехніки.</p>
+            </div>
+            <span style="font-size: 0.75rem; color: #2563eb; font-weight: bold; margin-top: 12px; display: inline-block;">Читати &rarr;</span>
+          </div>
+        </a>
+
+        <!-- Розділ 4: Інженерія та схемотехніка -->
+        <a href="baza.html" style="text-decoration: none; color: inherit;">
+          <div style="background: white; border-radius: 12px; padding: 15px; border-top: 4px solid #7c3aed; box-shadow: 0 4px 6px rgba(0,0,0,0.04); height: 100%; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='translateY(0)'">
+            <div>
+              <div style="font-size: 1.5rem; margin-bottom: 8px;">⚙️</div>
+              <h3 style="font-size: 0.95rem; font-weight: bold; color: #1e3a8a; margin: 0 0 6px 0;">Інженерія & Схеми</h3>
+              <p style="font-size: 0.75rem; color: #64748b; margin: 0; line-height: 1.4;">Радіозв'язок, SDR приймачі, охоронні системи та технічні мануали.</p>
+            </div>
+            <span style="font-size: 0.75rem; color: #7c3aed; font-weight: bold; margin-top: 12px; display: inline-block;">Схеми &rarr;</span>
+          </div>
+        </a>
+
+        <!-- Розділ 5: Духовне слово -->
+        <a href="index.html" style="text-decoration: none; color: inherit;">
+          <div style="background: white; border-radius: 12px; padding: 15px; border-top: 4px solid #dc2626; box-shadow: 0 4px 6px rgba(0,0,0,0.04); height: 100%; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='translateY(0)'">
+            <div>
+              <div style="font-size: 1.5rem; margin-bottom: 8px;">🕊️</div>
+              <h3 style="font-size: 0.95rem; font-weight: bold; color: #1e3a8a; margin: 0 0 6px 0;">Духовне Слово</h3>
+              <p style="font-size: 0.75rem; color: #64748b; margin: 0; line-height: 1.4;">Щоденні надихаючі цитати зі Святого Письма та відео на YouTube.</p>
+            </div>
+            <span style="font-size: 0.75rem; color: #dc2626; font-weight: bold; margin-top: 12px; display: inline-block;">Дізнатись &rarr;</span>
+          </div>
+        </a>
+
+      </div>
+    </section>
+
     <footer>
         <p>&copy; 2026 Neoservice.ks.ua — Ваш щоденний довідник та помічник.</p>
     </footer>
 
-    <!-- Скрипти Firebase SDK -->
+    <!-- СКРИПТИ FIREBASE ТА ОБРОБНИК ПОШУКУ -->
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+      import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+      import { getFirestore, collection, addDoc, query, where, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-
-    
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-  import { getFirestore, collection, addDoc, query, where, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-  const firebaseConfig = {
+const firebaseConfig = {
     apiKey: "AIzaSyBlKoP6-M8tdrKq88bSdnWSnak5Gpddnpk",
     authDomain: "neoservice-ks-ua.firebaseapp.com",
     projectId: "neoservice-ks-ua",
@@ -266,150 +318,114 @@
     measurementId: "G-BYGHEHVYY3"
   };
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      const db = getFirestore(app);
 
-  const loggedOutView = document.getElementById('loggedOutView');
-  const loggedInView = document.getElementById('loggedInView');
-  const userEmailDisplay = document.getElementById('userEmailDisplay');
-  const googleLoginBtn = document.getElementById('googleLoginBtn');
-  const loginEmailBtn = document.getElementById('loginEmailBtn');
-  const registerEmailBtn = document.getElementById('registerEmailBtn');
-  const logoutBtn = document.getElementById('logoutBtn');
-  const newRequestForm = document.getElementById('newRequestForm');
-  const ordersTableBody = document.getElementById('ordersTableBody');
+      const loggedOutView = document.getElementById('loggedOutView');
+      const loggedInView = document.getElementById('loggedInView');
+      const userEmailDisplay = document.getElementById('userEmailDisplay');
+      const googleLoginBtn = document.getElementById('googleLoginBtn');
+      const loginEmailBtn = document.getElementById('loginEmailBtn');
+      const registerEmailBtn = document.getElementById('registerEmailBtn');
+      const logoutBtn = document.getElementById('logoutBtn');
+      const newRequestForm = document.getElementById('newRequestForm');
+      const ordersTableBody = document.getElementById('ordersTableBody');
 
-  // Вхід через Email / Пароль
-  loginEmailBtn?.addEventListener('click', async () => {
-    const email = document.getElementById('authEmail').value;
-    const password = document.getElementById('authPassword').value;
-    if (!email || !password) return alert('Заповніть email та пароль!');
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-    } catch (err) {
-      alert('Помилка входу: ' + err.message);
-    }
-  });
-
-  // Реєстрація через Email / Пароль
-  registerEmailBtn?.addEventListener('click', async () => {
-    const email = document.getElementById('authEmail').value;
-    const password = document.getElementById('authPassword').value;
-    if (!email || !password) return alert('Заповніть email та пароль!');
-    try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      alert('Реєстрація успішна!');
-    } catch (err) {
-      alert('Помилка реєстрації: ' + err.message);
-    }
-  });
-
-  // Вхід через Google
-  googleLoginBtn?.addEventListener('click', async () => {
-    const provider = new GoogleAuthProvider();
-    try {
-      await signInWithPopup(auth, provider);
-    } catch (err) {
-      alert('Помилка входу: ' + err.message);
-    }
-  });
-
-  // Вихід
-  logoutBtn?.addEventListener('click', () => signOut(auth));
-
-  // Відстеження стану входу
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      if (loggedOutView) loggedOutView.style.display = 'none';
-      if (loggedInView) loggedInView.style.display = 'block';
-      if (userEmailDisplay) userEmailDisplay.innerText = user.email;
-      loadUserOrders(user.email);
-    } else {
-      if (loggedOutView) loggedOutView.style.display = 'block';
-      if (loggedInView) loggedInView.style.display = 'none';
-    }
-  });
-
-  // Додавання нової заявки
-  newRequestForm?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const user = auth.currentUser;
-    if (!user) return;
-
-    const category = document.getElementById('reqCategory').value;
-    const description = document.getElementById('reqDescription').value;
-
-    try {
-      await addDoc(collection(db, "requests"), {
-        userEmail: user.email,
-        category: category,
-        description: description,
-        status: "В обробці",
-        adminNote: "Заявку прийнято",
-        createdAt: serverTimestamp()
-      });
-      newRequestForm.reset();
-      alert('Вашу заявку створено!');
-    } catch (err) {
-      alert('Помилка: ' + err.message);
-    }
-  });
-
-  
-
-  // Завантаження та відображення замовлень
-  function loadUserOrders(email) {
-    const q = query(
-      collection(db, "requests"),
-      where("userEmail", "==", email)
-    );
-
-    onSnapshot(q, (snapshot) => {
-      if (!ordersTableBody) return;
-      ordersTableBody.innerHTML = '';
-
-      if (snapshot.empty) {
-        ordersTableBody.innerHTML = `<tr><td colspan="4" style="text-align: center; padding: 10px; color: #64748b;">У вас поки немає замовлень.</td></tr>`;
-        return;
-      }
-
-      snapshot.forEach((doc) => {
-        const data = doc.data();
-        
-        // Гнучке зчитування англійських та українських назв полів із бази
-        const cat = data.category || data.Категорія || 'Заявка';
-        const desc = data.description || data.Опис || '';
-        const stat = data.status || data.Статус || 'В обробці';
-        const note = data.adminNote || data.Коментар || '—';
-        
-        const timeField = data.createdAt || data.створеноAt;
-        const dateStr = timeField && timeField.toDate ? new Date(timeField.toDate()).toLocaleDateString('uk-UA') : 'Щойно';
-        
-        // Автоматичне визначення кольору та тексту статусу
-        const statLower = String(stat).toLowerCase();
-        let statusBadge = '<span style="background: #fef08a; color: #854d0e; padding: 2px 6px; border-radius: 4px; font-weight: bold; font-size: 0.75rem;">🟡 В обробці</span>';
-        
-        if (statLower.includes('роб')) {
-          statusBadge = '<span style="background: #bfdbfe; color: #1e40af; padding: 2px 6px; border-radius: 4px; font-weight: bold; font-size: 0.75rem;">🔵 В роботі</span>';
-        } else if (statLower.includes('викон') || statLower.includes('готов') || statLower.includes('заверш')) {
-          statusBadge = '<span style="background: #bbf7d0; color: #166534; padding: 2px 6px; border-radius: 4px; font-weight: bold; font-size: 0.75rem;">🟢 Завершено</span>';
-        } else if (statLower.includes('без') || statLower.includes('відмов')) {
-          statusBadge = '<span style="background: #fecaca; color: #991b1b; padding: 2px 6px; border-radius: 4px; font-weight: bold; font-size: 0.75rem;">🔴 Без ремонту</span>';
+      // Логіка перенаправлення з пошуку головної сторінки в Базу Знань
+      const mainSearchInput = document.getElementById('mainSearch');
+      mainSearchInput?.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          const queryVal = this.value.trim();
+          if (queryVal.length > 0) {
+            window.location.href = `baza.html?search=${encodeURIComponent(queryVal)}`;
+          }
         }
-
-        const row = document.createElement('tr');
-        row.style.borderBottom = '1px solid #e2e8f0';
-        row.innerHTML = `
-          <td style="padding: 4px; color: #64748b; white-space: nowrap;">${dateStr}</td>
-          <td style="padding: 4px;"><b>${cat}</b><br><span style="color: #475569;">${desc}</span></td>
-          <td style="padding: 4px;">${statusBadge}</td>
-          <td style="padding: 4px; color: #334155;">${note}</td>
-        `;
-        ordersTableBody.appendChild(row);
       });
-    });
-  }
-</script>
-     
-</html>
+
+      // Авторизаційні кнопкори
+      loginEmailBtn?.addEventListener('click', async () => {
+        const email = document.getElementById('authEmail').value;
+        const password = document.getElementById('authPassword').value;
+        if (!email || !password) return alert('Заповніть email та пароль!');
+        try { await signInWithEmailAndPassword(auth, email, password); } catch (err) { alert('Помилка входу: ' + err.message); }
+      });
+
+      registerEmailBtn?.addEventListener('click', async () => {
+        const email = document.getElementById('authEmail').value;
+        const password = document.getElementById('authPassword').value;
+        if (!email || !password) return alert('Заповніть email та пароль!');
+        try { await createUserWithEmailAndPassword(auth, email, password); alert('Реєстрація успішна!'); } catch (err) { alert('Помилка реєстрації: ' + err.message); }
+      });
+
+      googleLoginBtn?.addEventListener('click', async () => {
+        const provider = new GoogleAuthProvider();
+        try { await signInWithPopup(auth, provider); } catch (err) { alert('Помилка входу: ' + err.message); }
+      });
+
+      logoutBtn?.addEventListener('click', () => signOut(auth));
+
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          if (loggedOutView) loggedOutView.style.display = 'none';
+          if (loggedInView) loggedInView.style.display = 'block';
+          if (userEmailDisplay) userEmailDisplay.innerText = user.email;
+          loadUserOrders(user.email);
+        } else {
+          if (loggedOutView) loggedOutView.style.display = 'block';
+          if (loggedInView) loggedInView.style.display = 'none';
+        }
+      });
+
+      newRequestForm?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const user = auth.currentUser;
+        if (!user) return;
+        try {
+          await addDoc(collection(db, "requests"), {
+            userEmail: user.email,
+            category: document.getElementById('reqCategory').value,
+            description: document.getElementById('reqDescription').value,
+            status: "В обробці",
+            adminNote: "Заявку прийнято",
+            createdAt: serverTimestamp()
+          });
+          newRequestForm.reset();
+          alert('Вашу заявку створено!');
+        } catch (err) { alert('Помилка: ' + err.message); }
+      });
+
+      function loadUserOrders(email) {
+        const q = query(collection(db, "requests"), where("userEmail", "==", email));
+        onSnapshot(q, (snapshot) => {
+          if (!ordersTableBody) return;
+          ordersTableBody.innerHTML = '';
+          if (snapshot.empty) {
+            ordersTableBody.innerHTML = `<tr><td colspan="4" style="text-align: center; padding: 10px; color: #64748b;">У вас поки немає замовлень.</td></tr>`;
+            return;
+          }
+          snapshot.forEach((doc) => {
+            const data = doc.data();
+            const cat = data.category || 'Заявка';
+            const desc = data.description || '';
+            const stat = data.status || 'В обробці';
+            const note = data.adminNote || '—';
+            const timeField = data.createdAt;
+            const dateStr = timeField && timeField.toDate ? new Date(timeField.toDate()).toLocaleDateString('uk-UA') : 'Щойно';
+
+            const row = document.createElement('tr');
+            row.style.borderBottom = '1px solid #e2e8f0';
+            row.innerHTML = `
+              <td style="padding: 4px; color: #64748b; white-space: nowrap;">${dateStr}</td>
+              <td style="padding: 4px;"><b>${cat}</b><br><span style="color: #475569;">${desc}</span></td>
+              <td style="padding: 4px;"><span style="background: #fef08a; color: #854d0e; padding: 2px 6px; border-radius: 4px; font-weight: bold; font-size: 0.75rem;">${stat}</span></td>
+              <td style="padding: 4px; color: #334155;">${note}</td>
+            `;
+            ordersTableBody.appendChild(row);
+          });
+        });
+      }
+    </script>
+</body>
+</html> 

@@ -53,7 +53,7 @@
 
         .market-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
             gap: 20px;
             margin-top: 20px;
         }
@@ -68,10 +68,32 @@
             flex-direction: column;
             justify-content: space-between;
             transition: transform 0.2s, box-shadow 0.2s;
+            overflow: hidden;
         }
         .product-card:hover {
             transform: translateY(-3px);
             box-shadow: 0 8px 15px rgba(0,0,0,0.08);
+        }
+
+        /* Стилі колажу фотографій */
+        .photo-collage {
+            display: grid;
+            gap: 3px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            overflow: hidden;
+            height: 150px;
+            background: #f1f5f9;
+        }
+        .photo-collage-1 { grid-template-columns: 1fr; }
+        .photo-collage-2 { grid-template-columns: 1fr 1fr; }
+        .photo-collage-3 { grid-template-columns: 2fr 1fr; }
+        .photo-collage-3 .sub-grid { display: grid; grid-template-rows: 1fr 1fr; gap: 3px; }
+
+        .photo-collage img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .badge {
@@ -146,10 +168,10 @@
 
     <!-- НАВІГАЦІЯ -->
     <nav>
-        <a href="index.html"><i class="fa-solid fa-house mr-1"></i> Головна</a>
-        <a href="baza.html"><i class="fa-solid fa-book-open mr-1"></i> База знань</a>
-        <a href="auto.html" style="background-color: var(--auto-color);"><i class="fa-solid fa-car mr-1"></i> Автокомерція & Маркет</a>
-        <a href="chat.html"><i class="fa-solid fa-comments mr-1"></i> Чат</a>
+        <a href="index.html"><i class="fa-solid fa-house"></i> Головна</a>
+        <a href="baza.html"><i class="fa-solid fa-book-open"></i> База знань</a>
+        <a href="auto.html" style="background-color: var(--auto-color);"><i class="fa-solid fa-car"></i> Автокомерція & Маркет</a>
+        <a href="chat.html"><i class="fa-solid fa-comments"></i> Чат</a>
     </nav>
 
     <div class="container">
@@ -163,15 +185,14 @@
           </p>
         </div>
 
-        <!-- Кнопка відкриття форми -->
         <div id="addBtnContainer">
           <button id="toggleFormBtn" class="btn-add">
-            <i class="fa-solid fa-plus"></i> Додати оголошення
+            <i class="fa-solid fa-plus"></i> Подати оголошення
           </button>
         </div>
       </div>
 
-      <!-- ФОРМА ДОДАВАННЯ ОГОЛОШЕННЯ (прихована за замовчуванням) -->
+      <!-- ФОРМА ДОДАВАННЯ ОГОЛОШЕННЯ -->
       <div id="newAdFormCard" style="display: none; background: white; border-radius: 12px; padding: 20px; margin-top: 20px; border: 2px dashed var(--auto-color); box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
         <h3 style="margin-top: 0; color: #1e3a8a; font-size: 1.05rem;"><i class="fa-solid fa-pen-to-square"></i> Нове оголошення</h3>
         
@@ -206,8 +227,13 @@
           </div>
 
           <div>
-            <label style="font-size: 0.78rem; font-weight: bold; color: #475569;">Телефон / Telegram для зв'язку:</label>
+            <label style="font-size: 0.78rem; font-weight: bold; color: #475569;">Телефон / Telegram:</label>
             <input type="text" id="adContact" placeholder="напр. +38097... або @username" required style="width: 100%; box-sizing: border-box; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.85rem; margin-top: 4px;" />
+          </div>
+
+          <div style="grid-column: 1 / -1;">
+            <label style="font-size: 0.78rem; font-weight: bold; color: #475569;">Посилання на фото (через кому чи пробіл):</label>
+            <input type="text" id="adPhotos" placeholder="https://i.ibb.co/1.jpg, https://i.ibb.co/2.jpg" style="width: 100%; box-sizing: border-box; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.85rem; margin-top: 4px;" />
           </div>
 
           <div style="grid-column: 1 / -1;">
@@ -237,7 +263,10 @@
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
       import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-      import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+      import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, doc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+      // 🛑 ВКАЖІТЬ ВАШ EMAIL АДМІНІСТРАТОРА:
+      const ADMIN_EMAIL = "admin@neoservice.ks.ua"; 
 
 const firebaseConfig = {
     apiKey: "AIzaSyBlKoP6-M8tdrKq88bSdnWSnak5Gpddnpk",
@@ -247,7 +276,7 @@ const firebaseConfig = {
     messagingSenderId: "528941827813",
     appId: "1:528941827813:web:354ef989d200087634b60c",
     measurementId: "G-BYGHEHVYY3"
-  }; 
+  };
 
       const app = initializeApp(firebaseConfig);
       const auth = getAuth(app);
@@ -284,7 +313,7 @@ const firebaseConfig = {
         newAdFormCard.style.display = 'none';
       });
 
-      // Збереження оголошення у Firebase
+      // Збереження оголошення
       addListingForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         if (!currentUser) return;
@@ -296,6 +325,7 @@ const firebaseConfig = {
             condition: document.getElementById('adCondition').value,
             price: Number(document.getElementById('adPrice').value),
             contact: document.getElementById('adContact').value,
+            photos: document.getElementById('adPhotos').value,
             description: document.getElementById('adDescription').value,
             userEmail: currentUser.email,
             createdAt: serverTimestamp()
@@ -309,7 +339,39 @@ const firebaseConfig = {
         }
       });
 
-      // Показ оголошень у реальному часі з Firebase
+      // Функція генерації HTML-колажу
+      function buildCollageHtml(photosStr) {
+        if (!photosStr) return '';
+        const urls = photosStr.split(/[\s,]+/).filter(url => url.trim().startsWith('http'));
+        if (urls.length === 0) return '';
+
+        if (urls.length === 1) {
+          return `
+            <div class="photo-collage photo-collage-1">
+              <img src="${urls[0]}" alt="Фото товару">
+            </div>
+          `;
+        } else if (urls.length === 2) {
+          return `
+            <div class="photo-collage photo-collage-2">
+              <img src="${urls[0]}" alt="Фото 1">
+              <img src="${urls[1]}" alt="Фото 2">
+            </div>
+          `;
+        } else {
+          return `
+            <div class="photo-collage photo-collage-3">
+              <img src="${urls[0]}" alt="Головне фото">
+              <div class="sub-grid">
+                <img src="${urls[1]}" alt="Фото 2">
+                <img src="${urls[2]}" alt="Фото 3">
+              </div>
+            </div>
+          `;
+        }
+      }
+
+      // Показ оголошень у реальному часі
       const q = query(collection(db, "auto_listings"), orderBy("createdAt", "desc"));
       onSnapshot(q, (snapshot) => {
         autoProductsContainer.innerHTML = '';
@@ -323,15 +385,19 @@ const firebaseConfig = {
           return;
         }
 
-        snapshot.forEach((doc) => {
-          const item = doc.data();
+        snapshot.forEach((documentSnap) => {
+          const item = documentSnap.data();
+          const docId = documentSnap.id;
           const card = document.createElement('div');
           card.className = 'product-card';
 
           const badgeClass = item.category === 'Продаж авто' ? 'badge-blue' : (item.category === 'ЕБУ & Прошивки' ? 'badge-green' : 'badge-orange');
+          const isOwnerOrAdmin = currentUser && (currentUser.email === ADMIN_EMAIL || currentUser.email === item.userEmail);
+          const collageHtml = buildCollageHtml(item.photos);
 
           card.innerHTML = `
             <div>
+              ${collageHtml}
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                 <span class="badge ${badgeClass}">${item.category}</span>
                 <span style="font-size: 0.75rem; color: #94a3b8; font-weight: bold;">${item.condition}</span>
@@ -342,12 +408,35 @@ const firebaseConfig = {
             <div>
               <div style="font-size: 1.15rem; font-weight: bold; color: #d97706; margin-bottom: 8px;">${item.price.toLocaleString('uk-UA')} грн</div>
               <div style="font-size: 0.72rem; color: #64748b; margin-bottom: 8px;"><i class="fa-solid fa-phone"></i> ${item.contact}</div>
-              <a href="tel:${item.contact}" style="display: block; text-align: center; padding: 8px; background: #1e3a8a; color: white; border-radius: 6px; text-decoration: none; font-size: 0.8rem; font-weight: bold;">
-                Зв'язатися
-              </a>
+              
+              <div style="display: flex; gap: 6px;">
+                <a href="tel:${item.contact}" style="flex: 1; text-align: center; padding: 8px; background: #1e3a8a; color: white; border-radius: 6px; text-decoration: none; font-size: 0.8rem; font-weight: bold;">
+                  Зв'язатися
+                </a>
+                ${isOwnerOrAdmin ? `
+                  <button class="delete-btn" data-id="${docId}" style="background: #ef4444; color: white; border: none; border-radius: 6px; padding: 0 10px; cursor: pointer; font-size: 0.8rem;" title="Видалити оголошення">
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+                ` : ''}
+              </div>
             </div>
           `;
           autoProductsContainer.appendChild(card);
+        });
+
+        // Слухач на видалення
+        document.querySelectorAll('.delete-btn').forEach(btn => {
+          btn.addEventListener('click', async (e) => {
+            const id = e.currentTarget.getAttribute('data-id');
+            if (confirm('Ви дійсно бажаєте видалити це оголошення?')) {
+              try {
+                await deleteDoc(doc(db, "auto_listings", id));
+                alert('Оголошення видалено!');
+              } catch (err) {
+                alert('Помилка видалення: ' + err.message);
+              }
+            }
+          });
         });
       });
 

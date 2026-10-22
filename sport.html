@@ -138,7 +138,7 @@
         .knowledge-card {
             background: var(--card-bg);
             border-radius: 12px;
-            padding: 20px;
+            overflow: hidden;
             box-shadow: 0 4px 6px rgba(0,0,0,0.04);
             border: 1px solid #e2e8f0;
             display: flex;
@@ -149,6 +149,31 @@
         .knowledge-card:hover {
             transform: translateY(-3px);
             box-shadow: 0 8px 15px rgba(0,0,0,0.08);
+        }
+
+        .card-image-wrapper {
+            width: 100%;
+            height: 180px;
+            background: #e2e8f0;
+            overflow: hidden;
+            position: relative;
+        }
+        .card-image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+        .knowledge-card:hover .card-image-wrapper img {
+            transform: scale(1.03);
+        }
+
+        .card-body {
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            justify-content: space-between;
         }
 
         .category-badge {
@@ -169,7 +194,7 @@
             color: #475569;
             line-height: 1.5;
             margin: 12px 0;
-            white-space: pre-line; /* Зберігає абзаци */
+            white-space: pre-line;
         }
 
         .read-more-btn {
@@ -215,7 +240,7 @@
               NEO<span style="color: #4ade80;">SPORT</span>
             </div>
             <div style="font-size: 0.78rem; color: #bbf7d0; font-style: italic; margin-top: 2px;">
-              Новини • Аналітика • База Знань
+              Новини • Аналітика • Фото
             </div>
           </div>
         </a>
@@ -247,27 +272,27 @@
       <!-- Заголовок + Кнопка публікації -->
       <div style="background: white; border-radius: 12px; padding: 20px; border-left: 5px solid var(--sport-color); box-shadow: 0 4px 6px rgba(0,0,0,0.04); display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 15px;">
         <div>
-          <h1 style="margin: 0 0 6px 0; font-size: 1.3rem; color: #1e3a8a;">📰 Футбольна База Знань та Новини</h1>
+          <h1 style="margin: 0 0 6px 0; font-size: 1.3rem; color: #1e3a8a;">📰 Спортивні Новини з Фото</h1>
           <p style="margin: 0; font-size: 0.85rem; color: #64748b;">
-            Публікація свіжих новин, аналіз матчів та прогнози.
+            Публікація свіжих новин, фото та аналізу матчів.
           </p>
         </div>
 
         <div>
           <button id="toggleFormBtn" class="btn-add">
-            <i class="fa-solid fa-plus"></i> Додати новину
+            <i class="fa-solid fa-plus"></i> Додати новину з фото
           </button>
         </div>
       </div>
 
-      <!-- ФОРМА ДОДАВАННЯ НОВИНИ / СТАТТІ -->
+      <!-- ФОРМА ДОДАВАННЯ НОВИНИ -->
       <div id="newNewsFormCard" style="display: none; background: white; border-radius: 12px; padding: 20px; margin-top: 20px; border: 2px dashed var(--sport-color); box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
-        <h3 style="margin-top: 0; color: #1e3a8a; font-size: 1.05rem;"><i class="fa-solid fa-pen-to-square"></i> Публікація новини чи аналітики</h3>
+        <h3 style="margin-top: 0; color: #1e3a8a; font-size: 1.05rem;"><i class="fa-solid fa-pen-to-square"></i> Публікація новини</h3>
         
-        <form id="addNewsForm" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
+        <form id="addNewsForm" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px;">
           <div style="grid-column: 1 / -1;">
             <label style="font-size: 0.78rem; font-weight: bold; color: #475569;">Заголовок новини:</label>
-            <input type="text" id="newsTitle" placeholder="напр. Анонс центрального матчу туру УПЛ" required style="width: 100%; box-sizing: border-box; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.85rem; margin-top: 4px;" />
+            <input type="text" id="newsTitle" placeholder="напр. Огляд центрального матчу туру" required style="width: 100%; box-sizing: border-box; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.85rem; margin-top: 4px;" />
           </div>
 
           <div>
@@ -281,13 +306,18 @@
           </div>
 
           <div>
+            <label style="font-size: 0.78rem; font-weight: bold; color: #475569;">Посилання на фото (URL):</label>
+            <input type="url" id="newsPhotoUrl" placeholder="https://example.com/image.jpg" style="width: 100%; box-sizing: border-box; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.85rem; margin-top: 4px;" />
+          </div>
+
+          <div style="grid-column: 1 / -1;">
             <label style="font-size: 0.78rem; font-weight: bold; color: #475569;">Реферальне посилання (необов'язково):</label>
             <input type="url" id="newsAffiliateUrl" placeholder="https://beton.ua/?ref=..." style="width: 100%; box-sizing: border-box; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.85rem; margin-top: 4px;" />
           </div>
 
           <div style="grid-column: 1 / -1;">
             <label style="font-size: 0.78rem; font-weight: bold; color: #475569;">Текст новини / Аналіз:</label>
-            <textarea id="newsContent" rows="4" placeholder="Напишіть текст статті або короткий аналіз матчу..." required style="width: 100%; box-sizing: border-box; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.85rem; margin-top: 4px; font-family: inherit;"></textarea>
+            <textarea id="newsContent" rows="4" placeholder="Напишіть текст статті..." required style="width: 100%; box-sizing: border-box; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.85rem; margin-top: 4px; font-family: inherit;"></textarea>
           </div>
 
           <div style="grid-column: 1 / -1; display: flex; justify-content: flex-end; gap: 10px;">
@@ -302,7 +332,7 @@
         <div>
           <h3 style="margin: 0 0 6px 0; font-size: 1.1rem; color: #fbbf24;"><i class="fa-solid fa-trophy"></i> Кращі Коефіцієнти та Бонаси</h3>
           <p style="margin: 0; font-size: 0.82rem; opacity: 0.9;">
-            Переходьте на партнерську платформу, реєструйтеся та отримуйте вітальні бонуси.
+            Переходьте на партнерську платформу, реєструйтеся та отримуйте бонуси.
           </p>
         </div>
         <a href="https://beton.ua" target="_blank" rel="nofollow" class="btn-bet">
@@ -336,7 +366,6 @@
       import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
       import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, doc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-      // 🛑 ВКАЖІТЬ ВАШ EMAIL АДМІНІСТРАТОРА:
       const ADMIN_EMAIL = "admin@neoservice.ks.ua"; 
 
 const firebaseConfig = {
@@ -362,13 +391,12 @@ const firebaseConfig = {
       let currentUser = null;
       let activeCategory = 'all';
 
-      // Авторизація
       onAuthStateChanged(auth, (user) => {
         currentUser = user;
         if (!user) {
           toggleFormBtn.innerHTML = `<i class="fa-solid fa-lock"></i> Увійдіть, щоб додавати новини`;
         } else {
-          toggleFormBtn.innerHTML = `<i class="fa-solid fa-plus"></i> Додати новину`;
+          toggleFormBtn.innerHTML = `<i class="fa-solid fa-plus"></i> Додати новину з фото`;
         }
       });
 
@@ -390,12 +418,14 @@ const firebaseConfig = {
         e.preventDefault();
         if (!currentUser) return;
 
+        const photoUrl = document.getElementById('newsPhotoUrl').value.trim() || "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=600&q=80"; // Заглушка за замовчуванням
         const affiliateUrl = document.getElementById('newsAffiliateUrl').value.trim() || "https://beton.ua";
 
         try {
           await addDoc(collection(db, "sport_news"), {
             title: document.getElementById('newsTitle').value,
             category: document.getElementById('newsCategory').value,
+            photoUrl: photoUrl,
             content: document.getElementById('newsContent').value,
             affiliateUrl: affiliateUrl,
             userEmail: currentUser.email,
@@ -410,7 +440,7 @@ const firebaseConfig = {
         }
       });
 
-      // Рендеринг новин у реальному часі
+      // Рендеринг новин
       const q = query(collection(db, "sport_news"), orderBy("createdAt", "desc"));
       onSnapshot(q, (snapshot) => {
         newsContainer.innerHTML = '';
@@ -442,15 +472,22 @@ const firebaseConfig = {
 
           card.innerHTML = `
             <div>
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                <span class="category-badge ${badgeClass}">${categoryName}</span>
-                <span style="font-size: 0.75rem; color: #64748b; font-weight: bold;"><i class="fa-regular fa-calendar"></i> ${dateStr}</span>
+              <div class="card-image-wrapper">
+                <img src="${item.photoUrl}" alt="Фото новини" onerror="this.src='https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=600&q=80'" />
               </div>
-              <h3 style="font-size: 1.05rem; margin: 0 0 8px 0; color: #0f172a;">${item.title}</h3>
-              <p class="article-content">${item.content}</p>
+              <div class="card-body">
+                <div>
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <span class="category-badge ${badgeClass}">${categoryName}</span>
+                    <span style="font-size: 0.75rem; color: #64748b; font-weight: bold;"><i class="fa-regular fa-calendar"></i> ${dateStr}</span>
+                  </div>
+                  <h3 style="font-size: 1.05rem; margin: 0 0 8px 0; color: #0f172a;">${item.title}</h3>
+                  <p class="article-content">${item.content}</p>
+                </div>
+              </div>
             </div>
 
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px; gap: 8px;">
+            <div style="padding: 0 18px 18px 18px; display: flex; justify-content: space-between; align-items: center; gap: 8px;">
               <a href="${item.affiliateUrl}" target="_blank" rel="nofollow" class="read-more-btn">
                 Читати далі / Ставка <i class="fa-solid fa-arrow-right"></i>
               </a>
@@ -482,7 +519,7 @@ const firebaseConfig = {
         });
       });
 
-      // Логіка фільтрації
+      // Фільтрація
       const filterButtons = document.querySelectorAll('.filter-btn');
       filterButtons.forEach(btn => {
         btn.addEventListener('click', () => {

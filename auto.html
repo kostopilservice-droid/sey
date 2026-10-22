@@ -51,6 +51,30 @@
             padding: 0 15px;
         }
 
+        /* Кнопки фільтрів */
+        .filter-container {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        .filter-btn {
+            background: white;
+            border: 1px solid #cbd5e1;
+            color: #475569;
+            padding: 7px 14px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--auto-color);
+            color: white;
+            border-color: var(--auto-color);
+        }
+
         .market-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -266,7 +290,7 @@
         <div>
           <h1 style="margin: 0 0 6px 0; font-size: 1.3rem; color: #1e3a8a;">🚗 Авторинок та Дошка Оголошень</h1>
           <p style="margin: 0; font-size: 0.85rem; color: #64748b;">
-            Купівля та продаж авто, запчастин, блоків ЕБУ та діагностичного обладнання.
+            Купівля та продаж авто, запчастини, блоки ЕБУ та діагностичне обладнання.
           </p>
         </div>
 
@@ -275,6 +299,15 @@
             <i class="fa-solid fa-plus"></i> Подати оголошення
           </button>
         </div>
+      </div>
+
+      <!-- ФІЛЬТРИ КАТЕГОРІЙ -->
+      <div class="filter-container" id="categoryFilters">
+        <button class="filter-btn active" data-category="all">Всі товари</button>
+        <button class="filter-btn" data-category="Автозапчастини">🚗 Запчастини</button>
+        <button class="filter-btn" data-category="ЕБУ & Прошивки">⚡ ЕБУ & Прошивки</button>
+        <button class="filter-btn" data-category="Діагностика">🔌 Діагностика</button>
+        <button class="filter-btn" data-category="Продаж авто">🚘 Продаж авто</button>
       </div>
 
       <!-- ФОРМА ДОДАВАННЯ ОГОЛОШЕННЯ -->
@@ -312,13 +345,19 @@
           </div>
 
           <div>
-            <label style="font-size: 0.78rem; font-weight: bold; color: #475569;">Телефон / Telegram:</label>
-            <input type="text" id="adContact" placeholder="напр. +38097... або @username" required style="width: 100%; box-sizing: border-box; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.85rem; margin-top: 4px;" />
+            <label style="font-size: 0.78rem; font-weight: bold; color: #475569;">Номер телефону:</label>
+            <input type="tel" id="adContact" placeholder="напр. +380971234567" required style="width: 100%; box-sizing: border-box; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.85rem; margin-top: 4px;" />
           </div>
 
-          <div style="grid-column: 1 / -1;">
-            <label style="font-size: 0.78rem; font-weight: bold; color: #475569;">Посилання на фото (до 5 шт., через кому чи пробіл):</label>
-            <input type="text" id="adPhotos" placeholder="https://i.ibb.co/1.jpg, https://i.ibb.co/2.jpg" style="width: 100%; box-sizing: border-box; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.85rem; margin-top: 4px;" />
+          <!-- Окремі поля для посилань на фотографії -->
+          <div style="grid-column: 1 / -1; background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0;">
+            <label style="font-size: 0.8rem; font-weight: bold; color: #1e3a8a; display: block; margin-bottom: 8px;"><i class="fa-solid fa-images"></i> Посилання на фотографії (до 4 шт.):</label>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 8px;">
+              <input type="url" id="adPhoto1" placeholder="Фото 1 (Головне) https://..." style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; background: white;" />
+              <input type="url" id="adPhoto2" placeholder="Фото 2 https://..." style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; background: white;" />
+              <input type="url" id="adPhoto3" placeholder="Фото 3 https://..." style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; background: white;" />
+              <input type="url" id="adPhoto4" placeholder="Фото 4 https://..." style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; background: white;" />
+            </div>
           </div>
 
           <div style="grid-column: 1 / -1;">
@@ -395,6 +434,7 @@ const firebaseConfig = {
       let currentUser = null;
       let currentGallery = [];
       let currentImgIndex = 0;
+      let activeCategory = 'all';
 
       // Авторизація
       onAuthStateChanged(auth, (user) => {
@@ -424,6 +464,13 @@ const firebaseConfig = {
         e.preventDefault();
         if (!currentUser) return;
 
+        const p1 = document.getElementById('adPhoto1').value.trim();
+        const p2 = document.getElementById('adPhoto2').value.trim();
+        const p3 = document.getElementById('adPhoto3').value.trim();
+        const p4 = document.getElementById('adPhoto4').value.trim();
+        
+        const photosArray = [p1, p2, p3, p4].filter(url => url.startsWith('http'));
+
         try {
           await addDoc(collection(db, "auto_listings"), {
             title: document.getElementById('adTitle').value,
@@ -431,7 +478,7 @@ const firebaseConfig = {
             condition: document.getElementById('adCondition').value,
             price: Number(document.getElementById('adPrice').value),
             contact: document.getElementById('adContact').value,
-            photos: document.getElementById('adPhotos').value,
+            photosArray: photosArray,
             description: document.getElementById('adDescription').value,
             userEmail: currentUser.email,
             createdAt: serverTimestamp()
@@ -445,12 +492,15 @@ const firebaseConfig = {
         }
       });
 
-      // Генерація HTML-колажу з кліком на будь-яке фото
-      function buildCollageHtml(photosStr) {
-        if (!photosStr || photosStr.trim() === '') return '';
-        
-        // Поділ посилання по пробілу, комах та новому рядку
-        const urls = photosStr.split(/[\s,]+/).filter(url => url.trim().startsWith('http'));
+      // Генерація HTML-колажу
+      function buildCollageHtml(photosArray, photosStringFallback) {
+        let urls = [];
+        if (photosArray && Array.isArray(photosArray) && photosArray.length > 0) {
+          urls = photosArray;
+        } else if (photosStringFallback) {
+          urls = photosStringFallback.split(/[\s,]+/).filter(url => url.trim().startsWith('http'));
+        }
+
         if (urls.length === 0) return '';
 
         const photosJson = JSON.stringify(urls).replace(/"/g, '&quot;');
@@ -477,14 +527,14 @@ const firebaseConfig = {
                 <img src="${urls[1]}" alt="Фото 2" onclick="openLightbox(${photosJson}, 1)">
                 <img src="${urls[2]}" alt="Фото 3" onclick="openLightbox(${photosJson}, 2)">
               </div>
-              <div onclick="openLightbox(${photosJson}, 0)" style="position: absolute; inset: 0; z-index: 1; opacity: 0;"></div>
+              <div onclick="openLightbox(${photosJson}, 0)" style="position: absolute; inset: 0; z-index: 1; opacity: 0; cursor: pointer;"></div>
               ${countBadge}
             </div>
           `;
         }
       }
 
-      // Функціонал Галереї (Lightbox)
+      // Галерея (Lightbox)
       window.openLightbox = function(urlsArray, startIndex) {
         currentGallery = urlsArray;
         currentImgIndex = startIndex;
@@ -497,7 +547,6 @@ const firebaseConfig = {
         lightboxImg.src = currentGallery[currentImgIndex];
         lightboxCounter.textContent = `${currentImgIndex + 1} / ${currentGallery.length}`;
         
-        // Ховаємо стрілочки, якщо фото лише одне
         if (currentGallery.length <= 1) {
           lightboxPrev.style.display = 'none';
           lightboxNext.style.display = 'none';
@@ -521,7 +570,6 @@ const firebaseConfig = {
         updateLightbox();
       });
 
-      // Перемикання клавіатурою
       document.addEventListener('keydown', (e) => {
         if (lightboxModal.style.display === 'flex') {
           if (e.key === 'ArrowRight') lightboxNext.click();
@@ -530,14 +578,13 @@ const firebaseConfig = {
         }
       });
 
-      // Закриття галереї при кліку поза картинкою
       lightboxModal.addEventListener('click', (e) => {
         if (e.target === lightboxModal || e.target.classList.contains('lightbox-content-wrapper')) {
           lightboxModal.style.display = 'none';
         }
       });
 
-      // Показ оголошень з БД
+      // Рендеринг оголошень у реальному часі
       const q = query(collection(db, "auto_listings"), orderBy("createdAt", "desc"));
       onSnapshot(q, (snapshot) => {
         autoProductsContainer.innerHTML = '';
@@ -556,10 +603,11 @@ const firebaseConfig = {
           const docId = documentSnap.id;
           const card = document.createElement('div');
           card.className = 'product-card';
+          card.setAttribute('data-category', item.category);
 
           const badgeClass = item.category === 'Продаж авто' ? 'badge-blue' : (item.category === 'ЕБУ & Прошивки' ? 'badge-green' : 'badge-orange');
           const isOwnerOrAdmin = currentUser && (currentUser.email === ADMIN_EMAIL || currentUser.email === item.userEmail);
-          const collageHtml = buildCollageHtml(item.photos);
+          const collageHtml = buildCollageHtml(item.photosArray, item.photos);
 
           card.innerHTML = `
             <div>
@@ -577,7 +625,7 @@ const firebaseConfig = {
               
               <div style="display: flex; gap: 6px;">
                 <a href="tel:${item.contact}" style="flex: 1; text-align: center; padding: 8px; background: #1e3a8a; color: white; border-radius: 6px; text-decoration: none; font-size: 0.8rem; font-weight: bold;">
-                  Зв'язатися
+                  <i class="fa-solid fa-phone"></i> Зателефонувати
                 </a>
                 ${isOwnerOrAdmin ? `
                   <button class="delete-btn" data-id="${docId}" style="background: #ef4444; color: white; border: none; border-radius: 6px; padding: 0 10px; cursor: pointer; font-size: 0.8rem;" title="Видалити оголошення">
@@ -590,13 +638,15 @@ const firebaseConfig = {
           autoProductsContainer.appendChild(card);
         });
 
-        // Слухач подій видалення
+        // Застосування поточних фільтрів після оновлення даних
+        filterCards();
+
         document.querySelectorAll('.delete-btn').forEach(btn => {
           btn.addEventListener('click', async (e) => {
             const id = e.currentTarget.getAttribute('data-id');
             if (confirm('Ви дійсно бажаєте видалити це оголошення?')) {
               try {
-                await deleteDoc(doc(db, "auto_listings", id));
+                await deleteDoc(doc(db, "auto_listings"), id);
                 alert('Оголошення успішно видалено!');
               } catch (err) {
                 alert('Помилка видалення: ' + err.message);
@@ -606,14 +656,36 @@ const firebaseConfig = {
         });
       });
 
-      // Пошук по сайту
-      document.getElementById('autoSearch')?.addEventListener('input', function() {
-        const queryVal = this.value.toLowerCase();
-        const cards = document.querySelectorAll('.product-card');
-        cards.forEach(card => {
-          card.style.display = card.innerText.toLowerCase().includes(queryVal) ? 'flex' : 'none';
+      // Логіка фільтрації за категоріями
+      const filterButtons = document.querySelectorAll('.filter-btn');
+      filterButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          filterButtons.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          activeCategory = btn.getAttribute('data-category');
+          filterCards();
         });
       });
+
+      function filterCards() {
+        const searchQuery = document.getElementById('autoSearch').value.toLowerCase();
+        const cards = document.querySelectorAll('.product-card');
+
+        cards.forEach(card => {
+          const cardCategory = card.getAttribute('data-category');
+          const matchesCategory = (activeCategory === 'all' || cardCategory === activeCategory);
+          const matchesSearch = card.innerText.toLowerCase().includes(searchQuery);
+
+          if (matchesCategory && matchesSearch) {
+            card.style.display = 'flex';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      }
+
+      // Пошук по сайту
+      document.getElementById('autoSearch')?.addEventListener('input', filterCards);
     </script>
 </body>
 </html>

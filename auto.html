@@ -239,14 +239,15 @@
       import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
       import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-      const firebaseConfig = {
-        apiKey: "YOUR_API_KEY",
-        authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-        projectId: "YOUR_PROJECT_ID",
-        storageBucket: "YOUR_PROJECT_ID.appspot.com",
-        messagingSenderId: "YOUR_SENDER_ID",
-        appId: "YOUR_APP_ID"
-      };
+const firebaseConfig = {
+    apiKey: "AIzaSyBlKoP6-M8tdrKq88bSdnWSnak5Gpddnpk",
+    authDomain: "neoservice-ks-ua.firebaseapp.com",
+    projectId: "neoservice-ks-ua",
+    storageBucket: "neoservice-ks-ua.firebasestorage.app",
+    messagingSenderId: "528941827813",
+    appId: "1:528941827813:web:354ef989d200087634b60c",
+    measurementId: "G-BYGHEHVYY3"
+  };
 
       const app = initializeApp(firebaseConfig);
       const auth = getAuth(app);

@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#1a365d">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Маркетплейс & Оголошення — Neoservice</title>
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --primary-hover: #1d4ed8;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg);
+            color: var(--text);
+        }
+        
+        /* Навігація */
+        nav {
+            display: flex;
+            justify-content: center;
+            background: #0f172a;
+            overflow-x: auto;
+            border-bottom: 2px solid var(--primary);
+        }
+        nav a {
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            white-space: nowrap;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        nav a:hover { background-color: var(--primary); }
+
+        .container {
+            max-width: 1100px;
+            margin: 20px auto;
+            padding: 0 15px;
+        }
+
+        /* Форма подачі оголошення */
+        .btn-add {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.2s;
+        }
+        .btn-add:hover { background: var(--primary-hover); }
+
+        /* Філтрові блоки */
+        .filter-section {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            margin-top: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+        .filter-select {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            font-size: 0.85rem;
+            background: #f8fafc;
+            outline: none;
+        }
+
+        /* Сітка оголошень */
+        .shop-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .shop-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.04);
+            border: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .shop-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.08);
+        }
+
+        .card-img-wrapper {
+            width: 100%;
+            height: 190px;
+            background: #e2e8f0;
+            overflow: hidden;
+            position: relative;
+        }
+        .card-img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .card-price {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(15, 23, 42, 0.85);
+            color: #4ade80;
+            font-weight: 900;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        .card-body {
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            justify-content: space-between;
+        }
+
+        .badge-sub {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 0.72rem;
+            font-weight: bold;
+            background: #e2e8f0;
+            color: #334155;
+            margin-bottom: 6px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: #0f172a;
+            color: white;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ШАПКА -->
+    <header style="background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); color: white; padding: 15px 20px; border-bottom: 3px solid #3b82f6;">
+      <div style="max-width: 1100px; margin: 0 auto; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 15px;">
+        
+        <a href="index.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none; color: white;">
+          <div style="background: rgba(255, 255, 255, 0.15); border-radius: 14px; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem;">
+            🛒
+          </div>
+          <div>
+            <div style="font-size: 1.4rem; font-weight: 900; letter-spacing: 0.8px; text-transform: uppercase; line-height: 1.1;">
+              NEO<span style="color: #60a5fa;">MARKET</span>
+            </div>
+            <div style="font-size: 0.78rem; color: #bfdbfe; font-style: italic; margin-top: 2px;">
+              Інтернет-магазин & Дошка оголошень
+            </div>
+          </div>
+        </a>
+
+        <!-- Пошук по товарах -->
+        <div style="flex: 1; max-width: 320px; min-width: 240px;">
+          <div style="position: relative; width: 100%;">
+            <span style="position: absolute; inset-y: 0; left: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8; pointer-events: none; font-size: 0.85rem;">
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </span>
+            <input type="text" id="shopSearch" placeholder="Пошук товару чи оголошення..." style="width: 100%; box-sizing: border-box; padding: 8px 12px 8px 34px; font-size: 0.82rem; background: rgba(255, 255, 255, 0.15); color: white; border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 10px; outline: none;" />
+          </div>
+        </div>
+
+      </div>
+    </header>
+
+    <!-- НАВІГАЦІЯ -->
+    <nav>
+        <a href="index.html"><i class="fa-solid fa-house"></i> Головна</a>
+        <a href="baza.html"><i class="fa-solid fa-book-open"></i> База знань</a>
+        <a href="auto.html"><i class="fa-solid fa-car"></i> Автомаркет</a>
+        <a href="shop.html" style="background-color: var(--primary);"><i class="fa-solid fa-store"></i> Маркетплейс</a>
+        <a href="sport.html"><i class="fa-solid fa-football"></i> Спорт</a>
+        <a href="chat.html"><i class="fa-solid fa-comments"></i> Чат</a>
+    </nav>
+
+    <div class="container">
+      
+      <!-- Панель управління -->
+      <div style="background: white; border-radius: 12px; padding: 20px; border-left: 5px solid var(--primary); box-shadow: 0 4px 6px rgba(0,0,0,0.04); display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 15px;">
+        <div>
+          <h1 style="margin: 0 0 6px 0; font-size: 1.3rem; color: #1e3a8a;">🛍️ Всі товари та оголошення</h1>
+          <p style="margin: 0; font-size: 0.85rem; color: #64748b;">
+            Купуйте та продавайте електроніку, товари для дому, спорт, колекції та багато іншого.
+          </p>
+        </div>
+
+        <div>
+          <button id="toggleFormBtn" class="btn-add">
+            <i class="fa-solid fa-plus"></i> Подати оголошення
+          </button>
+        </div>
+      </div>
+
+      <!-- ФОРМА ПОДАЧІ ОГОЛОШЕННЯ -->
+      <div id="newListingFormCard" style="display: none; background: white; border-radius: 12px; padding: 20px; margin-top: 20px; border: 2px dashed var(--primary); box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+        <h3 style="margin-top: 0; color: #1e3a8a; font-size: 1.05rem;"><i class="fa-solid fa-box-open"></i> Нове оголошення</h3>
+        
+        <form id="addListingForm" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px;">
+          
+          <div style="grid-column: 1 / -1;">
+            <label style="font-size: 0.78rem; font-weight: bold; color: #475569;">Назва товару / Заголовок:</label>
+            <input type="text" id="itemTitle" placeholder="напр. Продам ноутбук Lenovo T14s або Набір інструментів" required style="width: 100%; box-sizing: border-box; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.85rem; margin-top: 4px;" />
+          </div>
+
+          <div>
+            <label style="font-size: 0.78rem; font-weight: bold; color: #475569;">Головна категорія:</label>
+            <select id="mainCategory" required style="width: 100%; box-sizing: border-box; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.85rem; margin-top: 4px; background: white;">
+              <option value="">-- Оберіть категорію --</option>
+              <option value="tech">📱 Техніка та Електроніка</option>
+              <option value="sport">⚽ Спорт та Туризм</option>
+              <option value="clothes">👕 Одяг, Взуття та Аксесуари</option>
+              <option value="kids">🧸 Дитячі товари</option>
+              <option value="home">🏡 Дім, Ремонт та Інтер'єр</option>
+              <option value="food">🍕 Продукти харчування</option>
+              <option value="collect">🏛️ Колекції та Антикваріат</option>
+              <option value="books">📚 Книги та Література</option>
+              <option value="other">🌀 Інші категорії</option>
+            </select>
+          </div>
+
+          <div>
+            <label style="font-size: 0.78rem; font-weight: bold; color: #475569;">Підкатегорія:</label>
+            <input type="text" id="subCategory" placeholder="напр. Ноутбуки, Автотовари, Інструменти" required style="width: 100%; box-sizing: border-box; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.85rem; margin-top: 4px;" />
+          </div>
+
+          <div>
+            <label style="font-size: 0.78rem; font-weight: bold; color: #475569;">Ціна (грн):</label>
+            <input type="number" id="itemPrice" placeholder="напр. 1500" required style="width: 100%; box-sizing: border-box; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.85rem; margin-top: 4px;" />
+          </div>
+
+          <div>
+            <label style="font-size: 0.78rem; font-weight: bold; color: #475569;">Телефон / Viber / Telegram:</label>
+            <input type="text" id="itemContact" placeholder="+380..." required style="width: 100%; box-sizing: border-box; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.85rem; margin-top: 4px;" />
+          </div>
+
+          <div style="grid-column: 1 / -1;">
+            <label style="font-size: 0.78rem; font-weight: bold; color: #475569;">Посилання на фото товару (URL):</label>
+            <input type="url" id="itemPhotoUrl" placeholder="https://example.com/photo.jpg" style="width: 100%; box-sizing: border-box; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.85rem; margin-top: 4px;" />
+          </div>
+
+          <div style="grid-column: 1 / -1;">
+            <label style="font-size: 0.78rem; font-weight: bold; color: #475569;">Опис товару / Стан / Комплектація:</label>
+            <textarea id="itemDescription" rows="4" placeholder="Опишіть стан товару, характеристики, умови доставки..." required style="width: 100%; box-sizing: border-box; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.85rem; margin-top: 4px; font-family: inherit;"></textarea>
+          </div>
+
+          <div style="grid-column: 1 / -1; display: flex; justify-content: flex-end; gap: 10px;">
+            <button type="button" id="cancelFormBtn" style="padding: 8px 16px; border-radius: 6px; border: 1px solid #cbd5e1; background: #f1f5f9; cursor: pointer; font-size: 0.85rem;">Скасувати</button>
+            <button type="submit" class="btn-add" style="padding: 8px 20px;">Опублікувати товар</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- ФІЛЬТРАЦІЯ ТА КАТЕГОРІЇ -->
+      <div class="filter-section">
+        <span style="font-size: 0.85rem; font-weight: bold; color: #475569;"><i class="fa-solid fa-filter"></i> Фільтр:</span>
+        <select id="filterCategory" class="filter-select">
+          <option value="all">Всі категорії</option>
+          <option value="tech">📱 Техніка та Електроніка</option>
+          <option value="sport">⚽ Спорт та Туризм</option>
+          <option value="clothes">👕 Одяг та Взуття</option>
+          <option value="kids">🧸 Дитячі товари</option>
+          <option value="home">🏡 Дім та Ремонт</option>
+          <option value="food">🍕 Продукти харчування</option>
+          <option value="collect">🏛️ Колекції та Антикваріат</option>
+          <option value="books">📚 Книги та Література</option>
+          <option value="other">🌀 Інше</option>
+        </select>
+      </div>
+
+      <!-- СІТКА ТОВАРІВ З FIREBASE -->
+      <div class="shop-grid" id="shopContainer">
+        <p style="grid-column: 1 / -1; text-align: center; color: #64748b; padding: 30px;">Завантаження оголошень...</p>
+      </div>
+
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Neoservice.ks.ua — Інтернет-магазин та оголошення.</p>
+    </footer>
+
+    <!-- Firebase модуль -->
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+      import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+      import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, doc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+      const ADMIN_EMAIL = "admin@neoservice.ks.ua"; 
+
+const firebaseConfig = {
+    apiKey: "AIzaSyBlKoP6-M8tdrKq88bSdnWSnak5Gpddnpk",
+    authDomain: "neoservice-ks-ua.firebaseapp.com",
+    projectId: "neoservice-ks-ua",
+    storageBucket: "neoservice-ks-ua.firebasestorage.app",
+    messagingSenderId: "528941827813",
+    appId: "1:528941827813:web:354ef989d200087634b60c",
+    measurementId: "G-BYGHEHVYY3"
+  };
+
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      const db = getFirestore(app);
+
+      const toggleFormBtn = document.getElementById('toggleFormBtn');
+      const newListingFormCard = document.getElementById('newListingFormCard');
+      const cancelFormBtn = document.getElementById('cancelFormBtn');
+      const addListingForm = document.getElementById('addListingForm');
+      const shopContainer = document.getElementById('shopContainer');
+      const filterCategory = document.getElementById('filterCategory');
+      const shopSearch = document.getElementById('shopSearch');
+
+      let currentUser = null;
+
+      onAuthStateChanged(auth, (user) => {
+        currentUser = user;
+        if (!user) {
+          toggleFormBtn.innerHTML = `<i class="fa-solid fa-lock"></i> Увійдіть, щоб подати оголошення`;
+        } else {
+          toggleFormBtn.innerHTML = `<i class="fa-solid fa-plus"></i> Подати оголошення`;
+        }
+      });
+
+      toggleFormBtn.addEventListener('click', () => {
+        if (!currentUser) {
+          alert('Будь ласка, авторизуйтесь на головній сторінці, щоб подавати оголошення!');
+          window.location.href = 'index.html#auth-section';
+          return;
+        }
+        newListingFormCard.style.display = newListingFormCard.style.display === 'none' ? 'block' : 'none';
+      });
+
+      cancelFormBtn.addEventListener('click', () => {
+        newListingFormCard.style.display = 'none';
+      });
+
+      // Збереження оголошення у Firestore
+      addListingForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (!currentUser) return;
+
+        const photoUrl = document.getElementById('itemPhotoUrl').value.trim() || "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=600&q=80";
+
+        try {
+          await addDoc(collection(db, "shop_listings"), {
+            title: document.getElementById('itemTitle').value,
+            category: document.getElementById('mainCategory').value,
+            subCategory: document.getElementById('subCategory').value,
+            price: document.getElementById('itemPrice').value,
+            contact: document.getElementById('itemContact').value,
+            photoUrl: photoUrl,
+            description: document.getElementById('itemDescription').value,
+            userEmail: currentUser.email,
+            createdAt: serverTimestamp()
+          });
+
+          addListingForm.reset();
+          newListingFormCard.style.display = 'none';
+          alert('Оголошення успішно опубліковано!');
+        } catch (err) {
+          alert('Помилка при публікації: ' + err.message);
+        }
+      });
+
+      // Відображення оголошень у реальному часі
+      const q = query(collection(db, "shop_listings"), orderBy("createdAt", "desc"));
+      onSnapshot(q, (snapshot) => {
+        shopContainer.innerHTML = '';
+
+        if (snapshot.empty) {
+          shopContainer.innerHTML = `
+            <div style="grid-column: 1 / -1; text-align: center; padding: 40px; background: white; border-radius: 12px; border: 1px dashed #cbd5e1;">
+              <p style="color: #64748b; margin: 0;">Оголошень поки немає. Будьте першим, хто додасть товар!</p>
+            </div>
+          `;
+          return;
+        }
+
+        snapshot.forEach((documentSnap) => {
+          const item = documentSnap.data();
+          const docId = documentSnap.id;
+          const card = document.createElement('div');
+          card.className = 'shop-card';
+          card.setAttribute('data-category', item.category);
+
+          const isOwnerOrAdmin = currentUser && (currentUser.email === ADMIN_EMAIL || currentUser.email === item.userEmail);
+          const dateStr = item.createdAt ? new Date(item.createdAt.toDate()).toLocaleDateString('uk-UA') : 'Щойно';
+
+          card.innerHTML = `
+            <div>
+              <div class="card-img-wrapper">
+                <img src="${item.photoUrl}" alt="Фото товару" onerror="this.src='https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=600&q=80'" />
+                <div class="card-price">${item.price} грн</div>
+              </div>
+              <div class="card-body">
+                <div>
+                  <span class="badge-sub">${item.subCategory}</span>
+                  <h3 style="font-size: 1.05rem; margin: 4px 0 8px 0; color: #0f172a;">${item.title}</h3>
+                  <p style="font-size: 0.82rem; color: #475569; line-height: 1.4; margin: 0 0 10px 0; white-space: pre-line;">${item.description}</p>
+                </div>
+                <div style="font-size: 0.78rem; color: #64748b; border-top: 1px solid #f1f5f9; padding-top: 8px; margin-top: 8px;">
+                  <div><i class="fa-solid fa-phone"></i> <strong>${item.contact}</strong></div>
+                  <div style="margin-top: 2px;"><i class="fa-regular fa-clock"></i> ${dateStr}</div>
+                </div>
+              </div>
+            </div>
+
+            ${isOwnerOrAdmin ? `
+              <div style="padding: 0 15px 15px 15px; text-align: right;">
+                <button class="delete-btn" data-id="${docId}" style="background: #ef4444; color: white; border: none; border-radius: 6px; padding: 6px 12px; cursor: pointer; font-size: 0.8rem;">
+                  <i class="fa-solid fa-trash"></i> Видалити
+                </button>
+              </div>
+            ` : ''}
+          `;
+          shopContainer.appendChild(card);
+        });
+
+        filterListings();
+
+        // Видалення оголошення
+        document.querySelectorAll('.delete-btn').forEach(btn => {
+          btn.addEventListener('click', async (e) => {
+            const id = e.currentTarget.getAttribute('data-id');
+            if (confirm('Ви дійсно бажаєте видалити це оголошення?')) {
+              try {
+                await deleteDoc(doc(db, "shop_listings", id));
+                alert('Оголошення видалено!');
+              } catch (err) {
+                alert('Помилка видалення: ' + err.message);
+              }
+            }
+          });
+        });
+      });
+
+      // Фільтрація
+      filterCategory.addEventListener('change', filterListings);
+      shopSearch.addEventListener('input', filterListings);
+
+      function filterListings() {
+        const selectedCat = filterCategory.value;
+        const query = shopSearch.value.toLowerCase();
+        const cards = document.querySelectorAll('.shop-card');
+
+        cards.forEach(card => {
+          const cardCat = card.getAttribute('data-category');
+          const matchesCat = (selectedCat === 'all' || cardCat === selectedCat);
+          const matchesSearch = card.innerText.toLowerCase().includes(query);
+
+          if (matchesCat && matchesSearch) {
+            card.style.display = 'flex';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      }
+    </script>
+</body>
+</html>

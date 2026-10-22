@@ -175,6 +175,20 @@
             transform: scale(1.03);
         }
 
+        /* Обгортка для вбудованого відеоплеєра YouTube */
+        .card-video-wrapper {
+            width: 100%;
+            height: 180px;
+            background: #000;
+            display: none;
+            position: relative;
+        }
+        .card-video-wrapper iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
         .card-body {
             padding: 18px;
             display: flex;
@@ -215,23 +229,24 @@
             text-transform: uppercase;
         }
 
-        .read-more-btn {
+        .watch-btn {
             display: inline-flex;
             align-items: center;
             gap: 6px;
             padding: 8px 14px;
-            background: #f1f5f9;
-            color: #1e3a8a;
+            background: #ef4444; /* червоний акцент для YouTube */
+            color: white;
             border-radius: 6px;
+            border: none;
             text-decoration: none;
             font-size: 0.8rem;
             font-weight: bold;
-            transition: background 0.2s, color 0.2s;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
             width: fit-content;
         }
-        .read-more-btn:hover {
-            background: var(--sport-color);
-            color: white;
+        .watch-btn:hover {
+            background: #dc2626;
         }
 
         footer {
@@ -258,7 +273,7 @@
               NEO<span style="color: #4ade80;">SPORT</span>
             </div>
             <div style="font-size: 0.78rem; color: #bbf7d0; font-style: italic; margin-top: 2px;">
-              Новини • Аналітика • Фото
+              Новини • Аналітика • Відео
             </div>
           </div>
         </a>
@@ -291,15 +306,15 @@
       <!-- Заголовок + Кнопка публікації -->
       <div style="background: white; border-radius: 12px; padding: 20px; border-left: 5px solid var(--sport-color); box-shadow: 0 4px 6px rgba(0,0,0,0.04); display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 15px;">
         <div>
-          <h1 style="margin: 0 0 6px 0; font-size: 1.3rem; color: #1e3a8a;">📰 Спортивні Новини та Турніри</h1>
+          <h1 style="margin: 0 0 6px 0; font-size: 1.3rem; color: #1e3a8a;">📰 Спортивні Новини та Відео</h1>
           <p style="margin: 0; font-size: 0.85rem; color: #64748b;">
-            Публікація свіжих новин, фото та аналізу матчів за чемпіонатами.
+            Публікація свіжих новин, аналізу матчів та перегляд відео прямо на сайті.
           </p>
         </div>
 
         <div>
           <button id="toggleFormBtn" class="btn-add">
-            <i class="fa-solid fa-plus"></i> Додати новину з фото
+            <i class="fa-solid fa-plus"></i> Додати новину з відео
           </button>
         </div>
       </div>
@@ -352,8 +367,8 @@
           </div>
 
           <div>
-            <label style="font-size: 0.78rem; font-weight: bold; color: #475569;">Посилання на фото (URL):</label>
-            <input type="url" id="newsPhotoUrl" placeholder="https://example.com/image.jpg" style="width: 100%; box-sizing: border-box; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.85rem; margin-top: 4px;" />
+            <label style="font-size: 0.78rem; font-weight: bold; color: #475569;">Посилання на YouTube відео:</label>
+            <input type="url" id="newsPhotoUrl" placeholder="https://www.youtube.com/watch?v=..." required style="width: 100%; box-sizing: border-box; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.85rem; margin-top: 4px;" />
           </div>
 
           <div style="grid-column: 1 / -1;">
@@ -442,15 +457,15 @@
 
       const ADMIN_EMAIL = "admin@neoservice.ks.ua"; 
 
-const firebaseConfig = {
-    apiKey: "AIzaSyBlKoP6-M8tdrKq88bSdnWSnak5Gpddnpk",
-    authDomain: "neoservice-ks-ua.firebaseapp.com",
-    projectId: "neoservice-ks-ua",
-    storageBucket: "neoservice-ks-ua.firebasestorage.app",
-    messagingSenderId: "528941827813",
-    appId: "1:528941827813:web:354ef989d200087634b60c",
-    measurementId: "G-BYGHEHVYY3"
-  };
+      const firebaseConfig = {
+        apiKey: "AIzaSyBlKoP6-M8tdrKq88bSdnWSnak5Gpddnpk",
+        authDomain: "neoservice-ks-ua.firebaseapp.com",
+        projectId: "neoservice-ks-ua",
+        storageBucket: "neoservice-ks-ua.firebasestorage.app",
+        messagingSenderId: "528941827813",
+        appId: "1:528941827813:web:354ef989d200087634b60c",
+        measurementId: "G-BYGHEHVYY3"
+      };
 
       const app = initializeApp(firebaseConfig);
       const auth = getAuth(app);
@@ -508,7 +523,7 @@ const firebaseConfig = {
         if (!user) {
           toggleFormBtn.innerHTML = `<i class="fa-solid fa-lock"></i> Увійдіть, щоб додавати новини`;
         } else {
-          toggleFormBtn.innerHTML = `<i class="fa-solid fa-plus"></i> Додати новину з фото`;
+          toggleFormBtn.innerHTML = `<i class="fa-solid fa-plus"></i> Додати новину з відео`;
         }
       });
 
@@ -525,12 +540,26 @@ const firebaseConfig = {
         newNewsFormCard.style.display = 'none';
       });
 
+      // Функція для отримання ID YouTube відео з посилання
+      function getYouTubeEmbedUrl(url) {
+        if (!url) return null;
+        let videoId = null;
+        if (url.includes('youtu.be/')) {
+          videoId = url.split('youtu.be/')[1]?.split('?')[0];
+        } else if (url.includes('watch?v=')) {
+          videoId = url.split('watch?v=')[1]?.split('&')[0];
+        } else if (url.includes('embed/')) {
+          videoId = url.split('embed/')[1]?.split('?')[0];
+        }
+        return videoId ? `https://www.youtube.com/embed/${videoId}?autoplay=1` : null;
+      }
+
       // Збереження новини в базі Firestore
       addNewsForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         if (!currentUser) return;
 
-        const photoUrl = document.getElementById('newsPhotoUrl').value.trim() || "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=600&q=80";
+        const photoUrl = document.getElementById('newsPhotoUrl').value.trim();
         const affiliateUrl = document.getElementById('newsAffiliateUrl').value.trim() || "https://beton.ua";
 
         try {
@@ -576,15 +605,40 @@ const firebaseConfig = {
           card.setAttribute('data-category', item.category);
 
           const catInfo = categoryMap[item.category] || categoryMap.news;
-
           const isOwnerOrAdmin = currentUser && (currentUser.email === ADMIN_EMAIL || currentUser.email === item.userEmail);
           const dateStr = item.createdAt ? new Date(item.createdAt.toDate()).toLocaleDateString('uk-UA') : 'Щойно';
 
+          const embedUrl = getYouTubeEmbedUrl(item.photoUrl);
+          
+          let mediaHtml = '';
+          if (embedUrl) {
+            // Якщо це посилання YouTube — генеруємо обгортку зображення (з прев'ю) та прихований блок з iframe
+            const ytVidId = embedUrl.split('/embed/')[1]?.split('?')[0];
+            const thumbUrl = ytVidId ? `https://img.youtube.com/vi/${ytVidId}/hqdefault.jpg` : 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=600&q=80';
+            
+            mediaHtml = `
+              <div class="card-image-wrapper" id="img-wrap-${docId}">
+                <img src="${thumbUrl}" alt="Прев'ю відео" onerror="this.src='https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=600&q=80'" />
+                <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; cursor: pointer;" onclick="playCardVideo('${docId}', '${embedUrl}')">
+                  <div style="width: 50px; height: 50px; background: #ef4444; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">
+                    <i class="fa-solid fa-play" style="margin-left: 3px;"></i>
+                  </div>
+                </div>
+              </div>
+              <div class="card-video-wrapper" id="vid-wrap-${docId}"></div>
+            `;
+          } else {
+            // Звичайна картинка
+            mediaHtml = `
+              <div class="card-image-wrapper">
+                <img src="${item.photoUrl || 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=600&q=80'}" alt="Фото новини" onerror="this.src='https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=600&q=80'" />
+              </div>
+            `;
+          }
+
           card.innerHTML = `
             <div>
-              <div class="card-image-wrapper">
-                <img src="${item.photoUrl}" alt="Фото новини" onerror="this.src='https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=600&q=80'" />
-              </div>
+              ${mediaHtml}
               <div class="card-body">
                 <div>
                   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
@@ -598,8 +652,8 @@ const firebaseConfig = {
             </div>
 
             <div style="padding: 0 18px 18px 18px; display: flex; justify-content: space-between; align-items: center; gap: 8px;">
-              <a href="${item.affiliateUrl}" target="_blank" rel="nofollow" class="read-more-btn">
-                Читати далі / Ставка <i class="fa-solid fa-arrow-right"></i>
+              <a href="${item.affiliateUrl}" target="_blank" rel="nofollow" class="watch-btn">
+                <i class="fa-solid fa-trophy"></i> Коефіцієнти / Ставка
               </a>
               ${isOwnerOrAdmin ? `
                 <button class="delete-btn" data-id="${docId}" style="background: #ef4444; color: white; border: none; border-radius: 6px; padding: 6px 10px; cursor: pointer; font-size: 0.8rem;" title="Видалити новину">
@@ -628,6 +682,17 @@ const firebaseConfig = {
           });
         });
       });
+
+      // Глобальна функція для вбудовування і запуску відео без переходу на YouTube
+      window.playCardVideo = function(docId, embedUrl) {
+        const imgWrap = document.getElementById(`img-wrap-${docId}`);
+        const vidWrap = document.getElementById(`vid-wrap-${docId}`);
+        if (imgWrap && vidWrap) {
+          imgWrap.style.display = 'none';
+          vidWrap.style.display = 'block';
+          vidWrap.innerHTML = `<iframe src="${embedUrl}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+        }
+      };
 
       // Фільтрація
       const filterButtons = document.querySelectorAll('.filter-btn');

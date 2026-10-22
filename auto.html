@@ -82,8 +82,10 @@
             margin-bottom: 12px;
             border-radius: 8px;
             overflow: hidden;
-            height: 150px;
+            height: 160px;
             background: #f1f5f9;
+            cursor: pointer;
+            position: relative;
         }
         .photo-collage-1 { grid-template-columns: 1fr; }
         .photo-collage-2 { grid-template-columns: 1fr 1fr; }
@@ -94,6 +96,25 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+            transition: opacity 0.2s, transform 0.2s;
+        }
+        .photo-collage img:hover {
+            opacity: 0.92;
+            transform: scale(1.02);
+        }
+
+        .more-photos-badge {
+            position: absolute;
+            bottom: 6px;
+            right: 6px;
+            background: rgba(15, 23, 42, 0.8);
+            color: white;
+            font-size: 0.72rem;
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 6px;
+            pointer-events: none;
+            backdrop-filter: blur(2px);
         }
 
         .badge {
@@ -123,6 +144,70 @@
             transition: background 0.2s;
         }
         .btn-add:hover { background: #b45309; }
+
+        /* МАКЕТ МОДАЛЬНОГО ВІКНА ПЕРЕГЛЯДУ ФОТО (LIGHTBOX) */
+        .lightbox-modal {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.92);
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            backdrop-filter: blur(5px);
+        }
+        .lightbox-content-wrapper {
+            position: relative;
+            max-width: 90vw;
+            max-height: 80vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .lightbox-content {
+            max-width: 90vw;
+            max-height: 80vh;
+            border-radius: 8px;
+            object-fit: contain;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        }
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            color: white;
+            font-size: 2.2rem;
+            cursor: pointer;
+            z-index: 10000;
+            line-height: 1;
+            transition: color 0.2s;
+        }
+        .lightbox-close:hover { color: #fbbf24; }
+        .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            font-size: 2.5rem;
+            cursor: pointer;
+            padding: 15px;
+            user-select: none;
+            transition: color 0.2s, transform 0.2s;
+            z-index: 10000;
+        }
+        .lightbox-nav:hover { color: #fbbf24; transform: translateY(-50%) scale(1.15); }
+        .lightbox-prev { left: 10px; }
+        .lightbox-next { right: 10px; }
+        .lightbox-counter {
+            color: #f1f5f9;
+            margin-top: 15px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 4px 14px;
+            border-radius: 20px;
+        }
 
         footer {
             text-align: center;
@@ -181,7 +266,7 @@
         <div>
           <h1 style="margin: 0 0 6px 0; font-size: 1.3rem; color: #1e3a8a;">🚗 Авторинок та Дошка Оголошень</h1>
           <p style="margin: 0; font-size: 0.85rem; color: #64748b;">
-            Купівля та продаж авто, запчастин, блоків ЕБУ та діагностичних сканерів.
+            Купівля та продаж авто, запчастин, блоків ЕБУ та діагностичного обладнання.
           </p>
         </div>
 
@@ -232,7 +317,7 @@
           </div>
 
           <div style="grid-column: 1 / -1;">
-            <label style="font-size: 0.78rem; font-weight: bold; color: #475569;">Посилання на фото (через кому чи пробіл):</label>
+            <label style="font-size: 0.78rem; font-weight: bold; color: #475569;">Посилання на фото (до 5 шт., через кому чи пробіл):</label>
             <input type="text" id="adPhotos" placeholder="https://i.ibb.co/1.jpg, https://i.ibb.co/2.jpg" style="width: 100%; box-sizing: border-box; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.85rem; margin-top: 4px;" />
           </div>
 
@@ -255,6 +340,17 @@
 
     </div>
 
+    <!-- МОДАЛЬНЕ ВІКНО ПЕРЕГЛЯДУ ФОТО (LIGHTBOX) -->
+    <div id="lightboxModal" class="lightbox-modal">
+      <span class="lightbox-close" id="lightboxClose">&times;</span>
+      <span class="lightbox-nav lightbox-prev" id="lightboxPrev">&#10094;</span>
+      <div class="lightbox-content-wrapper">
+        <img id="lightboxImg" class="lightbox-content" src="" alt="Перегляд фото">
+      </div>
+      <span class="lightbox-nav lightbox-next" id="lightboxNext">&#10095;</span>
+      <div class="lightbox-counter" id="lightboxCounter">1 / 1</div>
+    </div>
+
     <footer>
         <p>&copy; 2026 Neoservice.ks.ua — Автобазар та маркетплейс.</p>
     </footer>
@@ -268,6 +364,7 @@
       // 🛑 ВКАЖІТЬ ВАШ EMAIL АДМІНІСТРАТОРА:
       const ADMIN_EMAIL = "admin@neoservice.ks.ua"; 
 
+      // 🛑 ВКАЖІТЬ ВАШІ КЛЮЧІ FIREBASE:
 const firebaseConfig = {
     apiKey: "AIzaSyBlKoP6-M8tdrKq88bSdnWSnak5Gpddnpk",
     authDomain: "neoservice-ks-ua.firebaseapp.com",
@@ -288,9 +385,19 @@ const firebaseConfig = {
       const addListingForm = document.getElementById('addListingForm');
       const autoProductsContainer = document.getElementById('autoProductsContainer');
 
-      let currentUser = null;
+      // Елементи Lightbox
+      const lightboxModal = document.getElementById('lightboxModal');
+      const lightboxImg = document.getElementById('lightboxImg');
+      const lightboxClose = document.getElementById('lightboxClose');
+      const lightboxPrev = document.getElementById('lightboxPrev');
+      const lightboxNext = document.getElementById('lightboxNext');
+      const lightboxCounter = document.getElementById('lightboxCounter');
 
-      // Перевірка авторизації
+      let currentUser = null;
+      let currentGallery = [];
+      let currentImgIndex = 0;
+
+      // Авторизація
       onAuthStateChanged(auth, (user) => {
         currentUser = user;
         if (!user) {
@@ -313,7 +420,7 @@ const firebaseConfig = {
         newAdFormCard.style.display = 'none';
       });
 
-      // Збереження оголошення
+      // Збереження нового оголошення
       addListingForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         if (!currentUser) return;
@@ -339,39 +446,99 @@ const firebaseConfig = {
         }
       });
 
-      // Функція генерації HTML-колажу
+      // Генерація HTML-колажу з кліком на будь-яке фото
       function buildCollageHtml(photosStr) {
-        if (!photosStr) return '';
+        if (!photosStr || photosStr.trim() === '') return '';
+        
+        // Поділ посилання по пробілу, комах та новому рядку
         const urls = photosStr.split(/[\s,]+/).filter(url => url.trim().startsWith('http'));
         if (urls.length === 0) return '';
 
+        const photosJson = JSON.stringify(urls).replace(/"/g, '&quot;');
+        let countBadge = urls.length > 3 ? `<div class="more-photos-badge"><i class="fa-solid fa-images"></i> +${urls.length - 3} фото</div>` : '';
+
         if (urls.length === 1) {
           return `
-            <div class="photo-collage photo-collage-1">
+            <div class="photo-collage photo-collage-1" onclick="openLightbox(${photosJson}, 0)">
               <img src="${urls[0]}" alt="Фото товару">
             </div>
           `;
         } else if (urls.length === 2) {
           return `
             <div class="photo-collage photo-collage-2">
-              <img src="${urls[0]}" alt="Фото 1">
-              <img src="${urls[1]}" alt="Фото 2">
+              <img src="${urls[0]}" alt="Фото 1" onclick="openLightbox(${photosJson}, 0)">
+              <img src="${urls[1]}" alt="Фото 2" onclick="openLightbox(${photosJson}, 1)">
             </div>
           `;
         } else {
           return `
             <div class="photo-collage photo-collage-3">
-              <img src="${urls[0]}" alt="Головне фото">
+              <img src="${urls[0]}" alt="Головне фото" onclick="openLightbox(${photosJson}, 0)">
               <div class="sub-grid">
-                <img src="${urls[1]}" alt="Фото 2">
-                <img src="${urls[2]}" alt="Фото 3">
+                <img src="${urls[1]}" alt="Фото 2" onclick="openLightbox(${photosJson}, 1)">
+                <img src="${urls[2]}" alt="Фото 3" onclick="openLightbox(${photosJson}, 2)">
               </div>
+              <div onclick="openLightbox(${photosJson}, 0)" style="position: absolute; inset: 0; z-index: 1; opacity: 0;"></div>
+              ${countBadge}
             </div>
           `;
         }
       }
 
-      // Показ оголошень у реальному часі
+      // Функціонал Галереї (Lightbox)
+      window.openLightbox = function(urlsArray, startIndex) {
+        currentGallery = urlsArray;
+        currentImgIndex = startIndex;
+        updateLightbox();
+        lightboxModal.style.display = 'flex';
+      };
+
+      function updateLightbox() {
+        if (!currentGallery || currentGallery.length === 0) return;
+        lightboxImg.src = currentGallery[currentImgIndex];
+        lightboxCounter.textContent = `${currentImgIndex + 1} / ${currentGallery.length}`;
+        
+        // Ховаємо стрілочки, якщо фото лише одне
+        if (currentGallery.length <= 1) {
+          lightboxPrev.style.display = 'none';
+          lightboxNext.style.display = 'none';
+        } else {
+          lightboxPrev.style.display = 'block';
+          lightboxNext.style.display = 'block';
+        }
+      }
+
+      lightboxClose.addEventListener('click', () => lightboxModal.style.display = 'none');
+      
+      lightboxNext.addEventListener('click', (e) => {
+        e.stopPropagation();
+        currentImgIndex = (currentImgIndex + 1) % currentGallery.length;
+        updateLightbox();
+      });
+
+      lightboxPrev.addEventListener('click', (e) => {
+        e.stopPropagation();
+        currentImgIndex = (currentImgIndex - 1 + currentGallery.length) % currentGallery.length;
+        updateLightbox();
+      });
+
+      // Перемикання клавіатурою
+      document.addEventListener('keydown', (e) => {
+        if (lightboxModal.style.display === 'flex') {
+          if (e.key === 'ArrowRight') lightboxNext.click();
+          if (e.key === 'ArrowLeft') lightboxPrev.click();
+          if (e.key === 'Escape') lightboxClose.click();
+        }
+      });
+
+      // Закриття галереї при кліку поза картинкою
+      lightboxModal.addEventListener('click', (e) => {
+        if (e.target === lightboxModal || e.target.classList.contains('lightbox-content-wrapper')) {
+          lightboxModal.style.display = 'none';
+        }
+      });
+
+      // Показ оголошень з БД
       const q = query(collection(db, "auto_listings"), orderBy("createdAt", "desc"));
       onSnapshot(q, (snapshot) => {
         autoProductsContainer.innerHTML = '';
@@ -424,14 +591,14 @@ const firebaseConfig = {
           autoProductsContainer.appendChild(card);
         });
 
-        // Слухач на видалення
+        // Слухач подій видалення
         document.querySelectorAll('.delete-btn').forEach(btn => {
           btn.addEventListener('click', async (e) => {
             const id = e.currentTarget.getAttribute('data-id');
             if (confirm('Ви дійсно бажаєте видалити це оголошення?')) {
               try {
                 await deleteDoc(doc(db, "auto_listings", id));
-                alert('Оголошення видалено!');
+                alert('Оголошення успішно видалено!');
               } catch (err) {
                 alert('Помилка видалення: ' + err.message);
               }
@@ -440,7 +607,7 @@ const firebaseConfig = {
         });
       });
 
-      // Пошук
+      // Пошук по сайту
       document.getElementById('autoSearch')?.addEventListener('input', function() {
         const queryVal = this.value.toLowerCase();
         const cards = document.querySelectorAll('.product-card');

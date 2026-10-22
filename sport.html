@@ -58,20 +58,27 @@
             gap: 8px;
             flex-wrap: wrap;
             margin-top: 20px;
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 5px;
+            background: #ffffff;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
         }
         .filter-btn {
-            background: white;
+            background: #f8fafc;
             border: 1px solid #cbd5e1;
             color: #475569;
-            padding: 8px 16px;
+            padding: 6px 14px;
             border-radius: 8px;
-            font-size: 0.82rem;
+            font-size: 0.8rem;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.2s;
             display: flex;
             align-items: center;
             gap: 6px;
+            white-space: nowrap;
         }
         .filter-btn:hover, .filter-btn.active {
             background: var(--sport-color);
@@ -183,11 +190,9 @@
             font-size: 0.72rem;
             font-weight: bold;
             text-transform: uppercase;
+            background: #e2e8f0;
+            color: #1e293b;
         }
-        .badge-ucl { background: #dbeafe; color: #1e40af; } 
-        .badge-upl { background: #fef3c7; color: #b45309; } 
-        .badge-epl { background: #fce7f3; color: #9d174d; } 
-        .badge-news { background: #dcfce7; color: #15803d; } 
 
         .article-content {
             font-size: 0.85rem;
@@ -272,9 +277,9 @@
       <!-- Заголовок + Кнопка публікації -->
       <div style="background: white; border-radius: 12px; padding: 20px; border-left: 5px solid var(--sport-color); box-shadow: 0 4px 6px rgba(0,0,0,0.04); display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 15px;">
         <div>
-          <h1 style="margin: 0 0 6px 0; font-size: 1.3rem; color: #1e3a8a;">📰 Спортивні Новини</h1>
+          <h1 style="margin: 0 0 6px 0; font-size: 1.3rem; color: #1e3a8a;">📰 Спортивні Новини та Турніри</h1>
           <p style="margin: 0; font-size: 0.85rem; color: #64748b;">
-            Публікація свіжих новин, фото та аналізу матчів.
+            Публікація свіжих новин, фото та аналізу матчів за чемпіонатами світу та Європи.
           </p>
         </div>
 
@@ -298,10 +303,32 @@
           <div>
             <label style="font-size: 0.78rem; font-weight: bold; color: #475569;">Категорія / Турнір:</label>
             <select id="newsCategory" style="width: 100%; box-sizing: border-box; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.85rem; margin-top: 4px; background: white;">
-              <option value="ucl">🏆 Ліга Чемпіонів</option>
-              <option value="upl">🇺🇦 УПЛ (Україна)</option>
-              <option value="epl">🏴󠁧󠁢󠁥󠁮󠁧󠁿 АПЛ</option>
-              <option value="news">📌 Новини спорту</option>
+              <optgroup label="🌟 Топ турніри">
+                <option value="ucl">🏆 Ліга Чемпіонів</option>
+                <option value="uel">⚽ Ліга Європи</option>
+                <option value="uecl">🟢 Ліга Конференцій</option>
+                <option value="wc">🏆 Чемпіонат Світу</option>
+                <option value="euro">🇪🇺 Євро</option>
+                <option value="copa">🌎 Кубок Америки</option>
+                <option value="unl">🏆 Ліга Націй</option>
+              </optgroup>
+              <optgroup label="🌍 Топ Чемпіонати країн">
+                <option value="upl">🇺🇦 УПЛ (Україна)</option>
+                <option value="epl">🏴󠁧󠁢󠁥󠁮󠁧󠁿 АПЛ (Англія)</option>
+                <option value="laliga">🇪🇸 Ла Ліга (Іспанія)</option>
+                <option value="seriea">🇮🇹 Серія А (Італія)</option>
+                <option value="bundesliga">🇩🇪 Бундесліга (Німеччина)</option>
+                <option value="ligue1">🇫🇷 Ліга 1 (Франція)</option>
+                <option value="eredivisie">🇳🇱 Ередивізі (Нідерланди)</option>
+                <option value="primeira">🇵🇹 Прімейра (Португалія)</option>
+                <option value="saudi">🇸🇦 Саудівська Про-ліга</option>
+                <option value="mls">🇺🇸 MLS (США/Канада)</option>
+                <option value="brasileirao">🇧🇷 Серія А (Бразилія)</option>
+                <option value="argentina">🇦🇷 Прімера (Аргентина)</option>
+              </optgroup>
+              <optgroup label="📌 Інше">
+                <option value="news">📰 Загальні новини спорту</option>
+              </optgroup>
             </select>
           </div>
 
@@ -330,7 +357,7 @@
       <!-- БАННЕР МОНЕТИЗАЦІЇ -->
       <div class="promo-banner">
         <div>
-          <h3 style="margin: 0 0 6px 0; font-size: 1.1rem; color: #fbbf24;"><i class="fa-solid fa-trophy"></i> Кращі Коефіцієнти та Бонаси</h3>
+          <h3 style="margin: 0 0 6px 0; font-size: 1.1rem; color: #fbbf24;"><i class="fa-solid fa-trophy"></i> Кращі Коефіцієнти та Бонуси</h3>
           <p style="margin: 0; font-size: 0.82rem; opacity: 0.9;">
             Переходьте на партнерську платформу, реєструйтеся та отримуйте бонуси.
           </p>
@@ -341,12 +368,36 @@
       </div>
 
       <!-- ФІЛЬТРИ КАТЕГОРІЙ -->
-      <div class="filter-container" id="categoryFilters">
-        <button class="filter-btn active" data-category="all"><i class="fa-solid fa-globe"></i> Всі публікації</button>
-        <button class="filter-btn" data-category="ucl">🏆 Ліга Чемпіонів</button>
-        <button class="filter-btn" data-category="upl">🇺🇦 УПЛ (Україна)</button>
-        <button class="filter-btn" data-category="epl">🏴󠁧󠁢󠁥󠁮󠁧󠁿 АПЛ</button>
-        <button class="filter-btn" data-category="news">📌 Новини спорту</button>
+      <div style="margin-top: 20px;">
+        <span style="font-size: 0.8rem; font-weight: bold; color: #475569; margin-bottom: 6px; display: block;">Фільтр за турнірами та країнами:</span>
+        <div class="filter-container" id="categoryFilters">
+          <button class="filter-btn active" data-category="all"><i class="fa-solid fa-globe"></i> Всі новини</button>
+          
+          <!-- Топ Турніри -->
+          <button class="filter-btn" data-category="ucl">🏆 Ліга Чемпіонів</button>
+          <button class="filter-btn" data-category="uel">⚽ Ліга Європи</button>
+          <button class="filter-btn" data-category="uecl">🟢 Ліга Конференцій</button>
+          <button class="filter-btn" data-category="wc">🏆 ЧМ</button>
+          <button class="filter-btn" data-category="euro">🇪🇺 Євро</button>
+          <button class="filter-btn" data-category="copa">🌎 Кубок Америки</button>
+          <button class="filter-btn" data-category="unl">🏆 Ліга Націй</button>
+
+          <!-- Топ Ліги -->
+          <button class="filter-btn" data-category="upl">🇺🇦 УПЛ</button>
+          <button class="filter-btn" data-category="epl">🏴󠁧󠁢󠁥󠁮󠁧󠁿 АПЛ</button>
+          <button class="filter-btn" data-category="laliga">🇪🇸 Ла Ліга</button>
+          <button class="filter-btn" data-category="seriea">🇮🇹 Серія А</button>
+          <button class="filter-btn" data-category="bundesliga">🇩🇪 Бундесліга</button>
+          <button class="filter-btn" data-category="ligue1">🇫🇷 Ліга 1</button>
+          <button class="filter-btn" data-category="eredivisie">🇳🇱 Нідерланди</button>
+          <button class="filter-btn" data-category="primeira">🇵🇹 Португалія</button>
+          <button class="filter-btn" data-category="saudi">🇸🇦 Саудівська Аравія</button>
+          <button class="filter-btn" data-category="mls">🇺🇸 MLS</button>
+          <button class="filter-btn" data-category="brasileirao">🇧🇷 Бразилія</button>
+          <button class="filter-btn" data-category="argentina">🇦🇷 Аргентина</button>
+          
+          <button class="filter-btn" data-category="news">📌 Інші новини</button>
+        </div>
       </div>
 
       <!-- СІТКА НОВИН З FIREBASE -->
@@ -391,6 +442,30 @@ const firebaseConfig = {
       let currentUser = null;
       let activeCategory = 'all';
 
+      // Мапа назв та стилів категорій
+      const categoryMap = {
+        ucl: { name: "🏆 Ліга Чемпіонів", bg: "#dbeafe", color: "#1e40af" },
+        uel: { name: "⚽ Ліга Європи", bg: "#ffedd5", color: "#c2410c" },
+        uecl: { name: "🟢 Ліга Конференцій", bg: "#dcfce7", color: "#15803d" },
+        wc: { name: "🏆 ЧМ (Світ)", bg: "#fef3c7", color: "#b45309" },
+        euro: { name: "🇪🇺 Євро", bg: "#e0e7ff", color: "#3730a3" },
+        copa: { name: "🌎 Кубок Америки", bg: "#fae8ff", color: "#86198f" },
+        unl: { name: "🏆 Ліга Націй", bg: "#e2e8f0", color: "#334155" },
+        upl: { name: "🇺🇦 УПЛ (Україна)", bg: "#fef3c7", color: "#b45309" },
+        epl: { name: "🏴󠁧󠁢󠁥󠁮󠁧󠁿 АПЛ (Англія)", bg: "#fce7f3", color: "#9d174d" },
+        laliga: { name: "🇪🇸 Ла Ліга", bg: "#ffedd5", color: "#c2410c" },
+        seriea: { name: "🇮🇹 Серія А", bg: "#dbeafe", color: "#1d4ed8" },
+        bundesliga: { name: "🇩🇪 Бундесліга", bg: "#fee2e2", color: "#b91c1c" },
+        ligue1: { name: "🇫🇷 Ліга 1", bg: "#f0f9ff", color: "#0369a1" },
+        eredivisie: { name: "🇳🇱 Нідерланди", bg: "#ffedd5", color: "#ea580c" },
+        primeira: { name: "🇵🇹 Португалія", bg: "#dcfce7", color: "#166534" },
+        saudi: { name: "🇸🇦 Саудівська Аравія", bg: "#dcfce7", color: "#14532d" },
+        mls: { name: "🇺🇸 MLS", bg: "#e0e7ff", color: "#1e1b4b" },
+        brasileirao: { name: "🇧🇷 Бразилія", bg: "#fef9c3", color: "#854d0e" },
+        argentina: { name: "🇦🇷 Аргентина", bg: "#e0f2fe", color: "#0369a1" },
+        news: { name: "📌 Новини", bg: "#f1f5f9", color: "#475569" }
+      };
+
       onAuthStateChanged(auth, (user) => {
         currentUser = user;
         if (!user) {
@@ -418,7 +493,7 @@ const firebaseConfig = {
         e.preventDefault();
         if (!currentUser) return;
 
-        const photoUrl = document.getElementById('newsPhotoUrl').value.trim() || "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=600&q=80"; // Заглушка за замовчуванням
+        const photoUrl = document.getElementById('newsPhotoUrl').value.trim() || "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=600&q=80";
         const affiliateUrl = document.getElementById('newsAffiliateUrl').value.trim() || "https://beton.ua";
 
         try {
@@ -461,11 +536,7 @@ const firebaseConfig = {
           card.className = 'knowledge-card';
           card.setAttribute('data-category', item.category);
 
-          let badgeClass = "badge-news";
-          let categoryName = "Новини";
-          if (item.category === 'ucl') { badgeClass = "badge-ucl"; categoryName = "Ліга Чемпіонів"; }
-          if (item.category === 'upl') { badgeClass = "badge-upl"; categoryName = "УПЛ (Україна)"; }
-          if (item.category === 'epl') { badgeClass = "badge-epl"; categoryName = "АПЛ"; }
+          const catInfo = categoryMap[item.category] || categoryMap.news;
 
           const isOwnerOrAdmin = currentUser && (currentUser.email === ADMIN_EMAIL || currentUser.email === item.userEmail);
           const dateStr = item.createdAt ? new Date(item.createdAt.toDate()).toLocaleDateString('uk-UA') : 'Щойно';
@@ -478,7 +549,7 @@ const firebaseConfig = {
               <div class="card-body">
                 <div>
                   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                    <span class="category-badge ${badgeClass}">${categoryName}</span>
+                    <span class="category-badge" style="background: ${catInfo.bg}; color: ${catInfo.color};">${catInfo.name}</span>
                     <span style="font-size: 0.75rem; color: #64748b; font-weight: bold;"><i class="fa-regular fa-calendar"></i> ${dateStr}</span>
                   </div>
                   <h3 style="font-size: 1.05rem; margin: 0 0 8px 0; color: #0f172a;">${item.title}</h3>

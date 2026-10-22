@@ -183,6 +183,29 @@
             justify-content: space-between;
         }
 
+        /* Обрізання заголовків та тексту для рівної сітки */
+        .knowledge-card h3 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            font-size: 1.05rem;
+            margin: 0 0 8px 0;
+            color: #0f172a;
+            line-height: 1.3;
+        }
+
+        .article-content {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            font-size: 0.85rem;
+            color: #475569;
+            line-height: 1.4;
+            margin: 12px 0;
+        }
+
         .category-badge {
             display: inline-block;
             padding: 4px 10px;
@@ -190,16 +213,6 @@
             font-size: 0.72rem;
             font-weight: bold;
             text-transform: uppercase;
-            background: #e2e8f0;
-            color: #1e293b;
-        }
-
-        .article-content {
-            font-size: 0.85rem;
-            color: #475569;
-            line-height: 1.5;
-            margin: 12px 0;
-            white-space: pre-line;
         }
 
         .read-more-btn {
@@ -269,6 +282,7 @@
         <a href="baza.html"><i class="fa-solid fa-book-open"></i> База знань</a>
         <a href="auto.html"><i class="fa-solid fa-car"></i> Автокомерція & Маркет</a>
         <a href="sport.html" style="background-color: var(--sport-color);"><i class="fa-solid fa-football"></i> Спорт & Новини</a>
+        <a href="shop.html"><i class="fa-solid fa-store"></i> Маркетплейс</a>
         <a href="chat.html"><i class="fa-solid fa-comments"></i> Чат</a>
     </nav>
 
@@ -279,7 +293,7 @@
         <div>
           <h1 style="margin: 0 0 6px 0; font-size: 1.3rem; color: #1e3a8a;">📰 Спортивні Новини та Турніри</h1>
           <p style="margin: 0; font-size: 0.85rem; color: #64748b;">
-            Публікація свіжих новин, фото та аналізу матчів за чемпіонатами світу та Європи.
+            Публікація свіжих новин, фото та аналізу матчів за чемпіонатами.
           </p>
         </div>
 
@@ -295,9 +309,14 @@
         <h3 style="margin-top: 0; color: #1e3a8a; font-size: 1.05rem;"><i class="fa-solid fa-pen-to-square"></i> Публікація новини</h3>
         
         <form id="addNewsForm" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px;">
+          
+          <!-- Заголовок з лімітом 70 символів -->
           <div style="grid-column: 1 / -1;">
-            <label style="font-size: 0.78rem; font-weight: bold; color: #475569;">Заголовок новини:</label>
-            <input type="text" id="newsTitle" placeholder="напр. Огляд центрального матчу туру" required style="width: 100%; box-sizing: border-box; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.85rem; margin-top: 4px;" />
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <label style="font-size: 0.78rem; font-weight: bold; color: #475569;">Заголовок новини:</label>
+              <span id="titleCounter" style="font-size: 0.72rem; color: #94a3b8;">0/70</span>
+            </div>
+            <input type="text" id="newsTitle" maxlength="70" placeholder="напр. Огляд центрального матчу туру (макс. 70 симв.)" required style="width: 100%; box-sizing: border-box; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.85rem; margin-top: 4px;" />
           </div>
 
           <div>
@@ -342,9 +361,13 @@
             <input type="url" id="newsAffiliateUrl" placeholder="https://beton.ua/?ref=..." style="width: 100%; box-sizing: border-box; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.85rem; margin-top: 4px;" />
           </div>
 
+          <!-- Текст новини з лімітом 1000 символів -->
           <div style="grid-column: 1 / -1;">
-            <label style="font-size: 0.78rem; font-weight: bold; color: #475569;">Текст новини / Аналіз:</label>
-            <textarea id="newsContent" rows="4" placeholder="Напишіть текст статті..." required style="width: 100%; box-sizing: border-box; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.85rem; margin-top: 4px; font-family: inherit;"></textarea>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <label style="font-size: 0.78rem; font-weight: bold; color: #475569;">Текст новини / Аналіз:</label>
+              <span id="descCounter" style="font-size: 0.72rem; color: #94a3b8;">0/1000</span>
+            </div>
+            <textarea id="newsContent" rows="4" maxlength="1000" placeholder="Напишіть текст статті (макс. 1000 симв.)..." required style="width: 100%; box-sizing: border-box; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.85rem; margin-top: 4px; font-family: inherit;"></textarea>
           </div>
 
           <div style="grid-column: 1 / -1; display: flex; justify-content: flex-end; gap: 10px;">
@@ -439,6 +462,20 @@ const firebaseConfig = {
       const addNewsForm = document.getElementById('addNewsForm');
       const newsContainer = document.getElementById('newsContainer');
 
+      // Лічильники символів
+      const newsTitleInput = document.getElementById('newsTitle');
+      const newsContentInput = document.getElementById('newsContent');
+      const titleCounter = document.getElementById('titleCounter');
+      const descCounter = document.getElementById('descCounter');
+
+      newsTitleInput?.addEventListener('input', () => {
+        titleCounter.textContent = `${newsTitleInput.value.length}/70`;
+      });
+
+      newsContentInput?.addEventListener('input', () => {
+        descCounter.textContent = `${newsContentInput.value.length}/1000`;
+      });
+
       let currentUser = null;
       let activeCategory = 'all';
 
@@ -508,6 +545,8 @@ const firebaseConfig = {
           });
 
           addNewsForm.reset();
+          titleCounter.textContent = "0/70";
+          descCounter.textContent = "0/1000";
           newNewsFormCard.style.display = 'none';
           alert('Новину успішно опубліковано!');
         } catch (err) {
@@ -552,7 +591,7 @@ const firebaseConfig = {
                     <span class="category-badge" style="background: ${catInfo.bg}; color: ${catInfo.color};">${catInfo.name}</span>
                     <span style="font-size: 0.75rem; color: #64748b; font-weight: bold;"><i class="fa-regular fa-calendar"></i> ${dateStr}</span>
                   </div>
-                  <h3 style="font-size: 1.05rem; margin: 0 0 8px 0; color: #0f172a;">${item.title}</h3>
+                  <h3>${item.title}</h3>
                   <p class="article-content">${item.content}</p>
                 </div>
               </div>

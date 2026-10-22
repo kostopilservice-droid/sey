@@ -349,7 +349,7 @@
             <input type="tel" id="adContact" placeholder="напр. +380971234567" required style="width: 100%; box-sizing: border-box; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.85rem; margin-top: 4px;" />
           </div>
 
-          <!-- Окремі поля для посилань на фотографії -->
+          <!-- Окремі поля для посилань на фотографії з підказкою -->
           <div style="grid-column: 1 / -1; background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0;">
             <label style="font-size: 0.8rem; font-weight: bold; color: #1e3a8a; display: block; margin-bottom: 8px;"><i class="fa-solid fa-images"></i> Посилання на фотографії (до 4 шт.):</label>
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 8px;">
@@ -357,6 +357,12 @@
               <input type="url" id="adPhoto2" placeholder="Фото 2 https://..." style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; background: white;" />
               <input type="url" id="adPhoto3" placeholder="Фото 3 https://..." style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; background: white;" />
               <input type="url" id="adPhoto4" placeholder="Фото 4 https://..." style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; background: white;" />
+            </div>
+            
+            <!-- Підказка щодо хостингів та Google Диска -->
+            <div style="font-size: 0.74rem; color: #64748b; margin-top: 8px; line-height: 1.4;">
+              <i class="fa-solid fa-circle-info" style="color: var(--auto-color);"></i> 
+              Використовуйте прямі посилання (наприклад, з <strong>ImgBB</strong> або <strong>Postimages</strong>). Якщо з <strong>Google Диска</strong>: відкрийте доступ для всіх і використовуйте формат <code>https://lh3.googleusercontent.com/d/ВАШ_ID</code>.
             </div>
           </div>
 
@@ -641,7 +647,7 @@ const firebaseConfig = {
         // Застосування поточних фільтрів
         filterCards();
 
-        // 🟢 ВИПРАВЛЕНО ВИДАЛЕННЯ (ПРАВИЛЬНИЙ СИНТАКСИС):
+        // Слухач подій видалення (з виправленим синтаксисом doc)
         document.querySelectorAll('.delete-btn').forEach(btn => {
           btn.addEventListener('click', async (e) => {
             const id = e.currentTarget.getAttribute('data-id');

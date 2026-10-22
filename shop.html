@@ -51,7 +51,7 @@
             padding: 0 15px;
         }
 
-        /* Форма подачі оголошення */
+        /* Кнопка подачі оголошення */
         .btn-add {
             background: var(--primary);
             color: white;
@@ -68,7 +68,7 @@
         }
         .btn-add:hover { background: var(--primary-hover); }
 
-        /* Філтрові блоки */
+        /* Фільтрові блоки */
         .filter-section {
             background: white;
             padding: 15px;
@@ -146,6 +146,29 @@
             justify-content: space-between;
         }
 
+        /* Обрізання тексту для гармонійного дизайну */
+        .shop-card h3 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            font-size: 1.05rem;
+            margin: 4px 0 8px 0;
+            color: #0f172a;
+            line-height: 1.3;
+        }
+
+        .shop-card p {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            font-size: 0.82rem;
+            color: #475569;
+            line-height: 1.4;
+            margin: 0 0 10px 0;
+        }
+
         .badge-sub {
             display: inline-block;
             padding: 3px 8px;
@@ -216,7 +239,7 @@
         <div>
           <h1 style="margin: 0 0 6px 0; font-size: 1.3rem; color: #1e3a8a;">🛍️ Всі товари та оголошення</h1>
           <p style="margin: 0; font-size: 0.85rem; color: #64748b;">
-            Купуйте та продавайте електроніку, товари для дому, спорт, колекції та багато іншого.
+            Купуйте та продавайте техніку, інструменти, одяг, спорттовари та багато іншого.
           </p>
         </div>
 
@@ -233,9 +256,13 @@
         
         <form id="addListingForm" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px;">
           
+          <!-- Заголовок з лімітом 60 символів -->
           <div style="grid-column: 1 / -1;">
-            <label style="font-size: 0.78rem; font-weight: bold; color: #475569;">Назва товару / Заголовок:</label>
-            <input type="text" id="itemTitle" placeholder="напр. Продам ноутбук Lenovo T14s або Набір інструментів" required style="width: 100%; box-sizing: border-box; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.85rem; margin-top: 4px;" />
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <label style="font-size: 0.78rem; font-weight: bold; color: #475569;">Назва товару / Заголовок:</label>
+              <span id="titleCounter" style="font-size: 0.72rem; color: #94a3b8;">0/60</span>
+            </div>
+            <input type="text" id="itemTitle" maxlength="60" placeholder="напр. Ноутбук Lenovo T14s (макс. 60 симв.)" required style="width: 100%; box-sizing: border-box; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.85rem; margin-top: 4px;" />
           </div>
 
           <div>
@@ -274,9 +301,13 @@
             <input type="url" id="itemPhotoUrl" placeholder="https://example.com/photo.jpg" style="width: 100%; box-sizing: border-box; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.85rem; margin-top: 4px;" />
           </div>
 
+          <!-- Опис з лімітом 500 символів -->
           <div style="grid-column: 1 / -1;">
-            <label style="font-size: 0.78rem; font-weight: bold; color: #475569;">Опис товару / Стан / Комплектація:</label>
-            <textarea id="itemDescription" rows="4" placeholder="Опишіть стан товару, характеристики, умови доставки..." required style="width: 100%; box-sizing: border-box; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.85rem; margin-top: 4px; font-family: inherit;"></textarea>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <label style="font-size: 0.78rem; font-weight: bold; color: #475569;">Опис товару / Стан / Комплектація:</label>
+              <span id="descCounter" style="font-size: 0.72rem; color: #94a3b8;">0/500</span>
+            </div>
+            <textarea id="itemDescription" rows="4" maxlength="500" placeholder="Опишіть стан товару, характеристики, умови доставки (макс. 500 симв.)..." required style="width: 100%; box-sizing: border-box; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.85rem; margin-top: 4px; font-family: inherit;"></textarea>
           </div>
 
           <div style="grid-column: 1 / -1; display: flex; justify-content: flex-end; gap: 10px;">
@@ -344,6 +375,20 @@ const firebaseConfig = {
       const filterCategory = document.getElementById('filterCategory');
       const shopSearch = document.getElementById('shopSearch');
 
+      // Лічильники символів
+      const itemTitleInput = document.getElementById('itemTitle');
+      const itemDescInput = document.getElementById('itemDescription');
+      const titleCounter = document.getElementById('titleCounter');
+      const descCounter = document.getElementById('descCounter');
+
+      itemTitleInput?.addEventListener('input', () => {
+        titleCounter.textContent = `${itemTitleInput.value.length}/60`;
+      });
+
+      itemDescInput?.addEventListener('input', () => {
+        descCounter.textContent = `${itemDescInput.value.length}/500`;
+      });
+
       let currentUser = null;
 
       onAuthStateChanged(auth, (user) => {
@@ -389,6 +434,8 @@ const firebaseConfig = {
           });
 
           addListingForm.reset();
+          titleCounter.textContent = "0/60";
+          descCounter.textContent = "0/500";
           newListingFormCard.style.display = 'none';
           alert('Оголошення успішно опубліковано!');
         } catch (err) {
@@ -429,8 +476,8 @@ const firebaseConfig = {
               <div class="card-body">
                 <div>
                   <span class="badge-sub">${item.subCategory}</span>
-                  <h3 style="font-size: 1.05rem; margin: 4px 0 8px 0; color: #0f172a;">${item.title}</h3>
-                  <p style="font-size: 0.82rem; color: #475569; line-height: 1.4; margin: 0 0 10px 0; white-space: pre-line;">${item.description}</p>
+                  <h3>${item.title}</h3>
+                  <p>${item.description}</p>
                 </div>
                 <div style="font-size: 0.78rem; color: #64748b; border-top: 1px solid #f1f5f9; padding-top: 8px; margin-top: 8px;">
                   <div><i class="fa-solid fa-phone"></i> <strong>${item.contact}</strong></div>

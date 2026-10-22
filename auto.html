@@ -638,15 +638,16 @@ const firebaseConfig = {
           autoProductsContainer.appendChild(card);
         });
 
-        // Застосування поточних фільтрів після оновлення даних
+        // Застосування поточних фільтрів
         filterCards();
 
+        // 🟢 ВИПРАВЛЕНО ВИДАЛЕННЯ (ПРАВИЛЬНИЙ СИНТАКСИС):
         document.querySelectorAll('.delete-btn').forEach(btn => {
           btn.addEventListener('click', async (e) => {
             const id = e.currentTarget.getAttribute('data-id');
             if (confirm('Ви дійсно бажаєте видалити це оголошення?')) {
               try {
-                await deleteDoc(doc(db, "auto_listings"), id);
+                await deleteDoc(doc(db, "auto_listings", id));
                 alert('Оголошення успішно видалено!');
               } catch (err) {
                 alert('Помилка видалення: ' + err.message);

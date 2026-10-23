@@ -47,7 +47,7 @@
           </div>
           <div>
             <div class="font-extrabold text-base tracking-tight text-white">NEOSERVICE.KS.UA</div>
-            <div class="text-[9px] text-blue-200">Адмін-панель керування контентом та замовленнями</div>
+            <div class="text-[9px] text-blue-200">Панель керування бізнесом, клієнтами та контентом</div>
           </div>
         </a>
 
@@ -87,11 +87,14 @@
     </div>
 
     <!-- ТАБИ ПЕРЕМИКАННЯ РОЗДІЛІВ -->
-    <div class="flex border-b border-slate-200 gap-2">
-      <button id="tabRequestsBtn" onclick="switchTab('requests')" class="px-4 py-2 text-xs font-bold rounded-t-xl bg-white border-t border-l border-r border-slate-200 text-blue-600 flex items-center gap-2">
+    <div class="flex border-b border-slate-200 gap-2 overflow-x-auto">
+      <button id="tabRequestsBtn" onclick="switchTab('requests')" class="px-4 py-2 text-xs font-bold rounded-t-xl bg-white border-t border-l border-r border-slate-200 text-blue-600 flex items-center gap-2 whitespace-nowrap">
         <i class="fa-solid fa-clipboard-list"></i> Заявки з сервісу (<span id="requestsCount">0</span>)
       </button>
-      <button id="tabArticlesBtn" onclick="switchTab('articles')" class="px-4 py-2 text-xs font-bold rounded-t-xl bg-slate-200 text-slate-600 flex items-center gap-2">
+      <button id="tabClientsBtn" onclick="switchTab('clients')" class="px-4 py-2 text-xs font-bold rounded-t-xl bg-slate-200 text-slate-600 flex items-center gap-2 whitespace-nowrap">
+        <i class="fa-solid fa-users"></i> Клієнтська база & CRM (<span id="clientsCount">0</span>)
+      </button>
+      <button id="tabArticlesBtn" onclick="switchTab('articles')" class="px-4 py-2 text-xs font-bold rounded-t-xl bg-slate-200 text-slate-600 flex items-center gap-2 whitespace-nowrap">
         <i class="fa-solid fa-pen-to-square"></i> Додати статтю
       </button>
     </div>
@@ -134,7 +137,53 @@
     </section>
 
     <!-- ========================================== -->
-    <!-- РОЗДІЛ 2: СТВОРЕННЯ СТАТТІ В БАЗУ ЗНАНЬ    -->
+    <!-- РОЗДІЛ 2: КЛІЄНТСЬКА БАЗА ТА РОЗСИЛКА      -->
+    <!-- ========================================== -->
+    <section id="clientsSection" class="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm hidden">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-100">
+        <div>
+          <h1 class="text-xl font-black text-slate-900 flex items-center gap-2">
+            <i class="fa-solid fa-address-book text-emerald-600"></i> Клієнтська база та Email-розсилка
+          </h1>
+          <p class="text-xs text-slate-500 mt-1">Перегляд зареєстрованих користувачів, експорт адресатів та підготовка повідомлень</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="exportEmailCSV()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow transition-colors flex items-center gap-1.5">
+            <i class="fa-solid fa-file-csv"></i> Експорт Email (CSV)
+          </button>
+        </div>
+      </div>
+
+      <!-- Інформаційна картка про розсилку -->
+      <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+        <div class="text-xs text-slate-600">
+          <span class="font-bold text-slate-900"><i class="fa-solid fa-lightbulb text-amber-500 mr-1"></i> Порада для розсилки:</span>
+          Завантажте експортований **.CSV** файл у сервіси **Brevo**, **SendPulse** або **MailerLite** для масової розсилки без ризику потрапити у СПАМ.
+        </div>
+      </div>
+
+      <!-- Таблиця користувачів -->
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs border-collapse">
+          <thead>
+            <tr class="bg-slate-900 text-white uppercase text-[10px] tracking-wider">
+              <th class="p-3 rounded-l-xl">Користувач / Email</th>
+              <th class="p-3">UID / Ідентифікатор</th>
+              <th class="p-3">Бонусні бали</th>
+              <th class="p-3 rounded-r-xl text-center">Швидка дія</th>
+            </tr>
+          </thead>
+          <tbody id="clientsTableBody" class="divide-y divide-slate-100">
+            <tr>
+              <td colspan="4" class="p-6 text-center text-slate-400">Завантаження клієнтської бази...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- РОЗДІЛ 3: СТВОРЕННЯ СТАТТІ В БАЗУ ЗНАНЬ    -->
     <!-- ========================================== -->
     <section id="articlesSection" class="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm hidden">
       <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-100">
@@ -236,6 +285,7 @@
     const auth = firebase.auth();
 
     let unsubscribeRequests = null;
+    let cachedClients = [];
 
     // Відстеження стану авторизації
     auth.onAuthStateChanged(user => {
@@ -249,6 +299,7 @@
         logoutBtn.classList.remove('hidden');
         loginCard.classList.add('hidden');
         listenToRequests(); // Запускаємо прослуховування замовлень
+        loadClients();      // Завантажуємо список клієнтів
       } else {
         status.textContent = '● Не авторизовано';
         status.className = 'text-[11px] font-bold px-2.5 py-1 rounded-full bg-rose-50 text-rose-600 border border-rose-200';
@@ -261,24 +312,37 @@
     // Перемикання табів
     function switchTab(tab) {
       const reqSec = document.getElementById('requestsSection');
+      const cliSec = document.getElementById('clientsSection');
       const artSec = document.getElementById('articlesSection');
+
       const reqBtn = document.getElementById('tabRequestsBtn');
+      const cliBtn = document.getElementById('tabClientsBtn');
       const artBtn = document.getElementById('tabArticlesBtn');
+
+      reqSec.classList.add('hidden');
+      cliSec.classList.add('hidden');
+      artSec.classList.add('hidden');
+
+      const inactiveStyle = "px-4 py-2 text-xs font-bold rounded-t-xl bg-slate-200 text-slate-600 flex items-center gap-2 whitespace-nowrap";
+      const activeStyle = "px-4 py-2 text-xs font-bold rounded-t-xl bg-white border-t border-l border-r border-slate-200 text-blue-600 flex items-center gap-2 whitespace-nowrap";
+
+      reqBtn.className = inactiveStyle;
+      cliBtn.className = inactiveStyle;
+      artBtn.className = inactiveStyle;
 
       if (tab === 'requests') {
         reqSec.classList.remove('hidden');
-        artSec.classList.add('hidden');
-        reqBtn.className = "px-4 py-2 text-xs font-bold rounded-t-xl bg-white border-t border-l border-r border-slate-200 text-blue-600 flex items-center gap-2";
-        artBtn.className = "px-4 py-2 text-xs font-bold rounded-t-xl bg-slate-200 text-slate-600 flex items-center gap-2";
+        reqBtn.className = activeStyle;
+      } else if (tab === 'clients') {
+        cliSec.classList.remove('hidden');
+        cliBtn.className = activeStyle;
       } else {
-        reqSec.classList.add('hidden');
         artSec.classList.remove('hidden');
-        artBtn.className = "px-4 py-2 text-xs font-bold rounded-t-xl bg-white border-t border-l border-r border-slate-200 text-blue-600 flex items-center gap-2";
-        reqBtn.className = "px-4 py-2 text-xs font-bold rounded-t-xl bg-slate-200 text-slate-600 flex items-center gap-2";
+        artBtn.className = activeStyle;
       }
     }
 
-    // Отримання та оновлення замовлень у реальному часі
+    // 1. Отримання та оновлення замовлень у реальному часі
     function listenToRequests() {
       const tbody = document.getElementById('requestsTableBody');
       const countEl = document.getElementById('requestsCount');
@@ -326,6 +390,74 @@
       }, err => {
         tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-rose-500">Помилка завантаження: ${err.message}</td></tr>`;
       });
+    }
+
+    // 2. Завантаження клієнтської бази (з колекцій 'users' та 'requests')
+    async function loadClients() {
+      const tbody = document.getElementById('clientsTableBody');
+      const countEl = document.getElementById('clientsCount');
+
+      try {
+        const usersSnapshot = await db.collection('users').get();
+        cachedClients = [];
+
+        usersSnapshot.forEach(doc => {
+          const u = doc.data();
+          cachedClients.push({
+            id: doc.id,
+            email: u.email || u.userEmail || 'Не вказано',
+            points: u.points || 0
+          });
+        });
+
+        countEl.textContent = cachedClients.length;
+        tbody.innerHTML = '';
+
+        if (cachedClients.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="4" class="p-6 text-center text-slate-400">Клієнтів поки що немає.</td></tr>';
+          return;
+        }
+
+        cachedClients.forEach(c => {
+          const tr = document.createElement('tr');
+          tr.className = "hover:bg-slate-50 transition-colors";
+          tr.innerHTML = `
+            <td class="p-3 font-bold text-slate-900">${c.email}</td>
+            <td class="p-3 text-[10px] text-slate-400 font-mono">${c.id}</td>
+            <td class="p-3"><span class="px-2 py-1 bg-amber-50 text-amber-600 border border-amber-200 rounded-lg font-extrabold text-[11px]"><i class="fa-solid fa-coins mr-1"></i>${c.points} балів</span></td>
+            <td class="p-3 text-center">
+              <a href="mailto:${c.email}" class="px-2.5 py-1 bg-blue-50 text-blue-600 hover:bg-blue-100 font-bold rounded-lg transition-colors text-[11px]">
+                <i class="fa-solid fa-envelope mr-1"></i> Написати
+              </a>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="4" class="p-6 text-center text-rose-500">Помилка: ${err.message}</td></tr>`;
+      }
+    }
+
+    // 3. Експорт списку Email користувачів у файл CSV
+    function exportEmailCSV() {
+      if (!cachedClients.length) {
+        alert("Немає даних для експорту!");
+        return;
+      }
+
+      let csvContent = "data:text/csv;charset=utf-8,Email,UID,Points\n";
+      cachedClients.forEach(c => {
+        csvContent += `"${c.email}","${c.id}","${c.points}"\n`;
+      });
+
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", `neoservice_clients_${new Date().toISOString().slice(0,10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     }
 
     // Зміна статусу заявки

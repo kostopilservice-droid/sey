@@ -5,7 +5,7 @@
     <meta name="theme-color" content="#1a365d">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neoservice — Щоденний Довідник та Сервіс</title>
+    <title>Neoservice — Міський інформаційно-рекламний портал та сервіс</title>
     
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -88,33 +88,42 @@
 </head>
 <body>
 
-    <!-- ================= СТИЛЬНА ШАПКА З ПОШУКОМ ================= -->
+    <!-- ================= ШАПКА МІСЬКОГО ПОРТАЛУ ================= -->
     <header style="background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); color: white; padding: 15px 20px; border-bottom: 3px solid #3b82f6; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
       <div style="max-width: 1100px; margin: 0 auto; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 15px;">
         
-        <!-- Логотип + Заголовок -->
+        <!-- Логотип + Міський Заголовок -->
         <a href="index.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none; color: white;">
-          <div style="background: rgba(255, 255, 255, 0.12); border: 1px solid rgba(255,255,255,0.2); border-radius: 14px; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">
-            👼
+          <div style="background: linear-gradient(135deg, #2563eb, #38bdf8); border: 1px solid rgba(255,255,255,0.2); border-radius: 14px; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">
+            🏙️
           </div>
           <div>
-            <div style="font-size: 1.4rem; font-weight: 900; letter-spacing: 0.8px; text-transform: uppercase; line-height: 1.1;">
-              NEOSERVICE<span style="color: #60a5fa;">.KS.UA</span>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 1.4rem; font-weight: 900; letter-spacing: 0.8px; text-transform: uppercase; line-height: 1.1;">
+                NEOSERVICE<span style="color: #60a5fa;">.KS.UA</span>
+              </span>
+              <span style="background: rgba(56, 189, 248, 0.2); color: #7dd3fc; border: 1px solid rgba(56, 189, 248, 0.4); font-size: 0.65rem; font-weight: 800; padding: 2px 8px; border-radius: 10px; text-transform: uppercase;">
+                Міський Портал
+              </span>
             </div>
             <div style="font-size: 0.78rem; color: #cbd5e1; font-style: italic; margin-top: 2px;">
-              «Ісус — дорога, істина і життя» | Сервіс, Знання та Допомога
+              Реклама • Оголошення • Сервіс • Новини • «Ісус — дорога, істина і життя»
             </div>
           </div>
         </a>
 
-        <!-- Активний рядок пошуку -->
-        <div style="flex: 1; max-width: 320px; min-width: 240px;">
-          <div style="position: relative; width: 100%;">
+        <!-- Пошук та кнопка реклами -->
+        <div style="display: flex; align-items: center; gap: 10px; flex: 1; max-width: 480px; min-width: 260px; justify-content: flex-end;">
+          <div style="position: relative; flex: 1; max-width: 300px;">
             <span style="position: absolute; inset-y: 0; left: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8; pointer-events: none; font-size: 0.85rem;">
               <i class="fa-solid fa-magnifying-glass"></i>
             </span>
-            <input type="text" id="mainSearch" placeholder="Пошук у довіднику... (натисніть Enter)" style="width: 100%; box-sizing: border-box; padding: 8px 12px 8px 34px; font-size: 0.82rem; background: rgba(255, 255, 255, 0.08); color: white; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 10px; outline: none;" />
+            <input type="text" id="mainSearch" placeholder="Пошук послуг, оголошень... (Enter)" style="width: 100%; box-sizing: border-box; padding: 8px 12px 8px 34px; font-size: 0.82rem; background: rgba(255, 255, 255, 0.08); color: white; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 10px; outline: none;" />
           </div>
+
+          <a href="service.html" style="background: #d97706; color: white; padding: 8px 14px; border-radius: 10px; text-decoration: none; font-weight: bold; font-size: 0.8rem; white-space: nowrap; box-shadow: 0 2px 6px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 6px;">
+            <i class="fa-solid fa-bullhorn"></i> <span class="hidden sm:inline">Реклама</span>
+          </a>
         </div>
 
       </div>
@@ -123,9 +132,9 @@
     <!-- НАВІГАЦІЯ -->
     <nav>
         <a href="baza.html"><i class="fa-solid fa-book-open mr-1"></i> База знань</a>
-        <a href="service.html#"><i class="fa-solid fa-screwdriver-wrench mr-1"></i> Сервіс - Service</a>
+        <a href="service.html"><i class="fa-solid fa-screwdriver-wrench mr-1"></i> Сервіс - Service</a>
         <a href="chat.html"><i class="fa-solid fa-comments mr-1"></i> Чат спільноти</a>
-        <a href="account.html"><i class="fa-solid fa-user-lock mr-1"></i> Особистий</a>
+        <a href="account.html"><i class="fa-solid fa-user-lock mr-1"></i> Особистий</a> 
     </nav>
 
     <!-- ОСНОВНІ КАРТКИ -->
@@ -236,16 +245,16 @@
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 15px;">
         
         <!-- Розділ 1: Автокомерція & Автобазар -->
-<a href="auto.html" style="text-decoration: none; color: inherit;">
-  <div style="background: white; border-radius: 12px; padding: 15px; border-top: 4px solid #d97706; box-shadow: 0 4px 6px rgba(0,0,0,0.04); height: 100%; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='translateY(0)'">
-    <div>
-      <div style="font-size: 1.5rem; margin-bottom: 8px;">🚘</div>
-      <h3 style="font-size: 0.95rem; font-weight: bold; color: #1e3a8a; margin: 0 0 6px 0;">Автокомерція & Запчастини</h3>
-      <p style="font-size: 0.75rem; color: #64748b; margin: 0; line-height: 1.4;">Автобазар, ЕБУ, сканери Launch/Autocom, осцилографи Hantek, запчастини б/в та нові.</p>
-    </div>
-    <span style="font-size: 0.75rem; color: #d97706; font-weight: bold; margin-top: 12px; display: inline-block;">Авторинок &rarr;</span>
-  </div>
-</a>
+        <a href="auto.html" style="text-decoration: none; color: inherit;">
+          <div style="background: white; border-radius: 12px; padding: 15px; border-top: 4px solid #d97706; box-shadow: 0 4px 6px rgba(0,0,0,0.04); height: 100%; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='translateY(0)'">
+            <div>
+              <div style="font-size: 1.5rem; margin-bottom: 8px;">🚘</div>
+              <h3 style="font-size: 0.95rem; font-weight: bold; color: #1e3a8a; margin: 0 0 6px 0;">Автокомерція & Запчастини</h3>
+              <p style="font-size: 0.75rem; color: #64748b; margin: 0; line-height: 1.4;">Автобазар, ЕБУ, сканери Launch/Autocom, осцилографи Hantek, запчастини б/в та нові.</p>
+            </div>
+            <span style="font-size: 0.75rem; color: #d97706; font-weight: bold; margin-top: 12px; display: inline-block;">Авторинок &rarr;</span>
+          </div>
+        </a>
 
         <!-- Розділ 2: Спорт та аналітика --> 
         <a href="sport.html" style="text-decoration: none; color: inherit;">
@@ -299,7 +308,7 @@
     </section>
 
     <footer>
-        <p>&copy; 2026 Neoservice.ks.ua — Ваш щоденний довідник та помічник.</p>
+        <p>&copy; 2026 Neoservice.ks.ua — Міський інформаційно-рекламний портал.</p>
     </footer>
 
     <!-- СКРИПТИ FIREBASE ТА ОБРОБНИК ПОШУКУ -->
@@ -308,15 +317,15 @@
       import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
       import { getFirestore, collection, addDoc, query, where, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-const firebaseConfig = {
-    apiKey: "AIzaSyBlKoP6-M8tdrKq88bSdnWSnak5Gpddnpk",
-    authDomain: "neoservice-ks-ua.firebaseapp.com",
-    projectId: "neoservice-ks-ua",
-    storageBucket: "neoservice-ks-ua.firebasestorage.app",
-    messagingSenderId: "528941827813",
-    appId: "1:528941827813:web:354ef989d200087634b60c",
-    measurementId: "G-BYGHEHVYY3"
-  };
+      const firebaseConfig = {
+        apiKey: "AIzaSyBlKoP6-M8tdrKq88bSdnWSnak5Gpddnpk",
+        authDomain: "neoservice-ks-ua.firebaseapp.com",
+        projectId: "neoservice-ks-ua",
+        storageBucket: "neoservice-ks-ua.firebasestorage.app",
+        messagingSenderId: "528941827813",
+        appId: "1:528941827813:web:354ef989d200087634b60c",
+        measurementId: "G-BYGHEHVYY3"
+      };
 
       const app = initializeApp(firebaseConfig);
       const auth = getAuth(app);
@@ -344,7 +353,7 @@ const firebaseConfig = {
         }
       });
 
-      // Авторизаційні кнопкори
+      // Авторизаційні кнопки
       loginEmailBtn?.addEventListener('click', async () => {
         const email = document.getElementById('authEmail').value;
         const password = document.getElementById('authPassword').value;
@@ -428,4 +437,4 @@ const firebaseConfig = {
       }
     </script>
 </body>
-</html> 
+</html>

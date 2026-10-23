@@ -2,7 +2,7 @@
 <html lang="uk">
 <head>
     <link rel="manifest" href="./manifest.json">
-    <meta name="theme-color" content="#0f172a">
+    <meta name="theme-color" content="#1e3a8a">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Сервісні Послуги — Neoservice</title>
@@ -12,61 +12,69 @@
 
     <style>
         :root {
-            --primary: #0f172a;
-            --service-color: #2563eb; /* Глибший, насичений синій */
-            --service-hover: #1d4ed8;
-            --accent: #38bdf8;
-            --bg: #090d16; /* Преміальний темний фон європейського рівня */
-            --card-bg: #111827; /* Темна розкішна картка */
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
+            --primary: #1e3a8a;
+            --service-color: #0284c7; 
+            --service-hover: #0369a1;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
         }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
             background-color: var(--bg);
-            color: var(--text-main);
+            color: var(--text);
+            /* Легкий голографічний/сітковий фон (світлий патерн) */
+            background-image: 
+                radial-gradient(at 10% 20%, rgba(2, 132, 199, 0.05) 0px, transparent 50%),
+                radial-gradient(at 90% 80%, rgba(30, 58, 138, 0.05) 0px, transparent 50%),
+                linear-gradient(to right, rgba(226, 232, 240, 0.4) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(226, 232, 240, 0.4) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+            background-attachment: fixed;
         }
         
         /* Навігація */
         nav {
             display: flex;
             justify-content: center;
-            background: #0b0f19;
+            background: #0f172a;
             overflow-x: auto;
-            border-bottom: 2px solid #1e293b;
+            border-bottom: 2px solid var(--service-color);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
         nav a {
-            color: var(--text-muted);
-            padding: 12px 20px;
+            color: white;
+            padding: 10px 20px;
             text-decoration: none;
             white-space: nowrap;
             font-size: 0.85rem;
             font-weight: 600;
-            transition: all 0.3s ease;
+            transition: background 0.2s;
         }
-        nav a:hover { color: white; background-color: rgba(37, 99, 235, 0.15); }
+        nav a:hover { background-color: var(--service-color); }
 
         .container {
-            max-width: 1150px;
+            max-width: 1100px;
             margin: 30px auto;
             padding: 0 15px;
         }
 
         .services-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 24px;
-            margin-top: 25px;
+            margin-top: 24px;
         }
 
         .service-card {
             background: var(--card-bg);
             border-radius: 16px;
             padding: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(2, 132, 199, 0.15);
+            /* Голографічна м'яка тінь з відблиском */
+            box-shadow: 0 10px 25px -5px rgba(2, 132, 199, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.02);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             flex-direction: column;
@@ -74,86 +82,87 @@
             position: relative;
             overflow: hidden;
         }
-        .service-card::before {
+        /* Голографічна верхня смужка-градієнт */
+        .service-card::after {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 3px;
-            background: linear-gradient(90deg, #2563eb, #38bdf8);
-            opacity: 0.6;
-            transition: opacity 0.3s;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #38bdf8, #6366f1, #38bdf8);
+            background-size: 200% auto;
+            animation: shimmer 4s linear infinite;
         }
+        @keyframes shimmer {
+            0% { background-position: 0% center; }
+            100% { background-position: 200% center; }
+        }
+
         .service-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 20px 35px -10px rgba(37, 99, 235, 0.25);
-            border-color: rgba(56, 189, 248, 0.4);
-        }
-        .service-card:hover::before {
-            opacity: 1;
+            transform: translateY(-5px);
+            box-shadow: 0 20px 30px -10px rgba(2, 132, 199, 0.2);
+            border-color: rgba(2, 132, 199, 0.4);
         }
 
         .service-icon {
-            width: 54px;
-            height: 54px;
-            background: linear-gradient(135deg, rgba(37, 99, 235, 0.2), rgba(56, 189, 248, 0.1));
-            color: var(--accent);
+            width: 52px;
+            height: 52px;
+            background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%);
+            color: var(--service-color);
             border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 1.5rem;
             margin-bottom: 16px;
-            border: 1px solid rgba(56, 189, 248, 0.2);
+            box-shadow: inset 0 2px 4px rgba(255,255,255,0.8);
         }
 
         .btn-order {
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
             color: white;
             border: none;
-            padding: 12px 18px;
+            padding: 11px 18px;
             border-radius: 10px;
             font-weight: bold;
             cursor: pointer;
             font-size: 0.85rem;
             width: 100%;
-            margin-top: 20px;
-            transition: all 0.3s;
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+            margin-top: 18px;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
         }
         .btn-order:hover { 
-            background: linear-gradient(135deg, #1d4ed8, #1e40af);
-            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.5);
+            background: linear-gradient(135deg, #0369a1 0%, #075985 100%);
+            box-shadow: 0 6px 16px rgba(2, 132, 199, 0.4);
             transform: translateY(-1px);
         }
 
         footer {
             text-align: center;
             padding: 25px;
-            background: #0b0f19;
-            color: var(--text-muted);
+            background: #0f172a;
+            color: white;
             margin-top: 60px;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            font-size: 0.85rem;
         }
     </style>
 </head>
 <body>
 
     <!-- ШАПКА -->
-    <header style="background: linear-gradient(135deg, #0b0f19 0%, #1e293b 100%); color: white; padding: 18px 20px; border-bottom: 3px solid #2563eb; box-shadow: 0 4px 20px rgba(0,0,0,0.4);">
-      <div style="max-width: 1150px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between;">
+    <header style="background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); color: white; padding: 18px 20px; border-bottom: 3px solid #38bdf8; box-shadow: 0 4px 15px rgba(0,0,0,0.15);">
+      <div style="max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between;">
         
         <a href="index.html" style="display: flex; align-items: center; gap: 14px; text-decoration: none; color: white;">
-          <div style="background: linear-gradient(135deg, #2563eb, #38bdf8); border-radius: 14px; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);">
+          <div style="background: rgba(255, 255, 255, 0.12); backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.3); border-radius: 14px; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">
             🏙️
           </div>
           <div>
             <div style="font-size: 1.4rem; font-weight: 900; letter-spacing: 0.8px; text-transform: uppercase; line-height: 1.1;">
               NEO<span style="color: #38bdf8;">SERVICE</span>
             </div>
-            <div style="font-size: 0.78rem; color: #94a3b8; font-style: italic; margin-top: 3px;">
+            <div style="font-size: 0.78rem; color: #bae6fd; font-style: italic; margin-top: 3px;">
               Міський портал • Послуги • Ремонт • Поліграфія • Техніка
             </div>
           </div>
@@ -166,7 +175,7 @@
     <nav>
         <a href="index.html"><i class="fa-solid fa-house"></i> Головна</a>
         <a href="baza.html"><i class="fa-solid fa-book-open"></i> База знань</a>
-        <a href="service.html" style="background-color: #2563eb; color: white;"><i class="fa-solid fa-wrench"></i> Сервіс - Service</a>
+        <a href="service.html" style="background-color: var(--service-color);"><i class="fa-solid fa-wrench"></i> Сервіс - Service</a>
         <a href="duhovne.html"><i class="fa-solid fa-dove"></i> Духовне Слово</a>
         <a href="auto.html"><i class="fa-solid fa-car"></i> Автомаркет</a>
         <a href="shop.html"><i class="fa-solid fa-store"></i> Маркетплейс</a>
@@ -176,9 +185,9 @@
 
     <div class="container">
       
-      <div style="background: linear-gradient(135deg, #111827 0%, #1f2937 100%); border-radius: 16px; padding: 24px; border-left: 5px solid #38bdf8; border: 1px solid rgba(255,255,255,0.06); box-shadow: 0 10px 25px rgba(0,0,0,0.3);">
-        <h1 style="margin: 0 0 6px 0; font-size: 1.4rem; color: #f8fafc;"><i class="fa-solid fa-screwdriver-wrench text-sky-400 mr-2"></i> Послуги та Технічний Сервіс</h1>
-        <p style="margin: 0; font-size: 0.9rem; color: var(--text-muted); line-height: 1.5;">
+      <div style="background: white; border-radius: 16px; padding: 24px; border-left: 6px solid var(--service-color); box-shadow: 0 10px 25px -5px rgba(2, 132, 199, 0.1); border: 1px solid rgba(2, 132, 199, 0.15);">
+        <h1 style="margin: 0 0 6px 0; font-size: 1.4rem; color: #1e3a8a;"><i class="fa-solid fa-screwdriver-wrench text-sky-500 mr-2"></i> Послуги та Технічний Сервіс</h1>
+        <p style="margin: 0; font-size: 0.9rem; color: #64748b; line-height: 1.5;">
           Професійне обслуговування, ремонт техніки, автоелектрика, дизайн та розробка. Можливий оперативний виїзд майстра.
         </p>
       </div>
@@ -189,8 +198,8 @@
         <div class="service-card">
           <div>
             <div class="service-icon"><i class="fa-solid fa-laptop-medical"></i></div>
-            <h3 style="margin: 0 0 10px 0; color: #ffffff; font-size: 1.1rem;">Ремонт ПК та Оргтехніки</h3>
-            <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0; line-height: 1.5;">Діагностика, чистка ноутбуків, заміна комплектуючих, встановлення ПЗ та налаштування мереж.</p>
+            <h3 style="margin: 0 0 10px 0; color: #0f172a; font-size: 1.1rem;">Ремонт ПК та Оргтехніки</h3>
+            <p style="font-size: 0.85rem; color: #64748b; margin: 0; line-height: 1.5;">Діагностика, чистка ноутбуків, заміна комплектуючих, встановлення ПЗ та налаштування мереж.</p>
           </div>
           <button class="btn-order" onclick="openOrderModal('Ремонт ПК та Оргтехніки')">Замовити послугу</button>
         </div>
@@ -198,8 +207,8 @@
         <div class="service-card">
           <div>
             <div class="service-icon"><i class="fa-solid fa-print"></i></div>
-            <h3 style="margin: 0 0 10px 0; color: #ffffff; font-size: 1.1rem;">Принтери та Друк</h3>
-            <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0; line-height: 1.5;">Заправка картриджів, ремонт БФП та принтерів, якісний кольоровий і чорно-білий друк.</p>
+            <h3 style="margin: 0 0 10px 0; color: #0f172a; font-size: 1.1rem;">Принтери та Друк</h3>
+            <p style="font-size: 0.85rem; color: #64748b; margin: 0; line-height: 1.5;">Заправка картриджів, ремонт БФП та принтерів, якісний кольоровий і чорно-білий друк.</p>
           </div>
           <button class="btn-order" onclick="openOrderModal('Принтери та Друк')">Замовити послугу</button>
         </div>
@@ -207,8 +216,8 @@
         <div class="service-card">
           <div>
             <div class="service-icon"><i class="fa-solid fa-car-battery"></i></div>
-            <h3 style="margin: 0 0 10px 0; color: #ffffff; font-size: 1.1rem;">Автоелектрика & ЕБУ</h3>
-            <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0; line-height: 1.5;">Комп'ютерна діагностика авто сканерами Launch/Autocom, перевірка блоків керування, прошивка.</p>
+            <h3 style="margin: 0 0 10px 0; color: #0f172a; font-size: 1.1rem;">Автоелектрика & ЕБУ</h3>
+            <p style="font-size: 0.85rem; color: #64748b; margin: 0; line-height: 1.5;">Комп'ютерна діагностика авто сканерами Launch/Autocom, перевірка блоків керування, прошивка.</p>
           </div>
           <button class="btn-order" onclick="openOrderModal('Автоелектрика & ЕБУ')">Замовити послугу</button>
         </div>
@@ -216,8 +225,8 @@
         <div class="service-card">
           <div>
             <div class="service-icon"><i class="fa-solid fa-bolt"></i></div>
-            <h3 style="margin: 0 0 10px 0; color: #ffffff; font-size: 1.1rem;">Електротранспорт</h3>
-            <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0; line-height: 1.5;">Ремонт електросамокатів, збірка та балансування акумуляторів, ремонт контролерів.</p>
+            <h3 style="margin: 0 0 10px 0; color: #0f172a; font-size: 1.1rem;">Електротранспорт</h3>
+            <p style="font-size: 0.85rem; color: #64748b; margin: 0; line-height: 1.5;">Ремонт електросамокатів, збірка та балансування акумуляторів, ремонт контролерів.</p>
           </div>
           <button class="btn-order" onclick="openOrderModal('Електротранспорт')">Замовити послугу</button>
         </div>
@@ -225,8 +234,8 @@
         <div class="service-card">
           <div>
             <div class="service-icon"><i class="fa-solid fa-code"></i></div>
-            <h3 style="margin: 0 0 10px 0; color: #ffffff; font-size: 1.1rem;">Веб-розробка та Дизайн</h3>
-            <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0; line-height: 1.5;">Створення веб-сайтів, підключення баз даних Firebase, веб-додатків та витончений адаптивний дизайн.</p>
+            <h3 style="margin: 0 0 10px 0; color: #0f172a; font-size: 1.1rem;">Веб-розробка та Дизайн</h3>
+            <p style="font-size: 0.85rem; color: #64748b; margin: 0; line-height: 1.5;">Створення веб-сайтів, підключення баз даних Firebase, веб-додатків та витончений адаптивний дизайн.</p>
           </div>
           <button class="btn-order" onclick="openOrderModal('Веб-розробка та Дизайн')">Замовити послугу</button>
         </div>
@@ -234,8 +243,8 @@
         <div class="service-card">
           <div>
             <div class="service-icon"><i class="fa-solid fa-palette"></i></div>
-            <h3 style="margin: 0 0 10px 0; color: #ffffff; font-size: 1.1rem;">Поліграфія та Реклама</h3>
-            <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0; line-height: 1.5;">Розробка макетів, візитки, банери, виготовлення стендів та зовнішньої реклами.</p>
+            <h3 style="margin: 0 0 10px 0; color: #0f172a; font-size: 1.1rem;">Поліграфія та Реклама</h3>
+            <p style="font-size: 0.85rem; color: #64748b; margin: 0; line-height: 1.5;">Розробка макетів, візитки, банери, виготовлення стендів та зовнішньої реклами.</p>
           </div>
           <button class="btn-order" onclick="openOrderModal('Поліграфія та Реклама')">Замовити послугу</button>
         </div>
@@ -245,29 +254,29 @@
     </div>
 
     <!-- МОДАЛЬНЕ ВІКНО ЗАМОВЛЕННЯ ПОСЛУГИ -->
-    <div id="orderModal" style="display: none; position: fixed; inset: 0; background: rgba(9, 13, 22, 0.85); backdrop-filter: blur(5px); z-index: 9999; justify-content: center; align-items: center; padding: 15px;">
-      <div style="background: #111827; border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 25px; max-width: 450px; width: 100%; box-shadow: 0 20px 40px rgba(0,0,0,0.5);">
-        <h3 id="modalServiceName" style="margin-top: 0; color: #f8fafc; font-size: 1.2rem;">Заявка на послугу</h3>
+    <div id="orderModal" style="display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.7); backdrop-filter: blur(5px); z-index: 9999; justify-content: center; align-items: center; padding: 15px;">
+      <div style="background: white; border-radius: 16px; padding: 25px; max-width: 450px; width: 100%; box-shadow: 0 20px 40px rgba(0,0,0,0.2); border: 1px solid rgba(2, 132, 199, 0.2);">
+        <h3 id="modalServiceName" style="margin-top: 0; color: #1e3a8a; font-size: 1.2rem;">Заявка на послугу</h3>
         <form id="serviceOrderForm">
           <input type="hidden" id="selectedService">
           
           <div style="margin-bottom: 14px;">
-            <label style="font-size: 0.8rem; font-weight: bold; color: var(--text-muted);">Ваше ім'я:</label>
-            <input type="text" id="clientName" required style="width: 100%; box-sizing: border-box; padding: 10px; border-radius: 8px; border: 1px solid #374151; background: #1f2937; color: white; font-size: 0.85rem; margin-top: 5px; outline: none;" />
+            <label style="font-size: 0.8rem; font-weight: bold; color: #475569;">Ваше ім'я:</label>
+            <input type="text" id="clientName" required style="width: 100%; box-sizing: border-box; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 0.85rem; margin-top: 5px; outline: none;" />
           </div>
 
           <div style="margin-bottom: 14px;">
-            <label style="font-size: 0.8rem; font-weight: bold; color: var(--text-muted);">Номер телефону / Telegram:</label>
-            <input type="tel" id="clientPhone" required placeholder="+380..." style="width: 100%; box-sizing: border-box; padding: 10px; border-radius: 8px; border: 1px solid #374151; background: #1f2937; color: white; font-size: 0.85rem; margin-top: 5px; outline: none;" />
+            <label style="font-size: 0.8rem; font-weight: bold; color: #475569;">Номер телефону / Telegram:</label>
+            <input type="tel" id="clientPhone" required placeholder="+380..." style="width: 100%; box-sizing: border-box; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 0.85rem; margin-top: 5px; outline: none;" />
           </div>
 
           <div style="margin-bottom: 18px;">
-            <label style="font-size: 0.8rem; font-weight: bold; color: var(--text-muted);">Короткий опис завдання:</label>
-            <textarea id="clientComment" rows="3" placeholder="Опишіть проблему або що саме потрібно зробити..." required style="width: 100%; box-sizing: border-box; padding: 10px; border-radius: 8px; border: 1px solid #374151; background: #1f2937; color: white; font-size: 0.85rem; margin-top: 5px; font-family: inherit; outline: none;"></textarea>
+            <label style="font-size: 0.8rem; font-weight: bold; color: #475569;">Короткий опис завдання:</label>
+            <textarea id="clientComment" rows="3" placeholder="Опишіть проблему або що саме потрібно зробити..." required style="width: 100%; box-sizing: border-box; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 0.85rem; margin-top: 5px; font-family: inherit; outline: none;"></textarea>
           </div>
 
           <div style="display: flex; justify-content: flex-end; gap: 10px;">
-            <button type="button" onclick="closeOrderModal()" style="padding: 9px 16px; border-radius: 8px; border: 1px solid #374151; background: #1f2937; color: var(--text-muted); cursor: pointer; font-weight: bold; font-size: 0.85rem;">Скасувати</button>
+            <button type="button" onclick="closeOrderModal()" style="padding: 9px 16px; border-radius: 8px; border: 1px solid #cbd5e1; background: #f1f5f9; cursor: pointer; font-weight: bold; font-size: 0.85rem;">Скасувати</button>
             <button type="submit" class="btn-order" style="margin-top: 0; width: auto; padding: 9px 20px;">Надіслати заявку</button>
           </div>
         </form>
@@ -349,4 +358,4 @@
       });
     </script>
 </body>
-</html> 
+</html>

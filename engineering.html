@@ -5,7 +5,7 @@
     <meta name="theme-color" content="#0f172a">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Інженерія, Схеми & Архітектурні рішення — Neoservice</title>
+    <title>Інженерія, Схеми & Технології Майбутнього — Neoservice</title>
     
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -56,7 +56,7 @@
             padding: 0 15px;
         }
 
-        /* 🌟 АВТО-БАННЕРИ РЕКЛАМИ (Слайдер) */
+        /* АВТО-БАННЕРИ РЕКЛАМИ (Слайдер) */
         .hero-slider {
             width: 100%;
             height: 220px;
@@ -107,6 +107,14 @@
             color: #94a3b8;
         }
 
+        /* Блоки сторінок (сторінка 1, 2, 3) */
+        .page-section {
+            display: none;
+        }
+        .page-section.active-page {
+            display: block;
+        }
+
         /* Сітка інженерних карток */
         .eng-grid {
             display: grid;
@@ -143,7 +151,36 @@
             padding: 18px;
         }
 
-        /* 🗺️ МОДАЛЬНЕ ВІКНО ПАНОРАМНОГО ПЕРЕГЛЯДУ ТА СКРОЛІНГУ */
+        /* ПАНЕЛЬ ПАГІНАЦІЇ (СТОРІНКИ 1, 2, 3) */
+        .pagination-bar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin: 40px 0;
+        }
+        .page-btn {
+            background: var(--card-bg);
+            color: var(--text);
+            border: 1px solid var(--border);
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+        .page-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+        .page-btn.active {
+            background: var(--accent);
+            color: #0f172a;
+            border-color: var(--accent);
+        }
+
+        /* МОДАЛЬНЕ ВІКНО ПАНОРАМНОГО ПЕРЕГЛЯДУ */
         .panorama-modal {
             display: none;
             position: fixed;
@@ -160,7 +197,7 @@
             height: 80vh;
             border: 2px solid var(--accent);
             border-radius: 12px;
-            overflow: auto; /* Забезпечує скролінг у всі боки */
+            overflow: auto;
             position: relative;
             background: #000;
             cursor: grab;
@@ -189,7 +226,7 @@
         }
         .p-btn:hover { background: var(--accent-hover); color: white; }
 
-        /* 📁 ТАБЛИЦЯ ФАЙЛІВ (EX.UA Стиль) */
+        /* ТАБЛИЦЯ ФАЙЛІВ */
         .files-section {
             margin-top: 40px;
             background: #1e293b;
@@ -273,7 +310,7 @@
 
     <div class="container">
       
-      <!-- 🌟 ВИТОНЧЕНИЙ СЛАЙДЕР АРХІТЕКТУРНИХ РІШЕНЬ (Авто-перемикання банерів організацій) -->
+      <!-- СЛАЙДЕР АРХІТЕКТУРНИХ РІШЕНЬ (Авто-перемикання банерів) -->
       <div class="hero-slider" id="heroSlider">
         <div class="slide active" style="background-image: linear-gradient(90deg, rgba(15,23,42,0.9) 0%, rgba(15,23,42,0.3) 100%), url('https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1200&q=80');">
           <div class="slide-content">
@@ -305,51 +342,133 @@
         </div>
       </div>
 
-      <!-- ЗАГОЛОВІК РОЗДІЛУ -->
-      <div style="display: flex; justify-content: space-between; align-items: center; border-left: 4px solid var(--accent); padding-left: 15px; margin-bottom: 20px;">
-        <div>
-          <h1 style="margin: 0; font-size: 1.4rem;">📐 Інтерактивні Схеми та Креслення</h1>
-          <p style="margin: 4px 0 0 0; font-size: 0.82rem; color: #94a3b8;">Натисніть на картку для повноцінного панорамного огляду та детального зумування.</p>
+
+      <!-- ========================================== -->
+      <!-- СТОРІНКА 1: Базові схеми та креслення      -->
+      <!-- ========================================== -->
+      <div id="page1" class="page-section active-page">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-left: 4px solid var(--accent); padding-left: 15px; margin-bottom: 20px;">
+          <div>
+            <h1 style="margin: 0; font-size: 1.4rem;">📐 Стор. 1: Інтерактивні Схеми та Креслення</h1>
+            <p style="margin: 4px 0 0 0; font-size: 0.82rem; color: #94a3b8;">Натисніть на картку для повноцінного панорамного огляду та детального зумування.</p>
+          </div>
+        </div>
+
+        <div class="eng-grid">
+          <div class="eng-card" onclick="openPanorama('https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=2000&q=90', 'Принципова електрична схема силового модулю EcuX')">
+            <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=600&q=80" alt="Схема" class="eng-card-img">
+            <div class="eng-card-body">
+              <span style="font-size: 0.7rem; color: var(--accent); font-weight: bold; text-transform: uppercase;">Електроніка • PCB</span>
+              <h3 style="margin: 6px 0; font-size: 1rem;">Принципова електрична схема силового модулю EcuX</h3>
+              <p style="margin: 0; font-size: 0.8rem; color: #94a3b8;">Високодеталізоване креслення плати з розведенням шин живлення.</p>
+            </div>
+          </div>
+
+          <div class="eng-card" onclick="openPanorama('https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=2000&q=90', 'Архітектурний план комплексу автоматизації гаражів та СТО')">
+            <img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=600&q=80" alt="План" class="eng-card-img">
+            <div class="eng-card-body">
+              <span style="font-size: 0.7rem; color: #10b981; font-weight: bold; text-transform: uppercase;">Архітектура • BIM</span>
+              <h3 style="margin: 6px 0; font-size: 1rem;">План комплексу автоматизації та вентиляції СТО</h3>
+              <p style="margin: 0; font-size: 0.8rem; color: #94a3b8;">Повний архітектурний розріз із зазначенням комунікацій.</p>
+            </div>
+          </div>
+
+          <div class="eng-card" onclick="openPanorama('https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=2000&q=90', 'Мережева топологія промислового IoT комплексу')">
+            <img src="https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=600&q=80" alt="Топологія" class="eng-card-img">
+            <div class="eng-card-body">
+              <span style="font-size: 0.7rem; color: #f59e0b; font-weight: bold; text-transform: uppercase;">Мережі • IoT</span>
+              <h3 style="margin: 6px 0; font-size: 1rem;">Топологія бездротових протоколів та репітерів</h3>
+              <p style="margin: 0; font-size: 0.8rem; color: #94a3b8;">Схема покриття частот діапазону VHF/UHF та ретрансляторів.</p>
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- СІТКА ІНЖЕНЕРНИХ КАРТОК -->
-      <div class="eng-grid">
-        
-        <!-- Картка 1 -->
-       <!-- Картка 1 (Оновлена з надійним зображенням плати/схеми) -->
-        <div class="eng-card" onclick="openPanorama('https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=2000&q=90', 'Принципова електрична схема силового модулю EcuX')">
-          <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=600&q=80" alt="Схема" class="eng-card-img">
-          <div class="eng-card-body">
-            <span style="font-size: 0.7rem; color: var(--accent); font-weight: bold; text-transform: uppercase;">Електроніка • PCB</span>
-            <h3 style="margin: 6px 0; font-size: 1rem;">Принципова електрична схема силового модулю EcuX</h3>
-            <p style="margin: 0; font-size: 0.8rem; color: #94a3b8;">Високодеталізоване креслення плати з розведенням шин живлення.</p>
+
+      <!-- ========================================== -->
+      <!-- СТОРІНКА 2: НОВИЙ КОНТЕНТ (Технології майбутнього) -->
+      <!-- ========================================== -->
+      <div id="page2" class="page-section">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-left: 4px solid #10b981; padding-left: 15px; margin-bottom: 20px;">
+          <div>
+            <h1 style="margin: 0; font-size: 1.4rem;">🚀 Стор. 2: Технології майбутнього (Суспільство & Інновації)</h1>
+            <p style="margin: 4px 0 0 0; font-size: 0.82rem; color: #94a3b8;">Передові розробки, які формують завтрашній день: нейроінтерфейси, квантові системи та автономна енергетика.</p>
           </div>
         </div>
 
-        <!-- Картка 2 -->
-        <div class="eng-card" onclick="openPanorama('https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=2000&q=90', 'Архітектурний план комплексу автоматизації гаражів та СТО')">
-          <img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=600&q=80" alt="План" class="eng-card-img">
-          <div class="eng-card-body">
-            <span style="font-size: 0.7rem; color: #10b981; font-weight: bold; text-transform: uppercase;">Архітектура • BIM</span>
-            <h3 style="margin: 6px 0; font-size: 1rem;">План комплексу автоматизації та вентиляції СТО</h3>
-            <p style="margin: 0; font-size: 0.8rem; color: #94a3b8;">Повний архітектурний розріз із зазначенням комунікацій.</p>
+        <div class="eng-grid">
+          <div class="eng-card" onclick="openPanorama('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=2000&q=90', 'Нейрокомп’ютерні інтерфейси та BCI чипи')">
+            <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=600&q=80" alt="Нейро" class="eng-card-img">
+            <div class="eng-card-body">
+              <span style="font-size: 0.7rem; color: #10b981; font-weight: bold; text-transform: uppercase;">Біоінженерія • BCI</span>
+              <h3 style="margin: 6px 0; font-size: 1rem;">Архітектура нейрокомп’ютерних інтерфейсів прякре підключення</h3>
+              <p style="margin: 0; font-size: 0.8rem; color: #94a3b8;">Схема імплантованих нейрочипів для обробки сигналів головного мозку.</p>
+            </div>
+          </div>
+
+          <div class="eng-card" onclick="openPanorama('https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&w=2000&q=90', 'Квантові процесори та кріогенні магістралі')">
+            <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&w=600&q=80" alt="Квант" class="eng-card-img">
+            <div class="eng-card-body">
+              <span style="font-size: 0.7rem; color: var(--accent); font-weight: bold; text-transform: uppercase;">Квантові обчислення</span>
+              <h3 style="margin: 6px 0; font-size: 1rem;">Схема кріогенного охолодження квантових кубітів</h3>
+              <p style="margin: 0; font-size: 0.8rem; color: #94a3b8;">Принципова схема надпровідних квантових процесорів нового покоління.</p>
+            </div>
+          </div>
+
+          <div class="eng-card" onclick="openPanorama('https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=2000&q=90', 'Автономні мікромережі та водневі генератори')">
+            <img src="https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=600&q=80" alt="Енергія" class="eng-card-img">
+            <div class="eng-card-body">
+              <span style="font-size: 0.7rem; color: #f59e0b; font-weight: bold; text-transform: uppercase;">Зелена Енергетика</span>
+              <h3 style="margin: 6px 0; font-size: 1rem;">Водневі накопичувачі енергії для розумних міст</h3>
+              <p style="margin: 0; font-size: 0.8rem; color: #94a3b8;">Інженерна схема замкнутого циклу генерації та зберігання водню.</p>
+            </div>
           </div>
         </div>
-
-        <!-- Картка 3 -->
-        <div class="eng-card" onclick="openPanorama('https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=2000&q=90', 'Мережева топологія промислового IoT комплексу')">
-          <img src="https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=600&q=80" alt="Топологія" class="eng-card-img">
-          <div class="eng-card-body">
-            <span style="font-size: 0.7rem; color: #f59e0b; font-weight: bold; text-transform: uppercase;">Мережі • IoT</span>
-            <h3 style="margin: 6px 0; font-size: 1rem;">Топологія бездротових протоколів та репітерів</h3>
-            <p style="margin: 0; font-size: 0.8rem; color: #94a3b8;">Схема покриття частот діапазону VHF/UHF та ретрансляторів.</p>
-          </div>
-        </div>
-
       </div>
 
-      <!-- 📁 ТАБЛИЦЯ ФАЙЛІВ (EX.UA / Google Drive / Dropbox стиль) -->
+
+      <!-- ========================================== -->
+      <!-- СТОРІНКА 3: Космічні системи та Нанотехнології -->
+      <!-- ========================================== -->
+      <div id="page3" class="page-section">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-left: 4px solid #f59e0b; padding-left: 15px; margin-bottom: 20px;">
+          <div>
+            <h1 style="margin: 0; font-size: 1.4rem;">🛰️ Стор. 3: Космічна інженерія & Наноматеріали</h1>
+            <p style="margin: 4px 0 0 0; font-size: 0.82rem; color: #94a3b8;">Орбітальні станції, іонні двигуни та наноструктуровані композити.</p>
+          </div>
+        </div>
+
+        <div class="eng-grid">
+          <div class="eng-card" onclick="openPanorama('https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=2000&q=90', 'Схема іонного двигуна космічних апаратів глибокого космосу')">
+            <img src="https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=600&q=80" alt="Космос" class="eng-card-img">
+            <div class="eng-card-body">
+              <span style="font-size: 0.7rem; color: #f59e0b; font-weight: bold; text-transform: uppercase;">Космос • Двигуни</span>
+              <h3 style="margin: 6px 0; font-size: 1rem;">Принципова схема плазмового іонного двигуна</h3>
+              <p style="margin: 0; font-size: 0.8rem; color: #94a3b8;">Магнітні камери та сопла для міжпланетних перельотів.</p>
+            </div>
+          </div>
+
+          <div class="eng-card" onclick="openPanorama('https://images.unsplash.com/photo-1507668077129-56e32842fceb?auto=format&fit=crop&w=2000&q=90', 'Наноструктури графену для надміцних каркасів')">
+            <img src="https://images.unsplash.com/photo-1507668077129-56e32842fceb?auto=format&fit=crop&w=600&q=80" alt="Нано" class="eng-card-img">
+            <div class="eng-card-body">
+              <span style="font-size: 0.7rem; color: var(--accent); font-weight: bold; text-transform: uppercase;">Нанотехнології</span>
+              <h3 style="margin: 6px 0; font-size: 1rem;">Кристалічні гратчасті структури графену</h3>
+              <p style="margin: 0; font-size: 0.8rem; color: #94a3b8;">Моделювання надміцних легких матеріалів для авіації.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ПАНЕЛЬ ПАГІНАЦІЇ (КНОПКИ СТОРІНОК 1, 2, 3) -->
+      <div class="pagination-bar">
+        <button class="page-btn active" onclick="switchPage(1, this)">1</button>
+        <button class="page-btn" onclick="switchPage(2, this)">2 (Технології майбутнього)</button>
+        <button class="page-btn" onclick="switchPage(3, this)">3 (Космос & Нано)</button>
+      </div>
+
+
+      <!-- ТАБЛИЦЯ ФАЙЛІВ (EX.UA Стиль) -->
       <div class="files-section">
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
           <h2 style="margin: 0; font-size: 1.1rem;"><i class="fa-solid fa-box-archive" style="color: var(--accent);"></i> Архів Технічної Документації та ПО</h2>
@@ -394,7 +513,7 @@
 
     </div>
 
-    <!-- 🗺️ МОДАЛЬНЕ ВІКНО ПАНОРАМНОГО ПЕРЕГЛЯДУ (Зумивання + Скролінг) -->
+    <!-- МОДАЛЬНЕ ВІКНО ПАНОРАМНОГО ПЕРЕГЛЯДУ -->
     <div id="panoramaModal" class="panorama-modal">
       <div style="width: 90vw; max-width: 1200px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
         <h3 id="modalTitle" style="margin: 0; font-size: 1.1rem; color: var(--accent);">Панорамний перегляд</h3>
@@ -417,8 +536,19 @@
         <p>&copy; 2026 Neoservice.ks.ua — Інженерні рішення та майбутнє цифрових архівів.</p>
     </footer>
 
-    <!-- СКРИПТИ (Слайдер банерів + Панорамний зум) -->
+    <!-- СКРИПТИ -->
     <script>
+      // Перемикання сторінок (1, 2, 3)
+      window.switchPage = function(pageNum, btnElement) {
+        document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove('active-page'));
+        document.getElementById(`page${pageNum}`).classList.add('active-page');
+
+        document.querySelectorAll('.page-btn').forEach(b => b.classList.remove('active'));
+        btnElement.classList.add('active');
+
+        window.scrollTo({ top: 300, behavior: 'smooth' });
+      }
+
       // Авто-перемикання банерів організацій (Слайдер)
       let currentSlide = 0;
       const slides = document.querySelectorAll('.slide');
@@ -429,7 +559,7 @@
         currentSlide = (currentSlide + 1) % slides.length;
         slides[currentSlide].classList.add('active');
       }
-      setInterval(nextSlide, 5000); // Перемикання кожні 5 секунд
+      setInterval(nextSlide, 5000);
 
       // Логіка панорамного зумування та модального вікна
       let currentScale = 1;
@@ -466,7 +596,7 @@
         img.style.transform = `scale(${currentScale})`;
       }
 
-      // Підтримка перетягування мишею у в'юпорті (панорамний скролінг)
+      // Перетягування мишею у в'юпорті (панорамний скролінг)
       let isDown = false;
       let startX, startY, scrollLeft, scrollTop;
 
@@ -486,11 +616,9 @@
         e.preventDefault();
         const x = e.pageX - viewport.offsetLeft;
         const y = e.pageY - viewport.offsetTop;
-        const walkX = (x - startX);
-        const walkY = (y - startY);
-        viewport.scrollLeft = scrollLeft - walkX;
-        viewport.scrollTop = scrollTop - walkY;
+        viewport.scrollLeft = scrollLeft - (x - startX);
+        viewport.scrollTop = scrollTop - (y - startY);
       });
     </script>
 </body>
-</html>
+</html> 

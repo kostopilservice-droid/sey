@@ -66,6 +66,9 @@
             border: 1px solid #e2e8f0;
             box-shadow: 0 4px 6px rgba(0,0,0,0.04);
             transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
         .service-card:hover {
             transform: translateY(-4px);
@@ -158,44 +161,56 @@
       <div class="services-grid">
         
         <div class="service-card">
-          <div class="service-icon"><i class="fa-solid fa-laptop-medical"></i></div>
-          <h3 style="margin: 0 0 8px 0; color: #0f172a;">Ремонт ПК та Оргтехніки</h3>
-          <p style="font-size: 0.82rem; color: #64748b; margin: 0; line-height: 1.4;">Діагностика, чистка ноутбуків, заміна комплектуючих, встановлення ПЗ та налаштування мереж.</p>
+          <div>
+            <div class="service-icon"><i class="fa-solid fa-laptop-medical"></i></div>
+            <h3 style="margin: 0 0 8px 0; color: #0f172a;">Ремонт ПК та Оргтехніки</h3>
+            <p style="font-size: 0.82rem; color: #64748b; margin: 0; line-height: 1.4;">Діагностика, чистка ноутбуків, заміна комплектуючих, встановлення ПЗ та налаштування мереж.</p>
+          </div>
           <button class="btn-order" onclick="openOrderModal('Ремонт ПК та Оргтехніки')">Замовити послугу</button>
         </div>
 
         <div class="service-card">
-          <div class="service-icon"><i class="fa-solid fa-print"></i></div>
-          <h3 style="margin: 0 0 8px 0; color: #0f172a;">Принтери та Друк</h3>
-          <p style="font-size: 0.82rem; color: #64748b; margin: 0; line-height: 1.4;">Заправка картриджів, ремонт БФП та принтерів, якісний кольоровий і чорно-білий друк.</p>
+          <div>
+            <div class="service-icon"><i class="fa-solid fa-print"></i></div>
+            <h3 style="margin: 0 0 8px 0; color: #0f172a;">Принтери та Друк</h3>
+            <p style="font-size: 0.82rem; color: #64748b; margin: 0; line-height: 1.4;">Заправка картриджів, ремонт БФП та принтерів, якісний кольоровий і чорно-білий друк.</p>
+          </div>
           <button class="btn-order" onclick="openOrderModal('Принтери та Друк')">Замовити послугу</button>
         </div>
 
         <div class="service-card">
-          <div class="service-icon"><i class="fa-solid fa-car-battery"></i></div>
-          <h3 style="margin: 0 0 8px 0; color: #0f172a;">Автоелектрика & ЕБУ</h3>
-          <p style="font-size: 0.82rem; color: #64748b; margin: 0; line-height: 1.4;">Комп'ютерна діагностика авто сканерами Launch/Autocom, перевірка блоків керування, прошивка.</p>
+          <div>
+            <div class="service-icon"><i class="fa-solid fa-car-battery"></i></div>
+            <h3 style="margin: 0 0 8px 0; color: #0f172a;">Автоелектрика & ЕБУ</h3>
+            <p style="font-size: 0.82rem; color: #64748b; margin: 0; line-height: 1.4;">Комп'ютерна діагностика авто сканерами Launch/Autocom, перевірка блоків керування, прошивка.</p>
+          </div>
           <button class="btn-order" onclick="openOrderModal('Автоелектрика & ЕБУ')">Замовити послугу</button>
         </div>
 
         <div class="service-card">
-          <div class="service-icon"><i class="fa-solid fa-bolt"></i></div>
-          <h3 style="margin: 0 0 8px 0; color: #0f172a;">Електротранспорт</h3>
-          <p style="font-size: 0.82rem; color: #64748b; margin: 0; line-height: 1.4;">Ремонт електросамокатів, збірка та балансування акумуляторів, ремонт контролерів.</p>
+          <div>
+            <div class="service-icon"><i class="fa-solid fa-bolt"></i></div>
+            <h3 style="margin: 0 0 8px 0; color: #0f172a;">Електротранспорт</h3>
+            <p style="font-size: 0.82rem; color: #64748b; margin: 0; line-height: 1.4;">Ремонт електросамокатів, збірка та балансування акумуляторів, ремонт контролерів.</p>
+          </div>
           <button class="btn-order" onclick="openOrderModal('Електротранспорт')">Замовити послугу</button>
         </div>
 
         <div class="service-card">
-          <div class="service-icon"><i class="fa-solid fa-code"></i></div>
-          <h3 style="margin: 0 0 8px 0; color: #0f172a;">Веб-розробка та Дизайн</h3>
-          <p style="font-size: 0.82rem; color: #64748b; margin: 0; line-height: 1.4;">Створення веб-сайтів, підключення баз даних Firebase, веб-додатків та витончений адаптивний дизайн.</p>
+          <div>
+            <div class="service-icon"><i class="fa-solid fa-code"></i></div>
+            <h3 style="margin: 0 0 8px 0; color: #0f172a;">Веб-розробка та Дизайн</h3>
+            <p style="font-size: 0.82rem; color: #64748b; margin: 0; line-height: 1.4;">Створення веб-сайтів, підключення баз даних Firebase, веб-додатків та витончений адаптивний дизайн.</p>
+          </div>
           <button class="btn-order" onclick="openOrderModal('Веб-розробка та Дизайн')">Замовити послугу</button>
         </div>
 
         <div class="service-card">
-          <div class="service-icon"><i class="fa-solid fa-palette"></i></div>
-          <h3 style="margin: 0 0 8px 0; color: #0f172a;">Поліграфія та Реклама</h3>
-          <p style="font-size: 0.82rem; color: #64748b; margin: 0; line-height: 1.4;">Розробка макетів, візитки, банери, виготовлення стендів та зовнішньої реклами.</p>
+          <div>
+            <div class="service-icon"><i class="fa-solid fa-palette"></i></div>
+            <h3 style="margin: 0 0 8px 0; color: #0f172a;">Поліграфія та Реклама</h3>
+            <p style="font-size: 0.82rem; color: #64748b; margin: 0; line-height: 1.4;">Розробка макетів, візитки, банери, виготовлення стендів та зовнішньої реклами.</p>
+          </div>
           <button class="btn-order" onclick="openOrderModal('Поліграфія та Реклама')">Замовити послугу</button>
         </div>
 
@@ -240,6 +255,7 @@
     <!-- Firebase модуль -->
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+      import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
       import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
       const firebaseConfig = {
@@ -253,9 +269,24 @@
       };
 
       const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
       const db = getFirestore(app);
 
+      let currentUser = null;
+
+      // Відстежуємо стан авторизації користувача
+      onAuthStateChanged(auth, (user) => {
+        currentUser = user;
+      });
+
       window.openOrderModal = function(serviceName) {
+        // Перевіряємо чи увійшов користувач перед відкриттям модального вікна
+        if (!currentUser) {
+          alert('Будь ласка, авторизуйтесь на головній сторінці, щоб мати можливість надсилати заявки!');
+          window.location.href = 'index.html#auth-section';
+          return;
+        }
+
         document.getElementById('modalServiceName').textContent = `Заявка: ${serviceName}`;
         document.getElementById('selectedService').value = serviceName;
         document.getElementById('orderModal').style.display = 'flex';
@@ -268,12 +299,19 @@
       document.getElementById('serviceOrderForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         
+        if (!currentUser) {
+          alert('Сесія авторизації закінчилася. Будь ласка, увійдіть знову!');
+          window.location.href = 'index.html#auth-section';
+          return;
+        }
+
         try {
           await addDoc(collection(db, "requests"), {
             service: document.getElementById('selectedService').value,
             clientName: document.getElementById('clientName').value,
             clientPhone: document.getElementById('clientPhone').value,
             comment: document.getElementById('clientComment').value,
+            userEmail: currentUser.email,
             status: "Нова",
             createdAt: serverTimestamp()
           });
@@ -287,4 +325,4 @@
       });
     </script>
 </body>
-</html> 
+</html>

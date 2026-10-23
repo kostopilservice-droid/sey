@@ -11,7 +11,7 @@
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
-  <!-- Firebase SDKs -->
+  <!-- Firebase SDKs (Compat v9) -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
@@ -47,13 +47,16 @@
           </div>
           <div>
             <div class="font-extrabold text-base tracking-tight text-white">NEOSERVICE.KS.UA</div>
-            <div class="text-[9px] text-blue-200">Адмін-панель керування контентом</div>
+            <div class="text-[9px] text-blue-200">Адмін-панель керування контентом та замовленнями</div>
           </div>
         </a>
 
         <div class="flex items-center gap-3">
+          <a href="service.html" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-lg transition-colors flex items-center gap-1.5">
+            <i class="fa-solid fa-wrench"></i> До Сервісу
+          </a>
           <a href="baza.html" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-lg transition-colors flex items-center gap-1.5">
-            <i class="fa-solid fa-arrow-left"></i> До Бази знань
+            <i class="fa-solid fa-book-open"></i> База знань
           </a>
           <button id="logoutBtn" onclick="logout()" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-lg transition-colors hidden">
             Вийти
@@ -67,7 +70,7 @@
   <!-- ========================================== -->
   <!-- MAIN CONTAINER                             -->
   <!-- ========================================== -->
-  <main class="max-w-4xl mx-auto px-4 py-8 flex-grow w-full space-y-6">
+  <main class="max-w-5xl mx-auto px-4 py-8 flex-grow w-full space-y-8">
     
     <!-- БЛОК АВТОРИЗАЦІЇ (якщо не увійшли) -->
     <div id="loginCard" class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hidden">
@@ -83,19 +86,64 @@
       </div>
     </div>
 
-    <!-- ФОРМА СТВОРЕННЯ СТАТТІ -->
-    <div class="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm">
+    <!-- ТАБИ ПЕРЕМИКАННЯ РОЗДІЛІВ -->
+    <div class="flex border-b border-slate-200 gap-2">
+      <button id="tabRequestsBtn" onclick="switchTab('requests')" class="px-4 py-2 text-xs font-bold rounded-t-xl bg-white border-t border-l border-r border-slate-200 text-blue-600 flex items-center gap-2">
+        <i class="fa-solid fa-clipboard-list"></i> Заявки з сервісу (<span id="requestsCount">0</span>)
+      </button>
+      <button id="tabArticlesBtn" onclick="switchTab('articles')" class="px-4 py-2 text-xs font-bold rounded-t-xl bg-slate-200 text-slate-600 flex items-center gap-2">
+        <i class="fa-solid fa-pen-to-square"></i> Додати статтю
+      </button>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- РОЗДІЛ 1: ЗАЯВКИ ТА ЗАМОВЛЕННЯ СЕРВІСУ      -->
+    <!-- ========================================== -->
+    <section id="requestsSection" class="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm">
       <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-100">
-        <h1 class="text-xl font-black text-slate-900 flex items-center gap-2">
-          <i class="fa-solid fa-pen-to-square text-blue-600"></i> Створити нову статтю
-        </h1>
+        <div>
+          <h1 class="text-xl font-black text-slate-900 flex items-center gap-2">
+            <i class="fa-solid fa-inbox text-blue-600"></i> Вхідні замовлення послуг
+          </h1>
+          <p class="text-xs text-slate-500 mt-1">Всі заявки, надіслані клієнтами з форми сайту (оновлюється в реальному часі).</p>
+        </div>
         <span id="authStatus" class="text-[11px] font-bold px-2.5 py-1 rounded-full bg-slate-100 text-slate-500">
           Перевірка авторизації...
         </span>
       </div>
 
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs border-collapse">
+          <thead>
+            <tr class="bg-slate-900 text-white uppercase text-[10px] tracking-wider">
+              <th class="p-3 rounded-l-xl">Дата</th>
+              <th class="p-3">Послуга</th>
+              <th class="p-3">Клієнт / Телефон</th>
+              <th class="p-3">Опис проблеми</th>
+              <th class="p-3">Статус</th>
+              <th class="p-3 rounded-r-xl text-center">Дії</th>
+            </tr>
+          </thead>
+          <tbody id="requestsTableBody" class="divide-y divide-slate-100">
+            <tr>
+              <td colspan="6" class="p-6 text-center text-slate-400">Завантаження замовлень...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- РОЗДІЛ 2: СТВОРЕННЯ СТАТТІ В БАЗУ ЗНАНЬ    -->
+    <!-- ========================================== -->
+    <section id="articlesSection" class="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm hidden">
+      <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-100">
+        <h1 class="text-xl font-black text-slate-900 flex items-center gap-2">
+          <i class="fa-solid fa-pen-to-square text-blue-600"></i> Створити нову статтю
+        </h1>
+      </div>
+
       <form onsubmit="publishArticle(event)" class="space-y-4">
-        
         <div>
           <label class="block text-xs font-bold text-slate-700 mb-1">Заголовок статті *</label>
           <input type="text" id="articleTitle" required placeholder="Наприклад: Пошук витоку струму за допомогою Hantek..." class="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600">
@@ -121,14 +169,13 @@
           </div>
         </div>
 
-        <!-- ВЕЛИКЕ ВІКНО ПРЕВ'Ю ЗОБРАЖЕННЯ -->
+        <!-- PREVIEW IMAGE -->
         <div>
           <label class="block text-xs font-bold text-slate-700 mb-1">Попередній перегляд обкладинки</label>
           <div id="imagePreviewContainer" class="w-full h-48 rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 overflow-hidden flex items-center justify-center relative">
             <span id="previewPlaceholder" class="text-xs text-slate-400">Вставте посилання вище, щоб побачити зображення</span>
             <img id="previewImg" src="" alt="" class="w-full h-full object-cover hidden">
           </div>
-          <p class="text-[10px] text-slate-400 mt-1">💡 Для Google Диска видаляйте хвіст /view?usp=sharing, щоб посилання закінчувалося на ID.</p>
         </div>
 
         <div>
@@ -146,7 +193,7 @@
         </button>
 
       </form>
-    </div>
+    </section>
 
     <!-- ЕКСПОРТ ДАНИХ -->
     <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
@@ -172,21 +219,23 @@
   <!-- SCRIPTS                                    -->
   <!-- ========================================== -->
   <script>
-const firebaseConfig = {
-    apiKey: "AIzaSyBlKoP6-M8tdrKq88bSdnWSnak5Gpddnpk",
-    authDomain: "neoservice-ks-ua.firebaseapp.com",
-    projectId: "neoservice-ks-ua",
-    storageBucket: "neoservice-ks-ua.firebasestorage.app",
-    messagingSenderId: "528941827813",
-    appId: "1:528941827813:web:354ef989d200087634b60c",
-    measurementId: "G-BYGHEHVYY3"
-  }; 
+    const firebaseConfig = {
+      apiKey: "AIzaSyBlKoP6-M8tdrKq88bSdnWSnak5Gpddnpk",
+      authDomain: "neoservice-ks-ua.firebaseapp.com",
+      projectId: "neoservice-ks-ua",
+      storageBucket: "neoservice-ks-ua.firebasestorage.app",
+      messagingSenderId: "528941827813",
+      appId: "1:528941827813:web:354ef989d200087634b60c",
+      measurementId: "G-BYGHEHVYY3"
+    }; 
 
     if (!firebase.apps.length) {
       firebase.initializeApp(firebaseConfig);
     }
     const db = firebase.firestore();
     const auth = firebase.auth();
+
+    let unsubscribeRequests = null;
 
     // Відстеження стану авторизації
     auth.onAuthStateChanged(user => {
@@ -199,34 +248,121 @@ const firebaseConfig = {
         status.className = 'text-[11px] font-bold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200';
         logoutBtn.classList.remove('hidden');
         loginCard.classList.add('hidden');
+        listenToRequests(); // Запускаємо прослуховування замовлень
       } else {
         status.textContent = '● Не авторизовано';
         status.className = 'text-[11px] font-bold px-2.5 py-1 rounded-full bg-rose-50 text-rose-600 border border-rose-200';
         logoutBtn.classList.add('hidden');
-        loginCard.classList.remove('hidden'); // Показуємо форму входу
+        loginCard.classList.remove('hidden');
+        if(unsubscribeRequests) unsubscribeRequests();
       }
     });
 
-    // Функція входу через пошту та пароль
+    // Перемикання табів
+    function switchTab(tab) {
+      const reqSec = document.getElementById('requestsSection');
+      const artSec = document.getElementById('articlesSection');
+      const reqBtn = document.getElementById('tabRequestsBtn');
+      const artBtn = document.getElementById('tabArticlesBtn');
+
+      if (tab === 'requests') {
+        reqSec.classList.remove('hidden');
+        artSec.classList.add('hidden');
+        reqBtn.className = "px-4 py-2 text-xs font-bold rounded-t-xl bg-white border-t border-l border-r border-slate-200 text-blue-600 flex items-center gap-2";
+        artBtn.className = "px-4 py-2 text-xs font-bold rounded-t-xl bg-slate-200 text-slate-600 flex items-center gap-2";
+      } else {
+        reqSec.classList.add('hidden');
+        artSec.classList.remove('hidden');
+        artBtn.className = "px-4 py-2 text-xs font-bold rounded-t-xl bg-white border-t border-l border-r border-slate-200 text-blue-600 flex items-center gap-2";
+        reqBtn.className = "px-4 py-2 text-xs font-bold rounded-t-xl bg-slate-200 text-slate-600 flex items-center gap-2";
+      }
+    }
+
+    // Отримання та оновлення замовлень у реальному часі
+    function listenToRequests() {
+      const tbody = document.getElementById('requestsTableBody');
+      const countEl = document.getElementById('requestsCount');
+
+      unsubscribeRequests = db.collection('requests').orderBy('createdAt', 'desc').onSnapshot(snapshot => {
+        tbody.innerHTML = '';
+        countEl.textContent = snapshot.size;
+
+        if (snapshot.empty) {
+          tbody.innerHTML = '<tr><td colspan="6" class="p-6 text-center text-slate-400">Немає жодного замовлення.</td></tr>';
+          return;
+        }
+
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          const id = doc.id;
+          const date = data.createdAt ? new Date(data.createdAt.seconds * 1000).toLocaleString('uk-UA') : 'Щойно';
+          const description = data.comment || data.description || 'Без опису';
+
+          const tr = document.createElement('tr');
+          tr.className = "hover:bg-slate-50 transition-colors";
+          tr.innerHTML = `
+            <td class="p-3 text-[10px] text-slate-400 font-medium">${date}</td>
+            <td class="p-3 font-bold text-slate-800">${data.service || 'Послуга'}</td>
+            <td class="p-3">
+              <div class="font-bold text-slate-900">${data.clientName || 'Гість'}</div>
+              <a href="tel:${data.clientPhone}" class="text-blue-600 hover:underline font-semibold">${data.clientPhone || '-'}</a>
+            </td>
+            <td class="p-3 text-slate-600 max-w-xs break-words">${description}</td>
+            <td class="p-3">
+              <select onchange="updateStatus('${id}', this.value)" class="text-[11px] font-bold px-2 py-1 rounded-lg border border-slate-200 bg-white focus:outline-none">
+                <option value="Нова" ${data.status === 'Нова' ? 'selected' : ''}>🟡 Нова</option>
+                <option value="В роботі" ${data.status === 'В роботі' ? 'selected' : ''}>🔵 В роботі</option>
+                <option value="Виконано" ${data.status === 'Виконано' ? 'selected' : ''}>🟢 Виконано</option>
+              </select>
+            </td>
+            <td class="p-3 text-center">
+              <button onclick="deleteRequest('${id}')" class="p-1.5 text-rose-500 hover:bg-rose-50 rounded-lg transition-colors" title="Видалити">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }, err => {
+        tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-rose-500">Помилка завантаження: ${err.message}</td></tr>`;
+      });
+    }
+
+    // Зміна статусу заявки
+    async function updateStatus(id, newStatus) {
+      try {
+        await db.collection('requests').doc(id).update({ status: newStatus });
+      } catch (err) {
+        alert('Помилка оновлення статусу: ' + err.message);
+      }
+    }
+
+    // Видалення заявки
+    async function deleteRequest(id) {
+      if (confirm('Ви дійсно бажаєте видалити це замовлення?')) {
+        try {
+          await db.collection('requests').doc(id).delete();
+        } catch (err) {
+          alert('Помилка видалення: ' + err.message);
+        }
+      }
+    }
+
+    // Вхід / Вихід
     function loginWithEmail() {
       const email = document.getElementById('loginEmail').value;
       const pass = document.getElementById('loginPassword').value;
       
       auth.signInWithEmailAndPassword(email, pass)
-        .then(() => {
-          alert('Успішний вхід!');
-        })
-        .catch(err => {
-          alert('Помилка входу: ' + err.message);
-        });
+        .then(() => alert('Успішний вхід!'))
+        .catch(err => alert('Помилка входу: ' + err.message));
     }
 
-    // Функція виходу
     function logout() {
       auth.signOut().then(() => location.reload());
     }
 
-    // Функція великого прев'ю зображення
+    // Прев'ю зображення
     function previewImage(url) {
       const img = document.getElementById('previewImg');
       const placeholder = document.getElementById('previewPlaceholder');
@@ -237,7 +373,6 @@ const firebaseConfig = {
           cleanUrl = cleanUrl.split('/view')[0];
           document.getElementById('articleImage').value = cleanUrl;
         }
-        
         img.src = cleanUrl;
         img.classList.remove('hidden');
         placeholder.classList.add('hidden');
@@ -253,7 +388,7 @@ const firebaseConfig = {
       event.preventDefault();
       const user = auth.currentUser;
       if (!user) {
-        alert('Будь ласка, увійдіть у систему вище для публікації матеріалів!');
+        alert('Будь ласка, увійдіть у систему вище!');
         return;
       }
 
@@ -278,7 +413,6 @@ const firebaseConfig = {
         document.getElementById('previewImg').classList.add('hidden');
         document.getElementById('previewPlaceholder').classList.remove('hidden');
       } catch (err) {
-        console.error(err);
         alert('Помилка збереження: ' + err.message);
       } finally {
         btn.disabled = false;

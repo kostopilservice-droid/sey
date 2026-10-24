@@ -170,7 +170,6 @@
             filter: drop-shadow(0 0 8px rgba(253, 224, 71, 0.9));
         }
 
-        /* СТИЛІЗАЦІЯ ДЛЯ ДЕННОГО ТА НІЧНОГО РЕЖИМІВ */
         nav {
             background-color: var(--nav-bg) !important;
             border-color: var(--card-border) !important;
@@ -500,6 +499,7 @@
 
         onAuthStateChanged(auth, (user) => {
             currentUser = user;
+            console.log("Firebase Auth статус поточного користувача:", user ? user.email : "Не авторизований");
         });
 
         // 1. АНІМАЦІЯ МАТРИЦІ
@@ -693,7 +693,7 @@
         window.saveSpiritualCard = async function(e) {
             e.preventDefault();
             if (!currentUser) {
-                alert('Авторизуйтесь для публікації!');
+                alert('Будь ласка, авторизуйтесь перед публікацією!');
                 return;
             }
 
@@ -723,6 +723,7 @@
                 closeAddCardModal();
                 e.target.reset();
             } catch (err) {
+                console.error("Помилка при збереженні у Firebase:", err);
                 alert('Помилка збереження: ' + err.message);
             }
         };
@@ -784,4 +785,4 @@
     </script>
 
 </body>
-</html> 
+</html>

@@ -70,6 +70,18 @@
         .btn-danger { background: #dc2626; }
         .btn-google { background: #ea4335; }
         
+        /* Стилі для слайдера (колаж зі шторкою) */
+        .banner-slide {
+            position: absolute; inset: 0;
+            opacity: 0; transform: translateY(10px);
+            transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: none;
+        }
+        .banner-slide.active {
+            opacity: 1; transform: translateY(0);
+            pointer-events: auto;
+        }
+        
         footer {
             text-align: center;
             padding: 20px;
@@ -84,6 +96,10 @@
         }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        @media(max-width: 768px) {
+            .banner-trust-grid { grid-template-columns: 1fr !important; }
+        }
     </style>
 </head>
 <body>
@@ -234,14 +250,14 @@
     </div>
 
     <!-- ================= БІЖУЧИЙ РЯДОК ================= -->
-    <div style="width: 100%; background: linear-gradient(90deg, #1e3a8a, #3b82f6, #1e3a8a); color: white; padding: 12px 0; overflow: hidden; white-space: nowrap; box-shadow: inset 0 2px 5px rgba(0,0,0,0.2); margin: 30px 0 0 0; border-top: 2px solid #60a5fa; border-bottom: 2px solid #60a5fa;">
+    <div style="width: 100%; background: linear-gradient(90deg, #1e3a8a, #3b82f6, #1e3a8a); color: white; padding: 12px 0; overflow: hidden; white-space: nowrap; box-shadow: inset 0 2px 5px rgba(0,0,0,0.2); margin: 20px 0; border-top: 2px solid #60a5fa; border-bottom: 2px solid #60a5fa;">
       <div style="display: inline-block; animation: marquee 25s linear infinite; font-size: 1rem; font-style: italic; letter-spacing: 0.5px;">
         ✨ «Світильник нозі моїй — слово Твоє, і світло для стежки моєї» &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 🕊️ «Ісус — дорога, істина і життя» &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 🙏 «Блаженні миротворці, бо вони синами Божими назвуться» &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
       </div>
     </div>
 
     <!-- ================= 5 SEO-ТЕМАТИЧНИХ РОЗДІЛІВ В РЯД ================= -->
-    <section style="max-width: 1100px; margin: 30px auto; padding: 0 15px;">
+    <section style="max-width: 1100px; margin: 20px auto; padding: 0 15px;">
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 15px;">
         
         <!-- Розділ 1: Автокомерція & Автобазар -->
@@ -307,24 +323,134 @@
       </div>
     </section>
 
+    <!-- ================= БЛОК: КОЛАЖ БАНЕРІВ + ФОТО/ТЕКСТ ПОМІЧНИКА ДЕПУТАТА (ПІД 5 КАРТКАМИ) ================= -->
+    <section style="max-width: 1100px; margin: 25px auto; padding: 0 15px;">
+      <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px; align-items: stretch;" class="banner-trust-grid">
+        
+        <!-- 1. ЛІВА ЧАСТИНА: КОЛАЖ БАНЕРІВ З АВТОПЕРЕКЛЮЧЕННЯМ (ШТОРКА) -->
+        <div style="background: white; border-radius: 12px; border-top: 4px solid #1e3a8a; box-shadow: 0 4px 6px rgba(0,0,0,0.05); padding: 20px; position: relative; height: 320px; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; box-sizing: border-box;">
+          
+          <!-- Динамічні або базові слайди колажу -->
+          <div id="bannerSliderContainer" style="position: absolute; inset: 0; width: 100%; height: 100%;">
+            
+            <div class="banner-slide active" style="background: linear-gradient(to top, rgba(15,23,42,0.9), rgba(15,23,42,0.2)), url('https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=1000') center/cover; padding: 25px; display: flex; flex-direction: column; justify-content: flex-end; height: 100%; box-sizing: border-box;">
+              <span style="background: rgba(217,119,6,0.8); color: white; font-size: 0.7rem; font-weight: bold; padding: 3px 10px; border-radius: 20px; width: max-content; margin-bottom: 8px;">📢 Головний банер #1</span>
+              <h3 style="color: white; margin: 0 0 5px 0; font-size: 1.25rem;">Калаж банерів: Автопереключення з ефектами шторки</h3>
+              <p style="color: #cbd5e1; margin: 0; font-size: 0.8rem;">Зміна банера через адмін-панель у реальному часі на головній сторінці.</p>
+            </div>
+
+            <div class="banner-slide" style="background: linear-gradient(to top, rgba(15,23,42,0.9), rgba(15,23,42,0.2)), url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1000') center/cover; padding: 25px; display: flex; flex-direction: column; justify-content: flex-end; height: 100%; box-sizing: border-box;">
+              <span style="background: rgba(37,99,235,0.8); color: white; font-size: 0.7rem; font-weight: bold; padding: 3px 10px; border-radius: 20px; width: max-content; margin-bottom: 8px;">⭐ Партнерський простір #2</span>
+              <h3 style="color: white; margin: 0 0 5px 0; font-size: 1.25rem;">Національний інформаційний хаб громади</h3>
+              <p style="color: #cbd5e1; margin: 0; font-size: 0.8rem;">Професійний автосервіс, комп'ютерна допомога та підтримка регіонів України.</p>
+            </div>
+
+          </div>
+
+          <!-- Крапки-індикатори переключення -->
+          <div id="sliderDotsContainer" style="position: absolute; bottom: 12px; right: 20px; display: flex; gap: 6px; z-index: 10;">
+            <button onclick="setSlide(0)" class="slider-dot" style="width: 10px; height: 10px; border-radius: 50%; border: none; background: #d97706; cursor: pointer;"></button>
+            <button onclick="setSlide(1)" class="slider-dot" style="width: 10px; height: 10px; border-radius: 50%; border: none; background: #cbd5e1; cursor: pointer;"></button>
+          </div>
+        </div>
+
+        <!-- 2. ПРАВА ЧАСТИНА: ФОТО + ТЕКСТ ПОМІЧНИКА ДЕПУТАТА / МЕРА ДЛЯ ДОВІРИ -->
+        <div style="display: flex; flex-direction: column; gap: 12px; height: 320px;">
+          
+          <!-- Під-блок з фото та кнопкою виклику адмінки -->
+          <div style="background: white; border-radius: 12px; border-top: 4px solid #d97706; box-shadow: 0 4px 6px rgba(0,0,0,0.05); padding: 12px; display: flex; align-items: center; gap: 12px; height: 135px; box-sizing: border-box;">
+            <div style="width: 65px; height: 85px; border-radius: 8px; overflow: hidden; border: 2px solid #d97706; flex-shrink: 0; background: #e2e8f0;">
+              <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300" alt="Помічник депутата / Мер" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+            <div style="display: flex; flex-direction: column; justify-content: space-between; width: 100%; height: 100%;">
+              <div>
+                <div style="font-size: 0.6rem; text-transform: uppercase; font-weight: bold; color: #d97706;">Особистий контроль</div>
+                <h4 style="font-size: 0.75rem; margin: 2px 0 0 0; color: #1e3a8a; line-height: 1.1;">Створюємо місто, де кожен сервіс працює для людей. Від вирішення комунальних чи технічних питань до підтримки ініціатив громади. Працюємо прозоро та відкрито для кожного.</h4>
+              </div>
+              <!-- Кнопка постійно доступна для авторизованого адміністратора -->
+              <button id="adminCollageBtn" onclick="openCollageAdmin()" style="background: #1e3a8a; color: white; border: none; padding: 6px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: bold; cursor: pointer; text-align: center; width: 100%;">
+                Керувати колажем &rarr;
+              </button>
+            </div>
+          </div>
+
+          <!-- Під-блок з текстом та посиланням для довіри -->
+          <div style="background: white; border-radius: 12px; border-top: 4px solid #16a34a; box-shadow: 0 4px 6px rgba(0,0,0,0.05); padding: 12px; display: flex; flex-direction: column; justify-content: space-between; height: 173px; box-sizing: border-box;">
+            <div>
+              <div style="font-size: 0.65rem; text-transform: uppercase; font-weight: bold; color: #16a34a; margin-bottom: 3px;">
+                <i class="fa-solid fa-shield-halved"></i> Статус & Довіра
+              </div>
+              <p style="font-size: 0.75rem; color: #475569; margin: 0; line-height: 1.3;">
+                Neoservice — це міст між мешканцями та реальними змінами в місті. «Neoservice — це простір, де вирішують проблеми, а не створюють паперову тяганину. Особисто відповідаю за якість сервісу та технічну підтримку. Відкритий до конструктивних пропозицій — давайте робити корисні справи разом.»»
+              </p>
+            </div>
+            <a href="service.html" style="background: #f1f5f9; color: #1e3a8a; border: 1px solid #cbd5e1; padding: 6px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; text-decoration: none; text-align: center; display: block; box-sizing: border-box;">
+              Текст, силка &rarr;
+            </a>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ================= МОДАЛЬНЕ ВІКНО АДМІНІСТРУВАННЯ КОЛАЖУ ================= -->
+    <div id="adminCollageModal" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(8px); z-index: 9999; align-items: center; justify-content: center; padding: 15px;">
+      <div style="background: white; border-radius: 12px; border-top: 5px solid #1e3a8a; max-width: 480px; width: 100%; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); box-sizing: border-box;">
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px; margin-bottom: 15px;">
+          <h3 style="margin: 0; color: #1e3a8a; font-size: 1.1rem;">🖼️ Керування колажем банерів</h3>
+          <button onclick="closeCollageAdmin()" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #64748b;">✕</button>
+        </div>
+
+        <form id="collageAdminForm" style="display: flex; flex-direction: column; gap: 10px;">
+          <div>
+            <label style="font-size: 0.8rem; font-weight: bold; color: #334155;">Категорія / Тег банера:</label>
+            <input type="text" id="slideTag" placeholder="наприклад: 📢 Нова акція" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-size: 0.85rem;" required>
+          </div>
+
+          <div>
+            <label style="font-size: 0.8rem; font-weight: bold; color: #334155;">Заголовок банера:</label>
+            <input type="text" id="slideTitle" placeholder="Заголовок банера..." style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-size: 0.85rem;" required>
+          </div>
+
+          <div>
+            <label style="font-size: 0.8rem; font-weight: bold; color: #334155;">Опис (короткий текст):</label>
+            <textarea id="slideDesc" rows="2" placeholder="Опис пропозиції..." style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-size: 0.85rem;" required></textarea>
+          </div>
+
+          <div>
+            <label style="font-size: 0.8rem; font-weight: bold; color: #334155;">Посилання на фонове фото (URL):</label>
+            <input type="url" id="slideImage" placeholder="https://images.unsplash.com/..." style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-size: 0.85rem;" required>
+          </div>
+
+          <div style="display: flex; gap: 10px; margin-top: 10px;">
+            <button type="button" onclick="closeCollageAdmin()" style="flex: 1; padding: 10px; background: #94a3b8; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">Скасувати</button>
+            <button type="submit" style="flex: 1; padding: 10px; background: #d97706; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">Опублікувати</button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+
     <footer>
         <p>&copy; 2026 Neoservice.ks.ua — Міський інформаційно-рекламний портал.</p>
     </footer>
 
-    <!-- СКРИПТИ FIREBASE ТА ОБРОБНИК ПОШУКУ -->
+    <!-- СКРИПТИ FIREBASE ТА ОСНОВНОЇ ЛОГІКИ -->
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
       import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
       import { getFirestore, collection, addDoc, query, where, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
       const firebaseConfig = {
-        apiKey: "AIzaSyBlKoP6-M8tdrKq88bSdnWSnak5Gpddnpk",
-        authDomain: "neoservice-ks-ua.firebaseapp.com",
-        projectId: "neoservice-ks-ua",
-        storageBucket: "neoservice-ks-ua.firebasestorage.app",
-        messagingSenderId: "528941827813",
-        appId: "1:528941827813:web:354ef989d200087634b60c",
-        measurementId: "G-BYGHEHVYY3"
+          apiKey: "AIzaSyBlKoP6-M8tdrKq88bSdnWSnak5Gpddnpk",
+          authDomain: "neoservice-ks-ua.firebaseapp.com",
+          projectId: "neoservice-ks-ua",
+          storageBucket: "neoservice-ks-ua.firebasestorage.app",
+          messagingSenderId: "528941827813",
+          appId: "1:528941827813:web:354ef989d200087634b60c",
+          measurementId: "G-BYGHEHVYY3"
       };
 
       const app = initializeApp(firebaseConfig);
@@ -341,7 +467,7 @@
       const newRequestForm = document.getElementById('newRequestForm');
       const ordersTableBody = document.getElementById('ordersTableBody');
 
-      // Логіка перенаправлення з пошуку головної сторінки в Базу Знань
+      // Перенаправлення з пошуку у Базу Знань
       const mainSearchInput = document.getElementById('mainSearch');
       mainSearchInput?.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
@@ -353,7 +479,7 @@
         }
       });
 
-      // Авторизаційні кнопки
+      // Вхід / Реєстрація
       loginEmailBtn?.addEventListener('click', async () => {
         const email = document.getElementById('authEmail').value;
         const password = document.getElementById('authPassword').value;
@@ -434,6 +560,108 @@
             ordersTableBody.appendChild(row);
           });
         });
+      }
+
+      // АДМІНІСТРУВАННЯ КОЛАЖУ БАНЕРІВ (ЗБЕРЕЖЕННЯ В FIRESTORE)
+      document.getElementById('collageAdminForm')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const user = auth.currentUser;
+        
+        if (!user) {
+          alert("Для додавання банера необхідно увійти в особистий кабінет!");
+          return;
+        }
+
+        try {
+          await addDoc(collection(db, "collage_banners"), {
+            tag: document.getElementById('slideTag').value,
+            title: document.getElementById('slideTitle').value,
+            desc: document.getElementById('slideDesc').value,
+            imageUrl: document.getElementById('slideImage').value,
+            createdAt: serverTimestamp()
+          });
+
+          alert("Новий банер успішно додано до колажу!");
+          document.getElementById('collageAdminForm').reset();
+          closeCollageAdmin();
+        } catch (err) {
+          alert("Помилка при додаванні банера: " + err.message);
+        }
+      });
+
+      // Автоматичне завантаження банерів із бази даних
+      function listenToBanners() {
+        const sliderContainer = document.getElementById('bannerSliderContainer');
+        const dotsContainer = document.getElementById('sliderDotsContainer');
+
+        onSnapshot(collection(db, "collage_banners"), (snapshot) => {
+          if (snapshot.empty) return; // Якщо база порожня, лишаються стандартні слайди
+
+          sliderContainer.innerHTML = '';
+          dotsContainer.innerHTML = '';
+          let count = 0;
+
+          snapshot.forEach((doc) => {
+            const data = doc.data();
+            const isActive = count === 0 ? 'active' : '';
+
+            const slideElement = document.createElement('div');
+            slideElement.className = `banner-slide ${isActive}`;
+            slideElement.style.cssText = `background: linear-gradient(to top, rgba(15,23,42,0.9), rgba(15,23,42,0.2)), url('${data.imageUrl}') center/cover; padding: 25px; display: flex; flex-direction: column; justify-content: flex-end; height: 100%; box-sizing: border-box;`;
+            slideElement.innerHTML = `
+              <span style="background: rgba(217,119,6,0.8); color: white; font-size: 0.7rem; font-weight: bold; padding: 3px 10px; border-radius: 20px; width: max-content; margin-bottom: 8px;">${data.tag}</span>
+              <h3 style="color: white; margin: 0 0 5px 0; font-size: 1.25rem;">${data.title}</h3>
+              <p style="color: #cbd5e1; margin: 0; font-size: 0.8rem;">${data.desc}</p>
+            `;
+            sliderContainer.appendChild(slideElement);
+
+            const dotBtn = document.createElement('button');
+            dotBtn.className = 'slider-dot';
+            dotBtn.style.cssText = `width: 10px; height: 10px; border-radius: 50%; border: none; background: ${count === 0 ? '#d97706' : '#cbd5e1'}; cursor: pointer;`;
+            const index = count;
+            dotBtn.onclick = () => setSlide(index);
+            dotsContainer.appendChild(dotBtn);
+
+            count++;
+          });
+        });
+      }
+
+      listenToBanners();
+    </script>
+
+    <!-- СКРИПТ АВТОПЕРЕКЛЮЧЕННЯ ТА МОДАЛЬНОГО ВІКНА -->
+    <script>
+      let currentSlideIdx = 0;
+
+      function setSlide(idx) {
+        const slides = document.querySelectorAll('.banner-slide');
+        const dots = document.querySelectorAll('.slider-dot');
+        if(!slides.length) return;
+
+        slides.forEach((s, i) => {
+          s.classList.toggle('active', i === idx);
+        });
+        dots.forEach((d, i) => {
+          d.style.background = i === idx ? '#d97706' : '#cbd5e1';
+        });
+        currentSlideIdx = idx;
+      }
+
+      setInterval(() => {
+        const slides = document.querySelectorAll('.banner-slide');
+        if(slides.length > 1) {
+          currentSlideIdx = (currentSlideIdx + 1) % slides.length;
+          setSlide(currentSlideIdx);
+        }
+      }, 5000);
+
+      function openCollageAdmin() {
+        document.getElementById('adminCollageModal').style.display = 'flex';
+      }
+
+      function closeCollageAdmin() {
+        document.getElementById('adminCollageModal').style.display = 'none';
       }
     </script>
 </body>

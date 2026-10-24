@@ -337,7 +337,7 @@
                 </div>
                 <div>
                     <label class="block text-[11px] font-bold text-slate-300 mb-1">Текст історії / мудрості *</label>
-                    <textarea id="cardText" rows="3" required placeholder="Опишіть вашу історію або текст..." class="w-full px-3 py-1.5 text-xs bg-slate-950 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-amber-400"></textarea>
+                    <textarea id="cardText" rows="5" required placeholder="Опишіть вашу історію або текст..." class="w-full px-3 py-1.5 text-xs bg-slate-950 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-amber-400"></textarea>
                 </div>
                 <div class="flex justify-end gap-2 pt-2">
                     <button type="button" onclick="closeAddCardModal()" class="px-3 py-1.5 bg-slate-800 text-slate-300 text-xs font-bold rounded-lg">Скасувати</button>
@@ -375,7 +375,8 @@
 
                 <div id="detailVideoContainer" class="hidden w-full aspect-video rounded-2xl overflow-hidden border-2 border-amber-500/30 shadow-xl bg-black"></div>
 
-                <div id="detailText" class="font-serif-sacred text-base sm:text-xl leading-relaxed font-normal italic p-5 rounded-2xl border shadow-inner"></div>
+                <!-- ВІДОБРАЖЕННЯ ТЕКСТУ З ПІДТРИМКОЮ АБЗАЦІВ (whitespace-pre-wrap) -->
+                <div id="detailText" class="font-serif-sacred text-base sm:text-xl leading-relaxed font-normal italic p-5 rounded-2xl border shadow-inner whitespace-pre-wrap"></div>
 
                 <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-3 border-t border-amber-500/30">
                     <div id="ownerActions" class="hidden flex items-center gap-2">
@@ -597,7 +598,7 @@
                 videoCont.innerHTML = '';
             }
 
-            // Перевірка прав власника для редагування/видалення
+            // Перевірка прав власника
             const ownerActions = document.getElementById('ownerActions');
             if (currentUser && currentUser.email === data.userEmail) {
                 ownerActions.classList.remove('hidden');
@@ -636,7 +637,7 @@
             alert("Історію збережено у вашому серці та закладках браузера! 🙏");
         };
 
-        // ЗБЕРЕЖЕННЯ АБО ОНОВЛЕННЯ У FIRESTORE
+        // ЗБЕРЕЖЕННЯ АБО ОНОВЛЕННЯ
         window.saveSpiritualCard = async function(e) {
             e.preventDefault();
             if (!currentUser) {
@@ -656,13 +657,11 @@
 
             try {
                 if (docId) {
-                    // Оновлення існуючого запису
                     await updateDoc(doc(db, "spiritual_words", docId), {
                         title, categoryValue: catValue, categoryText: catText, author, photo, video, text
                     });
                     alert('Історію успішно оновлено!');
                 } else {
-                    // Створення нового запису
                     await addDoc(collection(db, "spiritual_words"), {
                         title, categoryValue: catValue, categoryText: catText, author, photo, video, text,
                         userEmail: currentUser.email,
@@ -678,15 +677,14 @@
             }
         };
 
-        // РЕАЛЬНИЙ ЧАС ТА РЕНДЕР КАРТОК
+        // РЕАЛЬНИЙ ЧАС ТА РЕНДЕР
         const q = query(collection(db, "spiritual_words"), orderBy("createdAt", "desc"));
         
         onSnapshot(q, (snapshot) => {
             const grid = document.getElementById('spiritualGrid');
-            grid.innerHTML = ''; // Очищаємо сітку перед заповненням
+            grid.innerHTML = '';
 
             snapshot.forEach((docSnapshot) => {
-                const data = docSnapshot.docChanges ? null : docSnapshot.data();
                 const id = docSnapshot.id;
                 const fullData = { id, ...docSnapshot.data() };
 
@@ -705,7 +703,7 @@
                             <span class="opacity-80">${fullData.author}</span>
                         </div>
                         <h3 class="font-serif-sacred text-xl font-bold mb-1">${fullData.title}</h3>
-                        <p class="text-xs leading-snug mb-3">${fullData.text.substring(0, 85)}...</p>
+                        <p class="text-xs leading-snug mb-3 whitespace-pre-wrap">${fullData.text.substring(0, 85)}...</p>
                     </div>
                     <div class="pt-2 border-t border-amber-500/20 flex items-center justify-between text-[10px] text-amber-600 font-bold">
                         <span>🕊️ Спільнота Neoservice</span>
@@ -735,4 +733,4 @@
     </script>
 
 </body>
-</html> 
+</html>

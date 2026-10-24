@@ -164,7 +164,7 @@
                 <div class="w-full h-40 rounded-2xl overflow-hidden border border-amber-500/30 mb-3 bg-slate-950 shadow-inner group relative">
                     <img id="cityPhoto" src="https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=500" alt="Вид міста" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                 </div>
-                <!-- Кнопка оновлення панорами активна завжди -->
+                <!-- Кнопка оновлення панорами -->
                 <button onclick="changePhotoAdmin()" class="w-full py-2 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-sm">
                     <i class="fa-solid fa-pen-to-square"></i> Оновити панораму міста
                 </button>
@@ -366,34 +366,262 @@
         window.getCurrentUser = function() { return currentUser || auth.currentUser; };
     </script>
 
-    <!-- ПОВНА ВСЕУКРАЇНСЬКА БАЗА ДАНИХ ТА ДИНАМІЧНИЙ ГЕНЕРАТОР -->
+    <!-- ПОВНА БАЗА ВСІХ МІСТ УКРАЇНИ ТА ЛОГІКА -->
     <script>
         const UKRAINE_REGIONS = {
-            volyn: { name: "Волинська область", mainCity: "Луцьк", cities: { lutsk: "Луцьк", kovel: "Ковель", volodymyr: "Володимир", novovolynsk: "Нововолинськ" } },
-            rivne: { name: "Рівненська область", mainCity: "Рівне", cities: { kostopil: "Костопіль", rivne: "Рівне", varash: "Вараш", dubno: "Дубно", sarny: "Сарни" } },
-            zhytomyr: { name: "Житомирська область", mainCity: "Житомир", cities: { zhytomyr: "Житомир", berdychiv: "Бердичів", korosten: "Коростень", zviahel: "Звягель" } },
-            kyiv: { name: "Київська область", mainCity: "Київ", cities: { kyiv: "Київ", bila_tserkva: "Біла Церква", brovary: "Бровари", borispil: "Бориспіль", irpin: "Ірпінь" } },
-            chernihiv: { name: "Чернігівська область", mainCity: "Чернігів", cities: { chernihiv: "Чернігів", nizhyn: "Ніжин", pryluky: "Прилуки" } },
-            sumy: { name: "Сумська область", mainCity: "Суми", cities: { sumy: "Суми", konotop: "Конотоп", shostka: "Шостка", romny: "Ромни" } },
-            lviv: { name: "Львівська область", mainCity: "Львів", cities: { lviv: "Львів", drohobych: "Дрогобич", stryi: "Стрий", chervonohrad: "Червоноград" } },
-            ternopil: { name: "Тернопільська область", mainCity: "Тернопіль", cities: { ternopil: "Тернопіль", chortkiv: "Чортків", kremenets: "Кременець" } },
-            khmelnytskyi: { name: "Хмельницька область", mainCity: "Хмельницький", cities: { khmelnytskyi: "Хмельницький", kamianets: "Кам'янець-Подільський", shepetivka: "Шепетівка" } },
-            vinnytsia: { name: "Вінницька область", mainCity: "Вінниця", cities: { vinnytsia: "Вінниця", zhmerynka: "Жмеринка", mohyliv: "Могилів-Подільський" } },
-            cherkasy: { name: "Черкаська область", mainCity: "Черкаси", cities: { cherkasy: "Черкаси", uman: "Умань", smila: "Сміла" } },
-            poltava: { name: "Полтавська область", mainCity: "Полтава", cities: { poltava: "Полтава", kremenchuk: "Кременчук", lubny: "Лубни", myrhorod: "Миргород" } },
-            kharkiv: { name: "Харківська область", mainCity: "Харків", cities: { kharkiv: "Харків", lozova: "Лозова", izium: "Ізюм", chuhuiv: "Чугуїв" } },
-            uzhhorod: { name: "Закарпатська область", mainCity: "Ужгород", cities: { uzhhorod: "Ужгород", mukachevo: "Мукачево", khust: "Хуст" } },
-            frankivsk: { name: "Івано-Франківська область", mainCity: "Івано-Франківськ", cities: { frankivsk: "Івано-Франківськ", kalush: "Калуш", kolomyia: "Коломия" } },
-            chernivtsi: { name: "Чернівецька область", mainCity: "Чернівці", cities: { chernivtsi: "Чернівці", novodnistrovsk: "Новодністровськ" } },
-            kropyvnytskyi: { name: "Кіровоградська область", mainCity: "Кропивницький", cities: { kropyvnytskyi: "Кропивницький", oleksandriia: "Олександрія", svitlovodsk: "Світловодськ" } },
-            dnipro: { name: "Дніпропетровська область", mainCity: "Дніпро", cities: { dnipro: "Дніпро", kryvyi_rih: "Кривий Ріг", kamianske: "Кам'янське", nikopol: "Нікополь" } },
-            lugansk: { name: "Луганська область", mainCity: "Луганськ", cities: { lugansk: "Луганськ", severodonetsk: "Сєвєродонецьк", lysychansk: "Лисичанськ" } },
-            donetsk: { name: "Донецька область", mainCity: "Донецьк", cities: { donetsk: "Донецьк", mariupol: "Маріуполь", kramatorsk: "Краматорськ", sloviansk: "Слов'янськ" } },
-            odesa: { name: "Одеська область", mainCity: "Одеса", cities: { odesa: "Одеса", izmail: "Ізмаїл", chornomorsk: "Чорноморськ" } },
-            mykolaiv: { name: "Миколаївська область", mainCity: "Миколаїв", cities: { mykolaiv: "Миколаїв", pervomaisk: "Первомайськ", yuzhnoukrainsk: "Южноукраїнськ" } },
-            kherson: { name: "Херсонська область", mainCity: "Херсон", cities: { kherson: "Херсон", nova_kakhovka: "Нова Каховка", skadovsk: "Скадовськ" } },
-            zaporizhzhia: { name: "Запорізька область", mainCity: "Запоріжжя", cities: { zaporizhzhia: "Запоріжжя", melitopol: "Мелітополь", berdiansk: "Бердянськ" } },
-            crimea: { name: "АР Крим", mainCity: "Сімферополь", cities: { simferopol: "Сімферополь", sevastopol: "Севастополь", kerch: "Керч", yalta: "Ялта" } }
+            volyn: { 
+                name: "Волинська область", 
+                mainCity: "Луцьк", 
+                cities: { 
+                    lutsk: "Луцьк", kovel: "Ковель", volodymyr: "Володимир", novovolynsk: "Нововолинськ", 
+                    kivertsi: "Ківерці", rozhyshche: "Рожище", kamin_kashyrskyi: "Камінь-Каширський", 
+                    luboml: "Любомль", horokhiv: "Горохів", ratne: "Ратне", manevychi: "Маневичі", 
+                    tsuma: "Цумань", shatsk: "Шацьк", ivanychi: "Іваничі", lokachi: "Локачі", turiysk: "Турійськ" 
+                } 
+            },
+            rivne: { 
+                name: "Рівненська область", 
+                mainCity: "Рівне", 
+                cities: { 
+                    kostopil: "Костопіль", rivne: "Рівне", varash: "Вараш", dubno: "Дубно", sarny: "Сарни", 
+                    zdołbuniv: "Здолбунів", ostroh: "Острог", berezne: "Березне", radauly: "Радивилів", 
+                    rokytne: "Рокитне", korets: "Корець", dubrovytsia: "Дубровиця", mluniv: "Млинів", 
+                    hoschcha: "Гоща", klevan: "Клевань", zarichne: "Зарічне" 
+                } 
+            },
+            zhytomyr: { 
+                name: "Житомирська область", 
+                mainCity: "Житомир", 
+                cities: { 
+                    zhytomyr: "Житомир", berdychiv: "Бердичів", korosten: "Коростень", zviahel: "Звягель", 
+                    malyn: "Малин", baranivka: "Баранівка", ovruch: "Овруч", radomyshl: "Радомишль", 
+                    andrushivka: "Андрушівка", olevsk: "Олевськ", chudniv: "Чуднів", chornyakhiv: "Черняхів", 
+                    romaniv: "Романів", emilchyne: "Ємільчине", popilnya: "Попільня" 
+                } 
+            },
+            kyiv: { 
+                name: "Київська область", 
+                mainCity: "Київ", 
+                cities: { 
+                    kyiv: "Київ", bila_tserkva: "Біла Церква", brovary: "Бровари", borispil: "Бориспіль", 
+                    irpin: "Ірпінь", bucha: "Буча", vasylkiv: "Васильків", fastiv: "Фастів", vyshhorod: "Вишгород", 
+                    obukhiv: "Обухів", boyarka: "Боярка", pereyaslav: "Переяслав", kaharlyk: "Кагарлик", 
+                    yagotyn: "Яготин", skvyra: "Сквира", ukrainka: "Українка", berezan: "Березань", 
+                    bohuslav: "Богуслав", tetiyiv: "Тетіїв", tarashcha: "Тараща", hostomel: "Гостомель", 
+                    vyshneve: "Вишневе", ivankiv: "Іванків", borodyanka: "Бородянка" 
+                } 
+            },
+            chernihiv: { 
+                name: "Чернігівська область", 
+                mainCity: "Чернігів", 
+                cities: { 
+                    chernihiv: "Чернігів", nizhyn: "Ніжин", pryluky: "Прилуки", bakhmach: "Бахмач", 
+                    nosivka: "Носівка", novhorod_siverskyi: "Новгород-Сіверський", korukivka: "Корюківка", 
+                    horodnya: "Городня", mena: "Мена", snosvk: "Сновськ", ichnya: "Ічня", bobrovytsia: "Бобровиця", 
+                    borzna: "Борзна", oster: "Остер", semenivka: "Семенівка" 
+                } 
+            },
+            sumy: { 
+                name: "Сумська область", 
+                mainCity: "Суми", 
+                cities: { 
+                    sumy: "Суми", konotop: "Конотоп", shostka: "Шостка", okhtyrka: "Охтирка", romny: "Ромни", 
+                    hlukhiv: "Глухів", lebedyn: "Лебедин", krostlevets: "Кролевець", trostyanets: "Тростянець", 
+                    bilopillia: "Білопілля", putyvl: "Путивль", buryn: "Буринь", vorozhba: "Ворожба", 
+                    seredyna_buda: "Середина-Буда" 
+                } 
+            },
+            lviv: { 
+                name: "Львівська область", 
+                mainCity: "Львів", 
+                cities: { 
+                    lviv: "Львів", drohobych: "Дрогобич", stryi: "Стрий", chervonohrad: "Червоноград", 
+                    sambir: "Самбір", boryslav: "Борислав", novoyavorivsk: "Новояворівськ", truskavets: "Трускавець", 
+                    novyi_rozdil: "Новий Розділ", zolochiv: "Золочів", brody: "Броди", sokal: "Сокаль", 
+                    yavoriv: "Яворів", zhovkva: "Жовква", zhydachiv: "Жидачів", rava_ruska: "Рава-Руська", 
+                    kamianka_buzka: "Кам'янка-Бузька", busk: "Буськ", morshyn: "Моршин", horodok: "Городок", 
+                    mykolaiv_lviv: "Миколаїв", skole: "Сколе", peremyshlyany: "Перемишляни" 
+                } 
+            },
+            ternopil: { 
+                name: "Тернопільська область", 
+                mainCity: "Тернопіль", 
+                cities: { 
+                    ternopil: "Тернопіль", chortkiv: "Чортків", kremenets: "Кременець", berezhany: "Бережани", 
+                    zbarazh: "Збараж", terebovlya: "Теребовля", buchach: "Бучач", borshchiv: "Борщів", 
+                    zboriv: "Зборів", zalishchyky: "Заліщики", lanivtsi: "Ланівці", pochaiv: "Почаїв", 
+                    kopychyntsi: "Копичинці", pidhaitsi: "Підгайці", shumsk: "Шумськ" 
+                } 
+            },
+            khmelnytskyi: { 
+                name: "Хмельницька область", 
+                mainCity: "Хмельницький", 
+                cities: { 
+                    khmelnytskyi: "Хмельницький", kamianets: "Кам'янець-Подільський", shepetivka: "Шепетівка", 
+                    netishyn: "Нітешин", slavuta: "Славута", starokostyantyniv: "Старокостянтинів", 
+                    polonne: "Полонне", krasyliv: "Красилів", volochysk: "Волочиськ", horodok_khm: "Городок", 
+                    dunaiivtsi: "Дунаївці", iziaslav: "Ізяслав", derazhnya: "Деражня" 
+                } 
+            },
+            vinnytsia: { 
+                name: "Вінницька область", 
+                mainCity: "Вінниця", 
+                cities: { 
+                    vinnytsia: "Вінниця", zhmerynka: "Жмеринка", mohyliv: "Могилів-Подільський", koziatyn: "Козятин", 
+                    khmilnyk: "Хмільник", haisyn: "Гайсин", ladyzhyn: "Ладижин", tulchyn: "Тульчин", 
+                    bershad: "Бершадь", bar: "Бар", kalynivka: "Калинівка", hnivan: "Гнівань", 
+                    illintsi: "Іллінці", nemyriv: "Немирів", yampol: "Ямпіль", pohrebyshche: "Погребище" 
+                } 
+            },
+            cherkasy: { 
+                name: "Черкаська область", 
+                mainCity: "Черкаси", 
+                cities: { 
+                    cherkasy: "Черкаси", uman: "Умань", smila: "Сміла", zolotonosha: "Золотоноша", 
+                    kaniv: "Канів", korsun: "Корсунь-Шевченківський", zvenyhorodka: "Звенигородка", 
+                    shpola: "Шпола", vatutine: "Ватутіне", zhashkiv: "Жашків", talne: "Тальне", 
+                    kamianka: "Кам'янка", khrystynivka: "Христинівка", chyhyryn: "Чигирин", monastyryshche: "Монастирище" 
+                } 
+            },
+            poltava: { 
+                name: "Полтавська область", 
+                mainCity: "Полтава", 
+                cities: { 
+                    poltava: "Полтава", kremenchuk: "Кременчук", horishni_plavni: "Горішні Плавні", 
+                    lubny: "Лубни", myrhorod: "Миргород", hadiach: "Гадяч", pyriatyn: "Пирятин", 
+                    karlovka: "Карлівка", kobeliaky: "Кобеляки", zinkiv: "Зіньків", hrebinka: "Гребінка", 
+                    lokhvytsia: "Лохвиця", zavodske: "Заводське" 
+                } 
+            },
+            kharkiv: { 
+                name: "Харківська область", 
+                mainCity: "Харків", 
+                cities: { 
+                    kharkiv: "Харків", lozova: "Лозова", izium: "Ізюм", chuhuiv: "Чугуїв", 
+                    pervomaiskyi: "Первомайський", balakliia: "Балаклія", kupiansk: "Куп'янськ", 
+                    perekop: "Люботин", bohodukhiv: "Богодухів", zmiev: "Зміїв", valky: "Валки", 
+                    derhachi: "Дергачі", vovchansk: "Вовчанськ", barvinkove: "Барвінкове" 
+                } 
+            },
+            uzhhorod: { 
+                name: "Закарпатська область", 
+                mainCity: "Ужгород", 
+                cities: { 
+                    uzhhorod: "Ужгород", mukachevo: "Мукачево", khust: "Хуст", vynohradiv: "Виноградів", 
+                    berehove: "Берегове", rakhiv: "Рахів", svalyava: "Свалява", tyachiv: "Тячів", 
+                    chop: "Чоп", irshava: "Іршава", perchyn: "Перечин" 
+                } 
+            },
+            frankivsk: { 
+                name: "Івано-Франківська область", 
+                mainCity: "Івано-Франківськ", 
+                cities: { 
+                    frankivsk: "Івано-Франківськ", kalush: "Калуш", kolomyia: "Коломия", nadvirna: "Надвірна", 
+                    dolyna: "Долина", burshtyn: "Бурштин", perehinske: "Перегінське", bolekhiv: "Болехів", 
+                    sniatyn: "Снятин", tysmenytsia: "Тисмениця", horodenka: "Городенка", rohatyn: "Рогатин", 
+                    kosiv: "Косів", yaremche: "Яремче" 
+                } 
+            },
+            chernivtsi: { 
+                name: "Чернівецька область", 
+                mainCity: "Чернівці", 
+                cities: { 
+                    chernivtsi: "Чернівці", novodnistrovsk: "Новодністровськ", storozhynets: "Сторожинець", 
+                    khotyn: "Хотин", sokyryany: "Сокиряни", zaitseva: "Заставна", novoselytsia: "Новоселиця", 
+                    kitsman: "Кіцмань", vyzhnytsia: "Вижниця", hertsya: "Герца" 
+                } 
+            },
+            kropyvnytskyi: { 
+                name: "Кіровоградська область", 
+                mainCity: "Кропивницький", 
+                cities: { 
+                    kropyvnytskyi: "Кропивницький", oleksandriia: "Олександрія", svitlovodsk: "Світловодськ", 
+                    znamianka: "Знам'янка", novoukrainka: "Новоукраїнка", dolynnska: "Долинська", 
+                    haivoron: "Гайворон", novomyrhorod: "Новомиргород", mala_vyska: "Мала Виска", 
+                    bobrynets: "Бобринець" 
+                } 
+            },
+            dnipro: { 
+                name: "Дніпропетровська область", 
+                mainCity: "Дніпро", 
+                cities: { 
+                    dnipro: "Дніпро", kryvyi_rih: "Кривий Ріг", kamianske: "Кам'янське", nikopol: "Нікополь", 
+                    pavlohrad: "Павлоград", novomoskovsk: "Новомосковськ", zhovti_vody: "Жовті Води", 
+                    marhanets: "Марганець", pokrov: "Покров", synelnykove: "Синельникове", 
+                    pershotravensk: "Першотравенськ", ternivka: "Тернівка", vilnohirsk: "Вільногірськ", 
+                    piatykhatky: "П'ятихатки", apostolove: "Апостолове" 
+                } 
+            },
+            lugansk: { 
+                name: "Луганська область", 
+                mainCity: "Луганськ", 
+                cities: { 
+                    lugansk: "Луганськ", severodonetsk: "Сєвєродонецьк", lysychansk: "Лисичанськ", 
+                    alchevsk: "Алчевськ", krasnyi_luch: "Хрустальний", kadiivka: "Кадіївка", 
+                    rubizhne: "Рубіжне", sverdlovsk: "Довжанськ", krasnodon: "Сорокине", 
+                    popasna: "Попасна", kreminna: "Кремінна", starobilsk: "Старобільськ", svatove: "Сватове" 
+                } 
+            },
+            donetsk: { 
+                name: "Донецька область", 
+                mainCity: "Донецьк", 
+                cities: { 
+                    donetsk: "Донецьк", mariupol: "Маріуполь", makiyivka: "Макіївка", horlivka: "Горлівка", 
+                    kramatorsk: "Краматорськ", sloviansk: "Слов'янськ", yenakiyeve: "Єнакієве", 
+                    bakhmut: "Бахмут", pokrovsk: "Покровськ", kostiantynivka: "Костянтинівка", 
+                    khartsyzk: "Харцизьк", druzhkivka: "Дружківка", dobropillia: "Добропілля", 
+                    lyman: "Лиман", avdiyivka: "Авдіївка", toretsk: "Торецьк", selidove: "Селидове", 
+                    volnovakaha: "Волноваха", kurakhove: "Курахове" 
+                } 
+            },
+            odesa: { 
+                name: "Одеська область", 
+                mainCity: "Одеса", 
+                cities: { 
+                    odesa: "Одеса", izmail: "Ізмаїл", chornomorsk: "Чорноморськ", bilhorod_dnistrovskyi: "Білгород-Дністровський", 
+                    podilsk: "Подільськ", yuzhne: "Південне", kilia: "Кілія", reni: "Рені", 
+                    balta: "Балта", rozdilna: "Роздільна", bolhrad: "Болград", artsyz: "Арциз", 
+                    bilyaivka: "Біляївка", ovidiopol: "Овідіополь", tatarbunary: "Татарбунари" 
+                } 
+            },
+            mykolaiv: { 
+                name: "Миколаївська область", 
+                mainCity: "Миколаїв", 
+                cities: { 
+                    mykolaiv: "Миколаїв", pervomaisk: "Первомайськ", yuzhnoukrainsk: "Южноукраїнськ", 
+                    voznesensk: "Вознесенськ", novyi_buh: "Новий Буг", ochakiv: "Очаків", 
+                    snihurivka: "Снігурівка", bashtanka: "Баштанка" 
+                } 
+            },
+            kherson: { 
+                name: "Херсонська область", 
+                mainCity: "Херсон", 
+                cities: { 
+                    kherson: "Херсон", nova_kakhovka: "Нова Каховка", kakhovka: "Каховка", 
+                    olešky: "Олешки", henichesk: "Генічеськ", skadovsk: "Скадовськ", 
+                    beryslav: "Берислав", tavriysk: "Таврійськ" 
+                } 
+            },
+            zaporizhzhia: { 
+                name: "Запорізька область", 
+                mainCity: "Запоріжжя", 
+                cities: { 
+                    zaporizhzhia: "Запоріжжя", melitopol: "Мелітополь", berdiansk: "Бердянськ", 
+                    enerhodar: "Енергодар", tokmak: "Токмак", polohy: "Пологи", 
+                    dniprorudne: "Дніпрорудне", vilniansk: "Вільнянськ", oriakhiv: "Оріхів", 
+                    huliaipole: "Гуляйполе", vasylivka: "Василівка" 
+                } 
+            },
+            crimea: { 
+                name: "АР Крим", 
+                mainCity: "Сімферополь", 
+                cities: { 
+                    simferopol: "Сімферополь", sevastopol: "Севастополь", kerch: "Керч", 
+                    yevpatoria: "Євпаторія", yalta: "Ялта", feodosia: "Феодосія", 
+                    dzhankoy: "Джанкой", alushta: "Алушта", bakhchysarai: "Бахчисарай", 
+                    krasnoperekopsk: "Яни Капу", saky: "Саки", armiansk: "Армянськ" 
+                } 
+            }
         };
 
         let CUSTOM_CITY_DATA = {};
@@ -401,14 +629,14 @@
         let currentCityKey = 'kyiv';
 
         function loadStorageData() {
-            const saved = localStorage.getItem('neoservice_ukraine_custom_v2');
+            const saved = localStorage.getItem('neoservice_ukraine_custom_v3');
             if (saved) {
                 try { CUSTOM_CITY_DATA = JSON.parse(saved); } catch(e) { console.error(e); }
             }
         }
 
         function saveStorageData() {
-            localStorage.setItem('neoservice_ukraine_custom_v2', JSON.stringify(CUSTOM_CITY_DATA));
+            localStorage.setItem('neoservice_ukraine_custom_v3', JSON.stringify(CUSTOM_CITY_DATA));
         }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -416,7 +644,7 @@
 
             const urlParams = new URLSearchParams(window.location.search);
             let rParam = (urlParams.get('region') || '').toLowerCase();
-            let cParam = urlParams.get('city') || urlParams.get('name') || '';
+            let cParam = (urlParams.get('city') || urlParams.get('name') || '').toLowerCase();
 
             let matchedRegionKey = null;
             for (let rKey in UKRAINE_REGIONS) {
@@ -437,7 +665,7 @@
 
             if (cParam) {
                 for (let cKey in regObj.cities) {
-                    if (cKey === cParam.toLowerCase() || regObj.cities[cKey].toLowerCase() === cParam.toLowerCase()) {
+                    if (cKey === cParam || regObj.cities[cKey].toLowerCase() === cParam) {
                         matchedCityKey = cKey;
                         break;
                     }
@@ -532,7 +760,6 @@
             window.history.pushState({path: newUrl}, '', newUrl);
         }
 
-        // Функція швидкого оновлення панорами міста
         function changePhotoAdmin() {
             const data = getActiveCityData();
             const newUrl = prompt("Введіть пряме посилання на нову панораму (URL фотографії):", data.photo);

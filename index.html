@@ -364,11 +364,11 @@
             </div>
             <div style="display: flex; flex-direction: column; justify-content: space-between; width: 100%; height: 100%;">
               <div>
-                <div style="font-size: 0.6rem; text-transform: uppercase; font-weight: bold; color: #d97706;">Особистий контроль</div>
-                <h4 style="font-size: 0.75rem; margin: 2px 0 0 0; color: #1e3a8a; line-height: 1.1;">Створюємо місто, де кожен сервіс працює для людей. Від вирішення комунальних чи технічних питань до підтримки ініціатив громади. Працюємо прозоро та відкрито для кожного.</h4>
+                <div style="font-size: 0.6rem; text-transform: uppercase; font-weight: bold; color: #d97706;">ОСОБИСТИЙ КОНТРОЛЬ</div>
+                <h4 style="font-size: 0.75rem; margin: 2px 0 0 0; color: #1e3a8a; line-height: 1.1;">МОЄ власне ФОТО як мера міста</h4>
               </div>
-              <!-- Кнопка постійно доступна для авторизованого адміністратора -->
-              <button id="adminCollageBtn" onclick="openCollageAdmin()" style="background: #1e3a8a; color: white; border: none; padding: 6px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: bold; cursor: pointer; text-align: center; width: 100%;">
+              <!-- Кнопка прихована за замовчуванням (display: none), з'явиться лише після вашого входу -->
+              <button id="adminCollageBtn" onclick="openCollageAdmin()" style="display: none; background: #1e3a8a; color: white; border: none; padding: 6px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: bold; cursor: pointer; text-align: center; width: 100%;">
                 Керувати колажем &rarr;
               </button>
             </div>
@@ -381,7 +381,7 @@
                 <i class="fa-solid fa-shield-halved"></i> Статус & Довіра
               </div>
               <p style="font-size: 0.75rem; color: #475569; margin: 0; line-height: 1.3;">
-                Neoservice — це міст між мешканцями та реальними змінами в місті. «Neoservice — це простір, де вирішують проблеми, а не створюють паперову тяганину. Особисто відповідаю за якість сервісу та технічну підтримку. Відкритий до конструктивних пропозицій — давайте робити корисні справи разом.»»
+                Neoservice — це простір, де вирішують проблеми, а не створюють паперову тяганину. Особисто відповідаю за якість сервісу та технічну підтримку. Відкритий до конструктивних пропозицій — давайте робити корисні справи разом.
               </p>
             </div>
             <a href="service.html" style="background: #f1f5f9; color: #1e3a8a; border: 1px solid #cbd5e1; padding: 6px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; text-decoration: none; text-align: center; display: block; box-sizing: border-box;">
@@ -466,6 +466,7 @@
       const logoutBtn = document.getElementById('logoutBtn');
       const newRequestForm = document.getElementById('newRequestForm');
       const ordersTableBody = document.getElementById('ordersTableBody');
+      const adminCollageBtn = document.getElementById('adminCollageBtn');
 
       // Перенаправлення з пошуку у Базу Знань
       const mainSearchInput = document.getElementById('mainSearch');
@@ -507,9 +508,18 @@
           if (loggedInView) loggedInView.style.display = 'block';
           if (userEmailDisplay) userEmailDisplay.innerText = user.email;
           loadUserOrders(user.email);
+
+          // ПЕРЕВІРКА АДМІНІСТРАТОРА: Введіть вашу реальну пошту замість "ваш_email@gmail.com"
+          if (user.email === "ваш_email@gmail.com") {
+            if (adminCollageBtn) adminCollageBtn.style.display = 'block';
+          } else {
+            if (adminCollageBtn) adminCollageBtn.style.display = 'none';
+          }
+
         } else {
           if (loggedOutView) loggedOutView.style.display = 'block';
           if (loggedInView) loggedInView.style.display = 'none';
+          if (adminCollageBtn) adminCollageBtn.style.display = 'none';
         }
       });
 

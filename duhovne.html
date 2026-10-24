@@ -16,7 +16,6 @@
 
     <style>
         :root {
-            /* НІЧНИЙ РЕЖИМ (Собор під зорями) */
             --bg-main: #050b14;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
@@ -36,7 +35,6 @@
             --btn-divine-text: #0f172a;
         }
 
-        /* ДЕННИЙ РЕЖИМ (Преміальне Сонячне Світло / Небесна Святиня) */
         body.day-mode {
             --bg-main: #fbf9f4;
             --text-main: #27272a;
@@ -86,7 +84,6 @@
             transition: background 0.5s ease;
         }
 
-        /* СПАЛАХ СВІТЛА */
         #divineFlash {
             position: fixed;
             inset: 0;
@@ -98,7 +95,6 @@
         }
         #divineFlash.active { opacity: 1; }
 
-        /* ПОВНОЕКРАННИЙ СОБОР */
         .divine-fullscreen-modal {
             background: radial-gradient(circle at top, rgba(12, 26, 48, 0.98) 0%, rgba(3, 7, 18, 0.99) 100%);
             box-shadow: inset 0 0 150px rgba(253, 224, 71, 0.2);
@@ -125,7 +121,6 @@
             100% { opacity: 1; transform: translateX(-50%) scale(1.04); }
         }
 
-        /* ПЕРГАМЕНТ */
         .sacred-scroll {
             background: var(--scroll-bg);
             border: 1.5px solid var(--card-border);
@@ -134,7 +129,6 @@
             transition: all 0.5s ease;
         }
 
-        /* КАРТКА */
         .angel-card {
             background: var(--card-bg);
             backdrop-filter: blur(12px);
@@ -174,9 +168,7 @@
             background-color: var(--nav-bg) !important;
             border-color: var(--card-border) !important;
         }
-        nav a {
-            color: var(--nav-text) !important;
-        }
+        nav a { color: var(--nav-text) !important; }
         .hero-title-text {
             background: var(--hero-title);
             -webkit-background-clip: text;
@@ -227,13 +219,10 @@
 </head>
 <body class="relative min-h-screen flex flex-col justify-between">
 
-    <!-- СПАЛАХ СВІТЛА -->
     <div id="divineFlash"></div>
-
-    <!-- CANVAS АНІМАЦІЇ МАТРИЦІ СВІТЛА -->
     <canvas id="sacredCanvas"></canvas>
 
-    <!-- HEADER: НЕБЕСНА СВЯТИНЯ -->
+    <!-- HEADER -->
     <header class="relative divine-ray border-b border-amber-500/30 z-10">
         <nav class="backdrop-blur-md border-b sticky top-0 z-50 transition-colors">
             <div class="max-w-6xl mx-auto px-4 flex items-center justify-between h-14">
@@ -247,16 +236,12 @@
                     </div>
                 </a>
 
-                <!-- Кнопки Керування -->
                 <div class="flex items-center gap-2 sm:gap-3 text-xs font-semibold">
-                    
-                    <!-- ПЕРЕМИКАЧ ДЕНЬ / НІЧ -->
                     <button id="themeToggleBtn" onclick="toggleTheme()" class="px-3 py-1.5 rounded-xl border border-amber-500/40 transition-all flex items-center gap-1.5 shadow-sm font-bold">
                         <span id="themeIcon">🌙</span>
                         <span id="themeText" class="hidden sm:inline">Ніч</span>
                     </button>
 
-                    <!-- РАДІО -->
                     <button id="radioBtn" onclick="toggleRadio()" class="btn-divine px-3 py-1.5 rounded-xl text-xs flex items-center gap-1.5">
                         <i id="radioIcon" class="fa-solid fa-radio"></i>
                         <span id="radioText" class="hidden sm:inline">Радіо</span>
@@ -301,7 +286,6 @@
     <!-- MAIN CONTENT -->
     <main class="max-w-6xl mx-auto px-4 py-8 relative z-10 flex-grow space-y-6">
 
-        <!-- КАТЕГОРІЇ -->
         <div class="flex items-center justify-center gap-2 flex-wrap text-xs">
             <button onclick="filterCategory('all')" class="cat-btn active px-3.5 py-1.5 rounded-xl border font-bold transition-all shadow-sm">✨ Всі</button>
             <button onclick="filterCategory('story')" class="cat-btn px-3.5 py-1.5 rounded-xl border font-bold transition-all">📖 Твоя історія</button>
@@ -311,74 +295,18 @@
             <button onclick="filterCategory('video')" class="cat-btn px-3.5 py-1.5 rounded-xl border transition-all">▶️ YouTube</button>
         </div>
 
-        <!-- СІТКА КАРТОК -->
-        <div id="spiritualGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            
-            <!-- КАРТКА 1: ТВОЯ ІСТОРІЯ -->
-            <div class="angel-card flex flex-col justify-between" data-category="story" onclick="openDetailModal('Шлях відновлення та віри', '📖 Твоя історія', 'Олександр В.', 'Хочу поділитися власною історією про те, як віра допомогла пройти найважчі часи випробувань. Коли здається, що сили залишають тебе, Господь дарує підтримку через людей та щиру молитву.', '', '')">
-                <div>
-                    <div class="flex items-center justify-between text-[11px] font-bold mb-2">
-                        <span class="px-2 py-0.5 rounded bg-amber-500/10 border border-amber-500/30 text-amber-600">📖 Твоя історія</span>
-                        <span class="opacity-80">Олександр В.</span>
-                    </div>
-                    <h3 class="font-serif-sacred text-xl font-bold mb-1">Шлях відновлення та віри</h3>
-                    <p class="text-xs italic leading-snug mb-3">
-                        «Хочу поділитися власною історією про те, як віра допомогла пройти найважчі часи випробувань...»
-                    </p>
-                </div>
-                <div class="pt-2 border-t border-amber-500/20 flex items-center justify-between text-[10px]">
-                    <span class="opacity-75">✨ Особисте свідчення</span>
-                    <span class="text-amber-600 font-bold">Відкрити серце ➔</span>
-                </div>
-            </div>
-
-            <!-- КАРТКА 2: Писання -->
-            <div class="angel-card flex flex-col justify-between" data-category="scripture" onclick="openDetailModal('Господь — мій Пастир', '📜 Писання', 'Псалом 22', '«Господь — мій Пастир, я ні в чому не матиму нужди. На зелених пасовиськах Він оселяє мене і веде до тихих вод. Він відновлює душу мою, веде мене стежками праведності ради імені Свого.»', '', '')">
-                <div>
-                    <div class="flex items-center justify-between text-[11px] font-bold mb-2">
-                        <span class="px-2 py-0.5 rounded bg-amber-500/10 border border-amber-500/30 text-amber-600">📜 Писання</span>
-                        <span class="opacity-80">Псалом 22</span>
-                    </div>
-                    <h3 class="font-serif-sacred text-xl font-bold mb-1">Господь — мій Пастир</h3>
-                    <p class="text-xs italic leading-snug mb-3">
-                        «Господь — мій Пастир, я ні в чому не матиму нужди. На зелених пасовиськах Він оселяє мене...»
-                    </p>
-                </div>
-                <div class="pt-2 border-t border-amber-500/20 flex items-center justify-between text-[10px]">
-                    <span class="opacity-75">✨ Натхнення</span>
-                    <span class="text-amber-600 font-bold">Читати ➔</span>
-                </div>
-            </div>
-
-            <!-- КАРТКА 3: YouTube -->
-            <div class="angel-card flex flex-col justify-between" data-category="video" onclick="openDetailModal('Духовний випуск та проповідь', '▶️ YouTube', '@NeoService-3', 'Переглядайте нові випуски, повчання та духовні роздуми на нашому офіційному каналі.', '', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ')">
-                <div>
-                    <div class="flex items-center justify-between text-[11px] font-bold mb-2">
-                        <span class="px-2 py-0.5 rounded bg-rose-500/10 border border-rose-500/30 text-rose-600">▶️ YouTube</span>
-                        <span class="opacity-80">@NeoService-3</span>
-                    </div>
-                    <h3 class="font-serif-sacred text-xl font-bold mb-1">Духовний випуск та проповідь</h3>
-                    <p class="text-xs leading-snug mb-3">
-                        Переглядайте нові випуски, повчання та духовні роздуми на нашому офіційному каналі.
-                    </p>
-                </div>
-                <div class="pt-2 border-t border-amber-500/20 flex items-center justify-between text-[10px] text-rose-600 font-bold">
-                    <span>▶️ Дивитися відео</span>
-                    <span>Відкрити ➔</span>
-                </div>
-            </div>
-
-        </div>
+        <div id="spiritualGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
 
     </main>
 
-    <!-- 1. МОДАЛЬНЕ ВІКНО ДОДАВАННЯ -->
+    <!-- МОДАЛЬНЕ ВІКНО ДОДАВАННЯ / РЕДАГУВАННЯ -->
     <div id="addModal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md hidden items-center justify-center p-4 z-50">
         <div class="bg-slate-900 border border-amber-500/40 rounded-2xl p-5 max-w-md w-full shadow-2xl">
-            <h3 class="font-serif-sacred text-xl font-bold text-amber-300 mb-3 flex items-center gap-2">
+            <h3 id="modalTitleText" class="font-serif-sacred text-xl font-bold text-amber-300 mb-3 flex items-center gap-2">
                 ✨ Додати нове Слово / Історію
             </h3>
             <form onsubmit="saveSpiritualCard(event)" class="space-y-3">
+                <input type="hidden" id="editDocId" value="">
                 <div>
                     <label class="block text-[11px] font-bold text-slate-300 mb-1">Заголовок *</label>
                     <input type="text" id="cardTitle" required placeholder="Наприклад: Моя історія віри..." class="w-full px-3 py-1.5 text-xs bg-slate-950 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-amber-400">
@@ -413,13 +341,13 @@
                 </div>
                 <div class="flex justify-end gap-2 pt-2">
                     <button type="button" onclick="closeAddCardModal()" class="px-3 py-1.5 bg-slate-800 text-slate-300 text-xs font-bold rounded-lg">Скасувати</button>
-                    <button type="submit" class="btn-divine px-4 py-1.5 text-xs rounded-lg">Опублікувати</button>
+                    <button type="submit" class="btn-divine px-4 py-1.5 text-xs rounded-lg">Зберегти</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- 2. ВЕЛИЧНИЙ ПОВНОЕКРАННИЙ СОБОР БОЖОЇ ПРИСУТНОСТІ -->
+    <!-- МОДАЛЬНЕ ВІКНО ДЕТАЛЕЙ СОБОРУ -->
     <div id="detailModal" class="fixed inset-0 z-50 hidden divine-fullscreen-modal backdrop-blur-2xl items-center justify-center p-3 sm:p-6 overflow-y-auto">
         <div class="god-light-beam"></div>
 
@@ -445,12 +373,19 @@
                     <img id="detailPhoto" src="" alt="Духовне фото" class="w-full h-auto max-h-80 object-cover">
                 </div>
 
-                <!-- YOUTUBE -->
                 <div id="detailVideoContainer" class="hidden w-full aspect-video rounded-2xl overflow-hidden border-2 border-amber-500/30 shadow-xl bg-black"></div>
 
                 <div id="detailText" class="font-serif-sacred text-base sm:text-xl leading-relaxed font-normal italic p-5 rounded-2xl border shadow-inner"></div>
 
                 <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-3 border-t border-amber-500/30">
+                    <div id="ownerActions" class="hidden flex items-center gap-2">
+                        <button id="modalEditBtn" class="px-3 py-1.5 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400 text-amber-600 text-xs font-bold rounded-xl transition-all">
+                            <i class="fa-solid fa-pen-to-square"></i> Редагувати
+                        </button>
+                        <button id="modalDeleteBtn" class="px-3 py-1.5 bg-rose-500/20 hover:bg-rose-500/30 border border-rose-400 text-rose-600 text-xs font-bold rounded-xl transition-all">
+                            <i class="fa-solid fa-trash"></i> Видалити
+                        </button>
+                    </div>
                     <div class="text-xs font-semibold italic opacity-85">
                         🕊️ Присутність Божої Благодаті
                     </div>
@@ -479,7 +414,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, doc, updateDoc, deleteDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBlKoP6-M8tdrKq88bSdnWSnak5Gpddnpk",
@@ -499,10 +434,9 @@
 
         onAuthStateChanged(auth, (user) => {
             currentUser = user;
-            console.log("Firebase Auth статус поточного користувача:", user ? user.email : "Не авторизований");
         });
 
-        // 1. АНІМАЦІЯ МАТРИЦІ
+        // АНІМАЦІЯ МАТРИЦІ
         const canvas = document.getElementById('sacredCanvas');
         const ctx = canvas.getContext('2d');
         let width = canvas.width = window.innerWidth;
@@ -525,11 +459,6 @@
             });
         }
 
-        let scrollSpeedMultiplier = 1;
-        window.addEventListener('scroll', () => {
-            scrollSpeedMultiplier = 1 + window.scrollY * 0.003;
-        });
-
         function animateSacredMatrix() {
             ctx.clearRect(0, 0, width, height);
             particles.forEach(p => {
@@ -540,7 +469,7 @@
                 ctx.shadowColor = p.color + '0.8)';
                 ctx.fill();
 
-                p.y -= p.speedY * scrollSpeedMultiplier;
+                p.y -= p.speedY;
                 if (p.y < -10) {
                     p.y = height + 10;
                     p.x = Math.random() * width;
@@ -550,7 +479,7 @@
         }
         animateSacredMatrix();
 
-        // 2. ПЕРЕМИКАЧ "ДЕНЬ / НІЧ"
+        // ПЕРЕМИКАЧ ДЕНЬ / НІЧ
         let isDayMode = false;
         window.toggleTheme = function() {
             isDayMode = !isDayMode;
@@ -573,7 +502,7 @@
             }
         };
 
-        // 3. РАДІОПЛЕЄР
+        // РАДІО
         let isRadioPlaying = false;
         const radioAudio = document.getElementById('spiritualRadio');
         const radioBtn = document.getElementById('radioBtn');
@@ -599,13 +528,30 @@
             }
         };
 
-        // 4. МОДАЛЬНЕ ВІКНО ДОДАВАННЯ
-        window.openAddCardModal = function() {
+        // МОДАЛЬНЕ ВІКНО ДОДАВАННЯ/РЕДАГУВАННЯ
+        window.openAddCardModal = function(editData = null) {
             if (!currentUser) {
-                alert('Будь ласка, авторизуйтесь на головній сторінці, щоб мати можливість публікувати власні історії та духовні слова!');
+                alert('Будь ласка, авторизуйтесь на головній сторінці!');
                 window.location.href = 'index.html#auth-section';
                 return;
             }
+
+            const modalTitle = document.getElementById('modalTitleText');
+            if (editData) {
+                modalTitle.textContent = "✏️ Редагувати Слово / Історію";
+                document.getElementById('editDocId').value = editData.id;
+                document.getElementById('cardTitle').value = editData.title;
+                document.getElementById('cardCat').value = editData.categoryValue;
+                document.getElementById('cardAuthor').value = editData.author;
+                document.getElementById('cardPhoto').value = editData.photo || '';
+                document.getElementById('cardVideo').value = editData.video || '';
+                document.getElementById('cardText').value = editData.text;
+            } else {
+                modalTitle.textContent = "✨ Додати нове Слово / Історію";
+                document.getElementById('editDocId').value = '';
+                document.querySelector('#addModal form').reset();
+            }
+
             document.getElementById('addModal').classList.remove('hidden');
             document.getElementById('addModal').classList.add('flex');
         };
@@ -615,62 +561,63 @@
             document.getElementById('addModal').classList.remove('flex');
         };
 
-        // 5. ПАРСЕР YOUTUBE
         function getYouTubeEmbedUrl(url) {
             if (!url) return '';
             if (url.includes('youtube.com/embed/')) return url;
-            
             const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
             const match = url.match(regExp);
-
             if (match && match[2].length === 11) {
                 return `https://www.youtube-nocookie.com/embed/${match[2]}?rel=0&autoplay=0`;
             }
             return '';
         }
 
-        // 6. ВІДКРИТТЯ СОБОРУ
-        window.openDetailModal = function(title, cat, author, text, photo, video) {
-            document.getElementById('detailTitle').textContent = title;
-            document.getElementById('detailCat').textContent = cat;
-            document.getElementById('detailAuthor').textContent = author;
-            document.getElementById('detailText').textContent = text;
+        // ВІДКРИТТЯ ДЕТАЛЕЙ ІСТОРІЇ
+        window.openDetailModal = function(data) {
+            document.getElementById('detailTitle').textContent = data.title;
+            document.getElementById('detailCat').textContent = data.categoryText;
+            document.getElementById('detailAuthor').textContent = data.author;
+            document.getElementById('detailText').textContent = data.text;
 
             const photoCont = document.getElementById('detailPhotoContainer');
-            if (photo) {
-                document.getElementById('detailPhoto').src = photo;
+            if (data.photo) {
+                document.getElementById('detailPhoto').src = data.photo;
                 photoCont.classList.remove('hidden');
             } else {
                 photoCont.classList.add('hidden');
             }
 
             const videoCont = document.getElementById('detailVideoContainer');
-            const embedUrl = getYouTubeEmbedUrl(video);
-
+            const embedUrl = getYouTubeEmbedUrl(data.video);
             if (embedUrl) {
-                videoCont.innerHTML = `
-                    <iframe class="w-full h-full rounded-2xl" 
-                            src="${embedUrl}" 
-                            title="YouTube video player" 
-                            frameborder="0" 
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                            referrerpolicy="strict-origin-when-cross-origin"
-                            allowfullscreen>
-                    </iframe>`;
-                videoCont.classList.remove('hidden');
-            } else if (video && video.includes('youtube')) {
-                videoCont.innerHTML = `
-                    <div class="w-full h-full p-4 bg-slate-950/90 flex flex-col items-center justify-center text-center space-y-2">
-                        <i class="fa-brands fa-youtube text-3xl text-rose-500"></i>
-                        <h4 class="text-amber-100 font-bold text-sm">Офіційний випуск на YouTube</h4>
-                        <a href="${video}" target="_blank" class="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-xl shadow-lg transition-all flex items-center gap-1.5">
-                            <i class="fa-brands fa-youtube"></i> Дивитися на YouTube
-                        </a>
-                    </div>`;
+                videoCont.innerHTML = `<iframe class="w-full h-full rounded-2xl" src="${embedUrl}" frameborder="0" allowfullscreen></iframe>`;
                 videoCont.classList.remove('hidden');
             } else {
                 videoCont.classList.add('hidden');
                 videoCont.innerHTML = '';
+            }
+
+            // Перевірка прав власника для редагування/видалення
+            const ownerActions = document.getElementById('ownerActions');
+            if (currentUser && currentUser.email === data.userEmail) {
+                ownerActions.classList.remove('hidden');
+                document.getElementById('modalEditBtn').onclick = () => {
+                    closeDetailModal();
+                    openAddCardModal(data);
+                };
+                document.getElementById('modalDeleteBtn').onclick = async () => {
+                    if (confirm('Бажаєте видалити цю історію?')) {
+                        try {
+                            await deleteDoc(doc(db, "spiritual_words", data.id));
+                            alert('Історію успішно видалено!');
+                            closeDetailModal();
+                        } catch (err) {
+                            alert('Помилка видалення: ' + err.message);
+                        }
+                    }
+                };
+            } else {
+                ownerActions.classList.add('hidden');
             }
 
             document.getElementById('detailModal').classList.remove('hidden');
@@ -689,14 +636,15 @@
             alert("Історію збережено у вашому серці та закладках браузера! 🙏");
         };
 
-        // 7. FIRESTORE ЗБЕРЕЖЕННЯ
+        // ЗБЕРЕЖЕННЯ АБО ОНОВЛЕННЯ У FIRESTORE
         window.saveSpiritualCard = async function(e) {
             e.preventDefault();
             if (!currentUser) {
-                alert('Будь ласка, авторизуйтесь перед публікацією!');
+                alert('Авторизуйтесь для публікації!');
                 return;
             }
 
+            const docId = document.getElementById('editDocId').value;
             const title = document.getElementById('cardTitle').value;
             const catSelect = document.getElementById('cardCat');
             const catValue = catSelect.value;
@@ -707,66 +655,68 @@
             const text = document.getElementById('cardText').value;
 
             try {
-                await addDoc(collection(db, "spiritual_words"), {
-                    title: title,
-                    categoryValue: catValue,
-                    categoryText: catText,
-                    author: author,
-                    photo: photo,
-                    video: video,
-                    text: text,
-                    userEmail: currentUser.email,
-                    createdAt: serverTimestamp()
-                });
+                if (docId) {
+                    // Оновлення існуючого запису
+                    await updateDoc(doc(db, "spiritual_words", docId), {
+                        title, categoryValue: catValue, categoryText: catText, author, photo, video, text
+                    });
+                    alert('Історію успішно оновлено!');
+                } else {
+                    // Створення нового запису
+                    await addDoc(collection(db, "spiritual_words"), {
+                        title, categoryValue: catValue, categoryText: catText, author, photo, video, text,
+                        userEmail: currentUser.email,
+                        createdAt: serverTimestamp()
+                    });
+                    alert('Ваше духовне слово успішно опубліковано.');
+                }
 
-                alert('Дякуємо! Ваша історія або духовне слово успішно опубліковано.');
                 closeAddCardModal();
                 e.target.reset();
             } catch (err) {
-                console.error("Помилка при збереженні у Firebase:", err);
                 alert('Помилка збереження: ' + err.message);
             }
         };
 
-        // 8. ЗАВАНТАЖЕННЯ КАРТОК
+        // РЕАЛЬНИЙ ЧАС ТА РЕНДЕР КАРТОК
         const q = query(collection(db, "spiritual_words"), orderBy("createdAt", "desc"));
         
         onSnapshot(q, (snapshot) => {
             const grid = document.getElementById('spiritualGrid');
-            
-            snapshot.docChanges().forEach((change) => {
-                if (change.type === "added") {
-                    const data = change.doc.data();
-                    
-                    const newCard = document.createElement('div');
-                    newCard.className = "angel-card flex flex-col justify-between";
-                    newCard.setAttribute('data-category', data.categoryValue);
+            grid.innerHTML = ''; // Очищаємо сітку перед заповненням
 
-                    newCard.onclick = function() {
-                        openDetailModal(data.title, data.categoryText, data.author, data.text, data.photo, data.video);
-                    };
+            snapshot.forEach((docSnapshot) => {
+                const data = docSnapshot.docChanges ? null : docSnapshot.data();
+                const id = docSnapshot.id;
+                const fullData = { id, ...docSnapshot.data() };
 
-                    newCard.innerHTML = `
-                        <div>
-                            <div class="flex items-center justify-between text-[11px] font-bold mb-2">
-                                <span class="px-2 py-0.5 rounded bg-amber-500/10 border border-amber-500/30 text-amber-600">${data.categoryText}</span>
-                                <span class="opacity-80">${data.author}</span>
-                            </div>
-                            <h3 class="font-serif-sacred text-xl font-bold mb-1">${data.title}</h3>
-                            <p class="text-xs leading-snug mb-3">${data.text.substring(0, 85)}...</p>
+                const card = document.createElement('div');
+                card.className = "angel-card flex flex-col justify-between";
+                card.setAttribute('data-category', fullData.categoryValue);
+
+                card.onclick = function() {
+                    openDetailModal(fullData);
+                };
+
+                card.innerHTML = `
+                    <div>
+                        <div class="flex items-center justify-between text-[11px] font-bold mb-2">
+                            <span class="px-2 py-0.5 rounded bg-amber-500/10 border border-amber-500/30 text-amber-600">${fullData.categoryText}</span>
+                            <span class="opacity-80">${fullData.author}</span>
                         </div>
-                        <div class="pt-2 border-t border-amber-500/20 flex items-center justify-between text-[10px] text-amber-600 font-bold">
-                            <span>🕊️ Спільнота Neoservice</span>
-                            <span>Відкрити серце ➔</span>
-                        </div>
-                    `;
+                        <h3 class="font-serif-sacred text-xl font-bold mb-1">${fullData.title}</h3>
+                        <p class="text-xs leading-snug mb-3">${fullData.text.substring(0, 85)}...</p>
+                    </div>
+                    <div class="pt-2 border-t border-amber-500/20 flex items-center justify-between text-[10px] text-amber-600 font-bold">
+                        <span>🕊️ Спільнота Neoservice</span>
+                        <span>Відкрити серце ➔</span>
+                    </div>
+                `;
 
-                    grid.prepend(newCard);
-                }
+                grid.appendChild(card);
             });
         });
 
-        // 9. ФІЛЬТРАЦІЯ
         window.filterCards = function() {
             const input = document.getElementById('spiritualSearch').value.toLowerCase();
             document.querySelectorAll('.angel-card').forEach(card => {
@@ -785,4 +735,4 @@
     </script>
 
 </body>
-</html>
+</html> 

@@ -330,7 +330,7 @@
     <section style="max-width: 1100px; margin: 20px auto; padding: 0 15px;">
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 15px;">
         
-        <!-- Розділ 1: Автокомерція & Запчастини -->
+        <!-- Розділ 1: Автокомерція & Автобазар -->
         <a href="auto.html" style="text-decoration: none; color: inherit;">
           <div style="background: white; border-radius: 12px; padding: 15px; border-top: 4px solid #d97706; box-shadow: 0 4px 6px rgba(0,0,0,0.04); height: 100%; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='translateY(0)'">
             <div>
@@ -367,7 +367,7 @@
         </a>
 
         <!-- Розділ 4: Інженерія та схемотехніка --> 
-        <a href="engineering.html" style="text-decoration: none; color: inherit;">
+        <a href="engineering.html#" style="text-decoration: none; color: inherit;">
           <div style="background: white; border-radius: 12px; padding: 15px; border-top: 4px solid #7c3aed; box-shadow: 0 4px 6px rgba(0,0,0,0.04); height: 100%; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='translateY(0)'">
             <div>
               <div style="font-size: 1.5rem; margin-bottom: 8px;">⚙️</div>
@@ -397,27 +397,33 @@
     <section style="max-width: 1100px; margin: 25px auto; padding: 0 15px;">
       <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px; align-items: stretch;" class="banner-trust-grid">
         
-        <!-- 1. ЛІВА ЧАСТИНА: КОЛАЖ БАНЕРІВ З АВТОПЕРЕКЛЮЧЕННЯМ (БАЗА ДАНИХ collage_banners) -->
+        <!-- 1. ЛІВА ЧАСТИНА: КОЛАЖ БАНЕРІВ З АВТОПЕРЕКЛЮЧЕННЯМ -->
         <div style="background: white; border-radius: 12px; border-top: 4px solid #1e3a8a; box-shadow: 0 4px 6px rgba(0,0,0,0.05); padding: 20px; position: relative; height: 320px; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; box-sizing: border-box;">
           
           <div id="bannerSliderContainer" style="position: absolute; inset: 0; width: 100%; height: 100%;">
-            <!-- Динамічно завантажується з Firestore -->
             <div class="banner-slide active" style="background: linear-gradient(to top, rgba(15,23,42,0.9), rgba(15,23,42,0.2)), url('https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=1000') center/cover; padding: 25px; display: flex; flex-direction: column; justify-content: flex-end; height: 100%; box-sizing: border-box;">
-              <span style="background: rgba(217,119,6,0.8); color: white; font-size: 0.7rem; font-weight: bold; padding: 3px 10px; border-radius: 20px; width: max-content; margin-bottom: 8px;">📢 Завантаження...</span>
-              <h3 style="color: white; margin: 0 0 5px 0; font-size: 1.25rem;">Підключення до бази даних...</h3>
+              <span style="background: rgba(217,119,6,0.8); color: white; font-size: 0.7rem; font-weight: bold; padding: 3px 10px; border-radius: 20px; width: max-content; margin-bottom: 8px;">📢 Головний банер #1</span>
+              <h3 style="color: white; margin: 0 0 5px 0; font-size: 1.25rem;">Калаж банерів: Автопереключення з ефектами шторки</h3>
+              <p style="color: #cbd5e1; margin: 0; font-size: 0.8rem;">Зміна банера через адмін-панель у реальному часі на головній сторінці.</p>
+            </div>
+
+            <div class="banner-slide" style="background: linear-gradient(to top, rgba(15,23,42,0.9), rgba(15,23,42,0.2)), url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1000') center/cover; padding: 25px; display: flex; flex-direction: column; justify-content: flex-end; height: 100%; box-sizing: border-box;">
+              <span style="background: rgba(37,99,235,0.8); color: white; font-size: 0.7rem; font-weight: bold; padding: 3px 10px; border-radius: 20px; width: max-content; margin-bottom: 8px;">⭐ Партнерський простір #2</span>
+              <h3 style="color: white; margin: 0 0 5px 0; font-size: 1.25rem;">Національний інформаційний хаб громади</h3>
+              <p style="color: #cbd5e1; margin: 0; font-size: 0.8rem;">Професійний автосервіс, комп'ютерна допомога та підтримка регіонів України.</p>
             </div>
           </div>
 
           <!-- Крапки-індикатори переключення -->
           <div id="sliderDotsContainer" style="position: absolute; bottom: 12px; right: 20px; display: flex; gap: 6px; z-index: 10;">
             <button onclick="setSlide(0)" class="slider-dot" style="width: 10px; height: 10px; border-radius: 50%; border: none; background: #d97706; cursor: pointer;"></button>
+            <button onclick="setSlide(1)" class="slider-dot" style="width: 10px; height: 10px; border-radius: 50%; border: none; background: #cbd5e1; cursor: pointer;"></button>
           </div>
         </div>
 
         <!-- 2. ПРАВА ЧАСТИНА: ФОТО + КНОПКА ДОДАТИ БАНЕР + ТЕКСТ ДОВІРИ -->
         <div style="display: flex; flex-direction: column; gap: 12px; height: 320px;">
           
-          <!-- Під-блок з фото та кнопкою адміна -->
           <div style="background: white; border-radius: 12px; border-top: 4px solid #d97706; box-shadow: 0 4px 6px rgba(0,0,0,0.05); padding: 12px; display: flex; align-items: center; gap: 12px; height: 135px; box-sizing: border-box;">
             <div style="width: 65px; height: 85px; border-radius: 8px; overflow: hidden; border: 2px solid #d97706; flex-shrink: 0; background: #e2e8f0;">
               <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300" alt="Особистий контроль" style="width: 100%; height: 100%; object-fit: cover;">
@@ -428,14 +434,13 @@
                 <h4 style="font-size: 0.75rem; margin: 2px 0 0 0; color: #1e3a8a; line-height: 1.1;">Технічний контроль і підтримка • Експертний нагляд</h4>
               </div>
               
-              <!-- КНОПКА "ДОДАТИ БАНЕР" (З'являється автоматично при вході адміна) -->
+              <!-- КНОПКА КЕРУВАННЯ КОЛАЖЕМ -->
               <button id="adminCollageBtn" onclick="openCollageAdmin()" style="display: none; background: #1e3a8a; color: white; border: none; padding: 6px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: bold; cursor: pointer; text-align: center; width: 100%;">
-                ➕ Додати банер &rarr;
+                Керувати колажем &rarr;
               </button>
             </div>
           </div>
 
-          <!-- Під-блок з текстом та посиланням для довіри -->
           <div style="background: white; border-radius: 12px; border-top: 4px solid #16a34a; box-shadow: 0 4px 6px rgba(0,0,0,0.05); padding: 12px; display: flex; flex-direction: column; justify-content: space-between; height: 173px; box-sizing: border-box;">
             <div>
               <div style="font-size: 0.65rem; text-transform: uppercase; font-weight: bold; color: #16a34a; margin-bottom: 3px;">
@@ -678,14 +683,20 @@
 
     <!-- СКРИПТИ -->
     <script>
-        // Ініціалізація Firebase (якщо вже налаштовано у проєкті)
+        // Ініціалізація Firebase (тільки ProjectId, без зайвих ключів)
         const firebaseConfig = {
             projectId: "neoservice-ks"
         };
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
+        
+        let db = null;
+        try {
+            if (!firebase.apps.length) {
+                firebase.initializeApp(firebaseConfig);
+            }
+            db = firebase.firestore();
+        } catch (e) {
+            console.warn("Автономний режим:", e);
         }
-        const db = firebase.firestore();
 
         const UKRAINE_REGIONS_INDEX = {
             volyn: { name: "Волинська область", center: "Луцьк", cities: { lutsk: "Луцьк", kovel: "Ковель", volodymyr: "Володимир", novovolynsk: "Нововолинськ" } },
@@ -778,15 +789,15 @@
             }
         }
 
-        // ЗАВАНТАЖЕННЯ БАНЕРІВ ІЗ КОЛЕКЦІЇ collage_banners У БАЗІ ДАНИХ
         async function loadBannersFromDatabase() {
+            if (!db) return;
             try {
                 const snapshot = await db.collection('collage_banners').get();
+                if (snapshot.empty) return;
+
                 const container = document.getElementById('bannerSliderContainer');
                 const dotsContainer = document.getElementById('sliderDotsContainer');
                 
-                if (snapshot.empty) return;
-
                 container.innerHTML = '';
                 dotsContainer.innerHTML = '';
 
@@ -811,136 +822,42 @@
                     dotsContainer.appendChild(dot);
                 });
             } catch (error) {
-                console.error("Помилка завантаження банерів із бази:", error);
+                console.warn("Банери працюють у дефолтному режимі");
             }
         }
 
-        // ДОДАВАННЯ НОВОГО БАНЕРА ТА ЗБЕРЕЖЕННЯ В КОЛЕКЦІЮ collage_banners
         async function openCollageAdmin() {
-            const imgUrl = prompt("Введіть посилання (URL) на зображення для банера:", "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=1000");
+            const imgUrl = prompt("Введіть посилання (URL) на зображення:", "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=1000");
             if (!imgUrl) return;
 
             const badgeText = prompt("Введіть текст мітки:", "🔥 Акція");
             const titleText = prompt("Введіть заголовок банера:", "Заголовок");
-            const descText = prompt("Введіть опис банера:", "Опис пропозиції");
+            const descText = prompt("Введіть опис банера:", "Опис");
+
+            if (!db) {
+                alert('Помилка: база даних недоступна.');
+                return;
+            }
 
             try {
                 await db.collection('collage_banners').add({
                     imgUrl: imgUrl,
-                    badge: (badgeText && badgeText !== 'null') ? badgeText : '',
-                    title: (titleText && titleText !== 'null') ? titleText : '',
-                    description: (descText && descText !== 'null') ? descText : '',
+                    badge: badgeText || '',
+                    title: titleText || '',
+                    description: descText || '',
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
-
-                alert('Банер успішно збережено в колекцію collage_banners!');
-                loadBannersFromDatabase(); // Оновлюємо слайдер
+                alert('Банер успішно збережено!');
+                loadBannersFromDatabase();
             } catch (error) {
-                console.error("Помилка збереження в базу:", error);
-                alert('Не вдалося зберегти банер у базу даних.');
+                alert('Не вдалося зберегти банер.');
             }
         }
 
-        // Авторизація
-        function initAuthHandlers() {
-            try {
-                const loginBtn = document.getElementById('loginEmailBtn');
-                const registerBtn = document.getElementById('registerEmailBtn');
-                const logoutBtn = document.getElementById('logoutBtn');
-                const loggedOutView = document.getElementById('loggedOutView');
-                const loggedInView = document.getElementById('loggedInView');
-                const userEmailDisplay = document.getElementById('userEmailDisplay');
-
-                const savedUser = localStorage.getItem('neoservice_user') || sessionStorage.getItem('neoservice_user');
-                if (savedUser) {
-                    showLoggedIn(savedUser);
-                }
-
-                if (loginBtn) {
-                    loginBtn.addEventListener('click', () => {
-                        const emailField = document.getElementById('authEmail');
-                        const passField = document.getElementById('authPassword');
-                        if (!emailField || !passField) return;
-                        
-                        const email = emailField.value.trim();
-                        const pass = passField.value.trim();
-                        if (!email || !pass) {
-                            alert('Будь ласка, заповніть пошту та пароль.');
-                            return;
-                        }
-                        if (email.toLowerCase().includes('admin')) {
-                            localStorage.setItem('neoservice_is_admin', 'true');
-                        }
-                        localStorage.setItem('neoservice_user', email);
-                        showLoggedIn(email);
-                        checkAdminSession();
-                    });
-                }
-
-                if (registerBtn) {
-                    registerBtn.addEventListener('click', () => {
-                        const emailField = document.getElementById('authEmail');
-                        const passField = document.getElementById('authPassword');
-                        if (!emailField || !passField) return;
-
-                        const email = emailField.value.trim();
-                        const pass = passField.value.trim();
-                        if (!email || !pass) {
-                            alert('Введіть пошту та пароль для реєстрації.');
-                            return;
-                        }
-                        if (email.toLowerCase().includes('admin')) {
-                            localStorage.setItem('neoservice_is_admin', 'true');
-                        }
-                        localStorage.setItem('neoservice_user', email);
-                        alert('Реєстрація успішна!');
-                        showLoggedIn(email);
-                        checkAdminSession();
-                    });
-                }
-
-                if (logoutBtn) {
-                    logoutBtn.addEventListener('click', () => {
-                        localStorage.removeItem('neoservice_user');
-                        localStorage.removeItem('neoservice_is_admin');
-                        sessionStorage.removeItem('neoservice_user');
-                        sessionStorage.removeItem('neoservice_is_admin');
-                        if (loggedInView) loggedInView.style.display = 'none';
-                        if (loggedOutView) loggedOutView.style.display = 'block';
-                        checkAdminSession();
-                    });
-                }
-
-                function showLoggedIn(email) {
-                    if (loggedOutView) loggedOutView.style.display = 'none';
-                    if (loggedInView) loggedInView.style.display = 'block';
-                    if (userEmailDisplay) userEmailDisplay.textContent = email;
-                }
-            } catch(e) {
-                console.error("Auth init error:", e);
-            }
-        }
-
-        // ПЕРЕВІРКА ПРАВ АДМІНІСТРАТОРА
-        function checkAdminSession() {
-            try {
-                const isAdmin = localStorage.getItem('neoservice_is_admin') === 'true' || 
-                                sessionStorage.getItem('neoservice_is_admin') === 'true';
-                const btn = document.getElementById('adminCollageBtn');
-                if (btn) {
-                    btn.style.setProperty('display', isAdmin ? 'block' : 'none', 'important');
-                }
-            } catch(e) {
-                console.error("Admin check error:", e);
-            }
-        }
-
-        // Слайдер банерів
         let currentSlideIdx = 0;
         function setSlide(idx) {
             const allSlides = document.querySelectorAll('.banner-slide');
             const allDots = document.querySelectorAll('.slider-dot');
-            
             allSlides.forEach((s, i) => {
                 s.classList.toggle('active', i === idx);
                 if(allDots[i]) allDots[i].style.background = i === idx ? '#d97706' : '#cbd5e1';
@@ -956,12 +873,20 @@
             }
         }, 5000);
 
+        function checkAdminSession() {
+            try {
+                const isAdmin = localStorage.getItem('neoservice_is_admin') === 'true';
+                const btn = document.getElementById('adminCollageBtn');
+                if (btn) {
+                    btn.style.setProperty('display', isAdmin ? 'block' : 'none', 'important');
+                }
+            } catch(e) {}
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             initRegionSelect();
-            initAuthHandlers();
             checkAdminSession();
-            setTimeout(checkAdminSession, 100);
-            loadBannersFromDatabase(); // Завантажуємо банери з бази при старті
+            loadBannersFromDatabase();
 
             const citySelect = document.getElementById('panelCitySelect');
             if(citySelect) citySelect.addEventListener('change', updateGoButtonLink);

@@ -866,8 +866,41 @@
             }
         }
 
+        // ІНТЕРАКТИВНЕ ДОДАВАННЯ НОВОГО БАНЕРА
         function openCollageAdmin() {
-            alert('Режим керування банерами активовано. Ви можете додати новий банер.');
+            const imgUrl = prompt("Введіть посилання (URL) на зображення для банера:", "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=1000");
+            if (!imgUrl) return;
+
+            const badgeText = prompt("Введіть текст мітки (наприклад: 📢 Нова подія):", "🔥 Акція та новини");
+            const titleText = prompt("Введіть заголовок банера:", "Ваш заголовок");
+            const descText = prompt("Введіть опис банера:", "Детальний опис нової пропозиції.");
+
+            const container = document.getElementById('bannerSliderContainer');
+            const dotsContainer = document.getElementById('sliderDotsContainer');
+
+            if (container && dotsContainer) {
+                const newSlide = document.createElement('div');
+                newSlide.className = 'banner-slide';
+                newSlide.style.cssText = `background: linear-gradient(to top, rgba(15,23,42,0.9), rgba(15,23,42,0.2)), url('${imgUrl}') center/cover; padding: 25px; display: flex; flex-direction: column; justify-content: flex-end; height: 100%; box-sizing: border-box;`;
+                
+                newSlide.innerHTML = `
+                    <span style="background: rgba(220,38,38,0.8); color: white; font-size: 0.7rem; font-weight: bold; padding: 3px 10px; border-radius: 20px; width: max-content; margin-bottom: 8px;">${badgeText}</span>
+                    <h3 style="color: white; margin: 0 0 5px 0; font-size: 1.25rem;">${titleText}</h3>
+                    <p style="color: #cbd5e1; margin: 0; font-size: 0.8rem;">${descText}</p>
+                `;
+
+                container.appendChild(newSlide);
+
+                const newIdx = document.querySelectorAll('.banner-slide').length - 1;
+                const newDot = document.createElement('button');
+                newDot.onclick = () => setSlide(newIdx);
+                newDot.className = 'slider-dot';
+                newDot.style.cssText = 'width: 10px; height: 10px; border-radius: 50%; border: none; background: #cbd5e1; cursor: pointer;';
+                dotsContainer.appendChild(newDot);
+
+                setSlide(newIdx);
+                alert('Новий банер успішно додано!');
+            }
         }
 
         // Слайдер банерів
@@ -876,16 +909,20 @@
         const dots = document.querySelectorAll('.slider-dot');
 
         function setSlide(idx) {
-            slides.forEach((s, i) => {
+            const allSlides = document.querySelectorAll('.banner-slide');
+            const allDots = document.querySelectorAll('.slider-dot');
+            
+            allSlides.forEach((s, i) => {
                 s.classList.toggle('active', i === idx);
-                if(dots[i]) dots[i].style.background = i === idx ? '#d97706' : '#cbd5e1';
+                if(allDots[i]) allDots[i].style.background = i === idx ? '#d97706' : '#cbd5e1';
             });
             currentSlideIdx = idx;
         }
 
         setInterval(() => {
-            if(slides.length > 0) {
-                currentSlideIdx = (currentSlideIdx + 1) % slides.length;
+            const allSlides = document.querySelectorAll('.banner-slide');
+            if(allSlides.length > 0) {
+                currentSlideIdx = (currentSlideIdx + 1) % allSlides.length;
                 setSlide(currentSlideIdx);
             }
         }, 5000);

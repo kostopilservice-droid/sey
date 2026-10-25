@@ -7,6 +7,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Neoservice — Міський інформаційно-рекламний портал та сервіс</title>
     
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            navy: '#0f2b5c',
+                            blue: '#1d4ed8',
+                            lightBlue: '#eff6ff',
+                            accent: '#2563eb',
+                            hover: '#3b82f6',
+                            textDark: '#1e293b'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -70,6 +91,63 @@
         .btn-danger { background: #dc2626; }
         .btn-google { background: #ea4335; }
         
+        /* Стилі для слайдера (колаж зі шторкою) */
+        .banner-slide {
+            position: absolute; inset: 0;
+            opacity: 0; transform: translateY(10px);
+            transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: none;
+        }
+        .banner-slide.active {
+            opacity: 1; transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        /* SVG Map Custom Styling for integration */
+        .region-path {
+            fill: #e2e8f0;
+            stroke: #ffffff;
+            stroke-width: 1.5;
+            stroke-linejoin: round;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+        .region-path:hover, .region-path.active {
+            fill: #2563eb;
+            stroke: #1d4ed8;
+            stroke-width: 2;
+            filter: drop-shadow(0px 4px 10px rgba(37, 99, 235, 0.45));
+        }
+        .city-marker {
+            fill: #0f2b5c;
+            transition: all 0.2s ease;
+            pointer-events: none;
+        }
+        .city-text {
+            font-size: 11px;
+            font-weight: 600;
+            fill: #1e293b;
+            pointer-events: none;
+            user-select: none;
+            text-anchor: middle;
+            transition: all 0.2s ease;
+            text-shadow: 0px 0px 3px rgba(255, 255, 255, 0.9), 0px 0px 5px rgba(255, 255, 255, 0.9);
+        }
+        .region-group:hover .city-marker { fill: #ffffff; }
+        .region-group:hover .city-text {
+            fill: #ffffff;
+            text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.8);
+            font-weight: 700;
+            font-size: 12px;
+        }
+        #map-tooltip {
+            position: absolute;
+            display: none;
+            pointer-events: none;
+            z-index: 50;
+            transition: transform 0.08s ease-out, opacity 0.15s ease;
+        }
+        
         footer {
             text-align: center;
             padding: 20px;
@@ -84,6 +162,10 @@
         }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        @media(max-width: 768px) {
+            .banner-trust-grid { grid-template-columns: 1fr !important; }
+        }
     </style>
 </head>
 <body>
@@ -234,14 +316,14 @@
     </div>
 
     <!-- ================= БІЖУЧИЙ РЯДОК ================= -->
-    <div style="width: 100%; background: linear-gradient(90deg, #1e3a8a, #3b82f6, #1e3a8a); color: white; padding: 12px 0; overflow: hidden; white-space: nowrap; box-shadow: inset 0 2px 5px rgba(0,0,0,0.2); margin: 30px 0 0 0; border-top: 2px solid #60a5fa; border-bottom: 2px solid #60a5fa;">
+    <div style="width: 100%; background: linear-gradient(90deg, #1e3a8a, #3b82f6, #1e3a8a); color: white; padding: 12px 0; overflow: hidden; white-space: nowrap; box-shadow: inset 0 2px 5px rgba(0,0,0,0.2); margin: 20px 0; border-top: 2px solid #60a5fa; border-bottom: 2px solid #60a5fa;">
       <div style="display: inline-block; animation: marquee 25s linear infinite; font-size: 1rem; font-style: italic; letter-spacing: 0.5px;">
         ✨ «Світильник нозі моїй — слово Твоє, і світло для стежки моєї» &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 🕊️ «Ісус — дорога, істина і життя» &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 🙏 «Блаженні миротворці, бо вони синами Божими назвуться» &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
       </div>
     </div>
 
     <!-- ================= 5 SEO-ТЕМАТИЧНИХ РОЗДІЛІВ В РЯД ================= -->
-    <section style="max-width: 1100px; margin: 30px auto; padding: 0 15px;">
+    <section style="max-width: 1100px; margin: 20px auto; padding: 0 15px;">
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 15px;">
         
         <!-- Розділ 1: Автокомерція & Автобазар -->
@@ -307,24 +389,400 @@
       </div>
     </section>
 
+    <!-- ================= БЛОК: КОЛАЖ БАНЕРІВ + ФОТО/ТЕКСТ МЕРА (ПІД 5 КАРТКАМИ) ================= -->
+    <section style="max-width: 1100px; margin: 25px auto; padding: 0 15px;">
+      <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px; align-items: stretch;" class="banner-trust-grid">
+        
+        <!-- 1. ЛІВА ЧАСТИНА: КОЛАЖ БАНЕРІВ З АВТОПЕРЕКЛЮЧЕННЯМ (ШТОРКА) -->
+        <div style="background: white; border-radius: 12px; border-top: 4px solid #1e3a8a; box-shadow: 0 4px 6px rgba(0,0,0,0.05); padding: 20px; position: relative; height: 320px; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; box-sizing: border-box;">
+          
+          <!-- Динамічні або базові слайди колажу -->
+          <div id="bannerSliderContainer" style="position: absolute; inset: 0; width: 100%; height: 100%;">
+            
+            <div class="banner-slide active" style="background: linear-gradient(to top, rgba(15,23,42,0.9), rgba(15,23,42,0.2)), url('https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=1000') center/cover; padding: 25px; display: flex; flex-direction: column; justify-content: flex-end; height: 100%; box-sizing: border-box;">
+              <span style="background: rgba(217,119,6,0.8); color: white; font-size: 0.7rem; font-weight: bold; padding: 3px 10px; border-radius: 20px; width: max-content; margin-bottom: 8px;">📢 Головний банер #1</span>
+              <h3 style="color: white; margin: 0 0 5px 0; font-size: 1.25rem;">Калаж банерів: Автопереключення з ефектами шторки</h3>
+              <p style="color: #cbd5e1; margin: 0; font-size: 0.8rem;">Зміна банера через адмін-панель у реальному часі на головній сторінці.</p>
+            </div>
+
+            <div class="banner-slide" style="background: linear-gradient(to top, rgba(15,23,42,0.9), rgba(15,23,42,0.2)), url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1000') center/cover; padding: 25px; display: flex; flex-direction: column; justify-content: flex-end; height: 100%; box-sizing: border-box;">
+              <span style="background: rgba(37,99,235,0.8); color: white; font-size: 0.7rem; font-weight: bold; padding: 3px 10px; border-radius: 20px; width: max-content; margin-bottom: 8px;">⭐ Партнерський простір #2</span>
+              <h3 style="color: white; margin: 0 0 5px 0; font-size: 1.25rem;">Національний інформаційний хаб громади</h3>
+              <p style="color: #cbd5e1; margin: 0; font-size: 0.8rem;">Професійний автосервіс, комп'ютерна допомога та підтримка регіонів України.</p>
+            </div>
+
+          </div>
+
+          <!-- Крапки-індикатори переключення -->
+          <div id="sliderDotsContainer" style="position: absolute; bottom: 12px; right: 20px; display: flex; gap: 6px; z-index: 10;">
+            <button onclick="setSlide(0)" class="slider-dot" style="width: 10px; height: 10px; border-radius: 50%; border: none; background: #d97706; cursor: pointer;"></button>
+            <button onclick="setSlide(1)" class="slider-dot" style="width: 10px; height: 10px; border-radius: 50%; border: none; background: #cbd5e1; cursor: pointer;"></button>
+          </div>
+        </div>
+
+        <!-- 2. ПРАВА ЧАСТИНА: ФОТО + ТЕКСТ ДЛЯ ДОВІРИ -->
+        <div style="display: flex; flex-direction: column; gap: 12px; height: 320px;">
+          
+          <!-- Під-блок з фото та кнопкою виклику адмінки -->
+          <div style="background: white; border-radius: 12px; border-top: 4px solid #d97706; box-shadow: 0 4px 6px rgba(0,0,0,0.05); padding: 12px; display: flex; align-items: center; gap: 12px; height: 135px; box-sizing: border-box;">
+            <div style="width: 65px; height: 85px; border-radius: 8px; overflow: hidden; border: 2px solid #d97706; flex-shrink: 0; background: #e2e8f0;">
+              <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300" alt="Помічник депутата / Мер" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+            <div style="display: flex; flex-direction: column; justify-content: space-between; width: 100%; height: 100%;">
+              <div>
+                <div style="font-size: 0.6rem; text-transform: uppercase; font-weight: bold; color: #d97706;">ОСОБИСТИЙ КОНТРОЛЬ</div>
+                <h4 style="font-size: 0.75rem; margin: 2px 0 0 0; color: #1e3a8a; line-height: 1.1;">Технічний контроль і підтримка • Експертний нагляд</h4>
+              </div>
+              <!-- Кнопка прихована за замовчуванням (display: none), з'явиться лише після вашого входу -->
+              <button id="adminCollageBtn" onclick="openCollageAdmin()" style="display: none; background: #1e3a8a; color: white; border: none; padding: 6px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: bold; cursor: pointer; text-align: center; width: 100%;">
+                Керувати колажем &rarr;
+              </button>
+            </div>
+          </div>
+
+          <!-- Під-блок з текстом та посиланням для довіри -->
+          <div style="background: white; border-radius: 12px; border-top: 4px solid #16a34a; box-shadow: 0 4px 6px rgba(0,0,0,0.05); padding: 12px; display: flex; flex-direction: column; justify-content: space-between; height: 173px; box-sizing: border-box;">
+            <div>
+              <div style="font-size: 0.65rem; text-transform: uppercase; font-weight: bold; color: #16a34a; margin-bottom: 3px;">
+                <i class="fa-solid fa-shield-halved"></i> Статус & Довіра
+              </div>
+              <p style="font-size: 0.75rem; color: #475569; margin: 0; line-height: 1.3;">
+                Neoservice — це простір, де вирішують проблеми, а не створюють паперову тяганину. Особисто відповідаю за якість сервісу та технічну підтримку. Відкритий до конструктивних пропозицій — давайте робити корисні справи разом.
+              </p>
+            </div>
+            <a href="service.html" style="background: #f1f5f9; color: #1e3a8a; border: 1px solid #cbd5e1; padding: 6px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; text-decoration: none; text-align: center; display: block; box-sizing: border-box;">
+              Текст, силка &rarr;
+            </a>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ================= ІНТЕРАКТИВНА КАРТА УКРАЇНИ (ПІД БАНЕРОМ) ================= -->
+    <section style="max-width: 1100px; margin: 30px auto; padding: 0 15px;">
+      <div class="bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden">
+          
+          <!-- Header -->
+          <div class="bg-gradient-to-r from-[#0f2b5c] to-[#1e40af] px-6 py-5 text-white flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+              <div>
+                  <span class="inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-500/30 text-blue-200 mb-1 border border-blue-400/30">
+                      УКРАЇНА • СЕРВІСНІ ЦЕНТРИ
+                  </span>
+                  <h2 class="text-xl md:text-2xl font-bold tracking-tight">Оберіть ваш регіон обслуговування</h2>
+              </div>
+              <div id="selected-badge" class="bg-white/10 backdrop-blur-md px-4 py-2 rounded-xl border border-white/20 text-sm font-medium">
+                  📍 Наведіть на область
+              </div>
+          </div>
+
+          <!-- Main Content Area -->
+          <div class="p-4 md:p-8 grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
+              
+              <!-- Map Column (Takes 2 Cols) -->
+              <div class="lg:col-span-2 relative bg-slate-50/70 rounded-xl p-4 border border-slate-200/80 shadow-inner flex items-center justify-center">
+                  
+                  <!-- Floating Tooltip -->
+                  <div id="map-tooltip" class="bg-slate-900/90 text-white px-3 py-2 rounded-lg shadow-xl text-xs font-medium border border-slate-700 backdrop-blur-sm">
+                      <div id="tooltip-title" class="font-bold text-blue-300"></div>
+                      <div id="tooltip-sub" class="text-slate-300"></div>
+                  </div>
+
+                  <!-- SVG Map of Ukraine -->
+                  <svg id="ukraine-svg" viewBox="0 0 950 620" class="w-full h-auto max-h-[520px] drop-shadow-sm" xmlns="http://www.w3.org/2000/svg">
+                      <defs>
+                          <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                              <feGaussianBlur stdDeviation="4" result="blur" />
+                              <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                          </filter>
+                      </defs>
+
+                      <!-- REGIONS GROUP -->
+                      <g id="regions">
+                          <!-- Волинська -->
+                          <g class="region-group" data-name="Волинська область" data-city="Луцьк" data-code="volyn">
+                              <path class="region-path" d="M 160 80 L 220 75 L 240 130 L 210 170 L 150 160 L 130 110 Z" />
+                              <circle class="city-marker" cx="185" cy="120" r="3.5"/>
+                              <text class="city-text" x="185" y="136">Луцьк</text>
+                          </g>
+
+                          <!-- Рівненська -->
+                          <g class="region-group" data-name="Рівненська область" data-city="Рівне" data-code="rivne">
+                              <path class="region-path" d="M 220 75 L 310 70 L 300 145 L 240 155 L 240 130 Z" />
+                              <circle class="city-marker" cx="265" cy="115" r="3.5"/>
+                              <text class="city-text" x="265" y="131">Рівне</text>
+                          </g>
+
+                          <!-- Житомирська -->
+                          <g class="region-group" data-name="Житомирська область" data-city="Житомир" data-code="zhytomyr">
+                              <path class="region-path" d="M 310 70 L 410 70 L 420 160 L 360 180 L 300 145 Z" />
+                              <circle class="city-marker" cx="360" cy="125" r="3.5"/>
+                              <text class="city-text" x="360" y="141">Житомир</text>
+                          </g>
+
+                          <!-- Київська -->
+                          <g class="region-group" data-name="Київська область" data-city="Київ" data-code="kyiv">
+                              <path class="region-path" d="M 410 70 L 510 80 L 500 190 L 430 200 L 420 160 Z" />
+                              <circle class="city-marker" cx="460" cy="130" r="5" fill="#dc2626"/>
+                              <text class="city-text" x="460" y="148" font-weight="bold">Київ</text>
+                          </g>
+
+                          <!-- Чернігівська -->
+                          <g class="region-group" data-name="Чернігівська область" data-city="Чернігів" data-code="chernihiv">
+                              <path class="region-path" d="M 480 20 L 590 30 L 580 120 L 510 80 Z" />
+                              <circle class="city-marker" cx="530" cy="65" r="3.5"/>
+                              <text class="city-text" x="530" y="81">Чернігів</text>
+                          </g>
+
+                          <!-- Сумська -->
+                          <g class="region-group" data-name="Сумська область" data-city="Суми" data-code="sumy">
+                              <path class="region-path" d="M 590 30 L 680 50 L 660 140 L 580 120 Z" />
+                              <circle class="city-marker" cx="630" cy="85" r="3.5"/>
+                              <text class="city-text" x="630" y="101">Суми</text>
+                          </g>
+
+                          <!-- Львівська -->
+                          <g class="region-group" data-name="Львівська область" data-city="Львів" data-code="lviv">
+                              <path class="region-path" d="M 80 150 L 150 160 L 180 230 L 110 240 L 70 190 Z" />
+                              <circle class="city-marker" cx="125" cy="190" r="3.5"/>
+                              <text class="city-text" x="125" y="206">Львів</text>
+                          </g>
+
+                          <!-- Тернопільська -->
+                          <g class="region-group" data-name="Тернопільська область" data-city="Тернопіль" data-code="ternopil">
+                              <path class="region-path" d="M 180 230 L 230 170 L 260 230 L 210 270 Z" />
+                              <circle class="city-marker" cx="215" cy="220" r="3.5"/>
+                              <text class="city-text" x="215" y="236">Тернопіль</text>
+                          </g>
+
+                          <!-- Хмельницька -->
+                          <g class="region-group" data-name="Хмельницька область" data-city="Хмельницький" data-code="khmelnytskyi">
+                              <path class="region-path" d="M 240 155 L 300 145 L 310 240 L 260 230 Z" />
+                              <circle class="city-marker" cx="275" cy="190" r="3.5"/>
+                              <text class="city-text" x="275" y="206">Хмельницький</text>
+                          </g>
+
+                          <!-- Вінницька -->
+                          <g class="region-group" data-name="Вінницька область" data-city="Вінниця" data-code="vinnytsia">
+                              <path class="region-path" d="M 300 145 L 360 180 L 410 260 L 320 280 L 310 240 Z" />
+                              <circle class="city-marker" cx="355" cy="220" r="3.5"/>
+                              <text class="city-text" x="355" y="236">Вінниця</text>
+                          </g>
+
+                          <!-- Черкаська -->
+                          <g class="region-group" data-name="Черкаська область" data-city="Черкаси" data-code="cherkasy">
+                              <path class="region-path" d="M 430 200 L 520 190 L 540 270 L 450 270 L 410 260 Z" />
+                              <circle class="city-marker" cx="475" cy="230" r="3.5"/>
+                              <text class="city-text" x="475" y="246">Черкаси</text>
+                          </g>
+
+                          <!-- Полтавська -->
+                          <g class="region-group" data-name="Полтавська область" data-city="Полтава" data-code="poltava">
+                              <path class="region-path" d="M 520 190 L 630 180 L 640 260 L 540 270 Z" />
+                              <circle class="city-marker" cx="575" cy="220" r="3.5"/>
+                              <text class="city-text" x="575" y="236">Полтава</text>
+                          </g>
+
+                          <!-- Харківська -->
+                          <g class="region-group" data-name="Харківська область" data-city="Харків" data-code="kharkiv">
+                              <path class="region-path" d="M 660 140 L 780 150 L 770 260 L 640 260 L 630 180 Z" />
+                              <circle class="city-marker" cx="710" cy="195" r="3.5"/>
+                              <text class="city-text" x="710" y="211">Харків</text>
+                          </g>
+
+                          <!-- Закарпатська -->
+                          <g class="region-group" data-name="Закарпатська область" data-city="Ужгород" data-code="uzhhorod">
+                              <path class="region-path" d="M 30 230 L 80 230 L 110 280 L 50 290 Z" />
+                              <circle class="city-marker" cx="65" cy="260" r="3.5"/>
+                              <text class="city-text" x="65" y="276">Ужгород</text>
+                          </g>
+
+                          <!-- Івано-Франківська -->
+                          <g class="region-group" data-name="Івано-Франківська область" data-city="Івано-Франківськ" data-code="frankivsk">
+                              <path class="region-path" d="M 110 240 L 180 230 L 190 300 L 130 300 Z" />
+                              <circle class="city-marker" cx="150" cy="265" r="3.5"/>
+                              <text class="city-text" x="150" y="281">Ів.-Франківськ</text>
+                          </g>
+
+                          <!-- Чернівецька -->
+                          <g class="region-group" data-name="Чернівецька область" data-city="Чернівці" data-code="chernivtsi">
+                              <path class="region-path" d="M 190 300 L 260 280 L 270 320 L 190 330 Z" />
+                              <circle class="city-marker" cx="225" cy="305" r="3.5"/>
+                              <text class="city-text" x="225" y="321">Чернівці</text>
+                          </g>
+
+                          <!-- Кіровоградська -->
+                          <g class="region-group" data-name="Кіровоградська область" data-city="Кропивницький" data-code="kropyvnytskyi">
+                              <path class="region-path" d="M 450 270 L 560 270 L 570 350 L 460 350 Z" />
+                              <circle class="city-marker" cx="510" cy="310" r="3.5"/>
+                              <text class="city-text" x="510" y="326">Кропивницький</text>
+                          </g>
+
+                          <!-- Дніпропетровська -->
+                          <g class="region-group" data-name="Дніпропетровська область" data-city="Дніпро" data-code="dnipro">
+                              <path class="region-path" d="M 560 270 L 680 260 L 690 350 L 570 350 Z" />
+                              <circle class="city-marker" cx="625" cy="305" r="3.5"/>
+                              <text class="city-text" x="625" y="321">Дніпро</text>
+                          </g>
+
+                          <!-- Луганська -->
+                          <g class="region-group" data-name="Луганська область" data-city="Луганськ" data-code="lugansk">
+                              <path class="region-path" d="M 780 150 L 870 180 L 860 290 L 790 280 Z" />
+                              <circle class="city-marker" cx="825" cy="230" r="3.5"/>
+                              <text class="city-text" x="825" y="246">Луганськ</text>
+                          </g>
+
+                          <!-- Донецька -->
+                          <g class="region-group" data-name="Донецька область" data-city="Донецьк" data-code="donetsk">
+                              <path class="region-path" d="M 690 280 L 790 280 L 780 390 L 690 370 Z" />
+                              <circle class="city-marker" cx="735" cy="330" r="3.5"/>
+                              <text class="city-text" x="735" y="346">Донецьк</text>
+                          </g>
+
+                          <!-- Одеська -->
+                          <g class="region-group" data-name="Одеська область" data-city="Одеса" data-code="odesa">
+                              <path class="region-path" d="M 320 280 L 410 260 L 450 350 L 410 450 L 340 430 Z" />
+                              <circle class="city-marker" cx="390" cy="380" r="3.5"/>
+                              <text class="city-text" x="390" y="396">Одеса</text>
+                          </g>
+
+                          <!-- Миколаївська -->
+                          <g class="region-group" data-name="Миколаївська область" data-city="Миколаїв" data-code="mykolaiv">
+                              <path class="region-path" d="M 450 350 L 530 350 L 520 430 L 440 410 Z" />
+                              <circle class="city-marker" cx="480" cy="385" r="3.5"/>
+                              <text class="city-text" x="480" y="401">Миколаїв</text>
+                          </g>
+
+                          <!-- Херсонська -->
+                          <g class="region-group" data-name="Херсонська область" data-city="Херсон" data-code="kherson">
+                              <path class="region-path" d="M 520 380 L 630 360 L 620 450 L 520 430 Z" />
+                              <circle class="city-marker" cx="560" cy="415" r="3.5"/>
+                              <text class="city-text" x="560" y="431">Херсон</text>
+                          </g>
+
+                          <!-- Запорізька -->
+                          <g class="region-group" data-name="Запорізька область" data-city="Запоріжжя" data-code="zaporizhzhia">
+                              <path class="region-path" d="M 570 350 L 690 350 L 680 430 L 610 430 Z" />
+                              <circle class="city-marker" cx="630" cy="380" r="3.5"/>
+                              <text class="city-text" x="630" y="396">Запоріжжя</text>
+                          </g>
+
+                          <!-- Автономна Республіка Крим -->
+                          <g class="region-group" data-name="Автономна Республіка Крим" data-city="Сімферополь" data-code="crimea">
+                              <path class="region-path" d="M 520 460 L 630 450 L 640 530 L 540 540 Z" />
+                              <circle class="city-marker" cx="580" cy="500" r="3.5"/>
+                              <text class="city-text" x="580" y="516">Сімферополь</text>
+                          </g>
+                      </g>
+                  </svg>
+              </div>
+
+              <!-- Regional Details & Action Panel -->
+              <div class="flex flex-col justify-between h-full bg-slate-50 p-6 rounded-xl border border-slate-200">
+                  <div>
+                      <div class="flex items-center gap-2 mb-3">
+                          <span class="w-3 h-3 rounded-full bg-blue-600 animate-pulse"></span>
+                          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Обраний регіон</span>
+                      </div>
+
+                      <h3 id="panel-title" class="text-2xl font-bold text-slate-800 mb-1">Україна</h3>
+                      <p id="panel-city" class="text-blue-600 font-semibold text-base mb-4">Оберіть область на карті</p>
+                      
+                      <div class="h-px bg-slate-200 w-full my-4"></div>
+
+                      <div class="space-y-3 text-sm text-slate-600">
+                          <div class="flex items-center gap-2">
+                              <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                              <span>Обслуговування та виїзд майстра</span>
+                          </div>
+                          <div class="flex items-center gap-2">
+                              <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                              <span>Доставка та комп'ютерний сервіс</span>
+                          </div>
+                          <div class="flex items-center gap-2">
+                              <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                              <span>Регіональні відділення</span>
+                          </div>
+                      </div>
+                  </div>
+
+                  <div class="mt-8">
+                      <button id="action-btn" class="w-full bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white font-medium py-3 px-4 rounded-xl shadow-md transition-all transform active:scale-95 flex items-center justify-center gap-2">
+                          <span>Переглянути послуги</span>
+                          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                      </button>
+                  </div>
+              </div>
+
+          </div>
+
+          <!-- Footer Bar -->
+          <div class="bg-slate-100 px-6 py-3 border-t border-slate-200 text-xs text-slate-500 flex justify-between items-center">
+              <span>© NEOSERVICE.KS.UA — Національний інформаційно-сервісний хаб</span>
+              <span class="font-medium text-blue-600">Всі 24 області + АР Крим</span>
+          </div>
+
+      </div>
+    </section>
+
+    <!-- ================= МОДАЛЬНЕ ВІКНО АДМІНІСТРУВАННЯ КОЛАЖУ ================= -->
+    <div id="adminCollageModal" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(8px); z-index: 9999; align-items: center; justify-content: center; padding: 15px;">
+      <div style="background: white; border-radius: 12px; border-top: 5px solid #1e3a8a; max-width: 480px; width: 100%; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); box-sizing: border-box;">
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px; margin-bottom: 15px;">
+          <h3 style="margin: 0; color: #1e3a8a; font-size: 1.1rem;">🖼️ Керування колажем банерів</h3>
+          <button onclick="closeCollageAdmin()" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #64748b;">✕</button>
+        </div>
+
+        <form id="collageAdminForm" style="display: flex; flex-direction: column; gap: 10px;">
+          <div>
+            <label style="font-size: 0.8rem; font-weight: bold; color: #334155;">Категорія / Тег банера:</label>
+            <input type="text" id="slideTag" placeholder="наприклад: 📢 Нова акція" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-size: 0.85rem;" required>
+          </div>
+
+          <div>
+            <label style="font-size: 0.8rem; font-weight: bold; color: #334155;">Заголовок банера:</label>
+            <input type="text" id="slideTitle" placeholder="Заголовок банера..." style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-size: 0.85rem;" required>
+          </div>
+
+          <div>
+            <label style="font-size: 0.8rem; font-weight: bold; color: #334155;">Опис (короткий текст):</label>
+            <textarea id="slideDesc" rows="2" placeholder="Опис пропозиції..." style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-size: 0.85rem;" required></textarea>
+          </div>
+
+          <div>
+            <label style="font-size: 0.8rem; font-weight: bold; color: #334155;">Посилання на фонове фото (URL):</label>
+            <input type="url" id="slideImage" placeholder="https://images.unsplash.com/..." style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-size: 0.85rem;" required>
+          </div>
+
+          <div style="display: flex; gap: 10px; margin-top: 10px;">
+            <button type="button" onclick="closeCollageAdmin()" style="flex: 1; padding: 10px; background: #94a3b8; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">Скасувати</button>
+            <button type="submit" style="flex: 1; padding: 10px; background: #d97706; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">Опублікувати</button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+
     <footer>
         <p>&copy; 2026 Neoservice.ks.ua — Міський інформаційно-рекламний портал.</p>
     </footer>
 
-    <!-- СКРИПТИ FIREBASE ТА ОБРОБНИК ПОШУКУ -->
+    <!-- СКРИПТИ FIREBASE ТА ОСНОВНОЇ ЛОГІКИ -->
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
       import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
       import { getFirestore, collection, addDoc, query, where, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
       const firebaseConfig = {
-        apiKey: "AIzaSyBlKoP6-M8tdrKq88bSdnWSnak5Gpddnpk",
-        authDomain: "neoservice-ks-ua.firebaseapp.com",
-        projectId: "neoservice-ks-ua",
-        storageBucket: "neoservice-ks-ua.firebasestorage.app",
-        messagingSenderId: "528941827813",
-        appId: "1:528941827813:web:354ef989d200087634b60c",
-        measurementId: "G-BYGHEHVYY3"
+          apiKey: "AIzaSyBlKoP6-M8tdrKq88bSdnWSnak5Gpddnpk",
+          authDomain: "neoservice-ks-ua.firebaseapp.com",
+          projectId: "neoservice-ks-ua",
+          storageBucket: "neoservice-ks-ua.firebasestorage.app",
+          messagingSenderId: "528941827813",
+          appId: "1:528941827813:web:354ef989d200087634b60c",
+          measurementId: "G-BYGHEHVYY3"
       };
 
       const app = initializeApp(firebaseConfig);
@@ -340,8 +798,9 @@
       const logoutBtn = document.getElementById('logoutBtn');
       const newRequestForm = document.getElementById('newRequestForm');
       const ordersTableBody = document.getElementById('ordersTableBody');
+      const adminCollageBtn = document.getElementById('adminCollageBtn');
 
-      // Логіка перенаправлення з пошуку головної сторінки в Базу Знань
+      // Перенаправлення з пошуку у Базу Знань
       const mainSearchInput = document.getElementById('mainSearch');
       mainSearchInput?.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
@@ -353,7 +812,7 @@
         }
       });
 
-      // Авторизаційні кнопки
+      // Вхід / Реєстрація
       loginEmailBtn?.addEventListener('click', async () => {
         const email = document.getElementById('authEmail').value;
         const password = document.getElementById('authPassword').value;
@@ -381,9 +840,18 @@
           if (loggedInView) loggedInView.style.display = 'block';
           if (userEmailDisplay) userEmailDisplay.innerText = user.email;
           loadUserOrders(user.email);
+
+          // ПЕРЕВІРКА АДМІНІСТРАТОРА: Введіть вашу реальну пошту замість "ваш_email@gmail.com"
+          if (user.email === "ваш_email@gmail.com") {
+            if (adminCollageBtn) adminCollageBtn.style.display = 'block';
+          } else {
+            if (adminCollageBtn) adminCollageBtn.style.display = 'none';
+          }
+
         } else {
           if (loggedOutView) loggedOutView.style.display = 'block';
           if (loggedInView) loggedInView.style.display = 'none';
+          if (adminCollageBtn) adminCollageBtn.style.display = 'none';
         }
       });
 
@@ -435,6 +903,158 @@
           });
         });
       }
+
+      // АДМІНІСТРУВАННЯ КОЛАЖУ БАНЕРІВ (ЗБЕРЕЖЕННЯ В FIRESTORE)
+      document.getElementById('collageAdminForm')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const user = auth.currentUser;
+        
+        if (!user) {
+          alert("Для додавання банера необхідно увійти в особистий кабінет!");
+          return;
+        }
+
+        try {
+          await addDoc(collection(db, "collage_banners"), {
+            tag: document.getElementById('slideTag').value,
+            title: document.getElementById('slideTitle').value,
+            desc: document.getElementById('slideDesc').value,
+            imageUrl: document.getElementById('slideImage').value,
+            createdAt: serverTimestamp()
+          });
+
+          alert("Новий банер успішно додано до колажу!");
+          document.getElementById('collageAdminForm').reset();
+          closeCollageAdmin();
+        } catch (err) {
+          alert("Помилка при додаванні банера: " + err.message);
+        }
+      });
+
+      // Автоматичне завантаження банерів із бази даних
+      function listenToBanners() {
+        const sliderContainer = document.getElementById('bannerSliderContainer');
+        const dotsContainer = document.getElementById('sliderDotsContainer');
+
+        onSnapshot(collection(db, "collage_banners"), (snapshot) => {
+          if (snapshot.empty) return; // Якщо база порожня, лишаються стандартні слайди
+
+          sliderContainer.innerHTML = '';
+          dotsContainer.innerHTML = '';
+          let count = 0;
+
+          snapshot.forEach((doc) => {
+            const data = doc.data();
+            const isActive = count === 0 ? 'active' : '';
+
+            const slideElement = document.createElement('div');
+            slideElement.className = `banner-slide ${isActive}`;
+            slideElement.style.cssText = `background: linear-gradient(to top, rgba(15,23,42,0.9), rgba(15,23,42,0.2)), url('${data.imageUrl}') center/cover; padding: 25px; display: flex; flex-direction: column; justify-content: flex-end; height: 100%; box-sizing: border-box;`;
+            slideElement.innerHTML = `
+              <span style="background: rgba(217,119,6,0.8); color: white; font-size: 0.7rem; font-weight: bold; padding: 3px 10px; border-radius: 20px; width: max-content; margin-bottom: 8px;">${data.tag}</span>
+              <h3 style="color: white; margin: 0 0 5px 0; font-size: 1.25rem;">${data.title}</h3>
+              <p style="color: #cbd5e1; margin: 0; font-size: 0.8rem;">${data.desc}</p>
+            `;
+            sliderContainer.appendChild(slideElement);
+
+            const dotBtn = document.createElement('button');
+            dotBtn.className = 'slider-dot';
+            dotBtn.style.cssText = `width: 10px; height: 10px; border-radius: 50%; border: none; background: ${count === 0 ? '#d97706' : '#cbd5e1'}; cursor: pointer;`;
+            const index = count;
+            dotBtn.onclick = () => setSlide(index);
+            dotsContainer.appendChild(dotBtn);
+
+            count++;
+          });
+        });
+      }
+
+      listenToBanners();
+    </script>
+
+    <!-- СКРИПТ АВТОПЕРЕКЛЮЧЕННЯ, МОДАЛЬНОГО ВІКНА ТА ІНТЕРАКТИВНОЇ КАРТИ УКРАЇНИ -->
+    <script>
+      let currentSlideIdx = 0;
+
+      function setSlide(idx) {
+        const slides = document.querySelectorAll('.banner-slide');
+        const dots = document.querySelectorAll('.slider-dot');
+        if(!slides.length) return;
+
+        slides.forEach((s, i) => {
+          s.classList.toggle('active', i === idx);
+        });
+        dots.forEach((d, i) => {
+          d.style.background = i === idx ? '#d97706' : '#cbd5e1';
+        });
+        currentSlideIdx = idx;
+      }
+
+      setInterval(() => {
+        const slides = document.querySelectorAll('.banner-slide');
+        if(slides.length > 1) {
+          currentSlideIdx = (currentSlideIdx + 1) % slides.length;
+          setSlide(currentSlideIdx);
+        }
+      }, 5000);
+
+      function openCollageAdmin() {
+        document.getElementById('adminCollageModal').style.display = 'flex';
+      }
+
+      function closeCollageAdmin() {
+        document.getElementById('adminCollageModal').style.display = 'none';
+      }
+
+      // ЛОГІКА ІНТЕРАКТИВНОЇ КАРТИ УКРАЇНИ ТА ПЕРЕХОДУ НА city.html
+      document.addEventListener('DOMContentLoaded', () => {
+          const regionGroups = document.querySelectorAll('.region-group');
+          const tooltip = document.getElementById('map-tooltip');
+          const tooltipTitle = document.getElementById('tooltip-title');
+          const tooltipSub = document.getElementById('tooltip-sub');
+          
+          const panelTitle = document.getElementById('panel-title');
+          const panelCity = document.getElementById('panel-city');
+          const selectedBadge = document.getElementById('selected-badge');
+          const actionBtn = document.getElementById('action-btn');
+
+          regionGroups.forEach(group => {
+              group.addEventListener('mouseenter', (e) => {
+                  const regionName = group.getAttribute('data-name');
+                  const cityName = group.getAttribute('data-city');
+
+                  tooltipTitle.textContent = regionName;
+                  tooltipSub.textContent = `Центр: м. ${cityName}`;
+                  tooltip.style.display = 'block';
+
+                  panelTitle.textContent = regionName;
+                  panelCity.textContent = `Обласний центр: м. ${cityName}`;
+                  selectedBadge.innerHTML = `📍 <b>${cityName}</b> (${regionName})`;
+              });
+
+              group.addEventListener('mousemove', (e) => {
+                  tooltip.style.left = `${e.clientX + 15}px`;
+                  tooltip.style.top = `${e.clientY + 15}px`;
+              });
+
+              group.addEventListener('mouseleave', () => {
+                  tooltip.style.display = 'none';
+              });
+
+              // При кліку на область відкриваємо city.html із параметрами регіону та міста
+              group.addEventListener('click', () => {
+                  const regionCode = group.getAttribute('data-code');
+                  const regionName = group.getAttribute('data-name');
+                  const cityName = group.getAttribute('data-city');
+                  
+                  window.location.href = `city.html?region=${regionCode}&name=${encodeURIComponent(regionName)}&city=${encodeURIComponent(cityName)}`;
+              });
+          });
+
+          actionBtn?.addEventListener('click', () => {
+              window.location.href = `city.html?region=rivne&name=${encodeURIComponent('Рівненська область')}&city=${encodeURIComponent('Костопіль')}`;
+          });
+      });
     </script>
 </body>
 </html>

@@ -7,33 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Neoservice — Міський інформаційно-рекламний портал та сервіс</title>
     
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            navy: '#0f2b5c',
-                            blue: '#1d4ed8',
-                            lightBlue: '#eff6ff',
-                            accent: '#2563eb',
-                            hover: '#3b82f6',
-                            textDark: '#1e293b'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <!-- Firebase SDK (Compat) -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
     <style>
         :root {
@@ -95,63 +70,6 @@
         .btn-danger { background: #dc2626; }
         .btn-google { background: #ea4335; }
         
-        /* Стилі для слайдера (колаж зі шторкою) */
-        .banner-slide {
-            position: absolute; inset: 0;
-            opacity: 0; transform: translateY(10px);
-            transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-            pointer-events: none;
-        }
-        .banner-slide.active {
-            opacity: 1; transform: translateY(0);
-            pointer-events: auto;
-        }
-
-        /* SVG Map Custom Styling for integration */
-        .region-path {
-            fill: #e2e8f0;
-            stroke: #ffffff;
-            stroke-width: 1.5;
-            stroke-linejoin: round;
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            cursor: pointer;
-        }
-        .region-path:hover, .region-path.active {
-            fill: #2563eb;
-            stroke: #1d4ed8;
-            stroke-width: 2;
-            filter: drop-shadow(0px 4px 10px rgba(37, 99, 235, 0.45));
-        }
-        .city-marker {
-            fill: #0f2b5c;
-            transition: all 0.2s ease;
-            pointer-events: none;
-        }
-        .city-text {
-            font-size: 11px;
-            font-weight: 600;
-            fill: #1e293b;
-            pointer-events: none;
-            user-select: none;
-            text-anchor: middle;
-            transition: all 0.2s ease;
-            text-shadow: 0px 0px 3px rgba(255, 255, 255, 0.9), 0px 0px 5px rgba(255, 255, 255, 0.9);
-        }
-        .region-group:hover .city-marker { fill: #ffffff; }
-        .region-group:hover .city-text {
-            fill: #ffffff;
-            text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.8);
-            font-weight: 700;
-            font-size: 12px;
-        }
-        #map-tooltip {
-            position: absolute;
-            display: none;
-            pointer-events: none;
-            z-index: 50;
-            transition: transform 0.08s ease-out, opacity 0.15s ease;
-        }
-        
         footer {
             text-align: center;
             padding: 20px;
@@ -166,10 +84,6 @@
         }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-        @media(max-width: 768px) {
-            .banner-trust-grid { grid-template-columns: 1fr !important; }
-        }
     </style>
 </head>
 <body>
@@ -320,14 +234,14 @@
     </div>
 
     <!-- ================= БІЖУЧИЙ РЯДОК ================= -->
-    <div style="width: 100%; background: linear-gradient(90deg, #1e3a8a, #3b82f6, #1e3a8a); color: white; padding: 12px 0; overflow: hidden; white-space: nowrap; box-shadow: inset 0 2px 5px rgba(0,0,0,0.2); margin: 20px 0; border-top: 2px solid #60a5fa; border-bottom: 2px solid #60a5fa;">
+    <div style="width: 100%; background: linear-gradient(90deg, #1e3a8a, #3b82f6, #1e3a8a); color: white; padding: 12px 0; overflow: hidden; white-space: nowrap; box-shadow: inset 0 2px 5px rgba(0,0,0,0.2); margin: 30px 0 0 0; border-top: 2px solid #60a5fa; border-bottom: 2px solid #60a5fa;">
       <div style="display: inline-block; animation: marquee 25s linear infinite; font-size: 1rem; font-style: italic; letter-spacing: 0.5px;">
         ✨ «Світильник нозі моїй — слово Твоє, і світло для стежки моєї» &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 🕊️ «Ісус — дорога, істина і життя» &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 🙏 «Блаженні миротворці, бо вони синами Божими назвуться» &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
       </div>
     </div>
 
     <!-- ================= 5 SEO-ТЕМАТИЧНИХ РОЗДІЛІВ В РЯД ================= -->
-    <section style="max-width: 1100px; margin: 20px auto; padding: 0 15px;">
+    <section style="max-width: 1100px; margin: 30px auto; padding: 0 15px;">
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 15px;">
         
         <!-- Розділ 1: Автокомерція & Автобазар -->
@@ -393,550 +307,134 @@
       </div>
     </section>
 
-    <!-- ================= БЛОК: КОЛАЖ БАНЕРІВ + ФОТО/ТЕКСТ ================= -->
-    <section style="max-width: 1100px; margin: 25px auto; padding: 0 15px;">
-      <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px; align-items: stretch;" class="banner-trust-grid">
-        
-        <!-- 1. ЛІВА ЧАСТИНА: КОЛАЖ БАНЕРІВ З АВТОПЕРЕКЛЮЧЕННЯМ -->
-        <div style="background: white; border-radius: 12px; border-top: 4px solid #1e3a8a; box-shadow: 0 4px 6px rgba(0,0,0,0.05); padding: 20px; position: relative; height: 320px; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; box-sizing: border-box;">
-          
-          <div id="bannerSliderContainer" style="position: absolute; inset: 0; width: 100%; height: 100%;">
-            <div class="banner-slide active" style="background: linear-gradient(to top, rgba(15,23,42,0.9), rgba(15,23,42,0.2)), url('https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=1000') center/cover; padding: 25px; display: flex; flex-direction: column; justify-content: flex-end; height: 100%; box-sizing: border-box;">
-              <span style="background: rgba(217,119,6,0.8); color: white; font-size: 0.7rem; font-weight: bold; padding: 3px 10px; border-radius: 20px; width: max-content; margin-bottom: 8px;">📢 Головний банер #1</span>
-              <h3 style="color: white; margin: 0 0 5px 0; font-size: 1.25rem;">Калаж банерів: Автопереключення з ефектами шторки</h3>
-              <p style="color: #cbd5e1; margin: 0; font-size: 0.8rem;">Зміна банера через адмін-панель у реальному часі на головній сторінці.</p>
-            </div>
-
-            <div class="banner-slide" style="background: linear-gradient(to top, rgba(15,23,42,0.9), rgba(15,23,42,0.2)), url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1000') center/cover; padding: 25px; display: flex; flex-direction: column; justify-content: flex-end; height: 100%; box-sizing: border-box;">
-              <span style="background: rgba(37,99,235,0.8); color: white; font-size: 0.7rem; font-weight: bold; padding: 3px 10px; border-radius: 20px; width: max-content; margin-bottom: 8px;">⭐ Партнерський простір #2</span>
-              <h3 style="color: white; margin: 0 0 5px 0; font-size: 1.25rem;">Національний інформаційний хаб громади</h3>
-              <p style="color: #cbd5e1; margin: 0; font-size: 0.8rem;">Професійний автосервіс, комп'ютерна допомога та підтримка регіонів України.</p>
-            </div>
-          </div>
-
-          <!-- Крапки-індикатори переключення -->
-          <div id="sliderDotsContainer" style="position: absolute; bottom: 12px; right: 20px; display: flex; gap: 6px; z-index: 10;">
-            <button onclick="setSlide(0)" class="slider-dot" style="width: 10px; height: 10px; border-radius: 50%; border: none; background: #d97706; cursor: pointer;"></button>
-            <button onclick="setSlide(1)" class="slider-dot" style="width: 10px; height: 10px; border-radius: 50%; border: none; background: #cbd5e1; cursor: pointer;"></button>
-          </div>
-        </div>
-
-        <!-- 2. ПРАВА ЧАСТИНА: ФОТО + КНОПКА ДОДАТИ БАНЕР + ТЕКСТ ДОВІРИ -->
-        <div style="display: flex; flex-direction: column; gap: 12px; height: 320px;">
-          
-          <div style="background: white; border-radius: 12px; border-top: 4px solid #d97706; box-shadow: 0 4px 6px rgba(0,0,0,0.05); padding: 12px; display: flex; align-items: center; gap: 12px; height: 135px; box-sizing: border-box;">
-            <div style="width: 65px; height: 85px; border-radius: 8px; overflow: hidden; border: 2px solid #d97706; flex-shrink: 0; background: #e2e8f0;">
-              <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300" alt="Особистий контроль" style="width: 100%; height: 100%; object-fit: cover;">
-            </div>
-            <div style="display: flex; flex-direction: column; justify-content: space-between; width: 100%; height: 100%;">
-              <div>
-                <div style="font-size: 0.6rem; text-transform: uppercase; font-weight: bold; color: #d97706;">ОСОБИСТИЙ КОНТРОЛЬ</div>
-                <h4 style="font-size: 0.75rem; margin: 2px 0 0 0; color: #1e3a8a; line-height: 1.1;">Технічний контроль і підтримка • Експертний нагляд</h4>
-              </div>
-              
-              <!-- КНОПКА КЕРУВАННЯ КОЛАЖЕМ -->
-              <button id="adminCollageBtn" onclick="openCollageAdmin()" style="display: none; background: #1e3a8a; color: white; border: none; padding: 6px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: bold; cursor: pointer; text-align: center; width: 100%;">
-                Керувати колажем &rarr;
-              </button>
-            </div>
-          </div>
-
-          <div style="background: white; border-radius: 12px; border-top: 4px solid #16a34a; box-shadow: 0 4px 6px rgba(0,0,0,0.05); padding: 12px; display: flex; flex-direction: column; justify-content: space-between; height: 173px; box-sizing: border-box;">
-            <div>
-              <div style="font-size: 0.65rem; text-transform: uppercase; font-weight: bold; color: #16a34a; margin-bottom: 3px;">
-                <i class="fa-solid fa-shield-halved"></i> Статус & Довіра
-              </div>
-              <p style="font-size: 0.75rem; color: #475569; margin: 0; line-height: 1.3;">
-                Neoservice — це простір, де вирішують проблеми, а не створюють паперову тяганину. Особисто відповідаю за якість сервісу та технічну підтримку. Відкритий до конструктивних пропозицій — давайте робити корисні справи разом.
-              </p>
-            </div>
-            <a href="service.html" style="background: #f1f5f9; color: #1e3a8a; border: 1px solid #cbd5e1; padding: 6px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; text-decoration: none; text-align: center; display: block; box-sizing: border-box;">
-              Текст, силка &rarr;
-            </a>
-          </div>
-
-        </div>
-
-      </div>
-    </section>
-
-    <!-- ================= ІНТЕРАКТИВНА КАРТА УКРАЇНИ ================= -->
-    <section style="max-width: 1100px; margin: 30px auto; padding: 0 15px;">
-      <div class="bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden">
-          
-          <div class="bg-gradient-to-r from-[#0f2b5c] to-[#1e40af] px-6 py-5 text-white flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-              <div>
-                  <span class="inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-500/30 text-blue-200 mb-1 border border-blue-400/30">
-                      УКРАЇНА • СЕРВІСНІ ЦЕНТРИ
-                  </span>
-                  <h2 class="text-xl md:text-2xl font-bold tracking-tight">Оберіть ваш регіон обслуговування</h2>
-              </div>
-              <div id="selected-badge" class="bg-white/10 backdrop-blur-md px-4 py-2 rounded-xl border border-white/20 text-sm font-medium">
-                  📍 Наведіть на область
-              </div>
-          </div>
-
-          <div class="p-4 md:p-8 grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
-              
-              <div class="lg:col-span-2 relative bg-slate-50/70 rounded-xl p-4 border border-slate-200/80 shadow-inner flex items-center justify-center">
-                  
-                  <div id="map-tooltip" class="bg-slate-900/90 text-white px-3 py-2 rounded-lg shadow-xl text-xs font-medium border border-slate-700 backdrop-blur-sm">
-                      <div id="tooltip-title" class="font-bold text-blue-300"></div>
-                      <div id="tooltip-sub" class="text-slate-300"></div>
-                  </div>
-
-                  <svg id="ukraine-svg" viewBox="0 0 950 620" class="w-full h-auto max-h-[520px] drop-shadow-sm" xmlns="http://www.w3.org/2000/svg">
-                      <defs>
-                          <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-                              <feGaussianBlur stdDeviation="4" result="blur" />
-                              <feComposite in="SourceGraphic" in2="blur" operator="over" />
-                          </filter>
-                      </defs>
-
-                      <g id="regions">
-                          <g class="region-group" data-name="Волинська область" data-city="Луцьк" data-code="volyn">
-                              <path class="region-path" d="M 160 80 L 220 75 L 240 130 L 210 170 L 150 160 L 130 110 Z" />
-                              <circle class="city-marker" cx="185" cy="120" r="3.5"/>
-                              <text class="city-text" x="185" y="136">Луцьк</text>
-                          </g>
-
-                          <g class="region-group" data-name="Рівненська область" data-city="Рівне" data-code="rivne">
-                              <path class="region-path" d="M 220 75 L 310 70 L 300 145 L 240 155 L 240 130 Z" />
-                              <circle class="city-marker" cx="265" cy="115" r="3.5"/>
-                              <text class="city-text" x="265" y="131">Рівне</text>
-                          </g>
-
-                          <g class="region-group" data-name="Житомирська область" data-city="Житомир" data-code="zhytomyr">
-                              <path class="region-path" d="M 310 70 L 410 70 L 420 160 L 360 180 L 300 145 Z" />
-                              <circle class="city-marker" cx="360" cy="125" r="3.5"/>
-                              <text class="city-text" x="360" y="141">Житомир</text>
-                          </g>
-
-                          <g class="region-group" data-name="Київська область" data-city="Київ" data-code="kyiv">
-                              <path class="region-path" d="M 410 70 L 510 80 L 500 190 L 430 200 L 420 160 Z" />
-                              <circle class="city-marker" cx="460" cy="130" r="5" fill="#dc2626"/>
-                              <text class="city-text" x="460" y="148" font-weight="bold">Київ</text>
-                          </g>
-
-                          <g class="region-group" data-name="Чернігівська область" data-city="Чернігів" data-code="chernihiv">
-                              <path class="region-path" d="M 510 80 L 630 70 L 640 170 L 500 190 Z" />
-                              <circle class="city-marker" cx="570" cy="125" r="3.5"/>
-                              <text class="city-text" x="570" y="141">Чернігів</text>
-                          </g>
-
-                          <g class="region-group" data-name="Сумська область" data-city="Суми" data-code="sumy">
-                              <path class="region-path" d="M 630 70 L 750 90 L 740 190 L 640 170 Z" />
-                              <circle class="city-marker" cx="690" cy="135" r="3.5"/>
-                              <text class="city-text" x="690" y="151">Суми</text>
-                          </g>
-
-                          <g class="region-group" data-name="Львівська область" data-city="Львів" data-code="lviv">
-                              <path class="region-path" d="M 110 170 L 150 160 L 210 170 L 190 250 L 110 230 Z" />
-                              <circle class="city-marker" cx="150" cy="205" r="3.5"/>
-                              <text class="city-text" x="150" y="221">Львів</text>
-                          </g>
-
-                          <g class="region-group" data-name="Тернопільська область" data-city="Тернопіль" data-code="ternopil">
-                              <path class="region-path" d="M 210 170 L 240 155 L 260 220 L 230 260 L 190 250 Z" />
-                              <circle class="city-marker" cx="225" cy="210" r="3.5"/>
-                              <text class="city-text" x="225" y="226">Тернопіль</text>
-                          </g>
-
-                          <g class="region-group" data-name="Хмельницька область" data-city="Хмельницький" data-code="khmelnytskyi">
-                              <path class="region-path" d="M 240 155 L 300 145 L 330 230 L 260 220 Z" />
-                              <circle class="city-marker" cx="295" cy="190" r="3.5"/>
-                              <text class="city-text" x="295" y="206">Хмельницький</text>
-                          </g>
-
-                          <g class="region-group" data-name="Вінницька область" data-city="Вінниця" data-code="vinnytsia">
-                              <path class="region-path" d="M 300 145 L 360 180 L 430 200 L 460 290 L 340 310 L 330 230 Z" />
-                              <circle class="city-marker" cx="390" cy="245" r="3.5"/>
-                              <text class="city-text" x="390" y="261">Вінниця</text>
-                          </g>
-
-                          <g class="region-group" data-name="Черкаська область" data-city="Черкаси" data-code="cherkasy">
-                              <path class="region-path" d="M 430 200 L 500 190 L 550 260 L 480 320 L 460 290 Z" />
-                              <circle class="city-marker" cx="495" cy="255" r="3.5"/>
-                              <text class="city-text" x="495" y="271">Черкаси</text>
-                          </g>
-
-                          <g class="region-group" data-name="Полтавська область" data-city="Полтава" data-code="poltava">
-                              <path class="region-path" d="M 500 190 L 640 170 L 680 250 L 550 260 Z" />
-                              <circle class="city-marker" cx="595" cy="215" r="3.5"/>
-                              <text class="city-text" x="595" y="231">Полтава</text>
-                          </g>
-
-                          <g class="region-group" data-name="Закарпатська область" data-city="Ужгород" data-code="uzhhorod">
-                              <path class="region-path" d="M 80 270 L 130 260 L 140 320 L 70 330 Z" />
-                              <circle class="city-marker" cx="105" cy="300" r="3.5"/>
-                              <text class="city-text" x="105" y="316">Ужгород</text>
-                          </g>
-
-                          <g class="region-group" data-name="Івано-Франківська область" data-city="Івано-Франківськ" data-code="frankivsk">
-                              <path class="region-path" d="M 130 260 L 190 250 L 230 260 L 210 330 L 140 320 Z" />
-                              <circle class="city-marker" cx="180" cy="295" r="3.5"/>
-                              <text class="city-text" x="180" y="311">Івано-Франківськ</text>
-                          </g>
-
-                          <g class="region-group" data-name="Чернівецька область" data-city="Чернівці" data-code="chernivtsi">
-                              <path class="region-path" d="M 210 330 L 230 260 L 290 280 L 270 350 Z" />
-                              <circle class="city-marker" cx="250" cy="310" r="3.5"/>
-                              <text class="city-text" x="250" y="326">Чернівці</text>
-                          </g>
-
-                          <g class="region-group" data-name="Харківська область" data-city="Харків" data-code="kharkiv">
-                              <path class="region-path" d="M 750 90 L 870 110 L 860 230 L 740 230 L 740 190 Z" />
-                              <circle class="city-marker" cx="805" cy="170" r="3.5"/>
-                              <text class="city-text" x="805" y="186">Харків</text>
-                          </g>
-
-                          <g class="region-group" data-name="Луганська область" data-city="Луганськ" data-code="lugansk">
-                              <path class="region-path" d="M 870 110 L 930 140 L 920 260 L 860 230 Z" />
-                              <circle class="city-marker" cx="895" cy="195" r="3.5"/>
-                              <text class="city-text" x="895" y="211">Луганськ</text>
-                          </g>
-
-                          <g class="region-group" data-name="Кіровоградська область" data-city="Кропивницький" data-code="kropyvnytskyi">
-                              <path class="region-path" d="M 460 290 L 480 320 L 540 310 L 530 380 L 440 370 Z" />
-                              <circle class="city-marker" cx="490" cy="345" r="3.5"/>
-                              <text class="city-text" x="490" y="361">Кропивницький</text>
-                          </g>
-
-                          <g class="region-group" data-name="Дніпропетровська область" data-city="Дніпро" data-code="dnipro">
-                              <path class="region-path" d="M 680 250 L 740 230 L 740 330 L 620 360 L 550 310 Z" />
-                              <circle class="city-marker" cx="650" cy="300" r="3.5"/>
-                              <text class="city-text" x="650" y="316">Дніпро</text>
-                          </g>
-
-                          <g class="region-group" data-name="Донецька область" data-city="Донецьк" data-code="donetsk">
-                              <path class="region-path" d="M 740 230 L 860 230 L 850 350 L 740 330 Z" />
-                              <circle class="city-marker" cx="800" cy="290" r="3.5"/>
-                              <text class="city-text" x="800" y="306">Донецьк</text>
-                          </g>
-
-                          <g class="region-group" data-name="Одеська область" data-city="Одеса" data-code="odesa">
-                              <path class="region-path" d="M 340 310 L 440 370 L 410 470 L 310 420 Z" />
-                              <circle class="city-marker" cx="370" cy="390" r="3.5"/>
-                              <text class="city-text" x="370" y="406">Одеса</text>
-                          </g>
-
-                          <g class="region-group" data-name="Миколаївська область" data-city="Миколаїв" data-code="mykolaiv">
-                              <path class="region-path" d="M 440 370 L 530 380 L 520 450 L 410 470 Z" />
-                              <circle class="city-marker" cx="475" cy="425" r="3.5"/>
-                              <text class="city-text" x="475" y="441">Миколаїв</text>
-                          </g>
-
-                          <g class="region-group" data-name="Запорізька область" data-city="Запоріжжя" data-code="zaporizhzhia">
-                              <path class="region-path" d="M 620 360 L 740 330 L 730 430 L 610 440 Z" />
-                              <circle class="city-marker" cx="675" cy="395" r="3.5"/>
-                              <text class="city-text" x="675" y="411">Запоріжжя</text>
-                          </g>
-
-                          <g class="region-group" data-name="Херсонська область" data-city="Херсон" data-code="kherson">
-                              <path class="region-path" d="M 520 450 L 610 440 L 630 510 L 510 520 Z" />
-                              <circle class="city-marker" cx="570" cy="480" r="3.5"/>
-                              <text class="city-text" x="570" y="496">Херсон</text>
-                          </g>
-
-                          <g class="region-group" data-name="АР Крим" data-city="Сімферополь" data-code="crimea">
-                              <path class="region-path" d="M 550 550 L 670 540 L 660 600 L 560 600 Z" />
-                              <circle class="city-marker" cx="610" cy="575" r="3.5"/>
-                              <text class="city-text" x="610" y="591">Сімферополь</text>
-                          </g>
-                      </g>
-                  </svg>
-              </div>
-
-              <!-- Права колона вибору регіону -->
-              <div class="bg-slate-50 rounded-xl p-6 border border-slate-200 shadow-sm flex flex-col justify-between space-y-4">
-                  <div>
-                      <div class="text-[11px] uppercase font-bold text-amber-600 tracking-wider mb-1">ОБРАНИЙ РЕГІОН</div>
-                      <h3 id="panelRegionName" class="text-lg font-bold text-slate-900 mb-1">Рівненська область</h3>
-                      <p id="panelRegionSub" class="text-xs text-slate-500 mb-4">Адміністративний центр: м. Рівне</p>
-
-                      <div class="space-y-3">
-                          <div>
-                              <label class="block text-xs font-bold text-slate-700 mb-1">Оберіть область вручну:</label>
-                              <select id="panelRegionSelect" class="w-full px-3 py-2 text-xs bg-white border border-slate-300 rounded-xl text-slate-800 font-semibold focus:outline-none focus:border-blue-600 cursor-pointer shadow-sm mb-2">
-                              </select>
-                          </div>
-                          <div>
-                              <label class="block text-xs font-bold text-slate-700 mb-1">Оберіть місто:</label>
-                              <select id="panelCitySelect" class="w-full px-3 py-2 text-xs bg-white border border-slate-300 rounded-xl text-slate-800 font-semibold focus:outline-none focus:border-blue-600 cursor-pointer shadow-sm">
-                              </select>
-                          </div>
-                      </div>
-                  </div>
-
-                  <a id="panelGoBtn" href="city.html?region=rivne&city=rivne" class="w-full py-3 bg-gradient-to-r from-blue-700 to-indigo-700 text-white font-bold text-xs rounded-xl shadow-md hover:from-blue-600 hover:to-indigo-600 transition-all flex items-center justify-center gap-2 text-center">
-                      <span>Переглянути послуги регіону</span> <i class="fa-solid fa-arrow-right"></i>
-                  </a>
-              </div>
-
-          </div>
-      </div>
-    </section>
-
     <footer>
-        <p>© 2026 Neoservice.ks.ua — Національний інформаційно-сервісний хаб. Всі 24 області + АР Крим.</p>
+        <p>&copy; 2026 Neoservice.ks.ua — Міський інформаційно-рекламний портал.</p>
     </footer>
 
-    <!-- СКРИПТИ -->
-    <script>
-        // Ініціалізація Firebase (тільки ProjectId, без зайвих ключів)
-        const firebaseConfig = {
-            projectId: "neoservice-ks"
-        };
-        
-        let db = null;
+    <!-- СКРИПТИ FIREBASE ТА ОБРОБНИК ПОШУКУ -->
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+      import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+      import { getFirestore, collection, addDoc, query, where, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyBlKoP6-M8tdrKq88bSdnWSnak5Gpddnpk",
+        authDomain: "neoservice-ks-ua.firebaseapp.com",
+        projectId: "neoservice-ks-ua",
+        storageBucket: "neoservice-ks-ua.firebasestorage.app",
+        messagingSenderId: "528941827813",
+        appId: "1:528941827813:web:354ef989d200087634b60c",
+        measurementId: "G-BYGHEHVYY3"
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      const db = getFirestore(app);
+
+      const loggedOutView = document.getElementById('loggedOutView');
+      const loggedInView = document.getElementById('loggedInView');
+      const userEmailDisplay = document.getElementById('userEmailDisplay');
+      const googleLoginBtn = document.getElementById('googleLoginBtn');
+      const loginEmailBtn = document.getElementById('loginEmailBtn');
+      const registerEmailBtn = document.getElementById('registerEmailBtn');
+      const logoutBtn = document.getElementById('logoutBtn');
+      const newRequestForm = document.getElementById('newRequestForm');
+      const ordersTableBody = document.getElementById('ordersTableBody');
+
+      // Логіка перенаправлення з пошуку головної сторінки в Базу Знань
+      const mainSearchInput = document.getElementById('mainSearch');
+      mainSearchInput?.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          const queryVal = this.value.trim();
+          if (queryVal.length > 0) {
+            window.location.href = `baza.html?search=${encodeURIComponent(queryVal)}`;
+          }
+        }
+      });
+
+      // Авторизаційні кнопки
+      loginEmailBtn?.addEventListener('click', async () => {
+        const email = document.getElementById('authEmail').value;
+        const password = document.getElementById('authPassword').value;
+        if (!email || !password) return alert('Заповніть email та пароль!');
+        try { await signInWithEmailAndPassword(auth, email, password); } catch (err) { alert('Помилка входу: ' + err.message); }
+      });
+
+      registerEmailBtn?.addEventListener('click', async () => {
+        const email = document.getElementById('authEmail').value;
+        const password = document.getElementById('authPassword').value;
+        if (!email || !password) return alert('Заповніть email та пароль!');
+        try { await createUserWithEmailAndPassword(auth, email, password); alert('Реєстрація успішна!'); } catch (err) { alert('Помилка реєстрації: ' + err.message); }
+      });
+
+      googleLoginBtn?.addEventListener('click', async () => {
+        const provider = new GoogleAuthProvider();
+        try { await signInWithPopup(auth, provider); } catch (err) { alert('Помилка входу: ' + err.message); }
+      });
+
+      logoutBtn?.addEventListener('click', () => signOut(auth));
+
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          if (loggedOutView) loggedOutView.style.display = 'none';
+          if (loggedInView) loggedInView.style.display = 'block';
+          if (userEmailDisplay) userEmailDisplay.innerText = user.email;
+          loadUserOrders(user.email);
+        } else {
+          if (loggedOutView) loggedOutView.style.display = 'block';
+          if (loggedInView) loggedInView.style.display = 'none';
+        }
+      });
+
+      newRequestForm?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const user = auth.currentUser;
+        if (!user) return;
         try {
-            if (!firebase.apps.length) {
-                firebase.initializeApp(firebaseConfig);
-            }
-            db = firebase.firestore();
-        } catch (e) {
-            console.warn("Автономний режим:", e);
-        }
+          await addDoc(collection(db, "requests"), {
+            userEmail: user.email,
+            category: document.getElementById('reqCategory').value,
+            description: document.getElementById('reqDescription').value,
+            status: "В обробці",
+            adminNote: "Заявку прийнято",
+            createdAt: serverTimestamp()
+          });
+          newRequestForm.reset();
+          alert('Вашу заявку створено!');
+        } catch (err) { alert('Помилка: ' + err.message); }
+      });
 
-        const UKRAINE_REGIONS_INDEX = {
-            volyn: { name: "Волинська область", center: "Луцьк", cities: { lutsk: "Луцьк", kovel: "Ковель", volodymyr: "Володимир", novovolynsk: "Нововолинськ" } },
-            rivne: { name: "Рівненська область", center: "Рівне", cities: { kostopil: "Костопіль", rivne: "Рівне", varash: "Вараш", dubno: "Дубно", sarny: "Сарни" } },
-            zhytomyr: { name: "Житомирська область", center: "Житомир", cities: { zhytomyr: "Житомир", berdychiv: "Бердичів", korosten: "Коростень" } },
-            kyiv: { name: "Київська область", center: "Київ", cities: { kyiv: "Київ", bila_tserkva: "Біла Церква", brovary: "Бровари", borispil: "Бориспіль", irpin: "Ірпінь" } },
-            chernihiv: { name: "Чернігівська область", center: "Чернігів", cities: { chernihiv: "Чернігів", nizhyn: "Ніжин", pryluky: "Прилуки" } },
-            sumy: { name: "Сумська область", center: "Суми", cities: { sumy: "Суми", konotop: "Конотоп", shostka: "Шостка", okhtyrka: "Охтирка" } },
-            lviv: { name: "Львівська область", center: "Львів", cities: { lviv: "Львів", drohobych: "Дрогобич", stryi: "Стрий", chervonohrad: "Червоноград" } },
-            ternopil: { name: "Тернопільська область", center: "Тернопіль", cities: { ternopil: "Тернопіль", chortkiv: "Чортків", kremenets: "Кременець" } },
-            khmelnytskyi: { name: "Хмельницька область", center: "Хмельницький", cities: { khmelnytskyi: "Хмельницький", kamianets: "Кам'янець-Подільський", shepetivka: "Шепетівка" } },
-            vinnytsia: { name: "Вінницька область", center: "Вінниця", cities: { vinnytsia: "Вінниця", zhmerynka: "Жмеринка", mohyliv: "Могилів-Подільський" } },
-            cherkasy: { name: "Черкаська область", center: "Черкаси", cities: { cherkasy: "Черкаси", uman: "Умань", smila: "Сміла", kaniv: "Канів" } },
-            poltava: { name: "Полтавська область", center: "Полтава", cities: { poltava: "Полтава", kremenchuk: "Кременчук", lubny: "Лубни" } },
-            uzhhorod: { name: "Закарпатська область", center: "Ужгород", cities: { uzhhorod: "Ужгород", mukachevo: "Мукачево", khust: "Хуст" } },
-            frankivsk: { name: "Івано-Франківська область", center: "Івано-Франківськ", cities: { frankivsk: "Івано-Франківськ", kalush: "Калуш", kolomyia: "Коломия" } },
-            chernivtsi: { name: "Чернівецька область", center: "Чернівці", cities: { chernivtsi: "Чернівці", storozhynets: "Сторожинець" } },
-            kharkiv: { name: "Харківська область", center: "Харків", cities: { kharkiv: "Харків", lozova: "Лозова", izium: "Ізюм" } },
-            lugansk: { name: "Луганська область", center: "Луганськ", cities: { lugansk: "Луганськ", severodonetsk: "Сєвєродонецьк", lysychansk: "Лисичанськ" } },
-            kropyvnytskyi: { name: "Кіровоградська область", center: "Кропивницький", cities: { kropyvnytskyi: "Кропивницький", oleksandriia: "Олександрія" } },
-            dnipro: { name: "Дніпропетровська область", center: "Дніпро", cities: { dnipro: "Дніпро", kryvyi_rih: "Кривий Ріг", kamianske: "Кам'янське", nikopol: "Нікополь" } },
-            donetsk: { name: "Донецька область", center: "Донецьк", cities: { donetsk: "Донецьк", mariupol: "Маріуполь", kramatorsk: "Краматорськ", sloviansk: "Слов'янськ" } },
-            odesa: { name: "Одеська область", center: "Одеса", cities: { odesa: "Одеса", izmail: "Ізмаїл", chornomorsk: "Чорноморськ" } },
-            mykolaiv: { name: "Миколаївська область", center: "Миколаїв", cities: { mykolaiv: "Миколаїв", pervomaisk: "Первомайськ", yuzhnoukrainsk: "Южноукраїнськ" } },
-            zaporizhzhia: { name: "Запорізька область", center: "Запоріжжя", cities: { zaporizhzhia: "Запоріжжя", melitopol: "Мелітополь", berdiansk: "Бердянськ" } },
-            kherson: { name: "Херсонська область", center: "Херсон", cities: { kherson: "Херсон", nova_kakhovka: "Нова Каховка", kakhovka: "Каховка" } },
-            crimea: { name: "АР Крим", center: "Сімферополь", cities: { simferopol: "Сімферополь", sevastopol: "Севастополь", kerch: "Керч", yalta: "Ялта" } }
-        };
+      function loadUserOrders(email) {
+        const q = query(collection(db, "requests"), where("userEmail", "==", email));
+        onSnapshot(q, (snapshot) => {
+          if (!ordersTableBody) return;
+          ordersTableBody.innerHTML = '';
+          if (snapshot.empty) {
+            ordersTableBody.innerHTML = `<tr><td colspan="4" style="text-align: center; padding: 10px; color: #64748b;">У вас поки немає замовлень.</td></tr>`;
+            return;
+          }
+          snapshot.forEach((doc) => {
+            const data = doc.data();
+            const cat = data.category || 'Заявка';
+            const desc = data.description || '';
+            const stat = data.status || 'В обробці';
+            const note = data.adminNote || '—';
+            const timeField = data.createdAt;
+            const dateStr = timeField && timeField.toDate ? new Date(timeField.toDate()).toLocaleDateString('uk-UA') : 'Щойно';
 
-        let currentActiveCode = 'rivne';
-
-        function initRegionSelect() {
-            const regSelect = document.getElementById('panelRegionSelect');
-            if(!regSelect) return;
-            regSelect.innerHTML = '';
-            for (let code in UKRAINE_REGIONS_INDEX) {
-                let opt = document.createElement('option');
-                opt.value = code;
-                opt.textContent = UKRAINE_REGIONS_INDEX[code].name;
-                if (code === currentActiveCode) opt.selected = true;
-                regSelect.appendChild(opt);
-            }
-        }
-
-        function updateRegionPanel(code, regionName, cityName) {
-            currentActiveCode = code;
-            const regObj = UKRAINE_REGIONS_INDEX[code] || { name: regionName, center: cityName, cities: { [cityName.toLowerCase()]: cityName } };
-
-            const nameEl = document.getElementById('panelRegionName');
-            const subEl = document.getElementById('panelRegionSub');
-            const badgeEl = document.getElementById('selected-badge');
-            
-            if(nameEl) nameEl.textContent = regObj.name;
-            if(subEl) subEl.textContent = `Адміністративний центр: м. ${regObj.center}`;
-            if(badgeEl) badgeEl.innerHTML = `📍 ${regObj.center} (${regObj.name})`;
-
-            const selectEl = document.getElementById('panelCitySelect');
-            if(selectEl) {
-                selectEl.innerHTML = '';
-                for (let cKey in regObj.cities) {
-                    let opt = document.createElement('option');
-                    opt.value = cKey;
-                    opt.textContent = regObj.cities[cKey];
-                    if (cKey === 'kostopil' || regObj.cities[cKey].toLowerCase() === regObj.center.toLowerCase()) {
-                        opt.selected = true;
-                    }
-                    selectEl.appendChild(opt);
-                }
-            }
-
-            const regSelect = document.getElementById('panelRegionSelect');
-            if(regSelect) regSelect.value = code;
-
-            document.querySelectorAll('.region-path').forEach(p => {
-                const group = p.closest('.region-group');
-                if(group) {
-                    p.classList.toggle('active', group.getAttribute('data-code') === code);
-                }
-            });
-
-            updateGoButtonLink();
-        }
-
-        function updateGoButtonLink() {
-            const selectEl = document.getElementById('panelCitySelect');
-            const btn = document.getElementById('panelGoBtn');
-            if(selectEl && btn) {
-                const cityKey = selectEl.value;
-                btn.href = `city.html?region=${currentActiveCode}&city=${cityKey}`;
-            }
-        }
-
-        async function loadBannersFromDatabase() {
-            if (!db) return;
-            try {
-                const snapshot = await db.collection('collage_banners').get();
-                if (snapshot.empty) return;
-
-                const container = document.getElementById('bannerSliderContainer');
-                const dotsContainer = document.getElementById('sliderDotsContainer');
-                
-                container.innerHTML = '';
-                dotsContainer.innerHTML = '';
-
-                snapshot.forEach((doc, index) => {
-                    const data = doc.data();
-                    
-                    const slide = document.createElement('div');
-                    slide.className = `banner-slide ${index === 0 ? 'active' : ''}`;
-                    slide.style.cssText = `background: linear-gradient(to top, rgba(15,23,42,0.9), rgba(15,23,42,0.2)), url('${data.imgUrl || 'https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=1000'}') center/cover; padding: 25px; display: flex; flex-direction: column; justify-content: flex-end; height: 100%; box-sizing: border-box;`;
-                    
-                    const safeBadge = (data.badge && data.badge !== 'null') ? `<span style="background: rgba(220,38,38,0.8); color: white; font-size: 0.7rem; font-weight: bold; padding: 3px 10px; border-radius: 20px; width: max-content; margin-bottom: 8px;">${data.badge}</span>` : '';
-                    const safeTitle = (data.title && data.title !== 'null') ? `<h3 style="color: white; margin: 0 0 5px 0; font-size: 1.25rem;">${data.title}</h3>` : '';
-                    const safeDesc = (data.description && data.description !== 'null') ? `<p style="color: #cbd5e1; margin: 0; font-size: 0.8rem;">${data.description}</p>` : '';
-
-                    slide.innerHTML = `${safeBadge}${safeTitle}${safeDesc}`;
-                    container.appendChild(slide);
-
-                    const dot = document.createElement('button');
-                    dot.onclick = () => setSlide(index);
-                    dot.className = 'slider-dot';
-                    dot.style.cssText = `width: 10px; height: 10px; border-radius: 50%; border: none; background: ${index === 0 ? '#d97706' : '#cbd5e1'}; cursor: pointer;`;
-                    dotsContainer.appendChild(dot);
-                });
-            } catch (error) {
-                console.warn("Банери працюють у дефолтному режимі");
-            }
-        }
-
-        async function openCollageAdmin() {
-            const imgUrl = prompt("Введіть посилання (URL) на зображення:", "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=1000");
-            if (!imgUrl) return;
-
-            const badgeText = prompt("Введіть текст мітки:", "🔥 Акція");
-            const titleText = prompt("Введіть заголовок банера:", "Заголовок");
-            const descText = prompt("Введіть опис банера:", "Опис");
-
-            if (!db) {
-                alert('Помилка: база даних недоступна.');
-                return;
-            }
-
-            try {
-                await db.collection('collage_banners').add({
-                    imgUrl: imgUrl,
-                    badge: badgeText || '',
-                    title: titleText || '',
-                    description: descText || '',
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
-                alert('Банер успішно збережено!');
-                loadBannersFromDatabase();
-            } catch (error) {
-                alert('Не вдалося зберегти банер.');
-            }
-        }
-
-        let currentSlideIdx = 0;
-        function setSlide(idx) {
-            const allSlides = document.querySelectorAll('.banner-slide');
-            const allDots = document.querySelectorAll('.slider-dot');
-            allSlides.forEach((s, i) => {
-                s.classList.toggle('active', i === idx);
-                if(allDots[i]) allDots[i].style.background = i === idx ? '#d97706' : '#cbd5e1';
-            });
-            currentSlideIdx = idx;
-        }
-
-        setInterval(() => {
-            const allSlides = document.querySelectorAll('.banner-slide');
-            if(allSlides.length > 0) {
-                currentSlideIdx = (currentSlideIdx + 1) % allSlides.length;
-                setSlide(currentSlideIdx);
-            }
-        }, 5000);
-
-        function checkAdminSession() {
-            try {
-                const isAdmin = localStorage.getItem('neoservice_is_admin') === 'true';
-                const btn = document.getElementById('adminCollageBtn');
-                if (btn) {
-                    btn.style.setProperty('display', isAdmin ? 'block' : 'none', 'important');
-                }
-            } catch(e) {}
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            initRegionSelect();
-            checkAdminSession();
-            loadBannersFromDatabase();
-
-            const citySelect = document.getElementById('panelCitySelect');
-            if(citySelect) citySelect.addEventListener('change', updateGoButtonLink);
-            
-            const regSelect = document.getElementById('panelRegionSelect');
-            if(regSelect) {
-                regSelect.addEventListener('change', (e) => {
-                    const code = e.target.value;
-                    const reg = UKRAINE_REGIONS_INDEX[code];
-                    if(reg) updateRegionPanel(code, reg.name, reg.center);
-                });
-            }
-
-            const tooltip = document.getElementById('map-tooltip');
-            const titleEl = document.getElementById('tooltip-title');
-            const subEl = document.getElementById('tooltip-sub');
-
-            document.querySelectorAll('.region-group').forEach(group => {
-                const code = group.getAttribute('data-code');
-                const name = group.getAttribute('data-name');
-                const city = group.getAttribute('data-city');
-
-                group.addEventListener('mouseenter', () => {
-                    if(titleEl && subEl && tooltip) {
-                        titleEl.textContent = name;
-                        subEl.textContent = `Центр: м. ${city}`;
-                        tooltip.style.display = 'block';
-                    }
-                });
-
-                group.addEventListener('mousemove', (e) => {
-                    const container = e.target.closest('.relative');
-                    if(container && tooltip) {
-                        const rect = container.getBoundingClientRect();
-                        tooltip.style.left = (e.clientX - rect.left + 15) + 'px';
-                        tooltip.style.top = (e.clientY - rect.top - 35) + 'px';
-                    }
-                });
-
-                group.addEventListener('mouseleave', () => {
-                    if(tooltip) tooltip.style.display = 'none';
-                });
-
-                group.addEventListener('click', () => {
-                    updateRegionPanel(code, name, city);
-                });
-            });
-
-            updateRegionPanel('rivne', 'Рівненська область', 'Рівне');
+            const row = document.createElement('tr');
+            row.style.borderBottom = '1px solid #e2e8f0';
+            row.innerHTML = `
+              <td style="padding: 4px; color: #64748b; white-space: nowrap;">${dateStr}</td>
+              <td style="padding: 4px;"><b>${cat}</b><br><span style="color: #475569;">${desc}</span></td>
+              <td style="padding: 4px;"><span style="background: #fef08a; color: #854d0e; padding: 2px 6px; border-radius: 4px; font-weight: bold; font-size: 0.75rem;">${stat}</span></td>
+              <td style="padding: 4px; color: #334155;">${note}</td>
+            `;
+            ordersTableBody.appendChild(row);
+          });
         });
+      }
     </script>
 </body>
 </html>

@@ -1056,5 +1056,267 @@
           });
       });
     </script>
+<script>
+        const firebaseConfig = {
+            projectId: "neoservice-ks"
+        };
+        
+        let db = null;
+        let auth = null;
+
+        try {
+            if (typeof firebase !== 'undefined') {
+                if (!firebase.apps.length) {
+                    firebase.initializeApp(firebaseConfig);
+                }
+                db = firebase.firestore();
+                auth = firebase.auth();
+            }
+        } catch (e) {
+            console.error("Помилка ініціалізації Firebase:", e);
+        }
+
+        // Авторизація та перевірка адміна
+        function initAuthHandlers() {
+            const loginEmailBtn = document.getElementById('loginEmailBtn');
+            const registerEmailBtn = document.getElementById('registerEmailBtn');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const googleLoginBtn = document.getElementById('googleLoginBtn');
+            const loggedOutView = document.getElementById('loggedOutView');
+            const loggedInView = document.getElementById('loggedInView');
+            const userEmailDisplay = document.getElementById('userEmailDisplay');
+
+            if (registerEmailBtn) {
+                registerEmailBtn.addEventListener('click', async () => {
+                    const email = document.getElementById('authEmail').value.trim();
+                    const password = document.getElementById('authPassword').value.trim();
+                    if (!email || !password) { alert('Введіть пошту та пароль.'); return; }
+                    try {
+                        await auth.createUserWithEmailAndPassword(email, password);
+                        alert('Реєстрація успішна!');
+                    } catch (error) { alert('Помилка: ' + error.message); }
+                });
+            }
+
+            if (loginEmailBtn) {
+                loginEmailBtn.addEventListener('click', async () => {
+                    const email = document.getElementById('authEmail').value.trim();
+                    const password = document.getElementById('authPassword').value.trim();
+                    if (!email || !password) { alert('Введіть пошту та пароль.'); return; }
+                    try {
+                        await auth.signInWithEmailAndPassword(email, password);
+                    } catch (error) { alert('Помилка входу: ' + error.message); }
+                });
+            }
+
+            if (googleLoginBtn) {
+                googleLoginBtn.addEventListener('click', async () => {
+                    try {
+                        const provider = new firebase.auth.GoogleAuthProvider();
+                        await auth.signInWithPopup(provider);
+                    } catch (error) { alert('Помилка Google: ' + error.message); }
+                });
+            }
+
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', async () => {
+                    if (auth) await auth.signOut();
+                });
+            }
+
+            if (auth) {
+                auth.onAuthStateChanged((user) => {
+                    if (user) {
+                        if (loggedOutView) loggedOutView.style.display = 'none';
+                        if (loggedInView) loggedInView.style.display = 'block';
+                        if (userEmailDisplay) userEmailDisplay.textContent = user.email;
+                        
+                        // АВТОМАТИЧНЕ ПРИЗНАЧЕННЯ АДМІНІСТРАТОРОМ ДЛЯ КОСТОПІЛЬСЬКОЇ ПОШТИ
+                        const userEmail = user.email ? user.email.toLowerCase() : '';
+                        if (userEmail === 'kostopilservice@gmail.com' || userEmail.includes('admin')) {
+                            localStorage.setItem('neoservice_is_admin', 'true');
+                        } else {
+                            localStorage.setItem('neoservice_is_admin', 'false');
+                        }
+                        
+                        checkAdminSession();
+                        loadUserOrders(user.uid);
+                    } else {
+                        if (loggedOutView) loggedOutView.style.display = 'block';
+                        if (loggedInView) loggedInView.style.display = 'none';
+                        localStorage.removeItem('neoservice_is_admin');
+                        checkAdminSession();
+                    }
+                });
+            }
+        }
+
+        // Перевірка сесії адміна для кнопки
+        function checkAdminSession() {
+            try {
+                const isAdmin = localStorage.getItem('neoservice_is_admin') === 'true';
+                const btn = document.getElementById('adminCollageBtn');
+                if (btn) {
+                    if (isAdmin) {
+                        btn.style.setProperty('display', 'block', 'important');
+                    } else {
+                        btn.style.setProperty('display', 'none', 'important');
+                    }
+                }
+            } catch(e) {}
+        }
+
+        // Завантаження банерів із бази даних Firestore (колекція collage_banners)
+        async function loadBannersFromDatabase() {
+            if (!db) return;
+            try {
+                const snapshot = await db.collection('collage_banners').get();
+                if (snapshot.empty) return;
+
+                const container = document.getElementById('bannerSliderContainer');
+                const dotsContainer = document.getElementById('sliderDotsContainer');
+                
+                container.innerHTML = '';
+                dotsContainer.innerHTML = '';
+
+                snapshot.forEach((doc, index) => {
+                    const data = doc.data();
+                    
+                    const slide = document.createElement('div');
+                    slide.className = `banner-slide ${index === 0 ? 'active' : ''}`;
+                    slide.style.cssText = `background: linear-gradient(to top, rgba(15,23,42,0.9), rgba(15,23,42,0.2)), url('${data.imgUrl || 'https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=1000'}') center/cover; padding: 25px; display: flex; flex-direction: column; justify-content: flex-end; height: 100%; box-sizing: border-box;`;
+                    
+                    const badge = (data.badge) ? `<span style="background: rgba(217,119,6,0.8); color: white; font-size: 0.7rem; font-weight: bold; padding: 3px 10px; border-radius: 20px; width: max-content; margin-bottom: 8px;">${data.badge}</span>` : '';
+                    const title = (data.title) ? `<h3 style="color: white; margin: 0 0 5px 0; font-size: 1.25rem;">${data.title}</h3>` : '';
+                    const desc = (data.description) ? `<p style="color: #cbd5e1; margin: 0; font-size: 0.8rem;">${data.description}</p>` : '';
+
+                    slide.innerHTML = `${badge}${title}${desc}`;
+                    container.appendChild(slide);
+
+                    const dot = document.createElement('button');
+                    dot.onclick = () => setSlide(index);
+                    dot.className = 'slider-dot';
+                    dot.style.cssText = `width: 10px; height: 10px; border-radius: 50%; border: none; background: ${index === 0 ? '#d97706' : '#cbd5e1'}; cursor: pointer;`;
+                    dotsContainer.appendChild(dot);
+                });
+            } catch (error) {
+                console.warn("Банери працюють у дефолтному режимі");
+            }
+        }
+
+        // Адмін-функція додавання нового банера в базу даних
+        async function openCollageAdmin() {
+            const imgUrl = prompt("Введіть посилання (URL) на зображення для банера:", "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=1000");
+            if (!imgUrl) return;
+            const badgeText = prompt("Введіть мітку (напр., 📢 Головна новинна подія):", "🔥 Акція");
+            const titleText = prompt("Введіть заголовок банера:", "Заголовок");
+            const descText = prompt("Введіть опис банера:", "Опис новини або сервісу");
+
+            if (!db) {
+                alert('База даних недоступна.');
+                return;
+            }
+            try {
+                await db.collection('collage_banners').add({
+                    imgUrl: imgUrl,
+                    badge: badgeText || '',
+                    title: titleText || '',
+                    description: descText || '',
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                alert('Банер успішно додано до бази даних!');
+                loadBannersFromDatabase();
+            } catch (error) {
+                alert('Помилка збереження: ' + error.message);
+            }
+        }
+
+        // Завантаження замовлень
+        async function loadUserOrders(uid) {
+            const tbody = document.getElementById('ordersTableBody');
+            if (!tbody || !db) return;
+            try {
+                const snapshot = await db.collection('orders').where('userId', '==', uid).get();
+                if (snapshot.empty) {
+                    tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; padding: 10px; color: #64748b;">У вас поки немає замовлень.</td></tr>`;
+                    return;
+                }
+                tbody.innerHTML = '';
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    let dateStr = 'Сьогодні';
+                    if (data.createdAt && data.createdAt.toDate) {
+                        dateStr = new Date(data.createdAt.toDate()).toLocaleDateString();
+                    }
+                    tbody.innerHTML += `
+                        <tr>
+                            <td style="padding: 6px;">${dateStr}</td>
+                            <td style="padding: 6px;">${data.description || ''}</td>
+                            <td style="padding: 6px; font-weight: bold; color: #2563eb;">${data.status || 'В обробці'}</td>
+                            <td style="padding: 6px;">${data.comment || '-'}</td>
+                        </tr>
+                    `;
+                });
+            } catch (e) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; padding: 10px; color: #dc2626;">Помилка завантаження історії</td></tr>`;
+            }
+        }
+
+        let currentSlideIdx = 0;
+        function setSlide(idx) {
+            const allSlides = document.querySelectorAll('.banner-slide');
+            const allDots = document.querySelectorAll('.slider-dot');
+            allSlides.forEach((s, i) => {
+                s.classList.toggle('active', i === idx);
+                if(allDots[i]) allDots[i].style.background = i === idx ? '#d97706' : '#cbd5e1';
+            });
+            currentSlideIdx = idx;
+        }
+
+        setInterval(() => {
+            const allSlides = document.querySelectorAll('.banner-slide');
+            if(allSlides.length > 0) {
+                currentSlideIdx = (currentSlideIdx + 1) % allSlides.length;
+                setSlide(currentSlideIdx);
+            }
+        }, 5000);
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initAuthHandlers();
+            checkAdminSession();
+            loadBannersFromDatabase();
+
+            const newReqForm = document.getElementById('newRequestForm');
+            if (newReqForm) {
+                newReqForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    if (!auth || !auth.currentUser || !db) {
+                        alert('Будь ласка, увійдіть у систему.');
+                        return;
+                    }
+                    const category = document.getElementById('reqCategory').value;
+                    const description = document.getElementById('reqDescription').value.trim();
+                    
+                    try {
+                        await db.collection('orders').add({
+                            userId: auth.currentUser.uid,
+                            userEmail: auth.currentUser.email,
+                            category: category,
+                            description: description,
+                            status: 'В обробці',
+                            comment: 'Прийнято в роботу',
+                            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                        alert('Заявку успішно створено!');
+                        newReqForm.reset();
+                        loadUserOrders(auth.currentUser.uid);
+                    } catch (err) {
+                        alert('Помилка: ' + err.message);
+                    }
+                });
+            }
+        });
+    </script>
+
 </body>
 </html>

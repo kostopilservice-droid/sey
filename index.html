@@ -902,7 +902,47 @@
                 alert('Новий банер успішно додано!');
             }
         }
+// ІНТЕРАКТИВНЕ ДОДАВАННЯ НОВОГО БАНЕРА
+        function openCollageAdmin() {
+            const imgUrl = prompt("Введіть посилання (URL) на зображення для банера:", "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=1000");
+            if (!imgUrl) return;
 
+            const badgeText = prompt("Введіть текст мітки (наприклад: 📢 Нова подія):", "🔥 Акція та новини");
+            const titleText = prompt("Введіть заголовок банера:", "Ваш заголовок");
+            const descText = prompt("Введіть опис банера:", "Детальний опис нової пропозиції.");
+
+            const container = document.getElementById('bannerSliderContainer');
+            const dotsContainer = document.getElementById('sliderDotsContainer');
+
+            if (container && dotsContainer) {
+                const newSlide = document.createElement('div');
+                newSlide.className = 'banner-slide';
+                newSlide.style.cssText = `background: linear-gradient(to top, rgba(15,23,42,0.9), rgba(15,23,42,0.2)), url('${imgUrl}') center/cover; padding: 25px; display: flex; flex-direction: column; justify-content: flex-end; height: 100%; box-sizing: border-box;`;
+                
+                // Захист від появи слова "null" (якщо рядок порожній або null, виводимо порожнечу)
+                const safeBadge = (badgeText && badgeText !== 'null') ? badgeText : '';
+                const safeTitle = (titleText && titleText !== 'null') ? titleText : '';
+                const safeDesc = (descText && descText !== 'null') ? descText : '';
+
+                newSlide.innerHTML = `
+                    ${safeBadge ? `<span style="background: rgba(220,38,38,0.8); color: white; font-size: 0.7rem; font-weight: bold; padding: 3px 10px; border-radius: 20px; width: max-content; margin-bottom: 8px;">${safeBadge}</span>` : ''}
+                    ${safeTitle ? `<h3 style="color: white; margin: 0 0 5px 0; font-size: 1.25rem;">${safeTitle}</h3>` : ''}
+                    ${safeDesc ? `<p style="color: #cbd5e1; margin: 0; font-size: 0.8rem;">${safeDesc}</p>` : ''}
+                `;
+
+                container.appendChild(newSlide);
+
+                const newIdx = document.querySelectorAll('.banner-slide').length - 1;
+                const newDot = document.createElement('button');
+                newDot.onclick = () => setSlide(newIdx);
+                newDot.className = 'slider-dot';
+                newDot.style.cssText = 'width: 10px; height: 10px; border-radius: 50%; border: none; background: #cbd5e1; cursor: pointer;';
+                dotsContainer.appendChild(newDot);
+
+                setSlide(newIdx);
+                alert('Новий банер успішно додано!');
+            }
+        }
         // Слайдер банерів
         let currentSlideIdx = 0;
         const slides = document.querySelectorAll('.banner-slide');

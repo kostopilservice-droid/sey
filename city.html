@@ -164,8 +164,8 @@
                 <div class="w-full h-40 rounded-2xl overflow-hidden border border-amber-500/30 mb-3 bg-slate-950 shadow-inner group relative">
                     <img id="cityPhoto" src="https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=500" alt="Вид міста" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                 </div>
-                <!-- Кнопка оновлення панорами (Тільки Адмін / Авторизований) -->
-                <button onclick="changePhotoAdmin()" class="w-full py-2 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-sm">
+                <!-- Кнопка оновлення панорами (Тільки для адміністратора) -->
+                <button id="adminPanoramaBtn" onclick="changePhotoAdmin()" style="display: none;" class="w-full py-2 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-sm">
                     <i class="fa-solid fa-pen-to-square"></i> Оновити панораму міста
                 </button>
             </div>
@@ -332,7 +332,7 @@
         <p>© 2026 Neoservice.ks.ua — Всеукраїнський портал міст та громад.</p>
     </footer>
 
-    <!-- FIREBASE АВТОРИЗАЦІЯ (Безпечна ініціалізація з getApps) -->
+    <!-- FIREBASE АВТОРИЗАЦІЯ ТА КОНТРОЛЬ ПРАВ ДОСТУПУ -->
     <script type="module">
         import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -346,7 +346,6 @@
             appId: "1:528941827813:web:354ef989d200087634b60c"
         };
 
-        // Запобігаємо помилці повторної ініціалізації додатку Firebase
         const app = !getApps().length ? initializeApp(firebaseConfig) : getApps()[0];
         const auth = getAuth(app);
 
@@ -355,13 +354,23 @@
         onAuthStateChanged(auth, (user) => {
             currentUser = user;
             const badge = document.getElementById('authStatusBadge');
+            const adminPanoramaBtn = document.getElementById('adminPanoramaBtn');
+
             if (badge) {
                 if (user) {
                     badge.textContent = `👤 ${user.email.split('@')[0]}`;
                     badge.className = "text-[10px] px-2 py-0.5 rounded-md bg-amber-500/20 border border-amber-500/40 text-amber-300 font-bold";
+
+                    // Тільки адміністратор бачить кнопку оновлення панорами
+                    if (user.email === 'kostopilservice@gmail.com') {
+                        if (adminPanoramaBtn) adminPanoramaBtn.style.display = 'flex';
+                    } else {
+                        if (adminPanoramaBtn) adminPanoramaBtn.style.display = 'none';
+                    }
                 } else {
                     badge.textContent = "Гість";
                     badge.className = "text-[10px] px-2 py-0.5 rounded-md bg-slate-900 border border-slate-700 text-slate-400";
+                    if (adminPanoramaBtn) adminPanoramaBtn.style.display = 'none';
                 }
             }
         });
@@ -783,6 +792,12 @@
         }
 
         function changePhotoAdmin() {
+            const user = window.getCurrentUser ? window.getCurrentUser() : null;
+            if (!user || user.email !== 'kostopilservice@gmail.com') {
+                alert("Помилка: змінювати панораму міста може тільки адміністратор!");
+                return;
+            }
+
             const data = getActiveCityData();
             const newUrl = prompt("Введіть пряме посилання на нову панораму (URL фотографії):", data.photo);
             if (newUrl) {
@@ -794,6 +809,13 @@
         }
 
         function openAddNewsModal() {
+            // Перевірка авторизації: додавати новини можуть тільки зареєстровані користувачі
+            const user = window.getCurrentUser ? window.getCurrentUser() : null;
+            if (!user) {
+                alert("Додавати новини та історію міста можуть лише зареєстровані користувачі! Будь ласка, увійдіть у систему.");
+                return;
+            }
+
             const editIdx = document.getElementById('editNewsIndex');
             const addModalTitle = document.getElementById('addModalTitle');
             const inputTitle = document.getElementById('inputNewsTitle');
@@ -829,6 +851,12 @@
 
         function saveCityNews(e) {
             e.preventDefault();
+            const user = window.getCurrentUser ? window.getCurrentUser() : null;
+            if (!user) {
+                alert("Помилка доступу: будь ласка, увійдіть у систему!");
+                return;
+            }
+
             const editIdxField = document.getElementById('editNewsIndex');
             const editIdx = editIdxField ? parseInt(editIdxField.value) : -1;
             
@@ -845,6 +873,7 @@
 
             const newsItem = {
                 title, photos, video, text, adText, adLink,
+                author: user.email,
                 date: new Date().toLocaleDateString('uk-UA', {day: 'numeric', month: 'long', year: 'numeric'})
             };
 
@@ -885,7 +914,10 @@
                             ${item.video ? `<span class="absolute bottom-2 left-2 px-2 py-0.5 bg-rose-600/90 rounded-lg text-[10px] text-white font-bold">▶ Відео</span>` : ''}
                         </div>
                         <div class="p-4 space-y-2">
-                            <div class="text-[10px] text-amber-400 font-semibold">${item.date}</div>
+                            <div class="flex justify-between items-center text-[10px] text-amber-400 font-semibold">
+                                <span>${item.date}</span>
+                                <span class="text-slate-400">${item.author ? 'Автор: ' + item.author.split('@')[0] : ''}</span>
+                            </div>
                             <h4 class="font-serif-sacred text-lg font-bold text-amber-200 line-clamp-2">${item.title}</h4>
                             <p class="text-xs text-slate-300 line-clamp-2">${item.text}</p>
                         </div>
@@ -1009,6 +1041,12 @@
         }
 
         function triggerEditNews() {
+            const user = window.getCurrentUser ? window.getCurrentUser() : null;
+            if (!user) {
+                alert("Будь ласка, увійдіть у систему для редагування!");
+                return;
+            }
+
             const item = getActiveCityData().news[activeNewsIndex];
             closeNewsDetailModal();
 
@@ -1038,6 +1076,12 @@
         }
 
         function triggerDeleteNews() {
+            const user = window.getCurrentUser ? window.getCurrentUser() : null;
+            if (!user) {
+                alert("Будь ласка, увійдіть у систему!");
+                return;
+            }
+
             if (confirm("Ви дійсно бажаєте видалити цю новину?")) {
                 const data = getActiveCityData();
                 data.news.splice(activeNewsIndex, 1);

@@ -713,6 +713,72 @@
                      <!-- БЛОК обласний центр Обслуговування та виїзд майстра
 Доставка та комп'ютерний сервіс
 Регіональні відділення  -->
+
+<!-- Суперкомпактний анімований банер-віджет -->
+<div class="bg-white rounded-xl p-3 shadow-sm border border-slate-100 w-full text-slate-900 relative overflow-hidden">
+    
+    <!-- Верхній рядок: Іконка + Заголовок + Індикатор -->
+    <div class="flex items-center justify-between mb-2">
+        <div class="flex items-center space-x-2">
+            <div class="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-xs shadow-inner">
+                <i class="fa-solid fa-city"></i>
+            </div>
+            <div>
+                <h4 class="text-[11px] font-bold uppercase tracking-wider text-blue-600 leading-none">Регіональне відділення</h4>
+                <span class="text-[10px] text-slate-400 font-medium">NEOSERVICE.KS.UA</span>
+            </div>
+        </div>
+        <!-- Індикатор активності -->
+        <span class="relative flex h-2 w-2" title="Мережа активна">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+        </span>
+    </div>
+
+    <!-- Анімований рядок тексту (зміна слоганів) -->
+    <div class="h-7 flex items-center mb-2 relative overflow-hidden px-1">
+        <div class="ticker-wrapper w-full">
+            <div class="ticker-item text-xs font-bold text-slate-800">Твори історію твого міста</div>
+            <div class="ticker-item text-xs font-bold text-blue-600">Координаційні центри підтримки</div>
+            <div class="ticker-item text-xs font-bold text-slate-800">Актуальні довідники та сервіси</div>
+        </div>
+    </div>
+
+    <!-- Нижній рядок: Статус і кнопка -->
+    <div class="pt-2 border-t border-slate-100 flex items-center justify-between">
+        <span class="text-[10px] text-slate-500 font-medium">Статус: <strong class="text-emerald-600">Активно</strong></span>
+        <button onclick="openModal()" class="bg-blue-600 hover:bg-blue-700 text-white text-[11px] px-3 py-1 rounded-md font-semibold transition-all shadow-sm flex items-center space-x-1 cursor-pointer">
+            <span>Деталі</span>
+            <i class="fa-solid fa-arrow-right text-[9px]"></i>
+        </button>
+    </div>
+</div>
+
+<!-- CSS стилі для циклічної анімації тексту -->
+<style>
+    .ticker-wrapper {
+        position: relative;
+        height: 20px;
+    }
+    .ticker-item {
+        position: absolute;
+        width: 100%;
+        opacity: 0;
+        transform: translateY(6px);
+        animation: fadeTicker 9s infinite;
+    }
+    .ticker-item:nth-child(1) { animation-delay: 0s; }
+    .ticker-item:nth-child(2) { animation-delay: 3s; }
+    .ticker-item:nth-child(3) { animation-delay: 6s; }
+
+    @keyframes fadeTicker {
+        0% { opacity: 0; transform: translateY(6px); }
+        8% { opacity: 1; transform: translateY(0); }
+        33% { opacity: 1; transform: translateY(0); }
+        41% { opacity: 0; transform: translateY(-6px); }
+        100% { opacity: 0; transform: translateY(-6px); }
+    }
+</style>
                   </div>
               </div>
 

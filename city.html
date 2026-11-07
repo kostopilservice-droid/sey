@@ -332,6 +332,172 @@
         <p>© 2026 Neoservice.ks.ua — Всеукраїнський портал міст та громад.</p>
     </footer>
 
+<!-- СКРИПТИ FIREBASE ТА ЛОГІКИ -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBlKoP6-M8tdrKq88bSdnWSnak5Gpddnpk",
+            authDomain: "neoservice-ks-ua.firebaseapp.com",
+            projectId: "neoservice-ks-ua",
+            storageBucket: "neoservice-ks-ua.firebasestorage.app",
+            messagingSenderId: "528941827813",
+            appId: "1:528941827813:web:354ef989d200087634b60c",
+            measurementId: "G-BYGHEHVYY3"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Динамічний заголовок регіону
+        const urlParams = new URLSearchParams(window.location.search);
+        const regionName = urlParams.get('name');
+        const cityName = urlParams.get('city');
+        if (regionName && cityName) {
+            document.getElementById('regionTitleCard').textContent = `📖 Сервісний центр: м. ${cityName}`;
+            document.getElementById('regionHeaderSubtitle').textContent = `${regionName} • м. ${cityName}`;
+        }
+
+        const loggedOutView = document.getElementById('loggedOutView');
+        const loggedInView = document.getElementById('loggedInView');
+        const userEmailDisplay = document.getElementById('userEmailDisplay');
+        const adminCollageBtn = document.getElementById('adminCollageBtn');
+        const userNewsBtn = document.getElementById('userNewsBtn');
+        const userRoleStatusText = document.getElementById('userRoleStatusText');
+
+        // Авторизація
+        document.getElementById('loginEmailBtn')?.addEventListener('click', async () => {
+            const e = document.getElementById('authEmail').value, p = document.getElementById('authPassword').value;
+            if(!e || !p) return alert('Введіть пошту та пароль');
+            try { await signInWithEmailAndPassword(auth, e, p); } catch(err) { alert(err.message); }
+        });
+
+        document.getElementById('registerEmailBtn')?.addEventListener('click', async () => {
+            const e = document.getElementById('authEmail').value, p = document.getElementById('authPassword').value;
+            if(!e || !p) return alert('Введіть пошту та пароль');
+            try { await createUserWithEmailAndPassword(auth, e, p); alert('Успішна реєстрація!'); } catch(err) { alert(err.message); }
+        });
+
+        document.getElementById('googleLoginBtn')?.addEventListener('click', async () => {
+            try { await signInWithPopup(auth, new GoogleAuthProvider()); } catch(err) { alert(err.message); }
+        });
+
+        document.getElementById('logoutBtn')?.addEventListener('click', () => signOut(auth));
+
+        // Контроль доступу (Адмін vs Користувач)[cite: 5]
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                loggedOutView.style.display = 'none';
+                loggedInView.style.display = 'block';
+                userEmailDisplay.textContent = user.email;
+
+                // Доступно всім зареєстрованим: додавання новин та історії
+                userNewsBtn.style.display = 'block';
+
+                // Доступно ТІЛЬКИ адміністратору: оновлення панорами міста[cite: 5]
+                if (user.email === 'kostopilservice@gmail.com') {
+                    adminCollageBtn.style.display = 'block';
+                    userRoleStatusText.textContent = 'Адміністратор (повний доступ)';
+                } else {
+                    adminCollageBtn.style.display = 'none';
+                    userRoleStatusText.textContent = 'Зареєстрований користувач';
+                }
+            } else {
+                loggedOutView.style.display = 'block';
+                loggedInView.style.display = 'none';
+                adminCollageBtn.style.display = 'none';
+                userNewsBtn.style.display = 'none';
+                userRoleStatusText.textContent = 'Авторизуйтеся для дій';
+            }
+        });
+
+        // 1. Збереження панорами міста (Тільки адмін)[cite: 5]
+        document.getElementById('saveCollageBtn')?.addEventListener('click', async () => {
+            if (auth.currentUser?.email !== 'kostopilservice@gmail.com') {
+                return alert('Помилка: тільки адміністратор може змінювати панораму міста!');
+            }
+            try {
+                await addDoc(collection(db, "collage_banners"), {
+                    tag: document.getElementById('slideTag').value,
+                    title: document.getElementById('slideTitle').value,
+                    desc: document.getElementById('slideDesc').value,
+                    imageUrl: document.getElementById('slideImage').value,
+                    createdAt: serverTimestamp()
+                });
+                alert('Панораму міста оновлено успішно!');
+                document.getElementById('collageAdminForm').reset();
+                closeCollageAdmin();
+            } catch(e) { alert('Помилка: ' + e.message); }
+        });
+
+        // 2. Збереження новин / історії міста / спонсорства (Будь-який зареєстрований)[cite: 5]
+        document.getElementById('saveNewsBtn')?.addEventListener('click', async () => {
+            if (!auth.currentUser) return alert('Будь ласка, увійдіть у систему!');
+            try {
+                await addDoc(collection(db, "city_news"), {
+                    category: document.getElementById('newsCategory').value,
+                    title: document.getElementById('newsTitle').value,
+                    content: document.getElementById('newsContent').value,
+                    author: auth.currentUser.email,
+                    createdAt: serverTimestamp()
+                });
+                alert('Публікацію (новину/історію) додано успішно!');
+                document.getElementById('newsAdminForm').reset();
+                closeNewsAdmin();
+            } catch(e) { alert('Помилка: ' + e.message); }
+        });
+
+        // Завантаження панорам із бази
+        onSnapshot(collection(db, "collage_banners"), (snapshot) => {
+            if (snapshot.empty) return;
+            const container = document.getElementById('bannerSliderContainer');
+            const dots = document.getElementById('sliderDotsContainer');
+            container.innerHTML = '';
+            dots.innerHTML = '';
+            let idx = 0;
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                const active = idx === 0 ? 'active' : '';
+                container.innerHTML += `
+                    <div class="banner-slide ${active}" style="background: linear-gradient(to top, rgba(15,23,42,0.9), rgba(15,23,42,0.2)), url('${data.imageUrl}') center/cover; padding: 25px; display: flex; flex-direction: column; justify-content: flex-end; height: 100%; box-sizing: border-box;">
+                      <span style="background: rgba(217,119,6,0.8); color: white; font-size: 0.7rem; font-weight: bold; padding: 3px 10px; border-radius: 20px; width: max-content; margin-bottom: 8px;">${data.tag}</span>
+                      <h3 style="color: white; margin: 0 0 5px 0; font-size: 1.25rem;">${data.title}</h3>
+                      <p style="color: #cbd5e1; margin: 0; font-size: 0.8rem;">${data.desc}</p>
+                    </div>
+                `;
+                dots.innerHTML += `<button onclick="setSlide(${idx})" class="slider-dot" style="width: 10px; height: 10px; border-radius: 50%; border: none; background: ${idx === 0 ? '#d97706' : '#cbd5e1'}; cursor: pointer;"></button>`;
+                idx++;
+            });
+        });
+
+        // Завантаження новин та історії з бази
+        onSnapshot(query(collection(db, "city_news"), orderBy("createdAt", "desc")), (snapshot) => {
+            const list = document.getElementById('cityNewsList');
+            if (!list) return;
+            if (snapshot.empty) {
+                list.innerHTML = `<p style="color: #64748b; font-size: 0.85rem;">Поки немає новин чи історичних публікацій.</p>`;
+                return;
+            }
+            list.innerHTML = '';
+            snapshot.forEach(doc => {
+                const d = doc.data();
+                list.innerHTML += `
+                    <div style="background: #f8fafc; border-left: 4px solid #16a34a; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 8px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                            <span style="font-size: 0.7rem; font-weight: bold; background: #dcfce7; color: #166534; padding: 2px 6px; border-radius: 4px;">${d.category || 'Повідомлення'}</span>
+                            <span style="font-size: 0.7rem; color: #94a3b8;">Автор: ${d.author || 'Громада'}</span>
+                        </div>
+                        <h4 style="margin: 4px 0; font-size: 0.9rem; color: #1e3a8a;">${d.title}</h4>
+                        <p style="margin: 0; font-size: 0.8rem; color: #334155; line-height: 1.4;">${d.content}</p>
+                    </div>
+                `;
+            });
+        });
+    </script>
+
     <!-- FIREBASE АВТОРИЗАЦІЯ -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -972,170 +1138,6 @@
             }
         }
     </script>
-    <!-- СКРИПТИ FIREBASE ТА ЛОГІКИ -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyBlKoP6-M8tdrKq88bSdnWSnak5Gpddnpk",
-            authDomain: "neoservice-ks-ua.firebaseapp.com",
-            projectId: "neoservice-ks-ua",
-            storageBucket: "neoservice-ks-ua.firebasestorage.app",
-            messagingSenderId: "528941827813",
-            appId: "1:528941827813:web:354ef989d200087634b60c",
-            measurementId: "G-BYGHEHVYY3"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
-        // Динамічний заголовок регіону
-        const urlParams = new URLSearchParams(window.location.search);
-        const regionName = urlParams.get('name');
-        const cityName = urlParams.get('city');
-        if (regionName && cityName) {
-            document.getElementById('regionTitleCard').textContent = `📖 Сервісний центр: м. ${cityName}`;
-            document.getElementById('regionHeaderSubtitle').textContent = `${regionName} • м. ${cityName}`;
-        }
-
-        const loggedOutView = document.getElementById('loggedOutView');
-        const loggedInView = document.getElementById('loggedInView');
-        const userEmailDisplay = document.getElementById('userEmailDisplay');
-        const adminCollageBtn = document.getElementById('adminCollageBtn');
-        const userNewsBtn = document.getElementById('userNewsBtn');
-        const userRoleStatusText = document.getElementById('userRoleStatusText');
-
-        // Авторизація
-        document.getElementById('loginEmailBtn')?.addEventListener('click', async () => {
-            const e = document.getElementById('authEmail').value, p = document.getElementById('authPassword').value;
-            if(!e || !p) return alert('Введіть пошту та пароль');
-            try { await signInWithEmailAndPassword(auth, e, p); } catch(err) { alert(err.message); }
-        });
-
-        document.getElementById('registerEmailBtn')?.addEventListener('click', async () => {
-            const e = document.getElementById('authEmail').value, p = document.getElementById('authPassword').value;
-            if(!e || !p) return alert('Введіть пошту та пароль');
-            try { await createUserWithEmailAndPassword(auth, e, p); alert('Успішна реєстрація!'); } catch(err) { alert(err.message); }
-        });
-
-        document.getElementById('googleLoginBtn')?.addEventListener('click', async () => {
-            try { await signInWithPopup(auth, new GoogleAuthProvider()); } catch(err) { alert(err.message); }
-        });
-
-        document.getElementById('logoutBtn')?.addEventListener('click', () => signOut(auth));
-
-        // Контроль доступу (Адмін vs Користувач)[cite: 5]
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                loggedOutView.style.display = 'none';
-                loggedInView.style.display = 'block';
-                userEmailDisplay.textContent = user.email;
-
-                // Доступно всім зареєстрованим: додавання новин та історії
-                userNewsBtn.style.display = 'block';
-
-                // Доступно ТІЛЬКИ адміністратору: оновлення панорами міста[cite: 5]
-                if (user.email === 'kostopilservice@gmail.com') {
-                    adminCollageBtn.style.display = 'block';
-                    userRoleStatusText.textContent = 'Адміністратор (повний доступ)';
-                } else {
-                    adminCollageBtn.style.display = 'none';
-                    userRoleStatusText.textContent = 'Зареєстрований користувач';
-                }
-            } else {
-                loggedOutView.style.display = 'block';
-                loggedInView.style.display = 'none';
-                adminCollageBtn.style.display = 'none';
-                userNewsBtn.style.display = 'none';
-                userRoleStatusText.textContent = 'Авторизуйтеся для дій';
-            }
-        });
-
-        // 1. Збереження панорами міста (Тільки адмін)[cite: 5]
-        document.getElementById('saveCollageBtn')?.addEventListener('click', async () => {
-            if (auth.currentUser?.email !== 'kostopilservice@gmail.com') {
-                return alert('Помилка: тільки адміністратор може змінювати панораму міста!');
-            }
-            try {
-                await addDoc(collection(db, "collage_banners"), {
-                    tag: document.getElementById('slideTag').value,
-                    title: document.getElementById('slideTitle').value,
-                    desc: document.getElementById('slideDesc').value,
-                    imageUrl: document.getElementById('slideImage').value,
-                    createdAt: serverTimestamp()
-                });
-                alert('Панораму міста оновлено успішно!');
-                document.getElementById('collageAdminForm').reset();
-                closeCollageAdmin();
-            } catch(e) { alert('Помилка: ' + e.message); }
-        });
-
-        // 2. Збереження новин / історії міста / спонсорства (Будь-який зареєстрований)[cite: 5]
-        document.getElementById('saveNewsBtn')?.addEventListener('click', async () => {
-            if (!auth.currentUser) return alert('Будь ласка, увійдіть у систему!');
-            try {
-                await addDoc(collection(db, "city_news"), {
-                    category: document.getElementById('newsCategory').value,
-                    title: document.getElementById('newsTitle').value,
-                    content: document.getElementById('newsContent').value,
-                    author: auth.currentUser.email,
-                    createdAt: serverTimestamp()
-                });
-                alert('Публікацію (новину/історію) додано успішно!');
-                document.getElementById('newsAdminForm').reset();
-                closeNewsAdmin();
-            } catch(e) { alert('Помилка: ' + e.message); }
-        });
-
-        // Завантаження панорам із бази
-        onSnapshot(collection(db, "collage_banners"), (snapshot) => {
-            if (snapshot.empty) return;
-            const container = document.getElementById('bannerSliderContainer');
-            const dots = document.getElementById('sliderDotsContainer');
-            container.innerHTML = '';
-            dots.innerHTML = '';
-            let idx = 0;
-            snapshot.forEach(doc => {
-                const data = doc.data();
-                const active = idx === 0 ? 'active' : '';
-                container.innerHTML += `
-                    <div class="banner-slide ${active}" style="background: linear-gradient(to top, rgba(15,23,42,0.9), rgba(15,23,42,0.2)), url('${data.imageUrl}') center/cover; padding: 25px; display: flex; flex-direction: column; justify-content: flex-end; height: 100%; box-sizing: border-box;">
-                      <span style="background: rgba(217,119,6,0.8); color: white; font-size: 0.7rem; font-weight: bold; padding: 3px 10px; border-radius: 20px; width: max-content; margin-bottom: 8px;">${data.tag}</span>
-                      <h3 style="color: white; margin: 0 0 5px 0; font-size: 1.25rem;">${data.title}</h3>
-                      <p style="color: #cbd5e1; margin: 0; font-size: 0.8rem;">${data.desc}</p>
-                    </div>
-                `;
-                dots.innerHTML += `<button onclick="setSlide(${idx})" class="slider-dot" style="width: 10px; height: 10px; border-radius: 50%; border: none; background: ${idx === 0 ? '#d97706' : '#cbd5e1'}; cursor: pointer;"></button>`;
-                idx++;
-            });
-        });
-
-        // Завантаження новин та історії з бази
-        onSnapshot(query(collection(db, "city_news"), orderBy("createdAt", "desc")), (snapshot) => {
-            const list = document.getElementById('cityNewsList');
-            if (!list) return;
-            if (snapshot.empty) {
-                list.innerHTML = `<p style="color: #64748b; font-size: 0.85rem;">Поки немає новин чи історичних публікацій.</p>`;
-                return;
-            }
-            list.innerHTML = '';
-            snapshot.forEach(doc => {
-                const d = doc.data();
-                list.innerHTML += `
-                    <div style="background: #f8fafc; border-left: 4px solid #16a34a; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 8px;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                            <span style="font-size: 0.7rem; font-weight: bold; background: #dcfce7; color: #166534; padding: 2px 6px; border-radius: 4px;">${d.category || 'Повідомлення'}</span>
-                            <span style="font-size: 0.7rem; color: #94a3b8;">Автор: ${d.author || 'Громада'}</span>
-                        </div>
-                        <h4 style="margin: 4px 0; font-size: 0.9rem; color: #1e3a8a;">${d.title}</h4>
-                        <p style="margin: 0; font-size: 0.8rem; color: #334155; line-height: 1.4;">${d.content}</p>
-                    </div>
-                `;
-            });
-        });
-    </script>
+    
 </body>
 </html>

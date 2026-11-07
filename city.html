@@ -2,375 +2,340 @@
 <html lang="uk">
 <head>
     <link rel="manifest" href="./manifest.json">
-    <meta name="theme-color" content="#1a365d">
+    <meta name="theme-color" content="#0c1a30">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neoservice — Регіональний інформаційно-сервісний хаб</title>
+    <title>Міський Портал — Neoservice</title>
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            navy: '#0f2b5c',
-                            blue: '#1d4ed8',
-                            lightBlue: '#eff6ff',
-                            accent: '#2563eb',
-                            hover: '#3b82f6',
-                            textDark: '#1e293b'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
 
     <style>
-        :root {
-            --primary: #1e3a8a;
-            --accent: #d97706;
-            --bg: #f8fafc;
-            --card-bg: #ffffff;
-            --text: #1e293b;
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: #050b14; 
+            color: #f8fafc; 
+            overflow-x: hidden;
+            position: relative;
         }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: var(--bg);
-            color: var(--text);
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-image: 
+                linear-gradient(to bottom, rgba(5, 11, 20, 0.88), rgba(3, 7, 18, 0.95)),
+                url('https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=1600');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.16;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .font-serif-sacred { font-family: 'Cormorant Garamond', serif; }
+        
+        .city-card { 
+            background: rgba(15, 23, 42, 0.88); 
+            backdrop-filter: blur(16px); 
+            border: 1.5px solid rgba(253, 224, 71, 0.35); 
+            border-radius: 20px; 
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 10;
         }
         
-        nav {
-            display: flex;
-            justify-content: center;
-            background: #0f172a;
-            overflow-x: auto;
-            border-bottom: 2px solid #1e3a8a;
+        .news-card {
+            background: rgba(10, 16, 30, 0.92);
+            border: 1px solid rgba(253, 224, 71, 0.2);
+            border-radius: 16px;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            cursor: pointer;
         }
-        nav a {
-            color: white;
-            padding: 10px 20px;
-            text-decoration: none;
-            white-space: nowrap;
-            font-size: 0.85rem;
-            font-weight: 600;
-            transition: background 0.2s;
-        }
-        nav a:hover { background-color: var(--accent); }
-
-        .container {
-            max-width: 1100px;
-            margin: 20px auto;
-            padding: 0 15px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
+        .news-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(245, 158, 11, 0.6);
+            box-shadow: 0 12px 32px -8px rgba(245, 158, 11, 0.25);
         }
 
-        .card {
-            background: var(--card-bg);
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            border-top: 4px solid var(--primary);
+        .admin-ad-zone { 
+            border: 2px dashed rgba(245, 158, 11, 0.6); 
+            background: radial-gradient(ellipse at top, rgba(245, 158, 11, 0.12) 0%, rgba(15, 23, 42, 0.8) 100%);
+            position: relative;
+            z-index: 10;
         }
-        .card h2 { margin-top: 0; font-size: 18px; }
-
-        .btn { width: 100%; padding: 10px; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; margin-top: 8px; font-weight: bold; color: white; }
-        .btn-primary { background: var(--primary); }
-        .btn-success { background: #16a34a; }
-        .btn-danger { background: #dc2626; }
-        .btn-google { background: #ea4335; }
         
-        .banner-slide {
-            position: absolute; inset: 0;
-            opacity: 0; transform: translateY(10px);
-            transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        .btn-divine { 
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); 
+            color: #0f172a; 
+            font-weight: 800; 
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.25);
+            transition: all 0.3s ease;
+        }
+        .btn-divine:hover { transform: scale(1.02); box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4); }
+
+        .divine-fullscreen-modal {
+            background: radial-gradient(circle at top, rgba(12, 26, 48, 0.98) 0%, rgba(3, 7, 18, 0.99) 100%);
+            box-shadow: inset 0 0 180px rgba(253, 224, 71, 0.15);
+        }
+        .god-light-beam {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 140%;
+            height: 550px;
+            background: radial-gradient(ellipse at top, rgba(253, 224, 71, 0.25) 0%, rgba(217, 119, 6, 0.08) 50%, transparent 80%);
             pointer-events: none;
         }
-        .banner-slide.active {
-            opacity: 1; transform: translateY(0);
-            pointer-events: auto;
-        }
-
-        footer {
-            text-align: center;
-            padding: 20px;
-            background: #0f172a;
-            color: white;
-            margin-top: 40px;
-        }
-
-        @keyframes marquee {
-            0% { transform: translateX(100%); }
-            100% { transform: translateX(-100%); }
-        }
-        @media(max-width: 768px) {
-            .banner-trust-grid { grid-template-columns: 1fr !important; }
+        .sacred-scroll {
+            background: rgba(15, 23, 42, 0.96);
+            border: 1.5px solid rgba(253, 224, 71, 0.4);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
         }
     </style>
 </head>
-<body>
-
-    <!-- ШАПКА -->
-    <header style="background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); color: white; padding: 15px 20px; border-bottom: 3px solid #3b82f6; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
-      <div style="max-width: 1100px; margin: 0 auto; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 15px;">
-        <a href="index.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none; color: white;">
-          <div style="background: linear-gradient(135deg, #2563eb, #38bdf8); border: 1px solid rgba(255,255,255,0.2); border-radius: 14px; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">
-            🏙️
-          </div>
-          <div>
-            <div style="display: flex; align-items: center; gap: 8px;">
-              <span style="font-size: 1.4rem; font-weight: 900; letter-spacing: 0.8px; text-transform: uppercase; line-height: 1.1;">
-                NEOSERVICE<span style="color: #60a5fa;">.KS.UA</span>
-              </span>
-              <span style="background: rgba(56, 189, 248, 0.2); color: #7dd3fc; border: 1px solid rgba(56, 189, 248, 0.4); font-size: 0.65rem; font-weight: 800; padding: 2px 8px; border-radius: 10px; text-transform: uppercase;">
-                UA PORTAL
-              </span>
-            </div>
-            <div style="font-size: 0.78rem; color: #cbd5e1; font-style: italic; margin-top: 2px;" id="regionHeaderSubtitle">
-              Регіональний інформаційно-сервісний хаб
-            </div>
-          </div>
-        </a>
-
-        <div style="display: flex; align-items: center; gap: 10px; flex: 1; max-width: 480px; min-width: 260px; justify-content: flex-end;">
-          <div style="position: relative; flex: 1; max-width: 300px;">
-            <span style="position: absolute; inset-y: 0; left: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8; pointer-events: none; font-size: 0.85rem;">
-              <i class="fa-solid fa-magnifying-glass"></i>
-            </span>
-            <input type="text" id="mainSearch" placeholder="Пошук послуг, оголошень... (Enter)" style="width: 100%; box-sizing: border-box; padding: 8px 12px 8px 34px; font-size: 0.82rem; background: rgba(255, 255, 255, 0.08); color: white; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 10px; outline: none;" />
-          </div>
-
-          <a href="service.html" style="background: #d97706; color: white; padding: 8px 14px; border-radius: 10px; text-decoration: none; font-weight: bold; font-size: 0.8rem; white-space: nowrap; box-shadow: 0 2px 6px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 6px;">
-            <i class="fa-solid fa-bullhorn"></i> <span class="hidden sm:inline">Реклама</span>
-          </a>
-        </div>
-      </div>
-    </header>
+<body class="min-h-screen flex flex-col justify-between">
 
     <!-- НАВІГАЦІЯ -->
-    <nav>
-        <a href="index.html"><i class="fa-solid fa-house mr-1"></i> Головна</a>
-        <a href="baza.html"><i class="fa-solid fa-book-open mr-1"></i> База знань</a>
-        <a href="service.html"><i class="fa-solid fa-screwdriver-wrench mr-1"></i> Сервіс</a>
-        <a href="chat.html"><i class="fa-solid fa-comments mr-1"></i> Чат</a>
-    </nav>
-
-    <!-- ОСНОВНІ КАРТКИ -->
-    <div class="container">
-      <div class="card">
-        <h2 id="regionTitleCard">📖 Регіональний огляд</h2>
-        <p id="regionDescText">Ви переглядаєте інформацію по обраному регіону України. Доступні послуги виїзду майстрів, діагностика та підтримка.</p>
-        <div style="background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 8px; padding: 15px; margin-top: 15px; text-align: center;">
-          <h3 style="margin-top: 0; font-size: 0.95rem; color: #1e3a8a;">▶ Наш YouTube-канал</h3>
-          <p style="font-size: 0.8rem; color: #64748b; margin-bottom: 12px;">Відеовипуски, огляди техніки та новини.</p>
-          <a href="https://www.youtube.com/@NeoService-3" target="_blank" style="display: inline-block; padding: 8px 20px; background-color: #dc2626; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 0.85rem;">
-            Дивитися YouTube
-          </a>
-        </div>
-      </div>
-
-      <div class="card" id="services">
-        <h2>🛠️ Послуги в регіоні</h2>
-        <ul style="padding-left: 20px; font-size: 0.9rem; line-height: 1.6; color: #334155;">
-          <li>💻 Ремонт комп'ютерів та оргтехніки</li>
-          <li>🖨️ Обслуговування принтерів та друк</li>
-          <li>🚗 Автоелектрика та комп'ютерна діагностика</li>
-          <li>⚡ Електротранспорт (ремонт та збірка)</li>
-          <li>🌐 Веброзробка, дизайн та реклама</li>
-        </ul>
-        <p style="font-size: 0.85rem; color: #64748b; margin-top: 15px; font-style: italic;">Оперативна допомога та виїзд за домовленістю</p>
-      </div>
-
-      <!-- Особистий кабінет -->
-      <div class="card" id="auth-section">
-        <h2>🔒 Особистий кабінет</h2>
-        <div id="loggedOutView">
-          <form id="emailAuthForm" onsubmit="return false;" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">
-            <input type="email" id="authEmail" placeholder="Електронна пошта" style="padding: 8px; border-radius: 4px; border: 1px solid #cbd5e1; outline: none; font-size: 0.85rem;" required />
-            <input type="password" id="authPassword" placeholder="Пароль" style="padding: 8px; border-radius: 4px; border: 1px solid #cbd5e1; outline: none; font-size: 0.85rem;" required />
-            <div style="display: flex; gap: 8px;">
-              <button type="button" id="loginEmailBtn" class="btn btn-primary" style="flex: 1; padding: 8px; font-size: 0.85rem;">Увійти</button>
-              <button type="button" id="registerEmailBtn" class="btn btn-success" style="flex: 1; padding: 8px; font-size: 0.85rem;">Реєстрація</button>
-            </div>
-          </form>
-          <button id="googleLoginBtn" class="btn btn-google" style="width: 100%; padding: 8px; font-size: 0.85rem;">Увійти через Google</button>
-        </div>
-
-        <div id="loggedInView" style="display: none;">
-          <div style="display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 8px 10px; border-radius: 6px; border: 1px solid #e2e8f0; margin-bottom: 12px;">
-            <div>
-              <span style="font-size: 0.75rem; color: #64748b;">Вітаємо,</span>
-              <div id="userEmailDisplay" style="font-weight: bold; color: #16a34a; font-size: 0.85rem; word-break: break-all;"></div>
-            </div>
-            <button id="logoutBtn" class="btn btn-danger" style="padding: 4px 8px; font-size: 0.75rem;">Вийти</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- БІЖУЧИЙ РЯДОК -->
-    <div style="width: 100%; background: linear-gradient(90deg, #1e3a8a, #3b82f6, #1e3a8a); color: white; padding: 12px 0; overflow: hidden; white-space: nowrap; box-shadow: inset 0 2px 5px rgba(0,0,0,0.2); margin: 20px 0; border-top: 2px solid #60a5fa; border-bottom: 2px solid #60a5fa;">
-      <div style="display: inline-block; animation: marquee 25s linear infinite; font-size: 1rem; font-style: italic; letter-spacing: 0.5px;">
-        ✨ «Світильник нозі моїй — слово Твоє, і світло для стежки моєї» &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 🕊️ «Ісус — дорога, істина і життя» &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 🙏 «Блаженні миротворці, бо вони синами Божими назвуться» &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-      </div>
-    </div>
-
-    <!-- БАНЕРИ ТА КЕРУВАННЯ -->
-    <section style="max-width: 1100px; margin: 25px auto; padding: 0 15px;">
-      <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px; align-items: stretch;" class="banner-trust-grid">
-        
-        <!-- Слайдер панорами міста -->
-        <div style="background: white; border-radius: 12px; border-top: 4px solid #1e3a8a; box-shadow: 0 4px 6px rgba(0,0,0,0.05); padding: 20px; position: relative; height: 320px; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end;">
-          <div id="bannerSliderContainer" style="position: absolute; inset: 0; width: 100%; height: 100%;">
-            <div class="banner-slide active" style="background: linear-gradient(to top, rgba(15,23,42,0.9), rgba(15,23,42,0.2)), url('https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=1000') center/cover; padding: 25px; display: flex; flex-direction: column; justify-content: flex-end; height: 100%; box-sizing: border-box;">
-              <span style="background: rgba(217,119,6,0.8); color: white; font-size: 0.7rem; font-weight: bold; padding: 3px 10px; border-radius: 20px; width: max-content; margin-bottom: 8px;">🏙️ Панорама регіону</span>
-              <h3 style="color: white; margin: 0 0 5px 0; font-size: 1.25rem;">Ласкаво просимо!</h3>
-            </div>
-          </div>
-          <div id="sliderDotsContainer" style="position: absolute; bottom: 12px; right: 20px; display: flex; gap: 6px; z-index: 10;">
-            <button onclick="setSlide(0)" class="slider-dot" style="width: 10px; height: 10px; border-radius: 50%; border: none; background: #d97706; cursor: pointer;"></button>
-          </div>
-        </div>
-
-        <div style="display: flex; flex-direction: column; gap: 12px; height: 320px;">
-          
-          <!-- ПАНЕЛЬ КЕРУВАННЯ (ПРАВА КОЛОНКА) -->
-          <div style="background: white; border-radius: 12px; border-top: 4px solid #d97706; box-shadow: 0 4px 6px rgba(0,0,0,0.05); padding: 12px; display: flex; align-items: center; gap: 12px; height: 145px; box-sizing: border-box;">
-            <div style="width: 65px; height: 85px; border-radius: 8px; overflow: hidden; border: 2px solid #d97706; flex-shrink: 0; background: #e2e8f0;">
-              <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300" alt="Користувач" style="width: 100%; height: 100%; object-fit: cover;">
-            </div>
-            <div style="display: flex; flex-direction: column; justify-content: space-between; width: 100%; height: 100%;">
-              <div>
-                <div style="font-size: 0.6rem; text-transform: uppercase; font-weight: bold; color: #d97706;">УПРАВЛІННЯ КОНТЕНТОМ</div>
-                <h4 style="font-size: 0.72rem; margin: 2px 0 0 0; color: #1e3a8a;" id="userRoleStatusText">Авторизуйтеся</h4>
-              </div>
-
-              <!-- КНОПКА АДМІНІСТРАТОРА (тільки для панорами міста) -->
-              <button id="adminCollageBtn" onclick="openCollageAdmin()" style="display: none; background: #1e3a8a; color: white; border: none; padding: 5px 8px; border-radius: 6px; font-size: 0.68rem; font-weight: bold; cursor: pointer; width: 100%; box-sizing: border-box;">
-                🏙️ Оновити панораму міста
-              </button>
-
-              <!-- КНОПКА ЗАРЕЄСТРОВАНОГО КОРИСТУВАЧА (для новин / історії / спонсорства) -->
-              <button id="userNewsBtn" onclick="openNewsAdmin()" style="display: none; background: #16a34a; color: white; border: none; padding: 5px 8px; border-radius: 6px; font-size: 0.68rem; font-weight: bold; cursor: pointer; width: 100%; box-sizing: border-box;">
-                📰 Додати новину / історію
-              </button>
-            </div>
-          </div>
-
-          <div style="background: white; border-radius: 12px; border-top: 4px solid #16a34a; box-shadow: 0 4px 6px rgba(0,0,0,0.05); padding: 12px; display: flex; flex-direction: column; justify-content: space-between; height: 163px; box-sizing: border-box;">
-            <div>
-              <div style="font-size: 0.65rem; text-transform: uppercase; font-weight: bold; color: #16a34a; margin-bottom: 3px;">
-                <i class="fa-solid fa-shield-halved"></i> Статус & Довіра
-              </div>
-              <p style="font-size: 0.75rem; color: #475569; margin: 0; line-height: 1.3;">
-                Регіональний інформаційний хаб — швидке вирішення технічних завдань та публікація важливих новин.
-              </p>
-            </div>
-            <a href="service.html" style="background: #f1f5f9; color: #1e3a8a; border: 1px solid #cbd5e1; padding: 6px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; text-decoration: none; text-align: center; display: block;">
-              Послуги сервісу &rarr;
+    <header class="border-b border-amber-500/30 bg-slate-950/90 sticky top-0 z-50 backdrop-blur-md">
+        <div class="max-w-6xl mx-auto px-4 flex flex-wrap items-center justify-between h-auto sm:h-14 py-2.5 sm:py-0 gap-2">
+            
+            <a href="index.html" class="flex items-center gap-2 group">
+                <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-amber-500 to-amber-600 flex items-center justify-center text-lg font-bold shadow-md group-hover:scale-105 transition-transform">🕊️</div>
+                <div>
+                    <div class="font-black text-sm tracking-wider uppercase">NEOSERVICE<span class="text-amber-500">.KS.UA</span></div>
+                    <div class="text-[8px] opacity-75 tracking-widest uppercase text-amber-200/80">Всеукраїнський портал</div>
+                </div>
             </a>
-          </div>
 
-        </div>
-      </div>
-    </section>
+            <!-- КНОПКА ВИБОРУ МІСТА ТА ОБЛАСТІ -->
+            <div class="flex items-center gap-2">
+                <button onclick="openCityPickerModal()" class="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 border border-amber-500/50 rounded-xl text-amber-300 text-xs font-bold transition-all flex items-center gap-2 shadow-sm">
+                    <i class="fa-solid fa-location-dot text-amber-400"></i>
+                    <span id="currentCityBtnText">Завантаження...</span>
+                    <i class="fa-solid fa-chevron-down text-[10px] opacity-70"></i>
+                </button>
+            </div>
 
-    <!-- СТРІЧКА НОВИН ТА ІСТОРІЇ МІСТА -->
-    <section style="max-width: 1100px; margin: 25px auto; padding: 0 15px;">
-      <div style="background: white; border-radius: 12px; border-top: 4px solid #2563eb; box-shadow: 0 4px 6px rgba(0,0,0,0.05); padding: 20px;">
-        <h3 style="margin-top: 0; color: #1e3a8a; font-size: 1.1rem; border-bottom: 2px solid #f1f5f9; padding-bottom: 8px;">
-          <i class="fa-solid fa-newspaper text-blue-600 mr-2"></i> Міські новини, історія та спонсорство
-        </h3>
-        <div id="cityNewsList" style="margin-top: 15px; display: flex; flex-direction: column; gap: 12px;">
-          <div style="padding: 10px; background: #f8fafc; border-left: 4px solid #2563eb; border-radius: 6px;">
-            <b style="color: #1e3a8a;">Завантаження новин...</b>
-          </div>
+            <div class="flex items-center gap-3 text-xs font-semibold">
+                <div id="authStatusBadge" class="text-[10px] px-2 py-0.5 rounded-md bg-slate-900 border border-slate-700 text-slate-400">
+                    Гість
+                </div>
+                <a href="index.html" class="hover:text-amber-400 transition-colors flex items-center gap-1"><i class="fa-solid fa-house text-amber-500"></i> Головна</a>
+                <a href="service.html" class="hover:text-amber-400 transition-colors flex items-center gap-1"><i class="fa-solid fa-wrench text-amber-500"></i> Сервіс</a>
+            </div>
         </div>
-      </div>
-    </section>
+    </header>
 
-    <!-- МОДАЛЬНЕ ВІКНО АДМІНІСТРАТОРА (ПАНОРАМА МІСТА) -->
-    <div id="adminCollageModal" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(8px); z-index: 9999; align-items: center; justify-content: center; padding: 15px;">
-      <div style="background: white; border-radius: 12px; border-top: 5px solid #1e3a8a; max-width: 480px; width: 100%; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); box-sizing: border-box;">
-        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px; margin-bottom: 15px;">
-          <h3 style="margin: 0; color: #1e3a8a; font-size: 1.1rem;">🏙️ Керування панорамою міста (Адмін)</h3>
-          <button onclick="closeCollageAdmin()" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #64748b;">✕</button>
+    <!-- ГОЛОВНИЙ КОНТЕЙНЕР МІСТА -->
+    <main class="max-w-6xl mx-auto px-4 py-8 flex-grow space-y-6 w-full relative z-10">
+        
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2 city-card p-6 flex flex-col justify-between shadow-2xl relative overflow-hidden">
+                <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-amber-500/5 rounded-full blur-3xl pointer-events-none"></div>
+                <div>
+                    <span id="cityRegion" class="px-3.5 py-1 rounded-full bg-amber-500/20 text-amber-300 text-xs font-bold border border-amber-500/40 shadow-sm">Завантаження...</span>
+                    <h1 id="cityName" class="font-serif-sacred text-4xl sm:text-5xl font-bold text-amber-300 mt-3 mb-3 tracking-tight">Завантаження...</h1>
+                    <p id="cityDescription" class="text-xs sm:text-sm text-slate-300 leading-relaxed whitespace-pre-wrap font-normal">
+                        Офіційний інформаційний портал громади. Архівні хроніки, розклад руху транспорту, контактні дані та новини регіону.
+                    </p>
+                </div>
+                <div class="mt-6 pt-4 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-400">
+                    <div class="flex items-center gap-1.5"><i class="fa-solid fa-envelope-open-text text-amber-400"></i> Поштові індекси: <span id="cityIndexes" class="text-amber-100 font-bold">Центральне відділення</span></div>
+                    <div class="text-[11px] italic opacity-75">🕊️ Активна інформаційна мережа</div>
+                </div>
+            </div>
+
+            <!-- ПАНОРАМА МІСТА ТА КНОПКА ЗМІНИ -->
+            <div class="city-card p-5 flex flex-col items-center text-center justify-between shadow-2xl">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-amber-400 mb-2 flex items-center gap-1.5">
+                    <i class="fa-solid fa-camera"></i> Панорама міста
+                </h3>
+                <div class="w-full h-40 rounded-2xl overflow-hidden border border-amber-500/30 mb-3 bg-slate-950 shadow-inner group relative">
+                    <img id="cityPhoto" src="https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=500" alt="Вид міста" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                </div>
+                <!-- Кнопка оновлення панорами -->
+                <button onclick="changePhotoAdmin()" class="w-full py-2 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-sm">
+                    <i class="fa-solid fa-pen-to-square"></i> Оновити панораму міста
+                </button>
+            </div>
         </div>
-        <form id="collageAdminForm" style="display: flex; flex-direction: column; gap: 10px;" onsubmit="return false;">
-          <div>
-            <label style="font-size: 0.8rem; font-weight: bold; color: #334155;">Мітка:</label>
-            <input type="text" id="slideTag" placeholder="🏙️ Панорама міста" value="🏙️ Панорама міста" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.85rem;" required />
-          </div>
-          <div>
-            <label style="font-size: 0.8rem; font-weight: bold; color: #334155;">Заголовок:</label>
-            <input type="text" id="slideTitle" placeholder="Заголовок панорами" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.85rem;" required />
-          </div>
-          <div>
-            <label style="font-size: 0.8rem; font-weight: bold; color: #334155;">Опис:</label>
-            <textarea id="slideDesc" rows="2" placeholder="Короткий опис..." style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.85rem;" required></textarea>
-          </div>
-          <div>
-            <label style="font-size: 0.8rem; font-weight: bold; color: #334155;">Посилання на фото (URL):</label>
-            <input type="url" id="slideImage" placeholder="https://..." style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.85rem;" required />
-          </div>
-          <div style="display: flex; gap: 10px; margin-top: 10px;">
-            <button type="button" onclick="closeCollageAdmin()" style="flex: 1; padding: 10px; background: #94a3b8; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">Скасувати</button>
-            <button type="button" id="saveCollageBtn" style="flex: 1; padding: 10px; background: #1e3a8a; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">Зберегти панораму</button>
-          </div>
-        </form>
-      </div>
+
+        <!-- РЕКЛАМНА ЗОНА АДМІНІСТРАТОРА -->
+        <div class="admin-ad-zone rounded-2xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-2xl">
+            <div class="flex items-center gap-3.5">
+                <div class="w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 text-xl shadow-md">📢</div>
+                <div>
+                    <h4 class="text-sm font-bold text-amber-300 flex items-center gap-2">Ексклюзивний рекламний простір громади</h4>
+                    <p class="text-xs text-slate-400">Розміщення офіційних банерів та пропозицій бізнесу узгоджується виключно через адміністрацію порталу.</p>
+                </div>
+            </div>
+            <div id="adminAdContainer" class="w-full sm:w-auto text-right">
+                <a id="adLink" href="service.html" class="px-5 py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-extrabold text-xs rounded-xl shadow-lg inline-block transition-transform hover:scale-105">
+                    Спонсор міста: Замовити банер ➔
+                </a>
+            </div>
+        </div>
+
+        <!-- СТРІЧКА НОВИН МІСТА -->
+        <div class="city-card p-6 space-y-5 shadow-2xl">
+            <div class="flex flex-wrap items-center justify-between gap-3 border-b border-amber-500/20 pb-4">
+                <div>
+                    <h3 class="text-xl font-bold text-amber-300 flex items-center gap-2">
+                        <i class="fa-solid fa-newspaper text-amber-400"></i> Новини та події громади
+                    </h3>
+                    <p class="text-xs text-slate-400 mt-0.5">Клацніть на картку новини, щоб відкрити її у повноекранному форматі з відео та медіа</p>
+                </div>
+                <button onclick="openAddNewsModal()" class="btn-divine px-4 py-2 rounded-xl text-xs flex items-center gap-2 shadow-md">
+                    <i class="fa-solid fa-plus-circle"></i> Додати новину міста
+                </button>
+            </div>
+            
+            <div id="cityNewsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+        </div>
+
+    </main>
+
+    <!-- МОДАЛЬНЕ ВІКНО ВИБОРУ РЕГІОНУ ТА МІСТА -->
+    <div id="cityPickerModal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md hidden items-center justify-center p-4 z-50">
+        <div class="bg-slate-900 border border-amber-500/40 rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <h3 class="text-base font-bold text-amber-300 flex items-center gap-2">
+                    📍 Вибір області та міста
+                </h3>
+                <button onclick="closeCityPickerModal()" class="text-slate-400 hover:text-white font-bold">✕</button>
+            </div>
+
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-300 mb-1">1. Область *</label>
+                    <select id="modalRegionSelect" onchange="onModalRegionChange(this.value)" class="w-full px-3.5 py-2 text-xs bg-slate-950 border border-slate-700 rounded-xl text-amber-300 font-bold focus:outline-none cursor-pointer"></select>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-300 mb-1">2. Місто *</label>
+                    <select id="modalCitySelect" class="w-full px-3.5 py-2 text-xs bg-slate-950 border border-slate-700 rounded-xl text-white font-bold focus:outline-none cursor-pointer"></select>
+                </div>
+            </div>
+
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="closeCityPickerModal()" class="px-4 py-2 bg-slate-800 text-slate-300 text-xs font-bold rounded-xl">Скасувати</button>
+                <button onclick="applyCitySelection()" class="btn-divine px-5 py-2 text-xs rounded-xl">Перейти до міста</button>
+            </div>
+        </div>
     </div>
 
-    <!-- МОДАЛЬНЕ ВІКНО КОРИСТУВАЧА (НОВИНИ, ІСТОРІЯ МІСТА, СПОНСОРСТВО) -->
-    <div id="adminNewsModal" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(8px); z-index: 9999; align-items: center; justify-content: center; padding: 15px;">
-      <div style="background: white; border-radius: 12px; border-top: 5px solid #16a34a; max-width: 480px; width: 100%; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); box-sizing: border-box;">
-        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px; margin-bottom: 15px;">
-          <h3 style="margin: 0; color: #16a34a; font-size: 1.1rem;">📰 Додати новину / історію / спонсорство</h3>
-          <button onclick="closeNewsAdmin()" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #64748b;">✕</button>
+    <!-- 1. ПОВНОЕКРАННЕ ВІКНО ПЕРЕГЛЯДУ НОВИНИ -->
+    <div id="newsDetailModal" class="fixed inset-0 z-50 hidden divine-fullscreen-modal backdrop-blur-2xl items-center justify-center p-3 sm:p-6 overflow-y-auto">
+        <div class="god-light-beam"></div>
+
+        <div class="relative w-full max-w-5xl my-auto z-10 flex flex-col max-h-[95vh]">
+            <div class="flex items-center justify-between border-b border-amber-500/30 pb-3 mb-3">
+                <div class="flex items-center gap-2">
+                    <span id="detailNewsTag" class="px-3.5 py-1 rounded-full bg-amber-500/20 text-amber-300 text-xs font-bold border border-amber-500/40 shadow-sm">📢 Новина міста</span>
+                    <span id="detailNewsDate" class="text-xs font-semibold italic text-slate-400"></span>
+                </div>
+                <button onclick="closeNewsDetailModal()" class="w-9 h-9 rounded-full bg-amber-500/10 border border-amber-500/40 text-amber-400 hover:bg-amber-500 hover:text-slate-950 flex items-center justify-center font-bold transition-all shadow-md">✕</button>
+            </div>
+
+            <div class="sacred-scroll rounded-3xl p-6 sm:p-10 relative overflow-y-auto max-h-[85vh] space-y-6">
+                <h2 id="detailNewsTitle" class="font-serif-sacred text-2xl sm:text-4xl font-bold text-amber-300 text-center leading-tight"></h2>
+
+                <div id="detailGalleryContainer" class="hidden relative w-full h-64 sm:h-96 rounded-2xl overflow-hidden border-2 border-amber-500/30 shadow-2xl bg-black">
+                    <img id="detailNewsPhoto" src="" alt="Фото новини" class="w-full h-full object-cover transition-all duration-300">
+                    <button id="prevPhotoBtn" onclick="prevGalleryPhoto()" class="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-slate-950/80 border border-amber-500/40 text-amber-300 hover:bg-amber-500 hover:text-slate-950 flex items-center justify-center font-bold transition-all shadow-lg hidden">◄</button>
+                    <button id="nextPhotoBtn" onclick="nextGalleryPhoto()" class="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-slate-950/80 border border-amber-500/40 text-amber-300 hover:bg-amber-500 hover:text-slate-950 flex items-center justify-center font-bold transition-all shadow-lg hidden">►</button>
+                    <div id="galleryCounter" class="absolute bottom-3 right-3 px-3 py-1 bg-slate-950/80 rounded-full border border-amber-500/30 text-[10px] text-amber-300 font-bold hidden"></div>
+                </div>
+
+                <div id="detailVideoContainer" class="hidden w-full aspect-video rounded-2xl overflow-hidden border-2 border-amber-500/30 shadow-2xl bg-black"></div>
+
+                <div id="detailNewsText" class="font-serif-sacred text-base sm:text-xl leading-relaxed text-slate-200 p-6 rounded-2xl border border-slate-800 bg-slate-900/60 shadow-inner whitespace-pre-wrap"></div>
+
+                <div id="detailAdBannerContainer" class="hidden rounded-2xl p-4 border border-amber-500/40 bg-gradient-to-r from-amber-500/10 to-slate-900 flex items-center justify-between gap-4">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">⭐</span>
+                        <div>
+                            <div class="text-[10px] uppercase font-bold text-amber-400">Спеціальна прокладка / Реклама</div>
+                            <div id="detailAdText" class="text-xs text-slate-300 font-semibold">Партнерський матеріял або оголошення</div>
+                        </div>
+                    </div>
+                    <a id="detailAdLink" href="#" target="_blank" class="px-4 py-2 bg-amber-500 text-slate-950 font-bold text-xs rounded-xl shadow hover:bg-amber-400 whitespace-nowrap">Перейти ➔</a>
+                </div>
+
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-amber-500/30">
+                    <div id="ownerActionsBlock" class="flex items-center gap-2 w-full sm:w-auto">
+                        <button onclick="triggerEditNews()" class="px-4 py-2 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400 text-amber-300 text-xs font-bold rounded-xl transition-all flex items-center gap-1.5"><i class="fa-solid fa-pen-to-square"></i> Редагувати</button>
+                        <button onclick="triggerDeleteNews()" class="px-4 py-2 bg-rose-500/20 hover:bg-rose-500/30 border border-rose-400 text-rose-400 text-xs font-bold rounded-xl transition-all flex items-center gap-1.5"><i class="fa-solid fa-trash"></i> Видалити</button>
+                    </div>
+
+                    <button onclick="closeNewsDetailModal()" class="btn-divine w-full sm:w-auto px-6 py-2.5 text-xs rounded-xl">Закрити перегляд</button>
+                </div>
+            </div>
         </div>
-        <form id="newsAdminForm" style="display: flex; flex-direction: column; gap: 10px;" onsubmit="return false;">
-          <div>
-            <label style="font-size: 0.8rem; font-weight: bold; color: #334155;">Категорія:</label>
-            <select id="newsCategory" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.85rem;">
-              <option value="Новина міста">📰 Новина міста</option>
-              <option value="Історія міста">🏛️ Історія міста</option>
-              <option value="Спонсорство">🤝 Спонсорство</option>
-            </select>
-          </div>
-          <div>
-            <label style="font-size: 0.8rem; font-weight: bold; color: #334155;">Заголовок:</label>
-            <input type="text" id="newsTitle" placeholder="Заголовок публікації..." style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.85rem;" required />
-          </div>
-          <div>
-            <label style="font-size: 0.8rem; font-weight: bold; color: #334155;">Текст повідомлення:</label>
-            <textarea id="newsContent" rows="3" placeholder="Опишіть новину або історичний факт..." style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.85rem;" required></textarea>
-          </div>
-          <div style="display: flex; gap: 10px; margin-top: 10px;">
-            <button type="button" onclick="closeNewsAdmin()" style="flex: 1; padding: 10px; background: #94a3b8; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">Скасувати</button>
-            <button type="button" id="saveNewsBtn" style="flex: 1; padding: 10px; background: #16a34a; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">Опублікувати</button>
-          </div>
-        </form>
-      </div>
     </div>
 
-    <footer>
-        <p>© 2026 Neoservice.ks.ua — Регіональний інформаційно-сервісний хаб.</p>
+    <!-- 2. МОДАЛЬНЕ ВІКНО СТВОРЕННЯ / РЕДАГУВАННЯ НОВИНИ -->
+    <div id="addNewsModal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md hidden items-center justify-center p-4 z-50">
+        <div class="bg-slate-900 border border-amber-500/40 rounded-2xl p-6 max-w-lg w-full shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <h3 id="addModalTitle" class="text-lg font-bold text-amber-300 flex items-center gap-2">📰 Додати новину з медіа та рекламою</h3>
+                <button onclick="closeAddNewsModal()" class="text-slate-400 hover:text-white text-sm font-bold">✕</button>
+            </div>
+
+            <form onsubmit="saveCityNews(event)" class="space-y-3.5">
+                <input type="hidden" id="editNewsIndex" value="-1">
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-300 mb-1">Заголовок новини *</label>
+                    <input type="text" id="inputNewsTitle" required placeholder="Заголовок події..." class="w-full px-3.5 py-2 text-xs bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-amber-400">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-300 mb-1">Посилання на фотографії (через кому)</label>
+                    <input type="text" id="inputNewsPhotos" placeholder="https://photo1.jpg, https://photo2.jpg..." class="w-full px-3.5 py-2 text-xs bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-amber-400">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-300 mb-1">YouTube посилання на відео</label>
+                    <input type="text" id="inputNewsVideo" placeholder="https://www.youtube.com/watch?v=..." class="w-full px-3.5 py-2 text-xs bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-amber-400">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-300 mb-1">Текст новини *</label>
+                    <textarea id="inputNewsText" rows="5" required placeholder="Детальний опис новини, абзаци..." class="w-full px-3.5 py-2 text-xs bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-amber-400"></textarea>
+                </div>
+
+                <div class="p-3 bg-slate-950/80 rounded-xl border border-amber-500/20 space-y-2">
+                    <div class="text-[11px] font-bold text-amber-400">⭐ Рекламний блок у новині (За бажанням)</div>
+                    <div>
+                        <input type="text" id="inputAdText" placeholder="Текст оголошення чи назва спонсора" class="w-full px-3 py-1.5 text-xs bg-slate-900 border border-slate-700 rounded-lg text-white mb-1.5">
+                        <input type="url" id="inputAdLink" placeholder="Посилання на сайт спонсора (https://...)" class="w-full px-3 py-1.5 text-xs bg-slate-900 border border-slate-700 rounded-lg text-white">
+                    </div>
+                </div>
+
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeAddNewsModal()" class="px-4 py-2 bg-slate-800 text-slate-300 text-xs font-bold rounded-xl hover:bg-slate-700">Скасувати</button>
+                    <button type="submit" class="btn-divine px-5 py-2 text-xs rounded-xl">Зберегти новину</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-950 border-t border-slate-800 text-slate-400 text-xs py-5 text-center relative z-10">
+        <p>© 2026 Neoservice.ks.ua — Всеукраїнський портал міст та громад.</p>
     </footer>
 
-    <!-- СКРИПТИ FIREBASE ТА ЛОГІКИ -->
+    <!-- FIREBASE АВТОРИЗАЦІЯ -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBlKoP6-M8tdrKq88bSdnWSnak5Gpddnpk",
@@ -378,191 +343,634 @@
             projectId: "neoservice-ks-ua",
             storageBucket: "neoservice-ks-ua.firebasestorage.app",
             messagingSenderId: "528941827813",
-            appId: "1:528941827813:web:354ef989d200087634b60c",
-            measurementId: "G-BYGHEHVYY3"
+            appId: "1:528941827813:web:354ef989d200087634b60c"
         };
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
-        const db = getFirestore(app);
 
-        // Динамічне підлаштування заголовка за параметрами URL (регіон/місто)
-        const urlParams = new URLSearchParams(window.location.search);
-        const regionName = urlParams.get('name');
-        const cityName = urlParams.get('city');
-        if (regionName && cityName) {
-            document.getElementById('regionTitleCard').textContent = `📖 Сервісний центр: м. ${cityName}`;
-            document.getElementById('regionHeaderSubtitle').textContent = `${regionName} • м. ${cityName}`;
-            document.getElementById('regionDescText').textContent = `Офіційне представництво та технічний супровід у місті ${cityName} (${regionName}).`;
-        }
+        let currentUser = null;
 
-        // Авторизація
-        const loggedOutView = document.getElementById('loggedOutView');
-        const loggedInView = document.getElementById('loggedInView');
-        const userEmailDisplay = document.getElementById('userEmailDisplay');
-        const adminCollageBtn = document.getElementById('adminCollageBtn');
-        const userNewsBtn = document.getElementById('userNewsBtn');
-        const userRoleStatusText = document.getElementById('userRoleStatusText');
-
-        document.getElementById('loginEmailBtn')?.addEventListener('click', async () => {
-            const e = document.getElementById('authEmail').value, p = document.getElementById('authPassword').value;
-            if(!e || !p) return alert('Введіть пошту та пароль');
-            try { await signInWithEmailAndPassword(auth, e, p); } catch(err) { alert(err.message); }
-        });
-
-        document.getElementById('registerEmailBtn')?.addEventListener('click', async () => {
-            const e = document.getElementById('authEmail').value, p = document.getElementById('authPassword').value;
-            if(!e || !p) return alert('Введіть пошту та пароль');
-            try { await createUserWithEmailAndPassword(auth, e, p); alert('Успішна реєстрація!'); } catch(err) { alert(err.message); }
-        });
-
-        document.getElementById('googleLoginBtn')?.addEventListener('click', async () => {
-            try { await signInWithPopup(auth, new GoogleAuthProvider()); } catch(err) { alert(err.message); }
-        });
-
-        document.getElementById('logoutBtn')?.addEventListener('click', () => signOut(auth));
-
-        // Контроль прав доступу
         onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+            const badge = document.getElementById('authStatusBadge');
             if (user) {
-                loggedOutView.style.display = 'none';
-                loggedInView.style.display = 'block';
-                userEmailDisplay.textContent = user.email;
-
-                // Будь-який зареєстрований користувач може додавати новини / історію
-                userNewsBtn.style.display = 'block';
-
-                // ТІЛЬКИ адміністратор (kostopilservice@gmail.com) може оновлювати панораму міста
-                if (user.email === 'kostopilservice@gmail.com') {
-                    adminCollageBtn.style.display = 'block';
-                    userRoleStatusText.textContent = 'Адміністратор (повний доступ)';
-                } else {
-                    adminCollageBtn.style.display = 'none';
-                    userRoleStatusText.textContent = 'Зареєстрований користувач';
-                }
+                badge.textContent = `👤 ${user.email.split('@')[0]}`;
+                badge.className = "text-[10px] px-2 py-0.5 rounded-md bg-amber-500/20 border border-amber-500/40 text-amber-300 font-bold";
             } else {
-                loggedOutView.style.display = 'block';
-                loggedInView.style.display = 'none';
-                adminCollageBtn.style.display = 'none';
-                userNewsBtn.style.display = 'none';
-                userRoleStatusText.textContent = 'Авторизуйтеся для дій';
+                badge.textContent = "Гість";
+                badge.className = "text-[10px] px-2 py-0.5 rounded-md bg-slate-900 border border-slate-700 text-slate-400";
             }
         });
 
-        // Збереження панорами міста (Тільки для Адміна)
-        document.getElementById('saveCollageBtn')?.addEventListener('click', async () => {
-            if (auth.currentUser?.email !== 'kostopilservice@gmail.com') {
-                return alert('Доступ заборонено! Тільки адміністратор може змінювати панораму міста.');
-            }
-            try {
-                await addDoc(collection(db, "collage_banners"), {
-                    tag: document.getElementById('slideTag').value,
-                    title: document.getElementById('slideTitle').value,
-                    desc: document.getElementById('slideDesc').value,
-                    imageUrl: document.getElementById('slideImage').value,
-                    createdAt: serverTimestamp()
-                });
-                alert('Панораму міста успішно оновлено!');
-                document.getElementById('collageAdminForm').reset();
-                closeCollageAdmin();
-            } catch(e) { alert('Помилка: ' + e.message); }
-        });
-
-        // Збереження новини / історії / спонсорства (Для будь-якого зареєстрованого)
-        document.getElementById('saveNewsBtn')?.addEventListener('click', async () => {
-            if (!auth.currentUser) return alert('Будь ласка, увійдіть у систему!');
-            try {
-                await addDoc(collection(db, "city_news"), {
-                    category: document.getElementById('newsCategory').value,
-                    title: document.getElementById('newsTitle').value,
-                    content: document.getElementById('newsContent').value,
-                    author: auth.currentUser.email,
-                    createdAt: serverTimestamp()
-                });
-                alert('Публікацію успішно додано!');
-                document.getElementById('newsAdminForm').reset();
-                closeNewsAdmin();
-            } catch(e) { alert('Помилка: ' + e.message); }
-        });
-
-        // Завантаження панорам із бази
-        onSnapshot(collection(db, "collage_banners"), (snapshot) => {
-            if (snapshot.empty) return;
-            const container = document.getElementById('bannerSliderContainer');
-            const dots = document.getElementById('sliderDotsContainer');
-            container.innerHTML = '';
-            dots.innerHTML = '';
-            let idx = 0;
-            snapshot.forEach(doc => {
-                const data = doc.data();
-                const active = idx === 0 ? 'active' : '';
-                container.innerHTML += `
-                    <div class="banner-slide ${active}" style="background: linear-gradient(to top, rgba(15,23,42,0.9), rgba(15,23,42,0.2)), url('${data.imageUrl}') center/cover; padding: 25px; display: flex; flex-direction: column; justify-content: flex-end; height: 100%; box-sizing: border-box;">
-                      <span style="background: rgba(217,119,6,0.8); color: white; font-size: 0.7rem; font-weight: bold; padding: 3px 10px; border-radius: 20px; width: max-content; margin-bottom: 8px;">${data.tag}</span>
-                      <h3 style="color: white; margin: 0 0 5px 0; font-size: 1.25rem;">${data.title}</h3>
-                      <p style="color: #cbd5e1; margin: 0; font-size: 0.8rem;">${data.desc}</p>
-                    </div>
-                `;
-                dots.innerHTML += `<button onclick="setSlide(${idx})" class="slider-dot" style="width: 10px; height: 10px; border-radius: 50%; border: none; background: ${idx === 0 ? '#d97706' : '#cbd5e1'}; cursor: pointer;"></button>`;
-                idx++;
-            });
-        });
-
-        // Завантаження новин та історії з бази
-        onSnapshot(query(collection(db, "city_news"), orderBy("createdAt", "desc")), (snapshot) => {
-            const list = document.getElementById('cityNewsList');
-            if (!list) return;
-            if (snapshot.empty) {
-                list.innerHTML = `<p style="color: #64748b; font-size: 0.85rem;">Поки немає новин чи історичних публікацій у цьому регіоні.</p>`;
-                return;
-            }
-            list.innerHTML = '';
-            snapshot.forEach(doc => {
-                const d = doc.data();
-                list.innerHTML += `
-                    <div style="background: #f8fafc; border-left: 4px solid #16a34a; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                            <span style="font-size: 0.7rem; font-weight: bold; background: #dcfce7; color: #166534; padding: 2px 6px; border-radius: 4px;">${d.category || 'Повідомлення'}</span>
-                            <span style="font-size: 0.7rem; color: #94a3b8;">Автор: ${d.author || 'Громада'}</span>
-                        </div>
-                        <h4 style="margin: 4px 0; font-size: 0.9rem; color: #1e3a8a;">${d.title}</h4>
-                        <p style="margin: 0; font-size: 0.8rem; color: #334155; line-height: 1.4;">${d.content}</p>
-                    </div>
-                `;
-            });
-        });
+        window.getCurrentUser = function() { return currentUser || auth.currentUser; };
     </script>
 
-    <!-- ГЛОБАЛЬНІ СКРИПТИ ІНТЕРФЕЙСУ -->
+    <!-- ПОВНА БАЗА ВСІХ МІСТ УКРАЇНИ ТА ЛОГІКА -->
     <script>
-        let currentSlideIdx = 0;
-        function setSlide(idx) {
-            const slides = document.querySelectorAll('.banner-slide');
-            const dots = document.querySelectorAll('.slider-dot');
-            if(!slides.length) return;
-            slides.forEach((s, i) => s.classList.toggle('active', i === idx));
-            dots.forEach((d, i) => d.style.background = i === idx ? '#d97706' : '#cbd5e1');
-            currentSlideIdx = idx;
-        }
-        window.setSlide = setSlide;
-
-        setInterval(() => {
-            const slides = document.querySelectorAll('.banner-slide');
-            if(slides.length > 1) {
-                currentSlideIdx = (currentSlideIdx + 1) % slides.length;
-                setSlide(currentSlideIdx);
+        const UKRAINE_REGIONS = {
+            volyn: { 
+                name: "Волинська область", 
+                mainCity: "Луцьк", 
+                cities: { 
+                    lutsk: "Луцьк", kovel: "Ковель", volodymyr: "Володимир", novovolynsk: "Нововолинськ", 
+                    kivertsi: "Ківерці", rozhyshche: "Рожище", kamin_kashyrskyi: "Камінь-Каширський", 
+                    luboml: "Любомль", horokhiv: "Горохів", ratne: "Ратне", manevychi: "Маневичі", 
+                    tsuma: "Цумань", shatsk: "Шацьк", ivanychi: "Іваничі", lokachi: "Локачі", turiysk: "Турійськ" 
+                } 
+            },
+            rivne: { 
+                name: "Рівненська область", 
+                mainCity: "Рівне", 
+                cities: { 
+                    kostopil: "Костопіль", rivne: "Рівне", varash: "Вараш", dubno: "Дубно", sarny: "Сарни", 
+                    zdołbuniv: "Здолбунів", ostroh: "Острог", berezne: "Березне", radauly: "Радивилів", 
+                    rokytne: "Рокитне", korets: "Корець", dubrovytsia: "Дубровиця", mluniv: "Млинів", 
+                    hoschcha: "Гоща", klevan: "Клевань", zarichne: "Зарічне" 
+                } 
+            },
+            zhytomyr: { 
+                name: "Житомирська область", 
+                mainCity: "Житомир", 
+                cities: { 
+                    zhytomyr: "Житомир", berdychiv: "Бердичів", korosten: "Коростень", zviahel: "Звягель", 
+                    malyn: "Малин", baranivka: "Баранівка", ovruch: "Овруч", radomyshl: "Радомишль", 
+                    andrushivka: "Андрушівка", olevsk: "Олевськ", chudniv: "Чуднів", chornyakhiv: "Черняхів", 
+                    romaniv: "Романів", emilchyne: "Ємільчине", popilnya: "Попільня" 
+                } 
+            },
+            kyiv: { 
+                name: "Київська область", 
+                mainCity: "Київ", 
+                cities: { 
+                    kyiv: "Київ", bila_tserkva: "Біла Церква", brovary: "Бровари", borispil: "Бориспіль", 
+                    irpin: "Ірпінь", bucha: "Буча", vasylkiv: "Васильків", fastiv: "Фастів", vyshhorod: "Вишгород", 
+                    obukhiv: "Обухів", boyarka: "Боярка", pereyaslav: "Переяслав", kaharlyk: "Кагарлик", 
+                    yagotyn: "Яготин", skvyra: "Сквира", ukrainka: "Українка", berezan: "Березань", 
+                    bohuslav: "Богуслав", tetiyiv: "Тетіїв", tarashcha: "Тараща", hostomel: "Гостомель", 
+                    vyshneve: "Вишневе", ivankiv: "Іванків", borodyanka: "Бородянка" 
+                } 
+            },
+            chernihiv: { 
+                name: "Чернігівська область", 
+                mainCity: "Чернігів", 
+                cities: { 
+                    chernihiv: "Чернігів", nizhyn: "Ніжин", pryluky: "Прилуки", bakhmach: "Бахмач", 
+                    nosivka: "Носівка", novhorod_siverskyi: "Новгород-Сіверський", korukivka: "Корюківка", 
+                    horodnya: "Городня", mena: "Мена", snosvk: "Сновськ", ichnya: "Ічня", bobrovytsia: "Бобровиця", 
+                    borzna: "Борзна", oster: "Остер", semenivka: "Семенівка" 
+                } 
+            },
+            sumy: { 
+                name: "Сумська область", 
+                mainCity: "Суми", 
+                cities: { 
+                    sumy: "Суми", konotop: "Конотоп", shostka: "Шостка", okhtyrka: "Охтирка", romny: "Ромни", 
+                    hlukhiv: "Глухів", lebedyn: "Лебедин", krostlevets: "Кролевець", trostyanets: "Тростянець", 
+                    bilopillia: "Білопілля", putyvl: "Путивль", buryn: "Буринь", vorozhba: "Ворожба", 
+                    seredyna_buda: "Середина-Буда" 
+                } 
+            },
+            lviv: { 
+                name: "Львівська область", 
+                mainCity: "Львів", 
+                cities: { 
+                    lviv: "Львів", drohobych: "Дрогобич", stryi: "Стрий", chervonohrad: "Червоноград", 
+                    sambir: "Самбір", boryslav: "Борислав", novoyavorivsk: "Новояворівськ", truskavets: "Трускавець", 
+                    novyi_rozdil: "Новий Розділ", zolochiv: "Золочів", brody: "Броди", sokal: "Сокаль", 
+                    yavoriv: "Яворів", zhovkva: "Жовква", zhydachiv: "Жидачів", rava_ruska: "Рава-Руська", 
+                    kamianka_buzka: "Кам'янка-Бузька", busk: "Буськ", morshyn: "Моршин", horodok: "Городок", 
+                    mykolaiv_lviv: "Миколаїв", skole: "Сколе", peremyshlyany: "Перемишляни" 
+                } 
+            },
+            ternopil: { 
+                name: "Тернопільська область", 
+                mainCity: "Тернопіль", 
+                cities: { 
+                    ternopil: "Тернопіль", chortkiv: "Чортків", kremenets: "Кременець", berezhany: "Бережани", 
+                    zbarazh: "Збараж", terebovlya: "Теребовля", buchach: "Бучач", borshchiv: "Борщів", 
+                    zboriv: "Зборів", zalishchyky: "Заліщики", lanivtsi: "Ланівці", pochaiv: "Почаїв", 
+                    kopychyntsi: "Копичинці", pidhaitsi: "Підгайці", shumsk: "Шумськ" 
+                } 
+            },
+            khmelnytskyi: { 
+                name: "Хмельницька область", 
+                mainCity: "Хмельницький", 
+                cities: { 
+                    khmelnytskyi: "Хмельницький", kamianets: "Кам'янець-Подільський", shepetivka: "Шепетівка", 
+                    netishyn: "Нітешин", slavuta: "Славута", starokostyantyniv: "Старокостянтинів", 
+                    polonne: "Полонне", krasyliv: "Красилів", volochysk: "Волочиськ", horodok_khm: "Городок", 
+                    dunaiivtsi: "Дунаївці", iziaslav: "Ізяслав", derazhnya: "Деражня" 
+                } 
+            },
+            vinnytsia: { 
+                name: "Вінницька область", 
+                mainCity: "Вінниця", 
+                cities: { 
+                    vinnytsia: "Вінниця", zhmerynka: "Жмеринка", mohyliv: "Могилів-Подільський", koziatyn: "Козятин", 
+                    khmilnyk: "Хмільник", haisyn: "Гайсин", ladyzhyn: "Ладижин", tulchyn: "Тульчин", 
+                    bershad: "Бершадь", bar: "Бар", kalynivka: "Калинівка", hnivan: "Гнівань", 
+                    illintsi: "Іллінці", nemyriv: "Немирів", yampol: "Ямпіль", pohrebyshche: "Погребище" 
+                } 
+            },
+            cherkasy: { 
+                name: "Черкаська область", 
+                mainCity: "Черкаси", 
+                cities: { 
+                    cherkasy: "Черкаси", uman: "Умань", smila: "Сміла", zolotonosha: "Золотоноша", 
+                    kaniv: "Канів", korsun: "Корсунь-Шевченківський", zvenyhorodka: "Звенигородка", 
+                    shpola: "Шпола", vatutine: "Ватутіне", zhashkiv: "Жашків", talne: "Тальне", 
+                    kamianka: "Кам'янка", khrystynivka: "Христинівка", chyhyryn: "Чигирин", monastyryshche: "Монастирище" 
+                } 
+            },
+            poltava: { 
+                name: "Полтавська область", 
+                mainCity: "Полтава", 
+                cities: { 
+                    poltava: "Полтава", kremenchuk: "Кременчук", horishni_plavni: "Горішні Плавні", 
+                    lubny: "Лубни", myrhorod: "Миргород", hadiach: "Гадяч", pyriatyn: "Пирятин", 
+                    karlovka: "Карлівка", kobeliaky: "Кобеляки", zinkiv: "Зіньків", hrebinka: "Гребінка", 
+                    lokhvytsia: "Лохвиця", zavodske: "Заводське" 
+                } 
+            },
+            kharkiv: { 
+                name: "Харківська область", 
+                mainCity: "Харків", 
+                cities: { 
+                    kharkiv: "Харків", lozova: "Лозова", izium: "Ізюм", chuhuiv: "Чугуїв", 
+                    pervomaiskyi: "Первомайський", balakliia: "Балаклія", kupiansk: "Куп'янськ", 
+                    perekop: "Люботин", bohodukhiv: "Богодухів", zmiev: "Зміїв", valky: "Валки", 
+                    derhachi: "Дергачі", vovchansk: "Вовчанськ", barvinkove: "Барвінкове" 
+                } 
+            },
+            uzhhorod: { 
+                name: "Закарпатська область", 
+                mainCity: "Ужгород", 
+                cities: { 
+                    uzhhorod: "Ужгород", mukachevo: "Мукачево", khust: "Хуст", vynohradiv: "Виноградів", 
+                    berehove: "Берегове", rakhiv: "Рахів", svalyava: "Свалява", tyachiv: "Тячів", 
+                    chop: "Чоп", irshava: "Іршава", perchyn: "Перечин" 
+                } 
+            },
+            frankivsk: { 
+                name: "Івано-Франківська область", 
+                mainCity: "Івано-Франківськ", 
+                cities: { 
+                    frankivsk: "Івано-Франківськ", kalush: "Калуш", kolomyia: "Коломия", nadvirna: "Надвірна", 
+                    dolyna: "Долина", burshtyn: "Бурштин", perehinske: "Перегінське", bolekhiv: "Болехів", 
+                    sniatyn: "Снятин", tysmenytsia: "Тисмениця", horodenka: "Городенка", rohatyn: "Рогатин", 
+                    kosiv: "Косів", yaremche: "Яремче" 
+                } 
+            },
+            chernivtsi: { 
+                name: "Чернівецька область", 
+                mainCity: "Чернівці", 
+                cities: { 
+                    chernivtsi: "Чернівці", novodnistrovsk: "Новодністровськ", storozhynets: "Сторожинець", 
+                    khotyn: "Хотин", sokyryany: "Сокиряни", zaitseva: "Заставна", novoselytsia: "Новоселиця", 
+                    kitsman: "Кіцмань", vyzhnytsia: "Вижниця", hertsya: "Герца" 
+                } 
+            },
+            kropyvnytskyi: { 
+                name: "Кіровоградська область", 
+                mainCity: "Кропивницький", 
+                cities: { 
+                    kropyvnytskyi: "Кропивницький", oleksandriia: "Олександрія", svitlovodsk: "Світловодськ", 
+                    znamianka: "Знам'янка", novoukrainka: "Новоукраїнка", dolynnska: "Долинська", 
+                    haivoron: "Гайворон", novomyrhorod: "Новомиргород", mala_vyska: "Мала Виска", 
+                    bobrynets: "Бобринець" 
+                } 
+            },
+            dnipro: { 
+                name: "Дніпропетровська область", 
+                mainCity: "Дніпро", 
+                cities: { 
+                    dnipro: "Дніпро", kryvyi_rih: "Кривий Ріг", kamianske: "Кам'янське", nikopol: "Нікополь", 
+                    pavlohrad: "Павлоград", novomoskovsk: "Новомосковськ", zhovti_vody: "Жовті Води", 
+                    marhanets: "Марганець", pokrov: "Покров", synelnykove: "Синельникове", 
+                    pershotravensk: "Першотравенськ", ternivka: "Тернівка", vilnohirsk: "Вільногірськ", 
+                    piatykhatky: "П'ятихатки", apostolove: "Апостолове" 
+                } 
+            },
+            lugansk: { 
+                name: "Луганська область", 
+                mainCity: "Луганськ", 
+                cities: { 
+                    lugansk: "Луганськ", severodonetsk: "Сєвєродонецьк", lysychansk: "Лисичанськ", 
+                    alchevsk: "Алчевськ", krasnyi_luch: "Хрустальний", kadiivka: "Кадіївка", 
+                    rubizhne: "Рубіжне", sverdlovsk: "Довжанськ", krasnodon: "Сорокине", 
+                    popasna: "Попасна", kreminna: "Кремінна", starobilsk: "Старобільськ", svatove: "Сватове" 
+                } 
+            },
+            donetsk: { 
+                name: "Донецька область", 
+                mainCity: "Донецьк", 
+                cities: { 
+                    donetsk: "Донецьк", mariupol: "Маріуполь", makiyivka: "Макіївка", horlivka: "Горлівка", 
+                    kramatorsk: "Краматорськ", sloviansk: "Слов'янськ", yenakiyeve: "Єнакієве", 
+                    bakhmut: "Бахмут", pokrovsk: "Покровськ", kostiantynivka: "Костянтинівка", 
+                    khartsyzk: "Харцизьк", druzhkivka: "Дружківка", dobropillia: "Добропілля", 
+                    lyman: "Лиман", avdiyivka: "Авдіївка", toretsk: "Торецьк", selidove: "Селидове", 
+                    volnovakaha: "Волноваха", kurakhove: "Курахове" 
+                } 
+            },
+            odesa: { 
+                name: "Одеська область", 
+                mainCity: "Одеса", 
+                cities: { 
+                    odesa: "Одеса", izmail: "Ізмаїл", chornomorsk: "Чорноморськ", bilhorod_dnistrovskyi: "Білгород-Дністровський", 
+                    podilsk: "Подільськ", yuzhne: "Південне", kilia: "Кілія", reni: "Рені", 
+                    balta: "Балта", rozdilna: "Роздільна", bolhrad: "Болград", artsyz: "Арциз", 
+                    bilyaivka: "Біляївка", ovidiopol: "Овідіополь", tatarbunary: "Татарбунари" 
+                } 
+            },
+            mykolaiv: { 
+                name: "Миколаївська область", 
+                mainCity: "Миколаїв", 
+                cities: { 
+                    mykolaiv: "Миколаїв", pervomaisk: "Первомайськ", yuzhnoukrainsk: "Южноукраїнськ", 
+                    voznesensk: "Вознесенськ", novyi_buh: "Новий Буг", ochakiv: "Очаків", 
+                    snihurivka: "Снігурівка", bashtanka: "Баштанка" 
+                } 
+            },
+            kherson: { 
+                name: "Херсонська область", 
+                mainCity: "Херсон", 
+                cities: { 
+                    kherson: "Херсон", nova_kakhovka: "Нова Каховка", kakhovka: "Каховка", 
+                    olešky: "Олешки", henichesk: "Генічеськ", skadovsk: "Скадовськ", 
+                    beryslav: "Берислав", tavriysk: "Таврійськ" 
+                } 
+            },
+            zaporizhzhia: { 
+                name: "Запорізька область", 
+                mainCity: "Запоріжжя", 
+                cities: { 
+                    zaporizhzhia: "Запоріжжя", melitopol: "Мелітополь", berdiansk: "Бердянськ", 
+                    enerhodar: "Енергодар", tokmak: "Токмак", polohy: "Пологи", 
+                    dniprorudne: "Дніпрорудне", vilniansk: "Вільнянськ", oriakhiv: "Оріхів", 
+                    huliaipole: "Гуляйполе", vasylivka: "Василівка" 
+                } 
+            },
+            crimea: { 
+                name: "АР Крим", 
+                mainCity: "Сімферополь", 
+                cities: { 
+                    simferopol: "Сімферополь", sevastopol: "Севастополь", kerch: "Керч", 
+                    yevpatoria: "Євпаторія", yalta: "Ялта", feodosia: "Феодосія", 
+                    dzhankoy: "Джанкой", alushta: "Алушта", bakhchysarai: "Бахчисарай", 
+                    krasnoperekopsk: "Яни Капу", saky: "Саки", armiansk: "Армянськ" 
+                } 
             }
-        }, 5000);
+        };
 
-        function openCollageAdmin() { document.getElementById('adminCollageModal').style.display = 'flex'; }
-        function closeCollageAdmin() { document.getElementById('adminCollageModal').style.display = 'none'; }
-        window.openCollageAdmin = openCollageAdmin;
-        window.closeCollageAdmin = closeCollageAdmin;
+        let CUSTOM_CITY_DATA = {};
+        let currentRegionKey = 'kyiv';
+        let currentCityKey = 'kyiv';
 
-        function openNewsAdmin() { document.getElementById('adminNewsModal').style.display = 'flex'; }
-        function closeNewsAdmin() { document.getElementById('adminNewsModal').style.display = 'none'; }
-        window.openNewsAdmin = openNewsAdmin;
-        window.closeNewsAdmin = closeNewsAdmin;
+        function loadStorageData() {
+            const saved = localStorage.getItem('neoservice_ukraine_custom_v3');
+            if (saved) {
+                try { CUSTOM_CITY_DATA = JSON.parse(saved); } catch(e) { console.error(e); }
+            }
+        }
+
+        function saveStorageData() {
+            localStorage.setItem('neoservice_ukraine_custom_v3', JSON.stringify(CUSTOM_CITY_DATA));
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadStorageData();
+
+            const urlParams = new URLSearchParams(window.location.search);
+            let rParam = (urlParams.get('region') || '').toLowerCase();
+            let cParam = (urlParams.get('city') || urlParams.get('name') || '').toLowerCase();
+
+            let matchedRegionKey = null;
+            for (let rKey in UKRAINE_REGIONS) {
+                if (rKey === rParam || UKRAINE_REGIONS[rKey].name.toLowerCase().includes(rParam)) {
+                    matchedRegionKey = rKey;
+                    break;
+                }
+            }
+
+            if (matchedRegionKey) {
+                currentRegionKey = matchedRegionKey;
+            } else if (rParam) {
+                currentRegionKey = 'kyiv';
+            }
+
+            const regObj = UKRAINE_REGIONS[currentRegionKey];
+            let matchedCityKey = null;
+
+            if (cParam) {
+                for (let cKey in regObj.cities) {
+                    if (cKey === cParam || regObj.cities[cKey].toLowerCase() === cParam) {
+                        matchedCityKey = cKey;
+                        break;
+                    }
+                }
+            }
+
+            if (matchedCityKey) {
+                currentCityKey = matchedCityKey;
+            } else {
+                currentCityKey = Object.keys(regObj.cities)[0];
+            }
+
+            renderCurrentCity();
+        });
+
+        function getActiveCityData() {
+            const regObj = UKRAINE_REGIONS[currentRegionKey];
+            const cityName = regObj.cities[currentCityKey] || regObj.mainCity;
+            
+            const storageKey = `${currentRegionKey}_${currentCityKey}`;
+            if (!CUSTOM_CITY_DATA[storageKey]) {
+                CUSTOM_CITY_DATA[storageKey] = {
+                    name: cityName,
+                    regionName: regObj.name,
+                    description: `Офіційний інформаційний портал громади м. ${cityName} (${regObj.name}). Архівні хроніки, розклад руху транспорту, контактні дані та новини регіону.`,
+                    indexes: "Центральні відділення громади",
+                    photo: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=500",
+                    news: []
+                };
+            }
+            CUSTOM_CITY_DATA[storageKey].name = cityName;
+            CUSTOM_CITY_DATA[storageKey].regionName = regObj.name;
+            return CUSTOM_CITY_DATA[storageKey];
+        }
+
+        function renderCurrentCity() {
+            const data = getActiveCityData();
+
+            document.getElementById('currentCityBtnText').textContent = `${data.name} (${data.regionName.replace(' область', '')})`;
+            document.getElementById('cityRegion').textContent = data.regionName;
+            document.getElementById('cityName').textContent = data.name;
+            document.getElementById('cityDescription').textContent = data.description;
+            document.getElementById('cityIndexes').textContent = data.indexes;
+            document.getElementById('cityPhoto').src = data.photo;
+
+            renderNewsGrid();
+        }
+
+        function openCityPickerModal() {
+            const modalRegion = document.getElementById('modalRegionSelect');
+            modalRegion.innerHTML = '';
+            for (let rKey in UKRAINE_REGIONS) {
+                let opt = document.createElement('option');
+                opt.value = rKey;
+                opt.textContent = UKRAINE_REGIONS[rKey].name;
+                if (rKey === currentRegionKey) opt.selected = true;
+                modalRegion.appendChild(opt);
+            }
+            onModalRegionChange(currentRegionKey);
+            document.getElementById('cityPickerModal').classList.remove('hidden');
+            document.getElementById('cityPickerModal').classList.add('flex');
+        }
+
+        function closeCityPickerModal() {
+            document.getElementById('cityPickerModal').classList.remove('flex');
+            document.getElementById('cityPickerModal').classList.add('hidden');
+        }
+
+        function onModalRegionChange(rKey) {
+            const modalCity = document.getElementById('modalCitySelect');
+            modalCity.innerHTML = '';
+            const cities = UKRAINE_REGIONS[rKey].cities;
+            for (let cKey in cities) {
+                let opt = document.createElement('option');
+                opt.value = cKey;
+                opt.textContent = cities[cKey];
+                if (rKey === currentRegionKey && cKey === currentCityKey) opt.selected = true;
+                modalCity.appendChild(opt);
+            }
+        }
+
+        function applyCitySelection() {
+            const rKey = document.getElementById('modalRegionSelect').value;
+            const cKey = document.getElementById('modalCitySelect').value;
+            currentRegionKey = rKey;
+            currentCityKey = cKey;
+            closeCityPickerModal();
+            renderCurrentCity();
+
+            const data = getActiveCityData();
+            const newUrl = `city.html?region=${rKey}&city=${cKey}&name=${encodeURIComponent(data.name)}`;
+            window.history.pushState({path: newUrl}, '', newUrl);
+        }
+
+        function changePhotoAdmin() {
+            const data = getActiveCityData();
+            const newUrl = prompt("Введіть пряме посилання на нову панораму (URL фотографії):", data.photo);
+            if (newUrl) {
+                data.photo = newUrl;
+                saveStorageData();
+                renderCurrentCity();
+                alert("Панораму успішно оновлено!");
+            }
+        }
+
+        function openAddNewsModal() {
+            document.getElementById('editNewsIndex').value = '-1';
+            document.getElementById('addModalTitle').textContent = '📰 Додати новину з медіа та рекламою';
+            document.getElementById('inputNewsTitle').value = '';
+            document.getElementById('inputNewsPhotos').value = '';
+            document.getElementById('inputNewsVideo').value = '';
+            document.getElementById('inputNewsText').value = '';
+            document.getElementById('inputAdText').value = '';
+            document.getElementById('inputAdLink').value = '';
+
+            document.getElementById('addNewsModal').classList.remove('hidden');
+            document.getElementById('addNewsModal').classList.add('flex');
+        }
+
+        function closeAddNewsModal() {
+            document.getElementById('addNewsModal').classList.remove('flex');
+            document.getElementById('addNewsModal').classList.add('hidden');
+        }
+
+        function saveCityNews(e) {
+            e.preventDefault();
+            const editIdx = parseInt(document.getElementById('editNewsIndex').value);
+            const title = document.getElementById('inputNewsTitle').value;
+            const photosRaw = document.getElementById('inputNewsPhotos').value;
+            const photos = photosRaw ? photosRaw.split(',').map(s => s.trim()).filter(Boolean) : [];
+            const video = document.getElementById('inputNewsVideo').value.trim();
+            const text = document.getElementById('inputNewsText').value;
+            const adText = document.getElementById('inputAdText').value.trim();
+            const adLink = document.getElementById('inputAdLink').value.trim();
+
+            const data = getActiveCityData();
+            if (!data.news) data.news = [];
+
+            const newsItem = {
+                title, photos, video, text, adText, adLink,
+                date: new Date().toLocaleDateString('uk-UA', {day: 'numeric', month: 'long', year: 'numeric'})
+            };
+
+            if (editIdx >= 0) {
+                data.news[editIdx] = newsItem;
+            } else {
+                data.news.unshift(newsItem);
+            }
+
+            saveStorageData();
+            closeAddNewsModal();
+            renderNewsGrid();
+            alert('Новину успішно збережено!');
+        }
+
+        function renderNewsGrid() {
+            const grid = document.getElementById('cityNewsGrid');
+            const data = getActiveCityData();
+            grid.innerHTML = '';
+
+            if (!data.news || data.news.length === 0) {
+                grid.innerHTML = `<div class="col-span-full text-center py-10 text-slate-500 text-xs italic">У цьому місті поки немає опублікованих новин. Станьте першим!</div>`;
+                return;
+            }
+
+            data.news.forEach((item, idx) => {
+                const coverPhoto = item.photos && item.photos.length > 0 ? item.photos[0] : 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=500';
+                
+                let card = document.createElement('div');
+                card.className = 'news-card overflow-hidden flex flex-col justify-between';
+                card.onclick = () => openNewsDetail(idx);
+                card.innerHTML = `
+                    <div>
+                        <div class="w-full h-44 overflow-hidden bg-slate-950 relative">
+                            <img src="${coverPhoto}" alt="Фото новини" class="w-full h-full object-cover">
+                            ${item.photos && item.photos.length > 1 ? `<span class="absolute bottom-2 right-2 px-2 py-0.5 bg-slate-950/80 rounded-lg text-[10px] text-amber-300 font-bold">📷 ${item.photos.length} фото</span>` : ''}
+                            ${item.video ? `<span class="absolute bottom-2 left-2 px-2 py-0.5 bg-rose-600/90 rounded-lg text-[10px] text-white font-bold">▶ Відео</span>` : ''}
+                        </div>
+                        <div class="p-4 space-y-2">
+                            <div class="text-[10px] text-amber-400 font-semibold">${item.date}</div>
+                            <h4 class="font-serif-sacred text-lg font-bold text-amber-200 line-clamp-2">${item.title}</h4>
+                            <p class="text-xs text-slate-300 line-clamp-2">${item.text}</p>
+                        </div>
+                    </div>
+                    <div class="p-4 pt-0 flex items-center justify-between text-[11px] text-amber-400 font-bold">
+                        <span>Читати повністю ➔</span>
+                        ${item.adText ? '<span class="text-[10px] px-2 py-0.5 bg-amber-500/20 rounded-md border border-amber-500/30 text-amber-300">⭐ Реклама</span>' : ''}
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        let activeNewsIndex = -1;
+        let activePhotoIdx = 0;
+
+        function openNewsDetail(idx) {
+            activeNewsIndex = idx;
+            activePhotoIdx = 0;
+            const item = getActiveCityData().news[idx];
+
+            document.getElementById('detailNewsTitle').textContent = item.title;
+            document.getElementById('detailNewsDate').textContent = item.date;
+            document.getElementById('detailNewsText').textContent = item.text;
+
+            const galleryContainer = document.getElementById('detailGalleryContainer');
+            const mainPhoto = document.getElementById('detailNewsPhoto');
+            const prevBtn = document.getElementById('prevPhotoBtn');
+            const nextBtn = document.getElementById('nextPhotoBtn');
+            const counter = document.getElementById('galleryCounter');
+
+            if (item.photos && item.photos.length > 0) {
+                galleryContainer.classList.remove('hidden');
+                mainPhoto.src = item.photos[0];
+                if (item.photos.length > 1) {
+                    prevBtn.classList.remove('hidden');
+                    nextBtn.classList.remove('hidden');
+                    counter.classList.remove('hidden');
+                    counter.textContent = `1 / ${item.photos.length}`;
+                } else {
+                    prevBtn.classList.add('hidden');
+                    nextBtn.classList.add('hidden');
+                    counter.classList.add('hidden');
+                }
+            } else {
+                galleryContainer.classList.add('hidden');
+            }
+
+            const videoContainer = document.getElementById('detailVideoContainer');
+            if (item.video) {
+                videoContainer.classList.remove('hidden');
+                let embedUrl = item.video;
+                if (embedUrl.includes('watch?v=')) {
+                    embedUrl = embedUrl.replace('watch?v=', 'embed/');
+                } else if (embedUrl.includes('youtu.be/')) {
+                    embedUrl = embedUrl.replace('youtu.be/', 'www.youtube.com/embed/');
+                }
+                videoContainer.innerHTML = `<iframe src="${embedUrl}" class="w-full h-full" frameborder="0" allowfullscreen></iframe>`;
+            } else {
+                videoContainer.classList.add('hidden');
+                videoContainer.innerHTML = '';
+            }
+
+            const adBanner = document.getElementById('detailAdBannerContainer');
+            if (item.adText) {
+                adBanner.classList.remove('hidden');
+                document.getElementById('detailAdText').textContent = item.adText;
+                document.getElementById('detailAdLink').href = item.adLink || '#';
+            } else {
+                adBanner.classList.add('hidden');
+            }
+
+            document.getElementById('newsDetailModal').classList.remove('hidden');
+            document.getElementById('newsDetailModal').classList.add('flex');
+        }
+
+        function closeNewsDetailModal() {
+            document.getElementById('newsDetailModal').classList.remove('flex');
+            document.getElementById('newsDetailModal').classList.add('hidden');
+            document.getElementById('detailVideoContainer').innerHTML = '';
+        }
+
+        function nextGalleryPhoto() {
+            const item = getActiveCityData().news[activeNewsIndex];
+            if (!item.photos) return;
+            activePhotoIdx = (activePhotoIdx + 1) % item.photos.length;
+            document.getElementById('detailNewsPhoto').src = item.photos[activePhotoIdx];
+            document.getElementById('galleryCounter').textContent = `${activePhotoIdx + 1} / ${item.photos.length}`;
+        }
+
+        function prevGalleryPhoto() {
+            const item = getActiveCityData().news[activeNewsIndex];
+            if (!item.photos) return;
+            activePhotoIdx = (activePhotoIdx - 1 + item.photos.length) % item.photos.length;
+            document.getElementById('detailNewsPhoto').src = item.photos[activePhotoIdx];
+            document.getElementById('galleryCounter').textContent = `${activePhotoIdx + 1} / ${item.photos.length}`;
+        }
+
+        function triggerEditNews() {
+            const item = getActiveCityData().news[activeNewsIndex];
+            closeNewsDetailModal();
+
+            document.getElementById('editNewsIndex').value = activeNewsIndex;
+            document.getElementById('addModalTitle').textContent = '✏️ Редагувати новину';
+            document.getElementById('inputNewsTitle').value = item.title;
+            document.getElementById('inputNewsPhotos').value = item.photos ? item.photos.join(', ') : '';
+            document.getElementById('inputNewsVideo').value = item.video || '';
+            document.getElementById('inputNewsText').value = item.text;
+            document.getElementById('inputAdText').value = item.adText || '';
+            document.getElementById('inputAdLink').value = item.adLink || '';
+
+            document.getElementById('addNewsModal').classList.remove('hidden');
+            document.getElementById('addNewsModal').classList.add('flex');
+        }
+
+        function triggerDeleteNews() {
+            if (confirm("Ви дійсно бажаєте видалити цю новину?")) {
+                const data = getActiveCityData();
+                data.news.splice(activeNewsIndex, 1);
+                saveStorageData();
+                closeNewsDetailModal();
+                renderNewsGrid();
+                alert("Новину успішно видалено!");
+            }
+        }
     </script>
 </body>
 </html>

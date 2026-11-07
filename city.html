@@ -164,7 +164,7 @@
                 <div class="w-full h-40 rounded-2xl overflow-hidden border border-amber-500/30 mb-3 bg-slate-950 shadow-inner group relative">
                     <img id="cityPhoto" src="https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=500" alt="Вид міста" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                 </div>
-                <!-- Кнопка оновлення панорами -->
+                <!-- Кнопка оновлення панорами (Тільки Адмін / Авторизований) -->
                 <button onclick="changePhotoAdmin()" class="w-full py-2 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-sm">
                     <i class="fa-solid fa-pen-to-square"></i> Оновити панораму міста
                 </button>
@@ -332,11 +332,9 @@
         <p>© 2026 Neoservice.ks.ua — Всеукраїнський портал міст та громад.</p>
     </footer>
 
-
-    
-    <!-- FIREBASE АВТОРИЗАЦІЯ -->
+    <!-- FIREBASE АВТОРИЗАЦІЯ (Безпечна ініціалізація з getApps) -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
         const firebaseConfig = {
@@ -348,7 +346,8 @@
             appId: "1:528941827813:web:354ef989d200087634b60c"
         };
 
-        const app = initializeApp(firebaseConfig);
+        // Запобігаємо помилці повторної ініціалізації додатку Firebase
+        const app = !getApps().length ? initializeApp(firebaseConfig) : getApps()[0];
         const auth = getAuth(app);
 
         let currentUser = null;
@@ -356,12 +355,14 @@
         onAuthStateChanged(auth, (user) => {
             currentUser = user;
             const badge = document.getElementById('authStatusBadge');
-            if (user) {
-                badge.textContent = `👤 ${user.email.split('@')[0]}`;
-                badge.className = "text-[10px] px-2 py-0.5 rounded-md bg-amber-500/20 border border-amber-500/40 text-amber-300 font-bold";
-            } else {
-                badge.textContent = "Гість";
-                badge.className = "text-[10px] px-2 py-0.5 rounded-md bg-slate-900 border border-slate-700 text-slate-400";
+            if (badge) {
+                if (user) {
+                    badge.textContent = `👤 ${user.email.split('@')[0]}`;
+                    badge.className = "text-[10px] px-2 py-0.5 rounded-md bg-amber-500/20 border border-amber-500/40 text-amber-300 font-bold";
+                } else {
+                    badge.textContent = "Гість";
+                    badge.className = "text-[10px] px-2 py-0.5 rounded-md bg-slate-900 border border-slate-700 text-slate-400";
+                }
             }
         });
 
@@ -706,18 +707,30 @@
         function renderCurrentCity() {
             const data = getActiveCityData();
 
-            document.getElementById('currentCityBtnText').textContent = `${data.name} (${data.regionName.replace(' область', '')})`;
-            document.getElementById('cityRegion').textContent = data.regionName;
-            document.getElementById('cityName').textContent = data.name;
-            document.getElementById('cityDescription').textContent = data.description;
-            document.getElementById('cityIndexes').textContent = data.indexes;
-            document.getElementById('cityPhoto').src = data.photo;
+            const btnText = document.getElementById('currentCityBtnText');
+            if (btnText) btnText.textContent = `${data.name} (${data.regionName.replace(' область', '')})`;
+            
+            const cityRegion = document.getElementById('cityRegion');
+            if (cityRegion) cityRegion.textContent = data.regionName;
+            
+            const cityName = document.getElementById('cityName');
+            if (cityName) cityName.textContent = data.name;
+            
+            const cityDesc = document.getElementById('cityDescription');
+            if (cityDesc) cityDesc.textContent = data.description;
+            
+            const cityIndexes = document.getElementById('cityIndexes');
+            if (cityIndexes) cityIndexes.textContent = data.indexes;
+            
+            const cityPhoto = document.getElementById('cityPhoto');
+            if (cityPhoto) cityPhoto.src = data.photo;
 
             renderNewsGrid();
         }
 
         function openCityPickerModal() {
             const modalRegion = document.getElementById('modalRegionSelect');
+            if (!modalRegion) return;
             modalRegion.innerHTML = '';
             for (let rKey in UKRAINE_REGIONS) {
                 let opt = document.createElement('option');
@@ -727,17 +740,24 @@
                 modalRegion.appendChild(opt);
             }
             onModalRegionChange(currentRegionKey);
-            document.getElementById('cityPickerModal').classList.remove('hidden');
-            document.getElementById('cityPickerModal').classList.add('flex');
+            const modal = document.getElementById('cityPickerModal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
         }
 
         function closeCityPickerModal() {
-            document.getElementById('cityPickerModal').classList.remove('flex');
-            document.getElementById('cityPickerModal').classList.add('hidden');
+            const modal = document.getElementById('cityPickerModal');
+            if (modal) {
+                modal.classList.remove('flex');
+                modal.classList.add('hidden');
+            }
         }
 
         function onModalRegionChange(rKey) {
             const modalCity = document.getElementById('modalCitySelect');
+            if (!modalCity) return;
             modalCity.innerHTML = '';
             const cities = UKRAINE_REGIONS[rKey].cities;
             for (let cKey in cities) {
@@ -774,27 +794,44 @@
         }
 
         function openAddNewsModal() {
-            document.getElementById('editNewsIndex').value = '-1';
-            document.getElementById('addModalTitle').textContent = '📰 Додати новину з медіа та рекламою';
-            document.getElementById('inputNewsTitle').value = '';
-            document.getElementById('inputNewsPhotos').value = '';
-            document.getElementById('inputNewsVideo').value = '';
-            document.getElementById('inputNewsText').value = '';
-            document.getElementById('inputAdText').value = '';
-            document.getElementById('inputAdLink').value = '';
+            const editIdx = document.getElementById('editNewsIndex');
+            const addModalTitle = document.getElementById('addModalTitle');
+            const inputTitle = document.getElementById('inputNewsTitle');
+            const inputPhotos = document.getElementById('inputNewsPhotos');
+            const inputVideo = document.getElementById('inputNewsVideo');
+            const inputText = document.getElementById('inputNewsText');
+            const inputAdText = document.getElementById('inputAdText');
+            const inputAdLink = document.getElementById('inputAdLink');
 
-            document.getElementById('addNewsModal').classList.remove('hidden');
-            document.getElementById('addNewsModal').classList.add('flex');
+            if (editIdx) editIdx.value = '-1';
+            if (addModalTitle) addModalTitle.textContent = '📰 Додати новину з медіа та рекламою';
+            if (inputTitle) inputTitle.value = '';
+            if (inputPhotos) inputPhotos.value = '';
+            if (inputVideo) inputVideo.value = '';
+            if (inputText) inputText.value = '';
+            if (inputAdText) inputAdText.value = '';
+            if (inputAdLink) inputAdLink.value = '';
+
+            const modal = document.getElementById('addNewsModal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
         }
 
         function closeAddNewsModal() {
-            document.getElementById('addNewsModal').classList.remove('flex');
-            document.getElementById('addNewsModal').classList.add('hidden');
+            const modal = document.getElementById('addNewsModal');
+            if (modal) {
+                modal.classList.remove('flex');
+                modal.classList.add('hidden');
+            }
         }
 
         function saveCityNews(e) {
             e.preventDefault();
-            const editIdx = parseInt(document.getElementById('editNewsIndex').value);
+            const editIdxField = document.getElementById('editNewsIndex');
+            const editIdx = editIdxField ? parseInt(editIdxField.value) : -1;
+            
             const title = document.getElementById('inputNewsTitle').value;
             const photosRaw = document.getElementById('inputNewsPhotos').value;
             const photos = photosRaw ? photosRaw.split(',').map(s => s.trim()).filter(Boolean) : [];
@@ -825,6 +862,7 @@
 
         function renderNewsGrid() {
             const grid = document.getElementById('cityNewsGrid');
+            if (!grid) return;
             const data = getActiveCityData();
             grid.innerHTML = '';
 
@@ -869,9 +907,14 @@
             activePhotoIdx = 0;
             const item = getActiveCityData().news[idx];
 
-            document.getElementById('detailNewsTitle').textContent = item.title;
-            document.getElementById('detailNewsDate').textContent = item.date;
-            document.getElementById('detailNewsText').textContent = item.text;
+            const titleEl = document.getElementById('detailNewsTitle');
+            if (titleEl) titleEl.textContent = item.title;
+            
+            const dateEl = document.getElementById('detailNewsDate');
+            if (dateEl) dateEl.textContent = item.date;
+            
+            const textEl = document.getElementById('detailNewsText');
+            if (textEl) textEl.textContent = item.text;
 
             const galleryContainer = document.getElementById('detailGalleryContainer');
             const mainPhoto = document.getElementById('detailNewsPhoto');
@@ -880,87 +923,118 @@
             const counter = document.getElementById('galleryCounter');
 
             if (item.photos && item.photos.length > 0) {
-                galleryContainer.classList.remove('hidden');
-                mainPhoto.src = item.photos[0];
+                if (galleryContainer) galleryContainer.classList.remove('hidden');
+                if (mainPhoto) mainPhoto.src = item.photos[0];
                 if (item.photos.length > 1) {
-                    prevBtn.classList.remove('hidden');
-                    nextBtn.classList.remove('hidden');
-                    counter.classList.remove('hidden');
-                    counter.textContent = `1 / ${item.photos.length}`;
+                    if (prevBtn) prevBtn.classList.remove('hidden');
+                    if (nextBtn) nextBtn.classList.remove('hidden');
+                    if (counter) {
+                        counter.classList.remove('hidden');
+                        counter.textContent = `1 / ${item.photos.length}`;
+                    }
                 } else {
-                    prevBtn.classList.add('hidden');
-                    nextBtn.classList.add('hidden');
-                    counter.classList.add('hidden');
+                    if (prevBtn) prevBtn.classList.add('hidden');
+                    if (nextBtn) nextBtn.classList.add('hidden');
+                    if (counter) counter.classList.add('hidden');
                 }
             } else {
-                galleryContainer.classList.add('hidden');
+                if (galleryContainer) galleryContainer.classList.add('hidden');
             }
 
             const videoContainer = document.getElementById('detailVideoContainer');
-            if (item.video) {
-                videoContainer.classList.remove('hidden');
-                let embedUrl = item.video;
-                if (embedUrl.includes('watch?v=')) {
-                    embedUrl = embedUrl.replace('watch?v=', 'embed/');
-                } else if (embedUrl.includes('youtu.be/')) {
-                    embedUrl = embedUrl.replace('youtu.be/', 'www.youtube.com/embed/');
+            if (videoContainer) {
+                if (item.video) {
+                    videoContainer.classList.remove('hidden');
+                    let embedUrl = item.video;
+                    if (embedUrl.includes('watch?v=')) {
+                        embedUrl = embedUrl.replace('watch?v=', 'embed/');
+                    } else if (embedUrl.includes('youtu.be/')) {
+                        embedUrl = embedUrl.replace('youtu.be/', 'www.youtube.com/embed/');
+                    }
+                    videoContainer.innerHTML = `<iframe src="${embedUrl}" class="w-full h-full" frameborder="0" allowfullscreen></iframe>`;
+                } else {
+                    videoContainer.classList.add('hidden');
+                    videoContainer.innerHTML = '';
                 }
-                videoContainer.innerHTML = `<iframe src="${embedUrl}" class="w-full h-full" frameborder="0" allowfullscreen></iframe>`;
-            } else {
-                videoContainer.classList.add('hidden');
-                videoContainer.innerHTML = '';
             }
 
             const adBanner = document.getElementById('detailAdBannerContainer');
-            if (item.adText) {
-                adBanner.classList.remove('hidden');
-                document.getElementById('detailAdText').textContent = item.adText;
-                document.getElementById('detailAdLink').href = item.adLink || '#';
-            } else {
-                adBanner.classList.add('hidden');
+            if (adBanner) {
+                if (item.adText) {
+                    adBanner.classList.remove('hidden');
+                    const adTextEl = document.getElementById('detailAdText');
+                    const adLinkEl = document.getElementById('detailAdLink');
+                    if (adTextEl) adTextEl.textContent = item.adText;
+                    if (adLinkEl) adLinkEl.href = item.adLink || '#';
+                } else {
+                    adBanner.classList.add('hidden');
+                }
             }
 
-            document.getElementById('newsDetailModal').classList.remove('hidden');
-            document.getElementById('newsDetailModal').classList.add('flex');
+            const modal = document.getElementById('newsDetailModal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
         }
 
         function closeNewsDetailModal() {
-            document.getElementById('newsDetailModal').classList.remove('flex');
-            document.getElementById('newsDetailModal').classList.add('hidden');
-            document.getElementById('detailVideoContainer').innerHTML = '';
+            const modal = document.getElementById('newsDetailModal');
+            if (modal) {
+                modal.classList.remove('flex');
+                modal.classList.add('hidden');
+            }
+            const videoContainer = document.getElementById('detailVideoContainer');
+            if (videoContainer) videoContainer.innerHTML = '';
         }
 
         function nextGalleryPhoto() {
             const item = getActiveCityData().news[activeNewsIndex];
-            if (!item.photos) return;
+            if (!item || !item.photos) return;
             activePhotoIdx = (activePhotoIdx + 1) % item.photos.length;
-            document.getElementById('detailNewsPhoto').src = item.photos[activePhotoIdx];
-            document.getElementById('galleryCounter').textContent = `${activePhotoIdx + 1} / ${item.photos.length}`;
+            const mainPhoto = document.getElementById('detailNewsPhoto');
+            const counter = document.getElementById('galleryCounter');
+            if (mainPhoto) mainPhoto.src = item.photos[activePhotoIdx];
+            if (counter) counter.textContent = `${activePhotoIdx + 1} / ${item.photos.length}`;
         }
 
         function prevGalleryPhoto() {
             const item = getActiveCityData().news[activeNewsIndex];
-            if (!item.photos) return;
+            if (!item || !item.photos) return;
             activePhotoIdx = (activePhotoIdx - 1 + item.photos.length) % item.photos.length;
-            document.getElementById('detailNewsPhoto').src = item.photos[activePhotoIdx];
-            document.getElementById('galleryCounter').textContent = `${activePhotoIdx + 1} / ${item.photos.length}`;
+            const mainPhoto = document.getElementById('detailNewsPhoto');
+            const counter = document.getElementById('galleryCounter');
+            if (mainPhoto) mainPhoto.src = item.photos[activePhotoIdx];
+            if (counter) counter.textContent = `${activePhotoIdx + 1} / ${item.photos.length}`;
         }
 
         function triggerEditNews() {
             const item = getActiveCityData().news[activeNewsIndex];
             closeNewsDetailModal();
 
-            document.getElementById('editNewsIndex').value = activeNewsIndex;
-            document.getElementById('addModalTitle').textContent = '✏️ Редагувати новину';
-            document.getElementById('inputNewsTitle').value = item.title;
-            document.getElementById('inputNewsPhotos').value = item.photos ? item.photos.join(', ') : '';
-            document.getElementById('inputNewsVideo').value = item.video || '';
-            document.getElementById('inputNewsText').value = item.text;
-            document.getElementById('inputAdText').value = item.adText || '';
-            document.getElementById('inputAdLink').value = item.adLink || '';
+            const editNewsIndex = document.getElementById('editNewsIndex');
+            const addModalTitle = document.getElementById('addModalTitle');
+            const inputTitle = document.getElementById('inputNewsTitle');
+            const inputPhotos = document.getElementById('inputNewsPhotos');
+            const inputVideo = document.getElementById('inputNewsVideo');
+            const inputText = document.getElementById('inputNewsText');
+            const inputAdText = document.getElementById('inputAdText');
+            const inputAdLink = document.getElementById('inputAdLink');
 
-            document.getElementById('addNewsModal').classList.remove('hidden');
-            document.getElementById('addNewsModal').classList.add('flex');
+            if (editNewsIndex) editNewsIndex.value = activeNewsIndex;
+            if (addModalTitle) addModalTitle.textContent = '✏️ Редагувати новину';
+            if (inputTitle) inputTitle.value = item.title;
+            if (inputPhotos) inputPhotos.value = item.photos ? item.photos.join(', ') : '';
+            if (inputVideo) inputVideo.value = item.video || '';
+            if (inputText) inputText.value = item.text;
+            if (inputAdText) inputAdText.value = item.adText || '';
+            if (inputAdLink) inputAdLink.value = item.adLink || '';
+
+            const modal = document.getElementById('addNewsModal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
         }
 
         function triggerDeleteNews() {
@@ -974,6 +1048,5 @@
             }
         }
     </script>
-    
 </body>
 </html>

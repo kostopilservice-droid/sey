@@ -195,7 +195,8 @@
                     </h3>
                     <p class="text-xs text-slate-400 mt-0.5">Офіційні представництва, СТО, магазини та сервіси міста з геолокацією Google Maps та відгуками</p>
                 </div>
-                <button onclick="openAddBusinessModal()" class="btn-divine px-4 py-2 rounded-xl text-xs flex items-center gap-2 shadow-md cursor-pointer">
+                <!-- Кнопка додавання підприємства (Тільки для адміністратора) -->
+                <button id="adminAddBusinessBtn" onclick="openAddBusinessModal()" style="display: none;" class="btn-divine px-4 py-2 rounded-xl text-xs flex items-center gap-2 shadow-md cursor-pointer">
                     <i class="fa-solid fa-plus-circle"></i> Додати підприємство
                 </button>
             </div>
@@ -212,7 +213,8 @@
                     </h3>
                     <p class="text-xs text-slate-400 mt-0.5">Клацніть на картку новини, щоб відкрити її у повноекранному форматі з відео та медіа</p>
                 </div>
-                <button onclick="openAddNewsModal()" class="btn-divine px-4 py-2 rounded-xl text-xs flex items-center gap-2 shadow-md cursor-pointer">
+                <!-- Кнопка додавання новини (Тільки для адміністратора) -->
+                <button id="adminAddNewsBtn" onclick="openAddNewsModal()" style="display: none;" class="btn-divine px-4 py-2 rounded-xl text-xs flex items-center gap-2 shadow-md cursor-pointer">
                     <i class="fa-solid fa-plus-circle"></i> Додати новину міста
                 </button>
             </div>
@@ -502,22 +504,30 @@
             currentUser = user;
             const badge = document.getElementById('authStatusBadge');
             const adminPanoramaBtn = document.getElementById('adminPanoramaBtn');
+            const adminAddBusinessBtn = document.getElementById('adminAddBusinessBtn');
+            const adminAddNewsBtn = document.getElementById('adminAddNewsBtn');
 
             if (badge) {
                 if (user) {
                     badge.textContent = `👤 ${user.email.split('@')[0]}`;
                     badge.className = "text-[10px] px-2 py-0.5 rounded-md bg-amber-500/20 border border-amber-500/40 text-amber-300 font-bold";
 
-                    // Тільки адміністратор бачить кнопку оновлення панорами
+                    // Тільки адміністратор бачить адмінські кнопки
                     if (user.email === 'kostopilservice@gmail.com') {
                         if (adminPanoramaBtn) adminPanoramaBtn.style.display = 'flex';
+                        if (adminAddBusinessBtn) adminAddBusinessBtn.style.display = 'flex';
+                        if (adminAddNewsBtn) adminAddNewsBtn.style.display = 'flex';
                     } else {
                         if (adminPanoramaBtn) adminPanoramaBtn.style.display = 'none';
+                        if (adminAddBusinessBtn) adminAddBusinessBtn.style.display = 'none';
+                        if (adminAddNewsBtn) adminAddNewsBtn.style.display = 'none';
                     }
                 } else {
                     badge.textContent = "Гість";
                     badge.className = "text-[10px] px-2 py-0.5 rounded-md bg-slate-900 border border-slate-700 text-slate-400";
                     if (adminPanoramaBtn) adminPanoramaBtn.style.display = 'none';
+                    if (adminAddBusinessBtn) adminAddBusinessBtn.style.display = 'none';
+                    if (adminAddNewsBtn) adminAddNewsBtn.style.display = 'none';
                 }
             }
         });
@@ -961,8 +971,8 @@
         // --- БІЗНЕС КАТАЛОГ ЛОГІКА ---
         function openAddBusinessModal() {
             const user = window.getCurrentUser ? window.getCurrentUser() : null;
-            if (!user) {
-                alert("Додавати підприємства та бізнес можуть лише зареєстровані користувачі!");
+            if (!user || user.email !== 'kostopilservice@gmail.com') {
+                alert("Додавати підприємства може лише адміністратор!");
                 return;
             }
             document.getElementById('inputBusName').value = '';
@@ -988,7 +998,7 @@
         function saveCityBusiness(e) {
             e.preventDefault();
             const user = window.getCurrentUser ? window.getCurrentUser() : null;
-            if (!user) return;
+            if (!user || user.email !== 'kostopilservice@gmail.com') return;
 
             const name = document.getElementById('inputBusName').value.trim();
             const category = document.getElementById('inputBusCategory').value.trim();
@@ -1027,7 +1037,7 @@
             grid.innerHTML = '';
 
             if (!data.businesses || data.businesses.length === 0) {
-                grid.innerHTML = `<div class="col-span-full text-center py-10 text-slate-500 text-xs italic">У цьому місті поки немає зареєстрованих підприємств. Станьте першим!</div>`;
+                grid.innerHTML = `<div class="col-span-full text-center py-10 text-slate-500 text-xs italic">У цьому місті поки немає зареєстрованих підприємств.</div>`;
                 return;
             }
 
@@ -1233,8 +1243,8 @@
         // --- НОВИНИ МІСТА ---
         function openAddNewsModal() {
             const user = window.getCurrentUser ? window.getCurrentUser() : null;
-            if (!user) {
-                alert("Додавати новини та історію міста можуть лише зареєстровані користувачі!");
+            if (!user || user.email !== 'kostopilservice@gmail.com') {
+                alert("Додавати новини може лише адміністратор!");
                 return;
             }
 
@@ -1261,7 +1271,7 @@
         function saveCityNews(e) {
             e.preventDefault();
             const user = window.getCurrentUser ? window.getCurrentUser() : null;
-            if (!user) return;
+            if (!user || user.email !== 'kostopilservice@gmail.com') return;
 
             const editIdx = parseInt(document.getElementById('editNewsIndex').value);
             const title = document.getElementById('inputNewsTitle').value;
@@ -1300,7 +1310,7 @@
             grid.innerHTML = '';
 
             if (!data.news || data.news.length === 0) {
-                grid.innerHTML = `<div class="col-span-full text-center py-10 text-slate-500 text-xs italic">У цьому місті поки немає опублікованих новин. Станьте першим!</div>`;
+                grid.innerHTML = `<div class="col-span-full text-center py-10 text-slate-500 text-xs italic">У цьому місті поки немає опублікованих новин.</div>`;
                 return;
             }
 
@@ -1424,8 +1434,8 @@
 
         function triggerEditNews() {
             const user = window.getCurrentUser ? window.getCurrentUser() : null;
-            if (!user) {
-                alert("Увійдіть у систему!");
+            if (!user || user.email !== 'kostopilservice@gmail.com') {
+                alert("Доступ заборонено!");
                 return;
             }
             const item = getActiveCityData().news[activeNewsIndex];
@@ -1447,7 +1457,7 @@
 
         function triggerDeleteNews() {
             const user = window.getCurrentUser ? window.getCurrentUser() : null;
-            if (!user) return;
+            if (!user || user.email !== 'kostopilservice@gmail.com') return;
             if (confirm("Видалити цю новину?")) {
                 const data = getActiveCityData();
                 data.news.splice(activeNewsIndex, 1);

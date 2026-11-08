@@ -105,17 +105,45 @@
   <!-- ========================================== -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow w-full space-y-6">
 
-    <!-- ВЕРХНЯ ПАНЕЛЬ СТАТУСУ -->
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
+    <!-- ВЕРХНЯ ПАНЕЛЬ СТАТУСУ ТА GOOGLE MEET -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-800">
       <div>
         <h1 class="text-xl sm:text-2xl font-black text-white tracking-tight flex items-center gap-2">
           <i class="fa-solid fa-tower-broadcast text-blue-500"></i> Інженерний Work Stream & Чат
         </h1>
         <p class="text-xs text-slate-400 mt-1">Пряма трансляція робочого процесу через OBS Studio та жива взаємодія учасників спільноти</p>
       </div>
-      <span class="bg-amber-500/10 text-amber-400 border border-amber-500/20 text-xs font-extrabold px-3 py-1.5 rounded-full inline-flex items-center gap-1.5 self-start sm:self-auto">
-        <i class="fa-solid fa-coins text-amber-400"></i> +5 балів за повідомлення
-      </span>
+
+      <!-- КНОПКИ ІНТЕГРАЦІЇ GOOGLE MEET -->
+      <div class="flex items-center gap-3 flex-wrap">
+        <button onclick="createGoogleMeetRoom()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow transition-all flex items-center gap-2 cursor-pointer">
+          <i class="fa-solid fa-video text-sm"></i> Створити Google Meet
+        </button>
+        <span class="bg-amber-500/10 text-amber-400 border border-amber-500/20 text-xs font-extrabold px-3 py-1.5 rounded-full inline-flex items-center gap-1.5">
+          <i class="fa-solid fa-coins text-amber-400"></i> +5 балів за повідомлення
+        </span>
+      </div>
+    </div>
+
+    <!-- АКТИВНИЙ БЛОК GOOGLE MEET (З'ЯВЛЯЄТЬСЯ ПРИ СТВОРЕННІ) -->
+    <div id="meetActiveBanner" class="hidden bg-gradient-to-r from-emerald-950/80 to-slate-900 border border-emerald-500/40 p-4 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-emerald-600/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 text-lg">
+          <i class="fa-solid fa-headset"></i>
+        </div>
+        <div>
+          <h4 class="text-xs font-bold text-emerald-300 uppercase tracking-wider">Відеоконференція Google Meet активна</h4>
+          <p id="meetLinkDisplay" class="text-xs text-slate-300 font-mono mt-0.5 select-all">https://meet.google.new</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2 w-full sm:w-auto">
+        <a id="joinMeetBtn" href="#" target="_blank" class="flex-1 sm:flex-none px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl text-center shadow transition-all">
+          Приєднатися до Meet ➔
+        </a>
+        <button onclick="shareMeetToChat()" class="flex-1 sm:flex-none px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow transition-all flex items-center justify-center gap-1.5">
+          <i class="fa-solid fa-share-nodes"></i> Опублікувати в чат
+        </button>
+      </div>
     </div>
 
     <!-- ГОЛОВНА СІТКА (2 КОЛОНКИ НА ВЕЛИКИХ ЕКРАНАХ) -->
@@ -245,6 +273,49 @@
     const db = firebase.firestore();
     const auth = firebase.auth();
 
+    let currentMeetUrl = "https://meet.google.new";
+
+    // Функція генерації Google Meet кімнати
+    function createGoogleMeetRoom() {
+      // Генерація унікального або стандартного посилання Google Meet
+      currentMeetUrl = "https://meet.google.new";
+      
+      const banner = document.getElementById('meetActiveBanner');
+      const linkDisplay = document.getElementById('meetLinkDisplay');
+      const joinBtn = document.getElementById('joinMeetBtn');
+
+      if (banner && linkDisplay && joinBtn) {
+        linkDisplay.textContent = currentMeetUrl;
+        joinBtn.href = currentMeetUrl;
+        banner.classList.remove('hidden');
+        banner.classList.add('flex');
+      }
+    }
+
+    // Автоматичне публікування посилання на Meet у живий чат
+    async function shareMeetToChat() {
+      const user = auth.currentUser;
+      if (!user) {
+        alert("Будь ласка, увійдіть в акаунт, щоб опублікувати посилання в чат.");
+        return;
+      }
+
+      const meetMessage = `📹 Розпочато відеоконференцію Google Meet для спільного обговорення: ${currentMeetUrl}`;
+
+      try {
+        await db.collection('chat').add({
+          text: meetMessage,
+          userEmail: user.email,
+          userId: user.uid,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        alert("Посилання на Google Meet успішно опубліковано у чаті трансляції!");
+      } catch (err) {
+        console.error("Помилка публікації Meet:", err);
+        alert("Не вдалося опублікувати посилання.");
+      }
+    }
+
     // Перевірка статусу авторизації
     auth.onAuthStateChanged(user => {
       const container = document.getElementById('chatFormContainer');
@@ -254,7 +325,7 @@
           <form onsubmit="sendChatMessage(event)" class="flex gap-2">
             <input type="text" id="chatInput" required placeholder="Напишіть у чат трансляції..." 
                    class="flex-grow px-3.5 py-2.5 text-xs bg-slate-900 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-600">
-            <button type="submit" class="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow transition-colors flex items-center gap-1.5">
+            <button type="submit" class="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow transition-colors flex items-center gap-1.5 cursor-pointer">
               <span>Надіслати</span> <i class="fa-solid fa-paper-plane"></i>
             </button>
           </form>
@@ -354,4 +425,4 @@
     }
   </script>
 </body>
-</html> 
+</html>

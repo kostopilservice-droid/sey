@@ -194,17 +194,29 @@
           </div>
         </a>
 
-        <!-- Пошук та кнопка реклами -->
-        <div style="display: flex; align-items: center; gap: 10px; flex: 1; max-width: 480px; min-width: 260px; justify-content: flex-end;">
-          <div style="position: relative; flex: 1; max-width: 300px;">
+        <!-- Пошук та інструменти адміністратора / монетизації -->
+        <div style="display: flex; align-items: center; gap: 10px; flex: 1; max-width: 580px; min-width: 260px; justify-content: flex-end; flex-wrap: wrap;">
+          
+          <!-- Кнопки резервного копіювання сайту (тільки для адміністратора) -->
+          <div id="globalAdminBackupTools" style="display: none; align-items: center; gap: 6px;">
+            <button onclick="exportEntireWebsiteData()" style="background: rgba(245, 158, 11, 0.2); border: 1px solid rgba(245, 158, 11, 0.5); color: #fde047; padding: 6px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 4px;" title="Експортувати повну базу даних сайту у JSON">
+              <i class="fa-solid fa-download"></i> Бекап
+            </button>
+            <label style="background: rgba(245, 158, 11, 0.2); border: 1px solid rgba(245, 158, 11, 0.5); color: #fde047; padding: 6px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 4px;" title="Відновити базу даних сайту з JSON">
+              <i class="fa-solid fa-upload"></i> Відновлення
+              <input type="file" accept=".json" onchange="importEntireWebsiteData(event)" style="display: none;">
+            </label>
+          </div>
+
+          <div style="position: relative; flex: 1; max-width: 240px;">
             <span style="position: absolute; inset-y: 0; left: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8; pointer-events: none; font-size: 0.85rem;">
               <i class="fa-solid fa-magnifying-glass"></i>
             </span>
-            <input type="text" id="mainSearch" placeholder="Пошук послуг, оголошень... (Enter)" style="width: 100%; box-sizing: border-box; padding: 8px 12px 8px 34px; font-size: 0.82rem; background: rgba(255, 255, 255, 0.08); color: white; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 10px; outline: none;" />
+            <input type="text" id="mainSearch" placeholder="Пошук послуг... (Enter)" style="width: 100%; box-sizing: border-box; padding: 8px 12px 8px 34px; font-size: 0.82rem; background: rgba(255, 255, 255, 0.08); color: white; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 10px; outline: none;" />
           </div>
 
           <a href="service.html" style="background: #d97706; color: white; padding: 8px 14px; border-radius: 10px; text-decoration: none; font-weight: bold; font-size: 0.8rem; white-space: nowrap; box-shadow: 0 2px 6px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 6px;">
-            <i class="fa-solid fa-bullhorn"></i> <span class="hidden sm:inline">Реклама</span>
+            <i class="fa-solid fa-bullhorn"></i> <span class="hidden sm:inline">Реклама & Монетизація</span>
           </a>
         </div>
 
@@ -710,10 +722,6 @@
                   </div>
 
                   <div class="mt-8">
-                     <!-- БЛОК обласний центр Обслуговування та виїзд майстра
-Доставка та комп'ютерний сервіс
-Регіональні відділення  -->
-
 <!-- Суперкомпактний анімований банер-віджет -->
 <div class="bg-white rounded-xl p-3 shadow-sm border border-slate-100 w-full text-slate-900 relative overflow-hidden">
     
@@ -866,6 +874,72 @@
       const newRequestForm = document.getElementById('newRequestForm');
       const ordersTableBody = document.getElementById('ordersTableBody');
       const adminCollageBtn = document.getElementById('adminCollageBtn');
+      const globalAdminBackupTools = document.getElementById('globalAdminBackupTools');
+
+      // Глобальний експорт всієї бази сайту (localStorage)
+      window.exportEntireWebsiteData = function() {
+          const user = auth.currentUser;
+          if (!user || user.email !== 'kostopilservice@gmail.com') {
+              alert("Помилка доступу: експорт доступний лише адміністратору!");
+              return;
+          }
+          const savedData = localStorage.getItem('neoservice_ukraine_custom_v5') || '{}';
+          let parsedData = {};
+          try { parsedData = JSON.parse(savedData); } catch(e) {}
+
+          const fullBackupPackage = {
+              app: "Neoservice.ks.ua",
+              exportDate: new Date().toISOString(),
+              version: "5.0",
+              database: parsedData
+          };
+
+          const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(fullBackupPackage, null, 2));
+          const downloadAnchor = document.createElement('a');
+          downloadAnchor.setAttribute("href", dataStr);
+          downloadAnchor.setAttribute("download", `neoservice_full_site_backup_${new Date().toISOString().slice(0,10)}.json`);
+          document.body.appendChild(downloadAnchor);
+          downloadAnchor.click();
+          downloadAnchor.remove();
+      };
+
+      // Глобальний імпорт всієї бази сайту (localStorage)
+      window.importEntireWebsiteData = function(event) {
+          const user = auth.currentUser;
+          if (!user || user.email !== 'kostopilservice@gmail.com') {
+              alert("Помилка доступу: імпорт доступний лише адміністратору!");
+              return;
+          }
+          const file = event.target.files[0];
+          if (!file) return;
+
+          const reader = new FileReader();
+          reader.onload = function(e) {
+              try {
+                  const importedData = JSON.parse(e.target.result);
+                  let targetDatabase = null;
+                  if (importedData && importedData.database) {
+                      targetDatabase = importedData.database;
+                  } else if (importedData && typeof importedData === 'object') {
+                      targetDatabase = importedData;
+                  }
+
+                  if (targetDatabase && typeof targetDatabase === 'object') {
+                      if (confirm(`Увага! Відновити дані порталу від ${importedData.exportDate || 'невідомої дати'}? Поточні локальні зміни будуть оновлені.`)) {
+                          localStorage.setItem('neoservice_ukraine_custom_v5', JSON.stringify(targetDatabase));
+                          alert("✅ Всі дані сайту успішно відновлено!");
+                          window.location.reload();
+                      }
+                  } else {
+                      alert("❌ Помилка: обраний файл не містить коректної структури.");
+                  }
+              } catch(err) {
+                  alert("❌ Помилка розбору JSON: " + err.message);
+              }
+              event.target.value = '';
+          };
+          reader.readAsText(file);
+      };
 
       // Перенаправлення з пошуку у Базу Знань
       const mainSearchInput = document.getElementById('mainSearch');
@@ -908,17 +982,20 @@
           if (userEmailDisplay) userEmailDisplay.innerText = user.email;
           loadUserOrders(user.email);
 
-          // ПЕРЕВІРКА АДМІНІСТРАТОРА: Введіть вашу реальну пошту замість "ваш_email@gmail.com"
+          // ПЕРЕВІРКА АДМІНІСТРАТОРА
           if (user.email === "kostopilservice@gmail.com") {
             if (adminCollageBtn) adminCollageBtn.style.display = 'block';
+            if (globalAdminBackupTools) globalAdminBackupTools.style.display = 'flex';
           } else {
             if (adminCollageBtn) adminCollageBtn.style.display = 'none';
+            if (globalAdminBackupTools) globalAdminBackupTools.style.display = 'none';
           }
 
         } else {
           if (loggedOutView) loggedOutView.style.display = 'block';
           if (loggedInView) loggedInView.style.display = 'none';
           if (adminCollageBtn) adminCollageBtn.style.display = 'none';
+          if (globalAdminBackupTools) globalAdminBackupTools.style.display = 'none';
         }
       });
 
@@ -971,7 +1048,7 @@
         });
       }
 
-      // АДМІНІСТРУВАННЯ КОЛАЖУ БАНЕРІВ (ЗБЕРЕЖЕННЯ В FIRESTORE)
+      // АДМІНІСТРУВАННЯ КОЛАЖУ БАНЕРІВ
       document.getElementById('collageAdminForm')?.addEventListener('submit', async (e) => {
         e.preventDefault();
         const user = auth.currentUser;
@@ -998,13 +1075,12 @@
         }
       });
 
-      // Автоматичне завантаження банерів із бази даних
       function listenToBanners() {
         const sliderContainer = document.getElementById('bannerSliderContainer');
         const dotsContainer = document.getElementById('sliderDotsContainer');
 
         onSnapshot(collection(db, "collage_banners"), (snapshot) => {
-          if (snapshot.empty) return; // Якщо база порожня, лишаються стандартні слайди
+          if (snapshot.empty) return;
 
           sliderContainer.innerHTML = '';
           dotsContainer.innerHTML = '';
@@ -1073,7 +1149,6 @@
         document.getElementById('adminCollageModal').style.display = 'none';
       }
 
-      // ЛОГІКА ІНТЕРАКТИВНОЇ КАРТИ УКРАЇНИ ТА ПЕРЕХОДУ НА city.html
       document.addEventListener('DOMContentLoaded', () => {
           const regionGroups = document.querySelectorAll('.region-group');
           const tooltip = document.getElementById('map-tooltip');
@@ -1083,7 +1158,6 @@
           const panelTitle = document.getElementById('panel-title');
           const panelCity = document.getElementById('panel-city');
           const selectedBadge = document.getElementById('selected-badge');
-          const actionBtn = document.getElementById('action-btn');
 
           regionGroups.forEach(group => {
               group.addEventListener('mouseenter', (e) => {
@@ -1108,7 +1182,6 @@
                   tooltip.style.display = 'none';
               });
 
-              // При кліку на область відкриваємо city.html із параметрами регіону та міста
               group.addEventListener('click', () => {
                   const regionCode = group.getAttribute('data-code');
                   const regionName = group.getAttribute('data-name');
@@ -1116,10 +1189,6 @@
                   
                   window.location.href = `city.html?region=${regionCode}&name=${encodeURIComponent(regionName)}&city=${encodeURIComponent(cityName)}`;
               });
-          });
-
-          actionBtn?.addEventListener('click', () => {
-              window.location.href = `city.html?region=rivne&name=${encodeURIComponent('Рівненська область')}&city=${encodeURIComponent('Костопіль')}`;
           });
       });
     </script>

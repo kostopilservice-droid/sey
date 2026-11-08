@@ -556,7 +556,7 @@
             frankivsk: { name: "Івано-Франківська область", mainCity: "Івано-Франківськ", cities: { frankivsk: "Івано-Франківськ", kalush: "Калуш", kolomyia: "Коломия", nadvirna: "Надвірна", dolyna: "Долина", burshtyn: "Бурштин", perehinske: "Перегінське", bolekhiv: "Болехів", sniatyn: "Снятин", tysmenytsia: "Тисмениця", horodenka: "Городенка", rohatyn: "Рогатин", kosiv: "Косів", yaremche: "Яремче" } },
             chernivtsi: { name: "Чернівецька область", mainCity: "Чернівці", cities: { chernivtsi: "Чернівці", novodnistrovsk: "Новодністровськ", storozhynets: "Сторожинець", khotyn: "Хотин", sokyryany: "Сокиряни", zaitseva: "Заставна", novoselytsia: "Новоселиця", kitsman: "Кіцмань", vyzhnytsia: "Вижниця", hertsya: "Герца" } },
             kropyvnytskyi: { name: "Кіровоградська область", mainCity: "Кропивницький", cities: { kropyvnytskyi: "Кропивницький", oleksandriia: "Олександрія", svitlovodsk: "Світловодськ", znamianka: "Знам'янка", novoukrainka: "Новоукраїнка", dolynnska: "Долинська", haivoron: "Гайворон", novomyrhorod: "Новомиргород", mala_vyska: "Мала Виска", bobrynets: "Бобринець" } },
-            dnipro: { name: "Дніпропетровська область", mainCity: "Дніпро", cities: { dnipro: "Дніпро", kryvyi_rih: "Кривий Ріг", kamianske: "Кам'янське", nikopol: "Нікополь", pavlohrad: "Павлоград", novomoskovsk: "Новомосковськ", zhovti_vody: "Жовті Води", marhanets: "Марганець", pokrov: "Покров", synelnykove: "Синельникове", pershotravensk: "Першотравенськ", ternivka: "Тернівка", vilnohirsk: "Вільногірськ", piatykhatky: "П'ятихатки", apostolove: "Апостолове" } },
+            dnipro: { name: "Дніпропетровська область", mainCity: "Дніпро", cities: { dnipro: "Дніпро", kryvyi_rih: "Кривий Ріг", kamianske: "Кам'янське", nikopol: "Нікополь", pavlohrad: "Павлоград", novomoskovsk: "Новомосковськ", zhovti_vody: "Жовті Води", marhanets: "Марганець", pokrov: "Покров", synelnykove: "Синельникове", pershotravensk: "Першотravensk", ternivka: "Тернівка", vilnohirsk: "Вільногірськ", piatykhatky: "П'ятихатки", apostolove: "Апостолове" } },
             lugansk: { name: "Луганська область", mainCity: "Луганськ", cities: { lugansk: "Луганськ", severodonetsk: "Сєвєродонецьк", lysychansk: "Лисичанськ", alchevsk: "Алчевськ", krasnyi_luch: "Хрустальний", kadiivka: "Кадіївка", rubizhne: "Рубіжне", sverdlovsk: "Довжанськ", krasnodon: "Сорокине", popasna: "Попасна", kreminna: "Кремінна", starobilsk: "Старобільськ", svatove: "Сватове" } },
             donetsk: { name: "Донецька область", mainCity: "Донецьк", cities: { donetsk: "Донецьк", mariupol: "Маріуполь", makiyivka: "Макіївка", horlivka: "Горлівка", kramatorsk: "Краматорськ", sloviansk: "Слов'янськ", yenakiyeve: "Єнакієве", bakhmut: "Бахмут", pokrovsk: "Покровськ", kostiantynivka: "Костянтинівка", khartsyzk: "Харцизьк", druzhkivka: "Дружківка", dobropillia: "Добропілля", lyman: "Лиман", avdiyivka: "Авдіївка", toretsk: "Торецьк", selidove: "Селидове", volnovakaha: "Волноваха", kurakhove: "Курахове" } },
             odesa: { name: "Одеська область", mainCity: "Одеса", cities: { odesa: "Одеса", izmail: "Ізмаїл", chornomorsk: "Чорноморськ", bilhorod_dnistrovskyi: "Білгород-Дністровський", podilsk: "Подільськ", yuzhne: "Південне", kilia: "Кілія", reni: "Рені", balta: "Балта", rozdilna: "Роздільна", bolhrad: "Болград", artsyz: "Арциз", bilyaivka: "Біляївка", ovidiopol: "Овідіополь", tatarbunary: "Татарбунари" } },
@@ -574,7 +574,6 @@
         let activeCityData = null;
         let unsubscribeCity = null;
 
-        // Авторизація та перевірка прав адміністратора
         auth.onAuthStateChanged((user) => {
             currentUser = user;
             const badge = document.getElementById('authStatusBadge');
@@ -615,7 +614,6 @@
 
         window.getCurrentUser = function() { return currentUser || auth.currentUser; };
 
-        // Ініціалізація при завантаженні сторінки
         document.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
             let rParam = (urlParams.get('region') || '').toLowerCase();
@@ -656,7 +654,6 @@
             subToActiveCity();
         });
 
-        // Підписка в реальному часі на Firestore документ вибраного міста
         function subToActiveCity() {
             if (unsubscribeCity) {
                 unsubscribeCity();
@@ -672,7 +669,6 @@
                 if (doc.exists) {
                     activeCityData = doc.data();
                 } else {
-                    // Створюємо документ за замовчуванням у Firestore якщо його ще немає
                     activeCityData = {
                         name: cityName,
                         regionName: regObj.name,
@@ -682,7 +678,7 @@
                         news: [],
                         businesses: []
                     };
-                    docRef.set(activeCityData).catch(err => console.error("Поשлка створення міста в БД:", err));
+                    docRef.set(activeCityData).catch(err => console.error("Помилка створення міста:", err));
                 }
                 renderCurrentCity();
             }, err => {
@@ -713,7 +709,7 @@
                 await db.collection('city_portals').doc(storageKey).set(activeCityData);
             } catch (err) {
                 console.error("Помилка збереження в Firestore:", err);
-                alert("Не вдалося зберегти зміни в хмарі. Перевірте з'єднання.");
+                alert("Не вдалося зберегти зміни в хмарі.");
             }
         }
 
@@ -813,7 +809,7 @@
             }
         }
 
-        // --- ЕКСПОРТ ТА ІМПОРТ БАЗИ ДАНИХ (JSON) ---
+        // --- ЕКСПОРТ ТА ІМПОРТ БАЗИ ДАНИХ (FIREBASE JSON) ---
         async function exportDatabaseJson() {
             const user = window.getCurrentUser ? window.getCurrentUser() : null;
             if (!user || user.email !== 'kostopilservice@gmail.com') {

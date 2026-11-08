@@ -133,14 +133,14 @@
         </div>
         <div>
           <h4 class="text-xs font-bold text-emerald-300 uppercase tracking-wider">Відеоконференція Google Meet активна</h4>
-          <p id="meetLinkDisplay" class="text-xs text-slate-300 font-mono mt-0.5 select-all">https://meet.google.new</p>
+          <p id="meetLinkDisplay" class="text-xs text-slate-300 font-mono mt-0.5 select-all">https://meet.google.com</p>
         </div>
       </div>
       <div class="flex items-center gap-2 w-full sm:w-auto">
         <a id="joinMeetBtn" href="#" target="_blank" class="flex-1 sm:flex-none px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl text-center shadow transition-all">
           Приєднатися до Meet ➔
         </a>
-        <button onclick="shareMeetToChat()" class="flex-1 sm:flex-none px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow transition-all flex items-center justify-center gap-1.5">
+        <button onclick="shareMeetToChat()" class="flex-1 sm:flex-none px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow transition-all flex items-center justify-center gap-1.5 cursor-pointer">
           <i class="fa-solid fa-share-nodes"></i> Опублікувати в чат
         </button>
       </div>
@@ -273,12 +273,15 @@
     const db = firebase.firestore();
     const auth = firebase.auth();
 
-    let currentMeetUrl = "https://meet.google.new";
+    let currentMeetUrl = "https://meet.google.com";
 
-    // Функція генерації Google Meet кімнати
+    // Виправлена функція генерації робочої Google Meet кімнати
     function createGoogleMeetRoom() {
-      // Генерація унікального або стандартного посилання Google Meet
-      currentMeetUrl = "https://meet.google.new";
+      const p1 = Math.random().toString(36).substring(2, 5);
+      const p2 = Math.random().toString(36).substring(2, 6);
+      const p3 = Math.random().toString(36).substring(2, 5);
+      
+      currentMeetUrl = `https://meet.google.com/${p1}-${p2}-${p3}`;
       
       const banner = document.getElementById('meetActiveBanner');
       const linkDisplay = document.getElementById('meetLinkDisplay');

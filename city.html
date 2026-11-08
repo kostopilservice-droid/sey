@@ -621,7 +621,7 @@
 
             let matchedRegionKey = null;
             for (let rKey in UKRAINE_REGIONS) {
-                if (rKey === rParam || UKRAINE_REGIONS[rKey].name.toLowerCase().includes(rParam)) {
+                if (rKey === rParam || UKRAINE_REGIONS[rKey].name.toLowerCase().includes(rParam) || rParam.includes(rKey)) {
                     matchedRegionKey = rKey;
                     break;
                 }
@@ -629,8 +629,8 @@
 
             if (matchedRegionKey) {
                 currentRegionKey = matchedRegionKey;
-            } else if (rParam) {
-                currentRegionKey = 'kyiv';
+            } else {
+                currentRegionKey = 'rivne';
             }
 
             const regObj = UKRAINE_REGIONS[currentRegionKey];
@@ -638,7 +638,7 @@
 
             if (cParam) {
                 for (let cKey in regObj.cities) {
-                    if (cKey === cParam || regObj.cities[cKey].toLowerCase() === cParam) {
+                    if (cKey === cParam || regObj.cities[cKey].toLowerCase().includes(cParam) || cParam.includes(cKey)) {
                         matchedCityKey = cKey;
                         break;
                     }

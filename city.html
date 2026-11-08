@@ -127,6 +127,17 @@
             </div>
 
             <div class="flex items-center gap-3 text-xs font-semibold">
+                <!-- КНОПКИ АДМІНІСТРАТОРА (РЕЗЕРВНЕ КОПІЮВАННЯ) -->
+                <div id="adminBackupTools" class="hidden items-center gap-1.5">
+                    <button onclick="exportDatabaseJson()" class="px-2.5 py-1 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 rounded-lg text-[10px] font-bold flex items-center gap-1 transition-all cursor-pointer" title="Експортувати базу даних у файл JSON">
+                        <i class="fa-solid fa-download"></i> Експорт
+                    </button>
+                    <label class="px-2.5 py-1 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 rounded-lg text-[10px] font-bold flex items-center gap-1 transition-all cursor-pointer" title="Імпортувати базу даних з файлу JSON">
+                        <i class="fa-solid fa-upload"></i> Імпорт
+                        <input type="file" accept=".json" onchange="importDatabaseJson(event)" class="hidden">
+                    </label>
+                </div>
+
                 <div id="authStatusBadge" class="text-[10px] px-2 py-0.5 rounded-md bg-slate-900 border border-slate-700 text-slate-400">
                     Перевірка...
                 </div>
@@ -201,7 +212,7 @@
                 </button>
             </div>
 
-            <!-- ПОШУК ТА ФІЛЬТРАЦІЯ ПО ОРГАНІЗАЦІЯХ (МАЙБУТНЄ РІШЕННЯ) -->
+            <!-- ПОШУК ТА ФІЛЬТРАЦІЯ ПО ОРГАНІЗАЦІЯХ -->
             <div class="flex flex-col sm:flex-row gap-3">
                 <div class="relative flex-grow">
                     <i class="fa-solid fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
@@ -216,7 +227,7 @@
             
             <div id="cityBusinessGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
             
-            <!-- ПАГІНАЦІЯ (ПЕРЕХІД МІЖ СТОРІНКАМИ) -->
+            <!-- ПАГІНАЦІЯ ПІДПРИЄМСТВ -->
             <div id="businessPagination" class="flex justify-center items-center gap-2 pt-4 border-t border-slate-800/80"></div>
         </div>
 
@@ -234,8 +245,17 @@
                     <i class="fa-solid fa-plus-circle"></i> Додати новину міста
                 </button>
             </div>
+
+            <!-- ПОШУК ПО НОВИНАХ -->
+            <div class="relative">
+                <i class="fa-solid fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
+                <input type="text" id="newsSearchInput" oninput="filterNews()" placeholder="Пошук новин за заголовком чи змістом..." class="w-full pl-9 pr-4 py-2 text-xs bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-amber-400">
+            </div>
             
             <div id="cityNewsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+
+            <!-- ПАГІНАЦІЯ НОВИН -->
+            <div id="newsPagination" class="flex justify-center items-center gap-2 pt-4 border-t border-slate-800/80"></div>
         </div>
 
     </main>
@@ -520,6 +540,7 @@
             const adminPanoramaBtn = document.getElementById('adminPanoramaBtn');
             const adminAddBusinessBtn = document.getElementById('adminAddBusinessBtn');
             const adminAddNewsBtn = document.getElementById('adminAddNewsBtn');
+            const adminBackupTools = document.getElementById('adminBackupTools');
 
             if (badge) {
                 if (user) {
@@ -530,10 +551,12 @@
                         if (adminPanoramaBtn) adminPanoramaBtn.style.display = 'flex';
                         if (adminAddBusinessBtn) adminAddBusinessBtn.style.display = 'flex';
                         if (adminAddNewsBtn) adminAddNewsBtn.style.display = 'flex';
+                        if (adminBackupTools) adminBackupTools.style.display = 'flex';
                     } else {
                         if (adminPanoramaBtn) adminPanoramaBtn.style.display = 'none';
                         if (adminAddBusinessBtn) adminAddBusinessBtn.style.display = 'none';
                         if (adminAddNewsBtn) adminAddNewsBtn.style.display = 'none';
+                        if (adminBackupTools) adminBackupTools.style.display = 'none';
                     }
                 } else {
                     badge.textContent = "Гість";
@@ -541,6 +564,7 @@
                     if (adminPanoramaBtn) adminPanoramaBtn.style.display = 'none';
                     if (adminAddBusinessBtn) adminAddBusinessBtn.style.display = 'none';
                     if (adminAddNewsBtn) adminAddNewsBtn.style.display = 'none';
+                    if (adminBackupTools) adminBackupTools.style.display = 'none';
                 }
             }
             if (typeof renderBusinessGrid === 'function') {
@@ -585,6 +609,7 @@
         let currentRegionKey = 'kyiv';
         let currentCityKey = 'kyiv';
         let currentBusinessPage = 1;
+        let currentNewsPage = 1;
         const ITEMS_PER_PAGE = 6;
 
         function loadStorageData() {
@@ -596,6 +621,50 @@
 
         function saveStorageData() {
             localStorage.setItem('neoservice_ukraine_custom_v5', JSON.stringify(CUSTOM_CITY_DATA));
+        }
+
+        // --- ЕКСПОРТ ТА ІМПОРТ БАЗИ ДАНИХ (JSON) ---
+        function exportDatabaseJson() {
+            const user = window.getCurrentUser ? window.getCurrentUser() : null;
+            if (!user || user.email !== 'kostopilservice@gmail.com') {
+                alert("Експортувати базу даних може лише адміністратор!");
+                return;
+            }
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(CUSTOM_CITY_DATA, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", `neoservice_backup_${new Date().toISOString().slice(0,10)}.json`);
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+        }
+
+        function importDatabaseJson(event) {
+            const user = window.getCurrentUser ? window.getCurrentUser() : null;
+            if (!user || user.email !== 'kostopilservice@gmail.com') {
+                alert("Імпортувати базу даних може лише адміністратор!");
+                return;
+            }
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const parsed = JSON.parse(e.target.result);
+                    if (parsed && typeof parsed === 'object') {
+                        CUSTOM_CITY_DATA = parsed;
+                        saveStorageData();
+                        renderCurrentCity();
+                        alert("Базу даних успішно відновлено та імпортовано!");
+                    } else {
+                        alert("Помилка: невірний формат файлу JSON.");
+                    }
+                } catch(err) {
+                    alert("Помилка при читанні файлу JSON: " + err.message);
+                }
+            };
+            reader.readAsText(file);
         }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -659,6 +728,7 @@
             CUSTOM_CITY_DATA[storageKey].name = cityName;
             CUSTOM_CITY_DATA[storageKey].regionName = regObj.name;
             if (!CUSTOM_CITY_DATA[storageKey].businesses) CUSTOM_CITY_DATA[storageKey].businesses = [];
+            if (!CUSTOM_CITY_DATA[storageKey].news) CUSTOM_CITY_DATA[storageKey].news = [];
             return CUSTOM_CITY_DATA[storageKey];
         }
 
@@ -684,6 +754,7 @@
             if (cityPhoto) cityPhoto.src = data.photo;
 
             currentBusinessPage = 1;
+            currentNewsPage = 1;
             updateCategoryFilterDropdown();
             renderBusinessGrid();
             renderNewsGrid();
@@ -871,7 +942,6 @@
                 return;
             }
 
-            // Розрахунок пагінації
             const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
             if (currentBusinessPage > totalPages) currentBusinessPage = totalPages;
             if (currentBusinessPage < 1) currentBusinessPage = 1;
@@ -919,14 +989,11 @@
                 grid.appendChild(card);
             });
 
-            // Рендер кнопок пагінації, якщо сторінок більше однієї
             if (totalPages > 1 && paginationContainer) {
                 let pagHtml = `<button onclick="changeBusinessPage(${currentBusinessPage - 1})" ${currentBusinessPage === 1 ? 'disabled class="px-3 py-1.5 bg-slate-900 text-slate-600 rounded-lg text-xs cursor-not-allowed"' : 'class="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-amber-300 border border-amber-500/30 rounded-lg text-xs font-bold cursor-pointer"'}>Попередня</button>`;
-                
                 for (let i = 1; i <= totalPages; i++) {
                     pagHtml += `<button onclick="changeBusinessPage(${i})" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${i === currentBusinessPage ? 'bg-amber-500 text-slate-950 font-extrabold shadow' : 'bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700'}">${i}</button>`;
                 }
-
                 pagHtml += `<button onclick="changeBusinessPage(${currentBusinessPage + 1})" ${currentBusinessPage === totalPages ? 'disabled class="px-3 py-1.5 bg-slate-900 text-slate-600 rounded-lg text-xs cursor-not-allowed"' : 'class="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-amber-300 border border-amber-500/30 rounded-lg text-xs font-bold cursor-pointer"'}>Наступна</button>`;
                 paginationContainer.innerHTML = pagHtml;
             }
@@ -1091,7 +1158,7 @@
             }
         }
 
-        // --- НОВИНИ МІСТА ---
+        // --- НОВИНИ МІСТА З ПОШУКОМ ТА ПАГІНАЦІЄЮ ---
         function openAddNewsModal() {
             const user = window.getCurrentUser ? window.getCurrentUser() : null;
             if (!user || user.email !== 'kostopilservice@gmail.com') {
@@ -1154,23 +1221,47 @@
             alert('Новину успішно збережено!');
         }
 
+        function filterNews() {
+            currentNewsPage = 1;
+            renderNewsGrid();
+        }
+
         function renderNewsGrid() {
             const grid = document.getElementById('cityNewsGrid');
+            const paginationContainer = document.getElementById('newsPagination');
             if (!grid) return;
-            const data = getActiveCityData();
-            grid.innerHTML = '';
 
-            if (!data.news || data.news.length === 0) {
-                grid.innerHTML = `<div class="col-span-full text-center py-10 text-slate-500 text-xs italic">У цьому місті поки немає опублікованих новин.</div>`;
+            const data = getActiveCityData();
+            const searchInput = document.getElementById('newsSearchInput');
+            const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
+
+            let filteredNews = (data.news || []).filter(item => {
+                return !query || item.title.toLowerCase().includes(query) || item.text.toLowerCase().includes(query);
+            });
+
+            grid.innerHTML = '';
+            if (paginationContainer) paginationContainer.innerHTML = '';
+
+            if (filteredNews.length === 0) {
+                grid.innerHTML = `<div class="col-span-full text-center py-10 text-slate-500 text-xs italic">За вашим запитом новин не знайдено.</div>`;
                 return;
             }
 
-            data.news.forEach((item, idx) => {
+            const totalPages = Math.ceil(filteredNews.length / ITEMS_PER_PAGE);
+            if (currentNewsPage > totalPages) currentNewsPage = totalPages;
+            if (currentNewsPage < 1) currentNewsPage = 1;
+
+            const startIdx = (currentNewsPage - 1) * ITEMS_PER_PAGE;
+            const pageItems = filteredNews.slice(startIdx, startIdx + ITEMS_PER_PAGE);
+
+            pageItems.forEach((item) => {
+                // Знаходимо реальний індекс у масиві data.news для коректного відкриття/редагування
+                const originalIndex = data.news.indexOf(item);
                 const coverPhoto = item.photos && item.photos.length > 0 ? item.photos[0] : 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=500';
                 
                 let card = document.createElement('div');
                 card.className = 'news-card overflow-hidden flex flex-col justify-between cursor-pointer';
-                card.onclick = () => openNewsDetail(idx);
+                card.onclick = () => openNewsDetail(originalIndex);
                 card.innerHTML = `
                     <div>
                         <div class="w-full h-44 overflow-hidden bg-slate-950 relative">
@@ -1194,6 +1285,21 @@
                 `;
                 grid.appendChild(card);
             });
+
+            if (totalPages > 1 && paginationContainer) {
+                let pagHtml = `<button onclick="changeNewsPage(${currentNewsPage - 1})" ${currentNewsPage === 1 ? 'disabled class="px-3 py-1.5 bg-slate-900 text-slate-600 rounded-lg text-xs cursor-not-allowed"' : 'class="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-amber-300 border border-amber-500/30 rounded-lg text-xs font-bold cursor-pointer"'}>Попередня</button>`;
+                for (let i = 1; i <= totalPages; i++) {
+                    pagHtml += `<button onclick="changeNewsPage(${i})" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${i === currentNewsPage ? 'bg-amber-500 text-slate-950 font-extrabold shadow' : 'bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700'}">${i}</button>`;
+                }
+                pagHtml += `<button onclick="changeNewsPage(${currentNewsPage + 1})" ${currentNewsPage === totalPages ? 'disabled class="px-3 py-1.5 bg-slate-900 text-slate-600 rounded-lg text-xs cursor-not-allowed"' : 'class="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-amber-300 border border-amber-500/30 rounded-lg text-xs font-bold cursor-pointer"'}>Наступна</button>`;
+                paginationContainer.innerHTML = pagHtml;
+            }
+        }
+
+        function changeNewsPage(page) {
+            currentNewsPage = page;
+            renderNewsGrid();
+            window.scrollTo({ top: document.getElementById('cityNewsGrid').offsetTop - 120, behavior: 'smooth' });
         }
 
         let activeNewsIndex = -1;

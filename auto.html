@@ -70,7 +70,6 @@
             gap: 4px;
         }
 
-        /* Стилі покращеного модального вікна галереї (Lightbox) */
         .lightbox-modal {
             display: none;
             position: fixed;
@@ -418,26 +417,20 @@
 
     </main>
 
-    <!-- ОНОВЛЕНИЙ ПОЛНОЦІННИЙ LIGHTBOX ДЛЯ ПЕРЕГЛЯДУ ТА ПЕРЕММИКАННЯ ФОТОГРАФІЙ -->
+    <!-- LIGHTBOX ДЛЯ ГАЛЕРЕЇ -->
     <div id="lightboxModal" class="lightbox-modal">
-        <!-- Кнопка закрити -->
         <span class="absolute top-4 right-6 text-white text-3xl cursor-pointer font-bold z-50 hover:text-red-400" onclick="closeGallery()">&times;</span>
         
-        <!-- Лічильник фото -->
         <div id="galleryCounter" class="text-white text-xs font-semibold mb-3 bg-black/60 px-3 py-1 rounded-full">
             Фото 1 з 1
         </div>
 
-        <!-- Основне зображення з кнопками перемикання -->
         <div class="relative flex items-center justify-center max-w-[90vw] max-h-[70vh]">
             <button class="gallery-nav-btn absolute left-2 sm:-left-12 z-40" onclick="prevGalleryImage(event)">‹</button>
-            
             <img id="lightboxImg" class="max-w-[85vw] max-h-[70vh] rounded object-contain shadow-2xl" src="" alt="Перегляд фото">
-            
             <button class="gallery-nav-btn absolute right-2 sm:-right-12 z-40" onclick="nextGalleryImage(event)">›</button>
         </div>
 
-        <!-- Контейнер мініатюр внизу -->
         <div id="galleryThumbs" class="flex gap-2 mt-4 overflow-x-auto max-w-[90vw] p-1"></div>
     </div>
 
@@ -446,13 +439,15 @@
         <p>© 2026 NEOSERVICE — Автобазар & Комерція. Всі права захищені.</p>
     </footer>
 
-    <!-- FIREBASE ТА ІНТЕРАКТИВНА ЛОГІКА -->
+    <!-- FIREBASE ТА ЛОГІКА -->
     <script type="module">
         import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, doc, deleteDoc, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const ADMIN_EMAIL = "kostopilservice@gmail.com";
+        // АКТУАЛЬНИЙ КУРС ДОЛАРА НБУ (близько 45.41 грн/$)
+        const USD_TO_UAH_RATE = 45.41;
 
         const firebaseConfig = {
             apiKey: "AIzaSyBlKoP6-M8tdrKq88bSdnWSnak5Gpddnpk",
@@ -468,8 +463,6 @@
         const db = getFirestore(app);
 
         let currentUser = null;
-        
-        // Змінні для керування галереєю
         let currentGalleryPhotos = [];
         let currentPhotoIndex = 0;
 
@@ -550,7 +543,7 @@
             form.classList.toggle('hidden');
         };
 
-        // Публікація нового оголошення з кількома фото
+        // Публікація оголошення з правильним розрахунком гривень за актуальним курсом
         document.getElementById('addListingForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             if (!currentUser) return;
@@ -570,14 +563,14 @@
             const p3 = document.getElementById('adPhoto3').value.trim();
             const p4 = document.getElementById('adPhoto4').value.trim();
             
-            // Збираємо тільки заповнені URL
             const photosArray = [p1, p2, p3, p4].filter(url => url.startsWith('http'));
-            
             if (photosArray.length === 0) {
                 photosArray.push('https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=600');
             }
 
             const priceVal = Number(document.getElementById('adPrice').value);
+            // Розрахунок еквівалента в грн за актуальним курсом НБУ
+            const priceUahVal = Math.round(priceVal * USD_TO_UAH_RATE);
 
             try {
                 await addDoc(collection(db, "auto_listings"), {
@@ -588,7 +581,7 @@
                     year: Number(year),
                     category: "Продаж авто",
                     priceUSD: priceVal,
-                    priceUAH: Math.round(priceVal * 41.5),
+                    priceUAH: priceUahVal,
                     mileage: document.getElementById('adMileage').value,
                     city: document.getElementById('adCity').value,
                     contact: document.getElementById('adContact').value,
@@ -607,13 +600,13 @@
 
                 document.getElementById('addListingForm').reset();
                 document.getElementById('newAdFormCard').classList.add('hidden');
-                alert('Ваше оголошення успішно опубліковано з галереєю фото!');
+                alert('Ваше оголошення успішно опубліковано!');
             } catch (err) {
                 alert('Помилка при збереженні: ' + err.message);
             }
         });
 
-        // Завантаження та вивід карт оголошень
+        // Слухач бази даних та вивід карток
         const q = query(collection(db, "auto_listings"), orderBy("createdAt", "desc"));
         onSnapshot(q, (snapshot) => {
             const container = document.getElementById('autoProductsContainer');
@@ -628,13 +621,16 @@
                 const car = docSnap.data();
                 const docId = docSnap.id;
                 
-                // Перевірка масиву фото
                 const photos = (car.photosArray && car.photosArray.length > 0) 
                     ? car.photosArray 
                     : ['https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=600'];
                 
                 const mainPhoto = photos[0];
                 const photosCount = photos.length;
+                
+                // Перевірка та перерахунок гривень якщо старе оголошення зберігалось із застарілим курсом
+                const priceUsd = car.priceUSD || 0;
+                const priceUah = car.priceUAH || Math.round(priceUsd * USD_TO_UAH_RATE);
 
                 const card = document.createElement('div');
                 card.className = 'product-card border border-gray-200 p-3 bg-white rounded flex flex-col sm:flex-row gap-4 items-start shadow-sm';
@@ -642,11 +638,9 @@
                 card.setAttribute('data-brand', car.brand || '');
                 card.setAttribute('data-model', car.model || '');
                 card.setAttribute('data-year', car.year || '2022');
-                card.setAttribute('data-price', car.priceUSD || '0');
+                card.setAttribute('data-price', priceUsd);
 
                 const isOwnerOrAdmin = currentUser && (currentUser.email === ADMIN_EMAIL || currentUser.email === car.userEmail);
-
-                // Запис JSON списку фотографій у дата-атрибут для відкриття галереї
                 const photosJSON = JSON.stringify(photos).replace(/"/g, '&quot;');
 
                 card.innerHTML = `
@@ -657,7 +651,6 @@
                             <i class="fa-solid fa-car"></i> Перевірений VIN-код
                         </span>
                         
-                        <!-- Лічильник кількості фото -->
                         <span class="absolute bottom-2 right-2 px-2 py-0.5 bg-black/70 text-white font-bold text-[10px] rounded flex items-center gap-1 backdrop-blur-sm">
                             <i class="fa-solid fa-camera"></i> ${photosCount}
                         </span>
@@ -674,8 +667,8 @@
                         </div>
 
                         <div class="flex items-baseline gap-2 pt-0.5">
-                            <span class="text-xl font-extrabold text-green-600">${(car.priceUSD || 0).toLocaleString()} $</span>
-                            <span class="text-xs text-gray-500 font-normal">• ${(car.priceUAH || Math.round((car.priceUSD||0)*41.5)).toLocaleString()} грн</span>
+                            <span class="text-xl font-extrabold text-green-600">${priceUsd.toLocaleString()} $</span>
+                            <span class="text-xs text-gray-500 font-normal">• ${priceUah.toLocaleString()} грн</span>
                         </div>
 
                         <div class="grid grid-cols-2 gap-y-1 text-gray-700 text-xs pt-1">
@@ -727,7 +720,6 @@
             });
         });
 
-        // ІНТЕРАКТИВНА ЛОГІКА ГАЛЕРЕЇ ТА ПЕРЕММИКАННЯ ФОТОГРАФІЙ
         window.openGallery = function(photos) {
             if (!photos || photos.length === 0) return;
             currentGalleryPhotos = photos;
@@ -762,7 +754,6 @@
             imgEl.src = currentGalleryPhotos[currentPhotoIndex];
             counterEl.textContent = `Фото ${currentPhotoIndex + 1} з ${currentGalleryPhotos.length}`;
 
-            // Оновлення мініатюр внизу
             thumbsContainer.innerHTML = '';
             currentGalleryPhotos.forEach((url, idx) => {
                 const thumb = document.createElement('img');
@@ -777,7 +768,6 @@
             });
         }
 
-        // Керування стрілками клавіатури
         document.addEventListener('keydown', (e) => {
             const modal = document.getElementById('lightboxModal');
             if (modal.style.display === 'flex') {

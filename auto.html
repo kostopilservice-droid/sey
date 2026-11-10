@@ -5,7 +5,7 @@
     <meta name="theme-color" content="#ffffff">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEOSERVICE — Пропозиції про продаж авто</title>
+    <title>NEOSERVICE — Автобазар & Оголошення про продаж авто</title>
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -41,7 +41,7 @@
         }
         .btn-green-add:hover { background-color: #689f38; }
 
-        /* Таги номерних знаків та VIN точно як на AutoRia */
+        /* Таги номерних знаків та VIN точно як на АвтоРІА */
         .state-number-tag {
             background: #ffffff;
             border: 1px solid #1976d2;
@@ -97,7 +97,7 @@
             <div class="flex items-center gap-3">
                 <a href="#" class="hover:text-red-600"><i class="fa-regular fa-heart"></i></a>
                 <a href="#" class="hover:text-red-600"><i class="fa-regular fa-bell"></i></a>
-                <span id="authStatusBadge" class="font-semibold text-gray-700">👤 Особистий кабінет</span>
+                <span id="authStatusBadge" class="font-semibold text-gray-700 cursor-pointer" onclick="handleAuthClick()">👤 Особистий кабінет (Гість)</span>
             </div>
         </div>
 
@@ -110,7 +110,7 @@
                         <i class="fa-solid fa-car-side"></i> NEO<span class="text-yellow-300">SERVICE</span>
                     </div>
                     <div class="text-[11px] text-gray-600 font-bold uppercase tracking-wider hidden sm:block">
-                        Автобазар & Комерція
+                        Автобазар & Оголошення
                     </div>
                 </a>
 
@@ -163,6 +163,8 @@
                         <option value="Kia">Kia</option>
                         <option value="Ford">Ford</option>
                         <option value="Nissan">Nissan</option>
+                        <option value="Mazda">Mazda</option>
+                        <option value="Lexus">Lexus</option>
                     </select>
 
                     <!-- Динамічний вибір моделі -->
@@ -207,58 +209,148 @@
             </div>
         </div>
 
-        <!-- ФОРМА ДОДАВАННЯ ОГОЛОШЕННЯ -->
-        <div id="newAdFormCard" class="hidden bg-gray-50 rounded p-5 border-2 border-dashed border-red-500 shadow-md space-y-3">
+        <!-- РОЗШИРЕНА ФОРМА ДОДАВАННЯ ОГОЛОШЕННЯ ДЛЯ ЗАРЕЄСТРОВАНИХ КОРУСТУВАЧІВ -->
+        <div id="newAdFormCard" class="hidden bg-gray-50 rounded p-5 border-2 border-dashed border-red-500 shadow-md space-y-4">
             <div class="flex justify-between items-center border-b pb-2">
-                <h3 class="font-bold text-sm text-gray-900"><i class="fa-solid fa-pen"></i> Нове оголошення (NEOSERVICE)</h3>
-                <button onclick="toggleAddForm()" class="text-gray-500 font-bold">✕</button>
+                <h3 class="font-bold text-sm text-gray-900 flex items-center gap-2">
+                    <i class="fa-solid fa-car-on text-red-600"></i> Повна форма додавання оголошення про продаж авто
+                </h3>
+                <button onclick="toggleAddForm()" class="text-gray-500 font-bold hover:text-black">✕</button>
             </div>
 
             <form id="addListingForm" class="space-y-3 text-xs">
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                    <select id="formBrand" onchange="updateFormModels()" class="p-2 border rounded font-semibold bg-white" required>
-                        <option value="">Оберіть марку *</option>
-                        <option value="Haval">Haval</option>
-                        <option value="BMW">BMW</option>
-                        <option value="Audi">Audi</option>
-                        <option value="Mercedes-Benz">Mercedes-Benz</option>
-                        <option value="Volkswagen">Volkswagen</option>
-                        <option value="Skoda">Skoda</option>
-                        <option value="Toyota">Toyota</option>
-                        <option value="Renault">Renault</option>
-                        <option value="Hyundai">Hyundai</option>
-                        <option value="Kia">Kia</option>
-                        <option value="Ford">Ford</option>
-                    </select>
-                    <select id="formModel" class="p-2 border rounded font-semibold bg-white" required>
-                        <option value="">Оберіть модель *</option>
-                    </select>
-                    <input type="number" id="formYear" placeholder="Рік випуску (напр. 2022)" class="p-2 border rounded" required>
+                
+                <!-- Блок 1: Основне -->
+                <div class="font-bold text-gray-700 text-xs border-b pb-1">1. Основні дані автомобіля</div>
+                <div class="grid grid-cols-1 sm:grid-cols-4 gap-2">
+                    <div>
+                        <label class="block font-semibold mb-1 text-gray-600">Марка *</label>
+                        <select id="formBrand" onchange="updateFormModels()" class="w-full p-2 border rounded font-semibold bg-white" required>
+                            <option value="">Оберіть марку *</option>
+                            <option value="Haval">Haval</option>
+                            <option value="BMW">BMW</option>
+                            <option value="Audi">Audi</option>
+                            <option value="Mercedes-Benz">Mercedes-Benz</option>
+                            <option value="Volkswagen">Volkswagen</option>
+                            <option value="Skoda">Skoda</option>
+                            <option value="Toyota">Toyota</option>
+                            <option value="Renault">Renault</option>
+                            <option value="Hyundai">Hyundai</option>
+                            <option value="Kia">Kia</option>
+                            <option value="Ford">Ford</option>
+                            <option value="Nissan">Nissan</option>
+                            <option value="Mazda">Mazda</option>
+                            <option value="Lexus">Lexus</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block font-semibold mb-1 text-gray-600">Модель *</label>
+                        <select id="formModel" class="w-full p-2 border rounded font-semibold bg-white" required>
+                            <option value="">Оберіть модель *</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block font-semibold mb-1 text-gray-600">Покоління / Комплектація</label>
+                        <input type="text" id="formGeneration" placeholder="напр. I покоління чи M-пакет" class="w-full p-2 border rounded">
+                    </div>
+
+                    <div>
+                        <label class="block font-semibold mb-1 text-gray-600">Рік випуску *</label>
+                        <input type="number" id="formYear" placeholder="2022" min="1950" max="2026" class="w-full p-2 border rounded" required>
+                    </div>
                 </div>
 
+                <!-- Блок 2: Ціна та місце розташування -->
+                <div class="font-bold text-gray-700 text-xs border-b pb-1 pt-2">2. Ціна, пробіг та контакти</div>
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                    <input type="number" id="adPrice" required placeholder="Ціна в ($)" class="p-2 border rounded">
-                    <input type="number" id="adMileage" placeholder="Пробіг (тис. км)" class="p-2 border rounded">
-                    <input type="text" id="adCity" required placeholder="Місто (напр. Сміла)" class="p-2 border rounded">
-                    <input type="tel" id="adContact" required placeholder="Телефон" class="p-2 border rounded">
+                    <div>
+                        <label class="block font-semibold mb-1 text-gray-600">Ціна ($ USD) *</label>
+                        <input type="number" id="adPrice" required placeholder="22400" class="w-full p-2 border rounded font-bold text-green-700">
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1 text-gray-600">Пробіг (тис. км) *</label>
+                        <input type="number" id="adMileage" required placeholder="18" class="w-full p-2 border rounded">
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1 text-gray-600">Місто продажу *</label>
+                        <input type="text" id="adCity" required placeholder="Сміла (або Костопіль)" class="w-full p-2 border rounded">
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1 text-gray-600">Номер телефону *</label>
+                        <input type="tel" id="adContact" required placeholder="+380971234567" class="w-full p-2 border rounded">
+                    </div>
                 </div>
 
-                <div class="grid grid-cols-3 gap-2">
-                    <input type="text" id="adEngine" placeholder="Двигун (напр. Бензин, 2 л.)" class="p-2 border rounded">
-                    <input type="text" id="adGearbox" placeholder="КПП (напр. Автомат)" class="p-2 border rounded">
-                    <input type="text" id="adVin" placeholder="VIN-код" class="p-2 border rounded font-mono">
+                <!-- Блок 3: Специфікації -->
+                <div class="font-bold text-gray-700 text-xs border-b pb-1 pt-2">3. Технічні характеристики</div>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    <div>
+                        <label class="block font-semibold mb-1 text-gray-600">Тип палива</label>
+                        <select id="adFuel" class="w-full p-2 border rounded bg-white">
+                            <option value="Бензин">Бензин</option>
+                            <option value="Дизель">Дизель</option>
+                            <option value="Гібрид">Гібрид</option>
+                            <option value="Електро">Електро</option>
+                            <option value="Газ/Бензин">Газ/Бензин</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1 text-gray-600">Об'єм двигуна (л.)</label>
+                        <input type="text" id="adDisplacement" placeholder="2.0 л." class="w-full p-2 border rounded">
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1 text-gray-600">Коробка передач (КПП)</label>
+                        <select id="adGearbox" class="w-full p-2 border rounded bg-white">
+                            <option value="Автомат">Автомат</option>
+                            <option value="Механіка">Механіка</option>
+                            <option value="Робот">Робот</option>
+                            <option value="Варіатор">Варіатор</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1 text-gray-600">Тип приводу</label>
+                        <select id="adDrive" class="w-full p-2 border rounded bg-white">
+                            <option value="Повний">Повний</option>
+                            <option value="Передній">Передній</option>
+                            <option value="Задній">Задній</option>
+                        </select>
+                    </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-2">
-                    <input type="url" id="adPhoto1" placeholder="Фото 1 (URL) https://..." class="p-2 border rounded">
-                    <input type="url" id="adPhoto2" placeholder="Фото 2 (URL) https://..." class="p-2 border rounded">
+                <!-- Блок 4: Номери та VIN -->
+                <div class="font-bold text-gray-700 text-xs border-b pb-1 pt-2">4. Ідентифікація (Держномер та VIN)</div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <div>
+                        <label class="block font-semibold mb-1 text-gray-600">Державний номер авто</label>
+                        <input type="text" id="adStateNum" placeholder="CA 9345 KO" class="w-full p-2 border rounded font-mono uppercase">
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1 text-gray-600">VIN-код авто (17 символів)</label>
+                        <input type="text" id="adVin" placeholder="LGWFF6A52NH924185" class="w-full p-2 border rounded font-mono uppercase">
+                    </div>
                 </div>
 
-                <textarea id="adDescription" rows="2" placeholder="Опис авто чи запчастин..." class="w-full p-2 border rounded"></textarea>
+                <!-- Блок 5: Фотографії -->
+                <div class="font-bold text-gray-700 text-xs border-b pb-1 pt-2">5. Фотографії авто (посилання URL)</div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <input type="url" id="adPhoto1" placeholder="Фото 1 (Головне) https://..." class="p-2 border rounded">
+                    <input type="url" id="adPhoto2" placeholder="Фото 2 https://..." class="p-2 border rounded">
+                    <input type="url" id="adPhoto3" placeholder="Фото 3 https://..." class="p-2 border rounded">
+                    <input type="url" id="adPhoto4" placeholder="Фото 4 https://..." class="p-2 border rounded">
+                </div>
 
-                <div class="flex justify-end gap-2">
+                <div>
+                    <label class="block font-semibold mb-1 text-gray-600">Опис стану авто та додаткових опцій *</label>
+                    <textarea id="adDescription" rows="3" required placeholder="Опишіть стан кузова, обслуговування, комплектацію..." class="w-full p-2 border rounded"></textarea>
+                </div>
+
+                <div class="flex justify-end gap-2 pt-2">
                     <button type="button" onclick="toggleAddForm()" class="px-4 py-1.5 bg-gray-200 text-gray-700 font-bold rounded">Скасувати</button>
-                    <button type="submit" class="btn-green-add text-white font-bold px-5 py-1.5 rounded">Опублікувати</button>
+                    <button type="submit" class="btn-green-add text-white font-bold px-6 py-2 rounded text-sm shadow">
+                        <i class="fa-solid fa-check"></i> Опублікувати оголошення
+                    </button>
                 </div>
             </form>
         </div>
@@ -269,6 +361,7 @@
             <div class="lg:col-span-3 space-y-4">
                 <h2 class="text-lg font-bold text-gray-800">Пропозиції про продаж авто</h2>
                 
+                <!-- Контейнер де показуються ВСІ оголошення в базі (доступно і гостям, і авторизованим) -->
                 <div id="autoProductsContainer" class="space-y-4">
                     <p class="text-center text-gray-400 text-xs py-8">Завантаження пропозицій з Firestore...</p>
                 </div>
@@ -315,7 +408,7 @@
 
     </main>
 
-    <!-- LIGHTBOX -->
+    <!-- LIGHTBOX ДЛЯ ПЕРЕГЛЯДУ ФОТО -->
     <div id="lightboxModal" class="lightbox-modal">
         <span class="absolute top-5 right-7 text-white text-3xl cursor-pointer font-bold" id="lightboxClose">&times;</span>
         <img id="lightboxImg" class="max-w-[90vw] max-h-[80vh] rounded object-contain" src="" alt="Перегляд">
@@ -326,7 +419,7 @@
         <p>© 2026 NEOSERVICE — Автобазар & Комерція. Всі права захищені.</p>
     </footer>
 
-    <!-- FIREBASE ТА ЛОГІКА ОГОЛОШЕНЬ -->
+    <!-- FIREBASE ТА ІНТЕРАКТИВНА ЛОГІКА -->
     <script type="module">
         import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -347,6 +440,8 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
+        let currentUser = null;
+
         // База даних марок та моделей
         const carDatabase = {
             "Haval": ["Dargo", "H6", "Jolion", "H9"],
@@ -362,7 +457,7 @@
             "Ford": ["Focus", "Mondeo", "Fiesta", "Kuga"]
         };
 
-        // Демонстраційні початкові оголошення (якщо БД порожня)
+        // Демонстраційне початкове оголошення зі скріншота Haval Dargo 2022
         const initialListings = [
             {
                 title: "Haval Dargo 2022",
@@ -434,21 +529,31 @@
             }
         };
 
+        // Відстеження стану користувача в реальному часі
         onAuthStateChanged(auth, (user) => {
             currentUser = user;
             const badge = document.getElementById('authStatusBadge');
-            if (badge) {
-                if (user) {
-                    badge.textContent = `👤 ${user.email.split('@')[0]}`;
-                } else {
-                    badge.textContent = "👤 Особистий кабінет";
-                }
+            const toggleFormBtn = document.getElementById('toggleFormBtn');
+            
+            if (user) {
+                if (badge) badge.textContent = `👤 ${user.email.split('@')[0]}`;
+                if (toggleFormBtn) toggleFormBtn.innerHTML = `<i class="fa-solid fa-plus"></i> Продати авто`;
+            } else {
+                if (badge) badge.textContent = "👤 Особистий кабінет (Гість)";
+                if (toggleFormBtn) toggleFormBtn.innerHTML = `<i class="fa-solid fa-lock"></i> Увійдіть для публікації`;
             }
         });
 
+        window.handleAuthClick = function() {
+            if (!currentUser) {
+                window.location.href = 'index.html';
+            }
+        };
+
+        // Відкриття / перевірка форми подачі оголошення
         window.toggleAddForm = function() {
             if (!currentUser) {
-                alert('Будь ласка, увійдіть у систему для публікації оголошення!');
+                alert('Увага: Додавати оголошення можуть лише зареєстровані користувачі!\n\nВи можете переглядати оголошення як гість. Для публікації авто, будь ласка, увійдіть у свій акаунт.');
                 window.location.href = 'index.html';
                 return;
             }
@@ -456,53 +561,66 @@
             form.classList.toggle('hidden');
         };
 
-        // Заповнення початкових даних при першому запуску
+        // Наповнення бази даних, якщо вона порожня
         async function seedInitialData() {
-            const snap = await getDocs(collection(db, "auto_listings"));
-            if (snap.empty) {
-                for (const item of initialListings) {
-                    await addDoc(collection(db, "auto_listings"), {
-                        ...item,
-                        userEmail: "admin@neoservice.ks.ua",
-                        createdAt: serverTimestamp()
-                    });
+            try {
+                const snap = await getDocs(collection(db, "auto_listings"));
+                if (snap.empty) {
+                    for (const item of initialListings) {
+                        await addDoc(collection(db, "auto_listings"), {
+                            ...item,
+                            userEmail: "admin@neoservice.ks.ua",
+                            createdAt: serverTimestamp()
+                        });
+                    }
                 }
+            } catch (err) {
+                console.log("Очікування ініціалізації БД Firestore...");
             }
         }
         seedInitialData();
 
-        // Публікація новго оголошення
+        // Публікація розширеного оголошення зареєстрованим користувачем
         document.getElementById('addListingForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             if (!currentUser) return;
 
             const brand = document.getElementById('formBrand').value;
             const model = document.getElementById('formModel').value;
+            const gen = document.getElementById('formGeneration').value || "Офіційне авто";
             const year = document.getElementById('formYear').value;
             const title = `${brand} ${model} ${year}`;
 
+            const fuel = document.getElementById('adFuel').value;
+            const disp = document.getElementById('adDisplacement').value || "2.0 л.";
+            const engineStr = `${fuel}, ${disp}`;
+
             const p1 = document.getElementById('adPhoto1').value.trim();
             const p2 = document.getElementById('adPhoto2').value.trim();
-            const photosArray = [p1, p2].filter(url => url.startsWith('http'));
+            const p3 = document.getElementById('adPhoto3').value.trim();
+            const p4 = document.getElementById('adPhoto4').value.trim();
+            const photosArray = [p1, p2, p3, p4].filter(url => url.startsWith('http'));
+
             const priceVal = Number(document.getElementById('adPrice').value);
 
             try {
                 await addDoc(collection(db, "auto_listings"), {
                     title: title,
-                    generation: "Офіційне авто",
+                    generation: gen,
                     brand: brand,
                     model: model,
                     year: Number(year),
                     category: "Продаж авто",
                     priceUSD: priceVal,
                     priceUAH: Math.round(priceVal * 41.5),
-                    mileage: document.getElementById('adMileage').value || "18",
-                    city: document.getElementById('adCity').value || "Сміла",
+                    mileage: document.getElementById('adMileage').value,
+                    city: document.getElementById('adCity').value,
                     contact: document.getElementById('adContact').value,
-                    engine: document.getElementById('adEngine').value || "Бензин, 2 л.",
-                    gearbox: document.getElementById('adGearbox').value || "Автомат",
+                    engine: engineStr,
+                    gearbox: document.getElementById('adGearbox').value,
+                    drive: document.getElementById('adDrive').value,
                     vin: document.getElementById('adVin').value || "LGWFF6A52NH924185",
-                    stateNum: "CA 9345 KO",
+                    stateNum: document.getElementById('adStateNum').value || "CA 9345 KO",
                     photosArray: photosArray,
                     description: document.getElementById('adDescription').value,
                     userEmail: currentUser.email,
@@ -513,20 +631,20 @@
 
                 document.getElementById('addListingForm').reset();
                 document.getElementById('newAdFormCard').classList.add('hidden');
-                alert('Оголошення успішно збережено у базі!');
+                alert('Ваше оголошення успішно опубліковано у базі NEOSERVICE!');
             } catch (err) {
-                alert('Помилка: ' + err.message);
+                alert('Помилка при збереженні: ' + err.message);
             }
         });
 
-        // Слухач оголошень у реальному часі (Формування картки точно як на скріншоті)
+        // Відображення списку оголошень для ВСІХ користувачів (гості бачать, зареєстровані бачать і можуть керувати своїми)
         const q = query(collection(db, "auto_listings"), orderBy("createdAt", "desc"));
         onSnapshot(q, (snapshot) => {
             const container = document.getElementById('autoProductsContainer');
             container.innerHTML = '';
 
             if (snapshot.empty) {
-                container.innerHTML = `<div class="bg-gray-50 border p-6 text-center text-gray-400 text-xs">Немає оголошень.</div>`;
+                container.innerHTML = `<div class="bg-gray-50 border p-6 text-center text-gray-400 text-xs">Немає оголошень у базі.</div>`;
                 return;
             }
 
@@ -543,7 +661,7 @@
 
                 const isOwnerOrAdmin = currentUser && (currentUser.email === ADMIN_EMAIL || currentUser.email === car.userEmail);
 
-                // Макет картки зі скріншота
+                // Оформлення картки
                 card.innerHTML = `
                     <div class="w-full sm:w-64 h-40 bg-gray-900 rounded overflow-hidden relative flex-shrink-0 cursor-pointer" onclick="openLightbox('${photo}')">
                         <img src="${photo}" alt="${car.title}" class="w-full h-full object-cover">
@@ -603,7 +721,7 @@
             document.querySelectorAll('.delete-btn').forEach(btn => {
                 btn.addEventListener('click', async (e) => {
                     const id = e.currentTarget.getAttribute('data-id');
-                    if (confirm('Видалити це оголошення?')) {
+                    if (confirm('Видалити це оголошення з бази?')) {
                         try {
                             await deleteDoc(doc(db, "auto_listings", id));
                             alert('Оголошення видалено!');

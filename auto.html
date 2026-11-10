@@ -159,8 +159,8 @@
                 </a>
 
                 <nav class="hidden md:flex items-center gap-5 text-xs font-bold text-gray-800">
-                    <a href="#" onclick="switchCategoryFilter('auto')" class="hover:text-red-600 pb-1">Автомобілі</a>
-                    <a href="#" onclick="switchCategoryFilter('parts')" class="hover:text-red-600 pb-1">Автозапчастини</a>
+                    <a href="#auto" onclick="switchCategoryFilter('auto')" class="hover:text-red-600 pb-1">Автомобілі</a>
+                    <a href="#parts" onclick="switchCategoryFilter('parts')" class="hover:text-red-600 pb-1">Автозапчастини</a>
                     <a href="#" class="hover:text-red-600 pb-1">Новини</a>
                 </nav>
 
@@ -175,10 +175,10 @@
     <main class="max-w-6xl mx-auto px-4 py-4 flex-grow w-full space-y-4">
         
         <div class="text-[11px] text-gray-500">
-            <a href="index.html" class="hover:underline">NEOSERVICE</a> &gt; <span id="breadcrumbCategory">Автобазар & Запчастини</span>
+            <a href="index.html" class="hover:underline">NEOSERVICE</a> &gt; <span id="breadcrumbCategory">Автобазар</span>
         </div>
         
-        <h1 class="text-xl sm:text-2xl font-black text-gray-900"><span class="fa-1x">Оголошення з продажу авто та запчастин</span></h1>
+        <h1 class="text-xl sm:text-2xl font-black text-gray-900" id="mainHeaderTitle">Оголошення про продаж автомобілів</h1>
 
         <!-- ЧЕРВОНИЙ БЛОК ФІЛЬТРІВ -->
         <div class="search-box-red p-4 text-white shadow-md">
@@ -186,8 +186,8 @@
                 
                 <div class="space-y-3">
                     <div class="flex gap-1 text-[11px] font-bold">
-                        <button id="btnCatAll" onclick="setMainCategory('all')" class="px-3 py-1 bg-white text-red-600 rounded-t font-bold">Всі товари</button>
-                        <button id="btnCatAuto" onclick="setMainCategory('auto')" class="px-3 py-1 bg-red-700 text-white rounded-t hover:bg-red-800">✓ Авто</button>
+                        <button id="btnCatAll" onclick="setMainCategory('all')" class="px-3 py-1 bg-red-700 text-white rounded-t hover:bg-red-800">Всі товари</button>
+                        <button id="btnCatAuto" onclick="setMainCategory('auto')" class="px-3 py-1 bg-white text-red-600 rounded-t font-bold">✓ Авто</button>
                         <button id="btnCatParts" onclick="setMainCategory('parts')" class="px-3 py-1 bg-red-700 text-white rounded-t hover:bg-red-800">Запчастини</button>
                     </div>
 
@@ -431,7 +431,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 pt-2">
             
             <div class="lg:col-span-3 space-y-4">
-                <h2 class="text-lg font-bold text-gray-800" id="feedTitle">Пропозиції у базі даних</h2>
+                <h2 class="text-lg font-bold text-gray-800" id="feedTitle">Пропозиції з продажу авто</h2>
                 
                 <div id="autoProductsContainer" class="space-y-4">
                     <p class="text-center text-gray-400 text-xs py-8">Завантаження пропозицій з Firestore...</p>
@@ -444,8 +444,8 @@
                 <div class="border-b border-gray-200 pb-3">
                     <h3 class="font-bold text-gray-900 mb-2">Категорії сайту</h3>
                     <ul class="space-y-1.5 text-blue-700 font-semibold">
-                        <li><a href="#" onclick="switchCategoryFilter('auto')" class="hover:underline flex justify-between">Легкові авто ▾</a></li>
-                        <li><a href="#" onclick="switchCategoryFilter('parts')" class="hover:underline flex justify-between text-orange-600">⚙️ Автозапчастини ▾</a></li>
+                        <li><a href="#auto" onclick="switchCategoryFilter('auto')" class="hover:underline flex justify-between">Легкові авто ▾</a></li>
+                        <li><a href="#parts" onclick="switchCategoryFilter('parts')" class="hover:underline flex justify-between text-orange-600">⚙️ Автозапчастини ▾</a></li>
                     </ul>
                 </div>
 
@@ -513,7 +513,15 @@
         let currentUser = null;
         let currentGalleryPhotos = [];
         let currentPhotoIndex = 0;
-        let activeCategoryFilter = 'all';
+        
+        // Перевіряємо хеш в URL при відкритті сторінки (наприклад #parts або #auto)
+        // За замовчуванням ставимо 'auto' (автомобілі)
+        let activeCategoryFilter = 'auto';
+        if (window.location.hash === '#parts') {
+            activeCategoryFilter = 'parts';
+        } else if (window.location.hash === '#all') {
+            activeCategoryFilter = 'all';
+        }
 
         const carDatabase = {
             "Renault": ["Scenic", "Megane", "Logan", "Duster", "Kangoo", "Master"],
@@ -588,11 +596,16 @@
             }
         };
 
-        // Керування активними кнопками категорій в червоній панелі
+        // Функція перемикання категорії
         window.setMainCategory = function(cat) {
             activeCategoryFilter = cat;
             
-            // Візуальне підсвічування кнопок категорій
+            // Оновлюємо хеш у браузері
+            if (cat === 'parts') window.location.hash = 'parts';
+            else if (cat === 'auto') window.location.hash = 'auto';
+            else window.location.hash = 'all';
+
+            // Візуальне підсвічування кнопок в червоному блоці
             const btnAll = document.getElementById('btnCatAll');
             const btnAuto = document.getElementById('btnCatAuto');
             const btnParts = document.getElementById('btnCatParts');
@@ -601,12 +614,38 @@
             btnAuto.className = "px-3 py-1 rounded-t " + (cat === 'auto' ? "bg-white text-red-600 font-bold" : "bg-red-700 text-white hover:bg-red-800");
             btnParts.className = "px-3 py-1 rounded-t " + (cat === 'parts' ? "bg-white text-red-600 font-bold" : "bg-red-700 text-white hover:bg-red-800");
 
+            // Заголовки сторінки
+            const mainHeaderTitle = document.getElementById('mainHeaderTitle');
+            const feedTitle = document.getElementById('feedTitle');
+            const breadcrumbCategory = document.getElementById('breadcrumbCategory');
+
+            if (cat === 'parts') {
+                if (mainHeaderTitle) mainHeaderTitle.textContent = "Оголошення про продаж автозапчастин";
+                if (feedTitle) feedTitle.textContent = "Пропозиції автозапчастин";
+                if (breadcrumbCategory) breadcrumbCategory.textContent = "Автозапчастини";
+            } else if (cat === 'auto') {
+                if (mainHeaderTitle) mainHeaderTitle.textContent = "Оголошення про продаж автомобілів";
+                if (feedTitle) feedTitle.textContent = "Пропозиції з продажу авто";
+                if (breadcrumbCategory) breadcrumbCategory.textContent = "Автобазар";
+            } else {
+                if (mainHeaderTitle) mainHeaderTitle.textContent = "Всі оголошення (Авто та Запчастини)";
+                if (feedTitle) feedTitle.textContent = "Всі пропозиції в базі";
+                if (breadcrumbCategory) breadcrumbCategory.textContent = "Авто & Запчастини";
+            }
+
             window.filterCards();
         };
 
         window.switchCategoryFilter = function(cat) {
             setMainCategory(cat);
         };
+
+        // Слухаємо зміну URL-хеша в реальному часі
+        window.addEventListener('hashchange', () => {
+            if (window.location.hash === '#parts') setMainCategory('parts');
+            else if (window.location.hash === '#auto') setMainCategory('auto');
+            else if (window.location.hash === '#all') setMainCategory('all');
+        });
 
         onAuthStateChanged(auth, (user) => {
             currentUser = user;
@@ -732,7 +771,6 @@
                 const priceUsd = item.priceUSD || 0;
                 const priceUah = Math.round(priceUsd * USD_TO_UAH_RATE);
 
-                // Якщо це старе оголошення без типу, вважаємо його автомобілем ('auto')
                 const cardType = item.type || 'auto';
                 const isPart = (cardType === 'parts' || cardType === 'part');
 
@@ -836,8 +874,8 @@
                 });
             });
 
-            // Оновлюємо фільтрацію при завантаженні нових даних
-            window.filterCards();
+            // Ініціалізуємо категорію при завантаженні карток
+            setMainCategory(activeCategoryFilter);
         });
 
         window.openGallery = function(photos) {
@@ -922,7 +960,6 @@
                 const cardType = card.getAttribute('data-type') || 'auto';
                 const cardPartNum = card.getAttribute('data-partnum') || '';
 
-                // Коректна перевірка категорії (all підходить для всього, parts/auto співпадають)
                 let matchCategory = (activeCategoryFilter === 'all');
                 if (!matchCategory) {
                     if (activeCategoryFilter === 'parts') {

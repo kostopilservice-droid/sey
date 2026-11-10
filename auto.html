@@ -5,7 +5,7 @@
     <meta name="theme-color" content="#ffffff">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEOSERVICE — Автобазар & Комерція України</title>
+    <title>NEOSERVICE — Пропозиції про продаж авто</title>
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -41,20 +41,34 @@
         }
         .btn-green-add:hover { background-color: #689f38; }
 
+        /* Таги номерних знаків та VIN точно як на AutoRia */
         .state-number-tag {
             background: #ffffff;
             border: 1px solid #1976d2;
             color: #0d47a1;
             font-weight: 700;
             font-family: monospace;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .state-flag {
+            background: #0057b7;
+            color: #ffd700;
+            padding: 0 3px;
+            font-size: 8px;
+            border-radius: 1px;
         }
 
         .vin-number-tag {
-            background: #e3f2fd;
-            border: 1px solid #90caf9;
-            color: #1565c0;
+            background: #ffffff;
+            border: 1px solid #1976d2;
+            color: #0d47a1;
             font-weight: 700;
             font-family: monospace;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
         }
 
         .lightbox-modal {
@@ -87,7 +101,7 @@
             </div>
         </div>
 
-        <!-- ОСНОВНА ШАПКА З ЛОГОТИПОМ NEOSERVICE -->
+        <!-- ОСНОВНА ШАПКА NEOSERVICE -->
         <div class="border-b border-gray-200 py-2.5 bg-white">
             <div class="max-w-6xl mx-auto px-4 flex items-center justify-between">
                 
@@ -121,9 +135,9 @@
             <a href="index.html" class="hover:underline">NEOSERVICE</a> &gt; <span>Автобазар</span>
         </div>
         
-        <h1 class="text-xl sm:text-2xl font-black text-gray-900">Актуальні оголошення про продаж автомобілів та запчастин в Україні</h1>
+        <h1 class="text-xl sm:text-2xl font-black text-gray-900">350 000+ оголошень про продаж авто з пробігом в Україні</h1>
 
-        <!-- ЧЕРВОНИЙ БЛОК ФІЛЬТРІВ З РОЗШИРЕНОЮ БАЗОЮ МАРОК ТА МОДЕЛЕЙ -->
+        <!-- ЧЕРВОНИЙ БЛОК ФІЛЬТРІВ -->
         <div class="search-box-red p-4 text-white shadow-md">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 
@@ -137,6 +151,7 @@
                     <!-- Вибір марки -->
                     <select id="filterBrand" onchange="updateModelDropdown()" class="w-full px-2.5 py-1.5 text-xs bg-white text-gray-800 rounded border-none outline-none font-semibold">
                         <option value="">Будь-яка марка</option>
+                        <option value="Haval">Haval</option>
                         <option value="BMW">BMW</option>
                         <option value="Audi">Audi</option>
                         <option value="Mercedes-Benz">Mercedes-Benz</option>
@@ -148,16 +163,6 @@
                         <option value="Kia">Kia</option>
                         <option value="Ford">Ford</option>
                         <option value="Nissan">Nissan</option>
-                        <option value="Mazda">Mazda</option>
-                        <option value="Lexus">Lexus</option>
-                        <option value="Honda">Honda</option>
-                        <option value="Mitsubishi">Mitsubishi</option>
-                        <option value="Subaru">Subaru</option>
-                        <option value="Tesla">Tesla</option>
-                        <option value="Haval">Haval</option>
-                        <option value="Peugeot">Peugeot</option>
-                        <option value="Citroen">Citroen</option>
-                        <option value="Opel">Opel</option>
                     </select>
 
                     <!-- Динамічний вибір моделі -->
@@ -173,15 +178,13 @@
                 <div class="space-y-3 pt-6 md:pt-7">
                     <select id="filterRegion" class="w-full px-2.5 py-1.5 text-xs bg-white text-gray-800 rounded border-none outline-none font-semibold">
                         <option value="">Регіон: Оберіть область</option>
+                        <option value="Черкаська">Черкаська область (Сміла)</option>
                         <option value="Рівненська">Рівненська область (Костопіль)</option>
                         <option value="Волинська">Волинська область</option>
                         <option value="Львівська">Львівська область</option>
                         <option value="Київська">Київська область</option>
                         <option value="Житомирська">Житомирська область</option>
                         <option value="Івано-Франківська">Івано-Франківська область</option>
-                        <option value="Запорізька">Запорізька область</option>
-                        <option value="Дніпропетровська">Дніпропетровська область</option>
-                        <option value="Одеська">Одеська область</option>
                     </select>
 
                     <div class="grid grid-cols-2 gap-2">
@@ -215,6 +218,7 @@
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
                     <select id="formBrand" onchange="updateFormModels()" class="p-2 border rounded font-semibold bg-white" required>
                         <option value="">Оберіть марку *</option>
+                        <option value="Haval">Haval</option>
                         <option value="BMW">BMW</option>
                         <option value="Audi">Audi</option>
                         <option value="Mercedes-Benz">Mercedes-Benz</option>
@@ -225,17 +229,6 @@
                         <option value="Hyundai">Hyundai</option>
                         <option value="Kia">Kia</option>
                         <option value="Ford">Ford</option>
-                        <option value="Nissan">Nissan</option>
-                        <option value="Mazda">Mazda</option>
-                        <option value="Lexus">Lexus</option>
-                        <option value="Honda">Honda</option>
-                        <option value="Mitsubishi">Mitsubishi</option>
-                        <option value="Subaru">Subaru</option>
-                        <option value="Tesla">Tesla</option>
-                        <option value="Haval">Haval</option>
-                        <option value="Peugeot">Peugeot</option>
-                        <option value="Citroen">Citroen</option>
-                        <option value="Opel">Opel</option>
                     </select>
                     <select id="formModel" class="p-2 border rounded font-semibold bg-white" required>
                         <option value="">Оберіть модель *</option>
@@ -246,12 +239,12 @@
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
                     <input type="number" id="adPrice" required placeholder="Ціна в ($)" class="p-2 border rounded">
                     <input type="number" id="adMileage" placeholder="Пробіг (тис. км)" class="p-2 border rounded">
-                    <input type="text" id="adCity" required placeholder="Місто (напр. Костопіль)" class="p-2 border rounded">
+                    <input type="text" id="adCity" required placeholder="Місто (напр. Сміла)" class="p-2 border rounded">
                     <input type="tel" id="adContact" required placeholder="Телефон" class="p-2 border rounded">
                 </div>
 
                 <div class="grid grid-cols-3 gap-2">
-                    <input type="text" id="adEngine" placeholder="Двигун (напр. Дизель, 2 л.)" class="p-2 border rounded">
+                    <input type="text" id="adEngine" placeholder="Двигун (напр. Бензин, 2 л.)" class="p-2 border rounded">
                     <input type="text" id="adGearbox" placeholder="КПП (напр. Автомат)" class="p-2 border rounded">
                     <input type="text" id="adVin" placeholder="VIN-код" class="p-2 border rounded font-mono">
                 </div>
@@ -270,14 +263,14 @@
             </form>
         </div>
 
-        <!-- ОСНОВНА СІТКА -->
+        <!-- ОСНОВНА СІТКА З ОГОЛОШЕННЯМИ -->
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 pt-2">
             
             <div class="lg:col-span-3 space-y-4">
-                <div class="text-xs text-gray-500 font-semibold mb-2">Пропозиції у базі NEOSERVICE</div>
+                <h2 class="text-lg font-bold text-gray-800">Пропозиції про продаж авто</h2>
                 
                 <div id="autoProductsContainer" class="space-y-4">
-                    <p class="text-center text-gray-400 text-xs py-8">Завантаження бази оголошень з Firestore...</p>
+                    <p class="text-center text-gray-400 text-xs py-8">Завантаження пропозицій з Firestore...</p>
                 </div>
             </div>
 
@@ -292,33 +285,27 @@
                         <li><a href="#" class="hover:underline flex justify-between">Автобуси ▾</a></li>
                         <li><a href="#" class="hover:underline flex justify-between">Вантажівки ▾</a></li>
                         <li><a href="#" class="hover:underline flex justify-between">Спецтехніка ▾</a></li>
-                        <li><a href="#" class="hover:underline flex justify-between">Причепи ▾</a></li>
                     </ul>
                 </div>
 
                 <div class="border-b border-gray-200 pb-3">
                     <h3 class="font-bold text-gray-900 mb-2">Виберіть марку</h3>
                     <ul class="space-y-1.5 text-blue-700 font-semibold">
+                        <li><a href="#" onclick="filterByBrandQuick('Haval')" class="hover:underline">Haval</a></li>
                         <li><a href="#" onclick="filterByBrandQuick('BMW')" class="hover:underline">BMW</a></li>
                         <li><a href="#" onclick="filterByBrandQuick('Audi')" class="hover:underline">Audi</a></li>
                         <li><a href="#" onclick="filterByBrandQuick('Mercedes-Benz')" class="hover:underline">Mercedes-Benz</a></li>
                         <li><a href="#" onclick="filterByBrandQuick('Volkswagen')" class="hover:underline">Volkswagen</a></li>
-                        <li><a href="#" onclick="filterByBrandQuick('Skoda')" class="hover:underline">Skoda</a></li>
-                        <li><a href="#" onclick="filterByBrandQuick('Toyota')" class="hover:underline">Toyota</a></li>
-                        <li><a href="#" onclick="filterByBrandQuick('Hyundai')" class="hover:underline">Hyundai</a></li>
-                        <li><a href="#" onclick="filterByBrandQuick('Kia')" class="hover:underline">Kia</a></li>
-                        <li><a href="#" onclick="filterByBrandQuick('Ford')" class="hover:underline">Ford</a></li>
                     </ul>
                 </div>
 
                 <div class="border-b border-gray-200 pb-3">
                     <h3 class="font-bold text-gray-900 mb-2">Виберіть місто</h3>
                     <ul class="space-y-1.5 text-blue-700 font-semibold">
+                        <li><a href="#" onclick="filterByCity('Сміла')" class="hover:underline">Авторинок у Смілі</a></li>
                         <li><a href="#" onclick="filterByCity('Костопіль')" class="hover:underline">Авторинок у Костополі</a></li>
                         <li><a href="#" onclick="filterByCity('Рівне')" class="hover:underline">Авторинок у Рівному</a></li>
-                        <li><a href="#" onclick="filterByCity('Київ')" class="hover:underline">Авторинок у Києві</a></li>
                         <li><a href="#" onclick="filterByCity('Львів')" class="hover:underline">Авторинок у Львові</a></li>
-                        <li><a href="#" onclick="filterByCity('Дніпро')" class="hover:underline">Авторинок у Дніпрі</a></li>
                     </ul>
                 </div>
 
@@ -339,11 +326,11 @@
         <p>© 2026 NEOSERVICE — Автобазар & Комерція. Всі права захищені.</p>
     </footer>
 
-    <!-- СКРИПТИ ТА БАЗА МАРОК/МОДЕЛЕЙ -->
+    <!-- FIREBASE ТА ЛОГІКА ОГОЛОШЕНЬ -->
     <script type="module">
         import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, doc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, doc, deleteDoc, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const ADMIN_EMAIL = "kostopilservice@gmail.com";
 
@@ -360,30 +347,64 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Велика розширена база даних марок та моделей автомобілів
+        // База даних марок та моделей
         const carDatabase = {
-            "BMW": ["X5", "X6", "X3", "X7", "3 Series", "5 Series", "7 Series", "M3", "M5", "Z4"],
-            "Audi": ["Q7", "Q5", "Q3", "A4", "A6", "A8", "RS6", "TT", "A3"],
-            "Mercedes-Benz": ["GLE", "GLS", "GLC", "S-Class", "E-Class", "C-Class", "G-Class", "A-Class", "V-Class"],
-            "Volkswagen": ["Passat", "Golf", "Tiguan", "Touareg", "Jetta", "Polo", "Transporter", "Arteon"],
-            "Skoda": ["Octavia", "Superb", "Kodiaq", "Fabia", "Karoq"],
-            "Toyota": ["Camry", "RAV4", "Land Cruiser", "Corolla", "Highlander", "Yaris", "Prado"],
-            "Renault": ["Megane", "Scenic", "Logan", "Duster", "Kangoo", "Captur", "Trafic"],
-            "Hyundai": ["Tucson", "Santa Fe", "Elantra", "Sonata", "Accent", "Kona"],
-            "Kia": ["Sportage", "Sorento", "Ceed", "Rio", "Optima", "Stinger"],
-            "Ford": ["Focus", "Mondeo", "Fiesta", "Kuga", "Explorer", "Transit"],
-            "Nissan": ["Qashqai", "X-Trail", "Rogue", "Leaf", "Juke", "Navara"],
-            "Mazda": ["CX-5", "CX-9", "Mazda 6", "Mazda 3", "CX-30"],
-            "Lexus": ["RX", "NX", "LX", "ES", "GX"],
-            "Honda": ["CR-V", "Civic", "Accord", "HR-V"],
-            "Mitsubishi": ["Outlander", "Pajero", "L200", "ASX"],
-            "Subaru": ["Outback", "Forester", "XV", "Impreza"],
-            "Tesla": ["Model S", "Model 3", "Model X", "Model Y"],
             "Haval": ["Dargo", "H6", "Jolion", "H9"],
-            "Peugeot": ["3008", "5008", "308", "208", "Partner"],
-            "Citroen": ["C4", "C5 Aircross", "Berlingo", "Jumper"],
-            "Opel": ["Astra", "Insignia", "Zafira", "Vivaro", "Combo"]
+            "BMW": ["X5", "X6", "X3", "X7", "3 Series", "5 Series", "7 Series"],
+            "Audi": ["Q7", "Q5", "Q3", "A4", "A6", "A8"],
+            "Mercedes-Benz": ["GLE", "GLS", "GLC", "S-Class", "E-Class", "C-Class", "G-Class"],
+            "Volkswagen": ["Passat", "Golf", "Tiguan", "Touareg", "Jetta", "Polo"],
+            "Skoda": ["Octavia", "Superb", "Kodiaq", "Fabia"],
+            "Toyota": ["Camry", "RAV4", "Land Cruiser", "Corolla", "Highlander"],
+            "Renault": ["Megane", "Scenic", "Logan", "Duster", "Kangoo"],
+            "Hyundai": ["Tucson", "Santa Fe", "Elantra", "Sonata"],
+            "Kia": ["Sportage", "Sorento", "Ceed", "Rio"],
+            "Ford": ["Focus", "Mondeo", "Fiesta", "Kuga"]
         };
+
+        // Демонстраційні початкові оголошення (якщо БД порожня)
+        const initialListings = [
+            {
+                title: "Haval Dargo 2022",
+                generation: "I покоління",
+                brand: "Haval",
+                model: "Dargo",
+                year: 2022,
+                priceUSD: 22400,
+                priceUAH: 1037344,
+                mileage: "18",
+                city: "Сміла",
+                contact: "+380971234567",
+                engine: "Бензин, 2 л.",
+                gearbox: "Автомат",
+                vin: "LGWFF6A52NH924185",
+                stateNum: "CA 9345 KO",
+                photosArray: ["https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=600"],
+                description: "Автомобіль в ідеальному стані без підкрасів.",
+                dateStr: "2.11.2026",
+                topBadge: "ТОП 101"
+            },
+            {
+                title: "BMW X5 2008",
+                generation: "E70 • 3.0sd AT (286 к.с.)",
+                brand: "BMW",
+                model: "X5",
+                year: 2008,
+                priceUSD: 14300,
+                priceUAH: 662233,
+                mileage: "215",
+                city: "Львів",
+                contact: "+380979876543",
+                engine: "Дизель, 2.99 л.",
+                gearbox: "Автомат",
+                vin: "WBAFF01020L211798",
+                stateNum: "BC 5555 CM",
+                photosArray: ["https://images.unsplash.com/photo-1555215695-3004980ad54e?w=600"],
+                description: "Продається bmw x5 (m-пакет) — надійний позашляховик.",
+                dateStr: "9.11.2026",
+                topBadge: "ТОП 85"
+            }
+        ];
 
         window.updateModelDropdown = function() {
             const brandSel = document.getElementById('filterBrand').value;
@@ -435,7 +456,22 @@
             form.classList.toggle('hidden');
         };
 
-        // Додавання оголошення в Firestore
+        // Заповнення початкових даних при першому запуску
+        async function seedInitialData() {
+            const snap = await getDocs(collection(db, "auto_listings"));
+            if (snap.empty) {
+                for (const item of initialListings) {
+                    await addDoc(collection(db, "auto_listings"), {
+                        ...item,
+                        userEmail: "admin@neoservice.ks.ua",
+                        createdAt: serverTimestamp()
+                    });
+                }
+            }
+        }
+        seedInitialData();
+
+        // Публікація новго оголошення
         document.getElementById('addListingForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             if (!currentUser) return;
@@ -453,93 +489,109 @@
             try {
                 await addDoc(collection(db, "auto_listings"), {
                     title: title,
+                    generation: "Офіційне авто",
                     brand: brand,
                     model: model,
                     year: Number(year),
                     category: "Продаж авто",
                     priceUSD: priceVal,
                     priceUAH: Math.round(priceVal * 41.5),
-                    mileage: document.getElementById('adMileage').value || "15",
-                    city: document.getElementById('adCity').value || "Костопіль",
+                    mileage: document.getElementById('adMileage').value || "18",
+                    city: document.getElementById('adCity').value || "Сміла",
                     contact: document.getElementById('adContact').value,
-                    engine: document.getElementById('adEngine').value || "Дизель, 2 л.",
+                    engine: document.getElementById('adEngine').value || "Бензин, 2 л.",
                     gearbox: document.getElementById('adGearbox').value || "Автомат",
-                    vin: document.getElementById('adVin').value || "WBAFF01020L211798",
-                    stateNum: "BC 5555 CM",
+                    vin: document.getElementById('adVin').value || "LGWFF6A52NH924185",
+                    stateNum: "CA 9345 KO",
                     photosArray: photosArray,
                     description: document.getElementById('adDescription').value,
                     userEmail: currentUser.email,
+                    dateStr: new Date().toLocaleDateString('uk-UA'),
+                    topBadge: "ТОП",
                     createdAt: serverTimestamp()
                 });
 
                 document.getElementById('addListingForm').reset();
                 document.getElementById('newAdFormCard').classList.add('hidden');
-                alert('Оголошення успішно опубліковано у базі NEOSERVICE!');
+                alert('Оголошення успішно збережено у базі!');
             } catch (err) {
                 alert('Помилка: ' + err.message);
             }
         });
 
-        // Слухач бази даних у реальному часі
+        // Слухач оголошень у реальному часі (Формування картки точно як на скріншоті)
         const q = query(collection(db, "auto_listings"), orderBy("createdAt", "desc"));
         onSnapshot(q, (snapshot) => {
             const container = document.getElementById('autoProductsContainer');
             container.innerHTML = '';
 
             if (snapshot.empty) {
-                container.innerHTML = `<div class="bg-gray-50 border p-6 text-center text-gray-400 text-xs">Немає оголошень у базі NEOSERVICE. Будьте першим!</div>`;
+                container.innerHTML = `<div class="bg-gray-50 border p-6 text-center text-gray-400 text-xs">Немає оголошень.</div>`;
                 return;
             }
 
             snapshot.forEach((docSnap) => {
                 const car = docSnap.data();
                 const docId = docSnap.id;
-                const photo = (car.photosArray && car.photosArray.length > 0) ? car.photosArray[0] : 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=500';
+                const photo = (car.photosArray && car.photosArray.length > 0) ? car.photosArray[0] : 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=600';
                 
                 const card = document.createElement('div');
-                card.className = 'product-card border border-gray-200 p-3 bg-white rounded flex flex-col sm:flex-row gap-4 items-start';
+                card.className = 'product-card border border-gray-200 p-3 bg-white rounded flex flex-col sm:flex-row gap-4 items-start shadow-sm';
                 card.setAttribute('data-city', car.city || '');
                 card.setAttribute('data-brand', car.brand || '');
                 card.setAttribute('data-model', car.model || '');
 
                 const isOwnerOrAdmin = currentUser && (currentUser.email === ADMIN_EMAIL || currentUser.email === car.userEmail);
 
+                // Макет картки зі скріншота
                 card.innerHTML = `
-                    <div class="w-full sm:w-60 h-36 bg-gray-900 rounded overflow-hidden relative flex-shrink-0">
+                    <div class="w-full sm:w-64 h-40 bg-gray-900 rounded overflow-hidden relative flex-shrink-0 cursor-pointer" onclick="openLightbox('${photo}')">
                         <img src="${photo}" alt="${car.title}" class="w-full h-full object-cover">
-                        <span class="absolute top-1.5 left-1.5 px-2 py-0.5 bg-blue-600 text-white font-bold text-[9px] rounded">Перевірений VIN-код</span>
-                        <span class="absolute top-1.5 right-1.5 px-1.5 py-0.5 bg-amber-500 text-slate-900 font-extrabold text-[9px] rounded">ТОП</span>
+                        <span class="absolute top-2 left-2 px-2 py-0.5 bg-blue-600 text-white font-bold text-[10px] rounded flex items-center gap-1">
+                            <i class="fa-solid fa-car"></i> Перевірений VIN-код
+                        </span>
+                        ${car.topBadge ? `<span class="absolute bottom-2 left-2 px-2 py-0.5 bg-lime-500 text-white font-black text-[10px] rounded flex items-center gap-1 shadow"><i class="fa-solid fa-flag"></i> ${car.topBadge}</span>` : ''}
                     </div>
 
                     <div class="flex-grow space-y-1.5 text-xs w-full">
                         <div class="flex justify-between items-start">
                             <div>
-                                <h3 class="font-bold text-blue-700 text-base hover:underline cursor-pointer">${car.title}</h3>
-                                <div class="text-[10px] text-gray-400">Рік випуску: ${car.year || '2022'}</div>
-                            </div>
-                            <div class="text-right">
-                                <div class="text-lg font-black text-green-600">$${(car.priceUSD || 0).toLocaleString()} <span class="text-xs text-gray-400 font-normal">• ${(car.priceUAH || Math.round((car.priceUSD||0)*41.5)).toLocaleString()} грн</span></div>
+                                <h3 class="font-bold text-blue-700 text-lg hover:underline cursor-pointer leading-tight">${car.title}</h3>
+                                <div class="text-[11px] text-gray-500">${car.generation || 'I покоління'}</div>
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-2 gap-y-1 text-gray-600 text-[11px] pt-1">
-                            <div>⏱ ${car.mileage || '15'} тис. км</div>
-                            <div>📍 ${car.city || 'Костопіль'}</div>
-                            <div>⛽ ${car.engine || 'Дизель, 2 л.'}</div>
-                            <div>⚙️ ${car.gearbox || 'Автомат'}</div>
+                        <div class="flex items-baseline gap-2 pt-0.5">
+                            <span class="text-xl font-extrabold text-green-600">${(car.priceUSD || 0).toLocaleString()} $</span>
+                            <span class="text-xs text-gray-500 font-normal">• ${(car.priceUAH || Math.round((car.priceUSD||0)*41.5)).toLocaleString()} грн</span>
                         </div>
 
-                        <div class="flex flex-wrap gap-2 pt-1">
-                            <span class="state-number-tag px-2 py-0.5 text-[10px] rounded">${car.stateNum || 'BC 5555 CM'}</span>
-                            <span class="vin-number-tag px-2 py-0.5 text-[10px] rounded">${car.vin || 'WBAFF01020L211798'}</span>
+                        <div class="grid grid-cols-2 gap-y-1 text-gray-700 text-xs pt-1">
+                            <div class="flex items-center gap-1.5"><i class="fa-regular fa-clock text-red-500"></i> ${car.mileage || '18'} тис. км</div>
+                            <div class="flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-red-500"></i> ${car.city || 'Сміла'}</div>
+                            <div class="flex items-center gap-1.5"><i class="fa-solid fa-gas-pump text-red-500"></i> ${car.engine || 'Бензин, 2 л.'}</div>
+                            <div class="flex items-center gap-1.5"><i class="fa-solid fa-gear text-red-500"></i> ${car.gearbox || 'Автомат'}</div>
                         </div>
 
-                        <p class="text-gray-500 text-[11px] line-clamp-1 pt-1">${car.description || 'Срочно! Без торгу! Перший власник.'}</p>
+                        <div class="flex flex-wrap items-center gap-2 pt-1.5">
+                            <span class="state-number-tag px-2 py-0.5 text-[10px] rounded">
+                                <span class="state-flag">UA</span> ${car.stateNum || 'CA 9345 KO'}
+                            </span>
+                            <span class="vin-number-tag px-2 py-0.5 text-[10px] rounded">
+                                <i class="fa-solid fa-shield-halved text-blue-600"></i> ${car.vin || 'LGWFF6A52NH924185'}
+                            </span>
+                        </div>
 
-                        <div class="flex justify-between items-center pt-2 border-t border-gray-100 text-[10px] text-gray-400">
-                            <span>🕒 2026 рік</span>
-                            <div class="flex items-center gap-3 text-gray-500">
+                        <p class="text-gray-600 text-xs line-clamp-1 pt-1">${car.description || 'Автомобіль в ідеальному стані без підкрасів.'}</p>
+
+                        <div class="flex justify-between items-center pt-2 border-t border-gray-100 text-[11px] text-gray-400">
+                            <div class="flex items-center gap-1">
+                                <i class="fa-regular fa-clock"></i> ${car.dateStr || '2.11.2026'}
+                            </div>
+                            <div class="flex items-center gap-4 text-gray-500">
                                 <a href="tel:${car.contact}" class="font-bold text-blue-600 hover:underline">📞 ${car.contact}</a>
+                                <button onclick="alert('Додано до порівняння')" class="hover:text-blue-600"><i class="fa-solid fa-scale-balanced text-sm"></i></button>
+                                <button onclick="alert('Додано в обране')" class="hover:text-red-600"><i class="fa-regular fa-heart text-sm"></i></button>
                                 ${isOwnerOrAdmin ? `<button class="delete-btn text-red-500 font-bold hover:underline" data-id="${docId}">Видалити</button>` : ''}
                             </div>
                         </div>
@@ -563,6 +615,14 @@
             });
         });
 
+        window.openLightbox = function(url) {
+            document.getElementById('lightboxImg').src = url;
+            document.getElementById('lightboxModal').style.display = 'flex';
+        };
+        document.getElementById('lightboxClose').addEventListener('click', () => {
+            document.getElementById('lightboxModal').style.display = 'none';
+        });
+
         window.filterByBrandQuick = function(brand) {
             document.getElementById('filterBrand').value = brand;
             updateModelDropdown();
@@ -579,8 +639,6 @@
             const brandVal = (document.getElementById('filterBrand')?.value || '').toLowerCase();
             const modelVal = (document.getElementById('filterModel')?.value || '').toLowerCase();
             const regionVal = (document.getElementById('filterRegion')?.value || '').toLowerCase();
-            const minP = parseFloat(document.getElementById('filterPriceMin')?.value) || 0;
-            const maxP = parseFloat(document.getElementById('filterPriceMax')?.value) || Infinity;
 
             const cards = document.querySelectorAll('.product-card');
             cards.forEach(card => {

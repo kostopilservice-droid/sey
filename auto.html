@@ -87,7 +87,7 @@
             </div>
         </div>
 
-        <!-- ОСНОВНА ШАПКА З ФІРМОВИМ ЛОГОТИПОМ NEOSERVICE -->
+        <!-- ОСНОВНА ШАПКА З ЛОГОТИПОМ NEOSERVICE -->
         <div class="border-b border-gray-200 py-2.5 bg-white">
             <div class="max-w-6xl mx-auto px-4 flex items-center justify-between">
                 
@@ -102,9 +102,9 @@
 
                 <nav class="hidden md:flex items-center gap-5 text-xs font-bold text-gray-800">
                     <a href="#" class="text-red-600 border-b-2 border-red-600 pb-1">Вживані авто</a>
+                    <a href="#" class="hover:text-red-600 pb-1">Нові авто</a>
                     <a href="#" class="hover:text-red-600 pb-1">Автозапчастини</a>
-                    <a href="#" class="hover:text-red-600 pb-1">ЕБУ та Прошивки</a>
-                    <a href="#" class="hover:text-red-600 pb-1">Діагностика ▾</a>
+                    <a href="#" class="hover:text-red-600 pb-1">Новини</a>
                 </nav>
 
                 <button id="toggleFormBtn" onclick="toggleAddForm()" class="btn-green-add text-white font-bold px-4 py-2 rounded text-xs flex items-center gap-1.5 shadow-sm">
@@ -121,9 +121,9 @@
             <a href="index.html" class="hover:underline">NEOSERVICE</a> &gt; <span>Автобазар</span>
         </div>
         
-        <h1 class="text-xl sm:text-2xl font-black text-gray-900">Актуальні оголошення про продаж автомобілів та обладнання в Україні</h1>
+        <h1 class="text-xl sm:text-2xl font-black text-gray-900">Актуальні оголошення про продаж автомобілів та запчастин в Україні</h1>
 
-        <!-- ЧЕРВОНИЙ БЛОК ФІЛЬТРІВ З БАЗОЮ МАРОК ТА МОДЕЛЕЙ -->
+        <!-- ЧЕРВОНИЙ БЛОК ФІЛЬТРІВ З РОЗШИРЕНОЮ БАЗОЮ МАРОК ТА МОДЕЛЕЙ -->
         <div class="search-box-red p-4 text-white shadow-md">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 
@@ -132,7 +132,6 @@
                         <button class="px-3 py-1 bg-white text-red-600 rounded-t">Всі товари</button>
                         <button class="px-3 py-1 bg-red-700 text-white rounded-t hover:bg-red-800">✓ Авто</button>
                         <button class="px-3 py-1 bg-red-700 text-white rounded-t hover:bg-red-800">Запчастини</button>
-                        <button class="px-3 py-1 bg-red-700 text-white rounded-t hover:bg-red-800">ЕБУ</button>
                     </div>
 
                     <!-- Вибір марки -->
@@ -142,11 +141,20 @@
                         <option value="Audi">Audi</option>
                         <option value="Mercedes-Benz">Mercedes-Benz</option>
                         <option value="Volkswagen">Volkswagen</option>
-                        <option value="Haval">Haval</option>
-                        <option value="Tesla">Tesla</option>
-                        <option value="Renault">Renault</option>
                         <option value="Skoda">Skoda</option>
                         <option value="Toyota">Toyota</option>
+                        <option value="Renault">Renault</option>
+                        <option value="Hyundai">Hyundai</option>
+                        <option value="Kia">Kia</option>
+                        <option value="Ford">Ford</option>
+                        <option value="Nissan">Nissan</option>
+                        <option value="Mazda">Mazda</option>
+                        <option value="Lexus">Lexus</option>
+                        <option value="Honda">Honda</option>
+                        <option value="Mitsubishi">Mitsubishi</option>
+                        <option value="Subaru">Subaru</option>
+                        <option value="Tesla">Tesla</option>
+                        <option value="Haval">Haval</option>
                         <option value="Peugeot">Peugeot</option>
                         <option value="Citroen">Citroen</option>
                         <option value="Opel">Opel</option>
@@ -211,11 +219,20 @@
                         <option value="Audi">Audi</option>
                         <option value="Mercedes-Benz">Mercedes-Benz</option>
                         <option value="Volkswagen">Volkswagen</option>
-                        <option value="Haval">Haval</option>
-                        <option value="Tesla">Tesla</option>
-                        <option value="Renault">Renault</option>
                         <option value="Skoda">Skoda</option>
                         <option value="Toyota">Toyota</option>
+                        <option value="Renault">Renault</option>
+                        <option value="Hyundai">Hyundai</option>
+                        <option value="Kia">Kia</option>
+                        <option value="Ford">Ford</option>
+                        <option value="Nissan">Nissan</option>
+                        <option value="Mazda">Mazda</option>
+                        <option value="Lexus">Lexus</option>
+                        <option value="Honda">Honda</option>
+                        <option value="Mitsubishi">Mitsubishi</option>
+                        <option value="Subaru">Subaru</option>
+                        <option value="Tesla">Tesla</option>
+                        <option value="Haval">Haval</option>
                         <option value="Peugeot">Peugeot</option>
                         <option value="Citroen">Citroen</option>
                         <option value="Opel">Opel</option>
@@ -234,7 +251,7 @@
                 </div>
 
                 <div class="grid grid-cols-3 gap-2">
-                    <input type="text" id="adEngine" placeholder="Двигун (напр. Дизель, 3 л.)" class="p-2 border rounded">
+                    <input type="text" id="adEngine" placeholder="Двигун (напр. Дизель, 2 л.)" class="p-2 border rounded">
                     <input type="text" id="adGearbox" placeholder="КПП (напр. Автомат)" class="p-2 border rounded">
                     <input type="text" id="adVin" placeholder="VIN-код" class="p-2 border rounded font-mono">
                 </div>
@@ -244,7 +261,7 @@
                     <input type="url" id="adPhoto2" placeholder="Фото 2 (URL) https://..." class="p-2 border rounded">
                 </div>
 
-                <textarea id="adDescription" rows="2" placeholder="Опис авто, комплектації чи запчастин..." class="w-full p-2 border rounded"></textarea>
+                <textarea id="adDescription" rows="2" placeholder="Опис авто чи запчастин..." class="w-full p-2 border rounded"></textarea>
 
                 <div class="flex justify-end gap-2">
                     <button type="button" onclick="toggleAddForm()" class="px-4 py-1.5 bg-gray-200 text-gray-700 font-bold rounded">Скасувати</button>
@@ -264,7 +281,7 @@
                 </div>
             </div>
 
-            <!-- САЙДБАР ЗІ СКРІНШОТА -->
+            <!-- САЙДБАР -->
             <div class="space-y-5 text-xs">
                 
                 <div class="border-b border-gray-200 pb-3">
@@ -284,11 +301,13 @@
                     <ul class="space-y-1.5 text-blue-700 font-semibold">
                         <li><a href="#" onclick="filterByBrandQuick('BMW')" class="hover:underline">BMW</a></li>
                         <li><a href="#" onclick="filterByBrandQuick('Audi')" class="hover:underline">Audi</a></li>
-                        <li><a href="#" onclick="filterByBrandQuick('Mercedes')" class="hover:underline">Mercedes-Benz</a></li>
+                        <li><a href="#" onclick="filterByBrandQuick('Mercedes-Benz')" class="hover:underline">Mercedes-Benz</a></li>
                         <li><a href="#" onclick="filterByBrandQuick('Volkswagen')" class="hover:underline">Volkswagen</a></li>
-                        <li><a href="#" onclick="filterByBrandQuick('Haval')" class="hover:underline">Haval</a></li>
-                        <li><a href="#" onclick="filterByBrandQuick('Peugeot')" class="hover:underline">Peugeot</a></li>
-                        <li><a href="#" onclick="filterByBrandQuick('Citroen')" class="hover:underline">Citroen</a></li>
+                        <li><a href="#" onclick="filterByBrandQuick('Skoda')" class="hover:underline">Skoda</a></li>
+                        <li><a href="#" onclick="filterByBrandQuick('Toyota')" class="hover:underline">Toyota</a></li>
+                        <li><a href="#" onclick="filterByBrandQuick('Hyundai')" class="hover:underline">Hyundai</a></li>
+                        <li><a href="#" onclick="filterByBrandQuick('Kia')" class="hover:underline">Kia</a></li>
+                        <li><a href="#" onclick="filterByBrandQuick('Ford')" class="hover:underline">Ford</a></li>
                     </ul>
                 </div>
 
@@ -341,17 +360,26 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Повна розширена база даних марок та моделей автомобілів
+        // Велика розширена база даних марок та моделей автомобілів
         const carDatabase = {
-            "BMW": ["X5", "X6", "X3", "X7", "3 Series", "5 Series", "7 Series", "M3", "M5"],
-            "Audi": ["Q7", "Q5", "Q3", "A4", "A6", "A8", "RS6", "TT"],
-            "Mercedes-Benz": ["GLE", "GLS", "GLC", "S-Class", "E-Class", "C-Class", "G-Class", "A-Class"],
-            "Volkswagen": ["Passat", "Golf", "Tiguan", "Touareg", "Jetta", "Polo", "Transporter"],
-            "Haval": ["Dargo", "H6", "Jolion", "H9"],
+            "BMW": ["X5", "X6", "X3", "X7", "3 Series", "5 Series", "7 Series", "M3", "M5", "Z4"],
+            "Audi": ["Q7", "Q5", "Q3", "A4", "A6", "A8", "RS6", "TT", "A3"],
+            "Mercedes-Benz": ["GLE", "GLS", "GLC", "S-Class", "E-Class", "C-Class", "G-Class", "A-Class", "V-Class"],
+            "Volkswagen": ["Passat", "Golf", "Tiguan", "Touareg", "Jetta", "Polo", "Transporter", "Arteon"],
+            "Skoda": ["Octavia", "Superb", "Kodiaq", "Fabia", "Karoq"],
+            "Toyota": ["Camry", "RAV4", "Land Cruiser", "Corolla", "Highlander", "Yaris", "Prado"],
+            "Renault": ["Megane", "Scenic", "Logan", "Duster", "Kangoo", "Captur", "Trafic"],
+            "Hyundai": ["Tucson", "Santa Fe", "Elantra", "Sonata", "Accent", "Kona"],
+            "Kia": ["Sportage", "Sorento", "Ceed", "Rio", "Optima", "Stinger"],
+            "Ford": ["Focus", "Mondeo", "Fiesta", "Kuga", "Explorer", "Transit"],
+            "Nissan": ["Qashqai", "X-Trail", "Rogue", "Leaf", "Juke", "Navara"],
+            "Mazda": ["CX-5", "CX-9", "Mazda 6", "Mazda 3", "CX-30"],
+            "Lexus": ["RX", "NX", "LX", "ES", "GX"],
+            "Honda": ["CR-V", "Civic", "Accord", "HR-V"],
+            "Mitsubishi": ["Outlander", "Pajero", "L200", "ASX"],
+            "Subaru": ["Outback", "Forester", "XV", "Impreza"],
             "Tesla": ["Model S", "Model 3", "Model X", "Model Y"],
-            "Renault": ["Megane", "Scenic", "Logan", "Duster", "Kangoo"],
-            "Skoda": ["Octavia", "Superb", "Kodiaq", "Fabia"],
-            "Toyota": ["Camry", "RAV4", "Land Cruiser", "Corolla", "Highlander"],
+            "Haval": ["Dargo", "H6", "Jolion", "H9"],
             "Peugeot": ["3008", "5008", "308", "208", "Partner"],
             "Citroen": ["C4", "C5 Aircross", "Berlingo", "Jumper"],
             "Opel": ["Astra", "Insignia", "Zafira", "Vivaro", "Combo"]

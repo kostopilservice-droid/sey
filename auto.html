@@ -150,7 +150,7 @@
             <div class="max-w-6xl mx-auto px-4 flex items-center justify-between">
                 
                 <a href="index.html" class="flex items-center gap-2.5 text-decoration-none">
-          <div class="bg-red-600 text-white font-black text-lg px-2.5 py-1 rounded tracking-tight shadow-sm flex items-center gap-1">
+                    <div class="bg-red-600 text-white font-black text-lg px-2.5 py-1 rounded tracking-tight shadow-sm flex items-center gap-1">
                         <i class="fa-solid fa-car-side"></i> NEO<span class="text-yellow-300">SERVICE</span>
                     </div>
                     <div class="text-[11px] text-gray-600 font-bold uppercase tracking-wider hidden sm:block">
@@ -168,7 +168,7 @@
                     <i class="fa-solid fa-plus"></i> Продати / Додати оголошення
                 </button>
             </div>
-      </div>
+        </div>
     </header>
 
     <!-- ГОЛОВНИЙ КОНТЕЙНЕР -->
@@ -537,20 +537,21 @@
             activeCategoryFilter = 'all';
         }
 
+        // РОЗШИРЕНИЙ СЛОВНИК МАРОК ТА МОДЕЛЕЙ АВТОМОБІЛІВ
         const carDatabase = {
-            "Renault": ["Scenic", "Megane", "Logan", "Duster", "Kangoo", "Master"],
-            "Haval": ["Dargo", "H6", "Jolion", "H9"],
-            "BMW": ["X5", "X6", "X3", "X7", "3 Series", "5 Series"],
-            "Audi": ["Q7", "Q5", "Q3", "A4", "A6", "A8"],
-            "Mercedes-Benz": ["GLE", "GLS", "GLC", "S-Class", "E-Class"],
-            "Volkswagen": ["Passat", "Golf", "Tiguan", "Touareg", "Jetta"],
-            "Skoda": ["Octavia", "Superb", "Kodiaq", "Fabia"],
-            "Toyota": ["Camry", "RAV4", "Land Cruiser", "Corolla"],
-            "Hyundai": ["Tucson", "Santa Fe", "Elantra", "Sonata"],
-            "Kia": ["Sportage", "Sorento", "Ceed", "Rio"],
-            "Ford": ["Focus", "Mondeo", "Fiesta", "Kuga"],
-            "Peugeot": [],
-            "Citroen": []
+            "Renault": ["Scenic", "Megane", "Logan", "Duster", "Kangoo", "Master", "Laguna", "Symbol", "Traffic"],
+            "Haval": ["Dargo", "H6", "Jolion", "H9", "M6"],
+            "BMW": ["X5", "X6", "X3", "X7", "3 Series", "5 Series", "1 Series", "7 Series", "X1", "X4"],
+            "Audi": ["Q7", "Q5", "Q3", "A4", "A6", "A8", "A3", "Q8", "A5"],
+            "Mercedes-Benz": ["GLE", "GLS", "GLC", "S-Class", "E-Class", "C-Class", "A-Class", "Sprinter", "Vito"],
+            "Volkswagen": ["Passat", "Golf", "Tiguan", "Touareg", "Jetta", "Transporter", "Polo", "Caddy", "Touran"],
+            "Skoda": ["Octavia", "Superb", "Kodiaq", "Fabia", "Karoq", "Rapid", "Roomster"],
+            "Toyota": ["Camry", "RAV4", "Land Cruiser", "Corolla", "Avensis", "Prado", "Yaris", "Auris"],
+            "Hyundai": ["Tucson", "Santa Fe", "Elantra", "Sonata", "Accent", "I30", "Kona"],
+            "Kia": ["Sportage", "Sorento", "Ceed", "Rio", "Optima", "Cerato", "Soul"],
+            "Ford": ["Focus", "Mondeo", "Fiesta", "Kuga", "Transit", "Edge", "Escape", "C-Max"],
+            "Peugeot": ["206", "207", "208", "301", "307", "308", "406", "407", "508", "2008", "3008", "5008", "Partner", "Expert"],
+            "Citroen": ["C1", "C2", "C3", "C4", "C5", "Berlingo", "Jumper", "Jumpy", "Xsara Picasso"]
         };
 
         // Генерація списку марок у сайдбарі на основі випадаючого списку фільтра

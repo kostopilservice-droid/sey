@@ -130,7 +130,7 @@
             <div class="flex items-center gap-3">
                 <a href="#" class="hover:text-red-600"><i class="fa-regular fa-heart"></i></a>
                 <a href="#" class="hover:text-red-600"><i class="fa-regular fa-bell"></i></a>
-                <span id="authStatusBadge" class="font-semibold text-gray-700 cursor-pointer" onclick="handleAuthClick()">👤 Особистий кабінет (Гість)</span>
+                <span id="authStatusBadge" class="font-semibold text-gray-700 cursor-pointer" onClick="handleAuthClick()">👤 Особистий кабінет (Гість)</span>
             </div>
         </div>
 
@@ -154,7 +154,7 @@
                     <a href="#" class="hover:text-red-600 pb-1">Новини</a>
                 </nav>
 
-                <button id="toggleFormBtn" onclick="toggleAddForm()" class="btn-green-add text-white font-bold px-4 py-2 rounded text-xs flex items-center gap-1.5 shadow-sm">
+                <button id="toggleFormBtn" onClick="toggleAddForm()" class="btn-green-add text-white font-bold px-4 py-2 rounded text-xs flex items-center gap-1.5 shadow-sm">
                     <i class="fa-solid fa-plus"></i> Продати авто
                 </button>
             </div>
@@ -168,9 +168,9 @@
             <a href="index.html" class="hover:underline">NEOSERVICE</a> &gt; <span>Автобазар</span>
         </div>
         
-        <h1 class="text-xl sm:text-2xl font-black text-gray-900">350 000+ оголошень про продаж авто з пробігом в Україні</h1>
+        <h1 class="text-xl sm:text-2xl font-black text-gray-900">350 + оголошень про продаж авто з пробігом в Україні</h1>
 
-        <!-- ЧЕРВОНИЙ БЛОК ФІЛЬТРІВ -->
+    <!-- ЧЕРВОНИЙ БЛОК ФІЛЬТРІВ -->
         <div class="search-box-red p-4 text-white shadow-md">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 
@@ -181,7 +181,7 @@
                         <button class="px-3 py-1 bg-red-700 text-white rounded-t hover:bg-red-800">Запчастини</button>
                     </div>
 
-                    <select id="filterBrand" onchange="updateModelDropdown()" class="w-full px-2.5 py-1.5 text-xs bg-white text-gray-800 rounded border-none outline-none font-semibold">
+                    <select id="filterBrand" onChange="updateModelDropdown()" class="w-full px-2.5 py-1.5 text-xs bg-white text-gray-800 rounded border-none outline-none font-semibold">
                         <option value="">Будь-яка марка</option>
                         <option value="Renault">Renault</option>
                         <option value="Haval">Haval</option>
@@ -200,7 +200,7 @@
                         <option value="">Оберіть модель (спочатку марку)</option>
                     </select>
 
-                    <button onclick="toggleAdvancedSearch()" class="w-full py-2 btn-red-expanded text-white text-xs font-bold rounded shadow-sm text-center">
+                    <button onClick="toggleAdvancedSearch()" class="w-full py-2 btn-red-expanded text-white text-xs font-bold rounded shadow-sm text-center">
                         <i class="fa-solid fa-sliders"></i> Розширений Пошук
                     </button>
                 </div>
@@ -229,7 +229,7 @@
                 </div>
 
                 <div class="flex items-end pt-2 md:pt-0">
-                    <button onclick="filterCards()" class="w-full py-3 btn-blue-search text-white font-black text-sm rounded shadow flex items-center justify-center gap-2">
+                    <button onClick="filterCards()" class="w-full py-3 btn-blue-search text-white font-black text-sm rounded shadow flex items-center justify-center gap-2">
                         <i class="fa-solid fa-magnifying-glass"></i> Пошук за параметрами
                     </button>
                 </div>
@@ -243,7 +243,7 @@
                 <h3 class="font-bold text-sm text-gray-900 flex items-center gap-2">
                     <i class="fa-solid fa-car-on text-red-600"></i> Повна форма додавання оголошення про продаж авто
                 </h3>
-                <button onclick="toggleAddForm()" class="text-gray-500 font-bold hover:text-black">✕</button>
+                <button onClick="toggleAddForm()" class="text-gray-500 font-bold hover:text-black">✕</button>
             </div>
 
             <form id="addListingForm" class="space-y-3 text-xs">
@@ -252,7 +252,7 @@
                 <div class="grid grid-cols-1 sm:grid-cols-4 gap-2">
                     <div>
                         <label class="block font-semibold mb-1 text-gray-600">Марка *</label>
-                        <select id="formBrand" onchange="updateFormModels()" class="w-full p-2 border rounded font-semibold bg-white" required>
+                        <select id="formBrand" onChange="updateFormModels()" class="w-full p-2 border rounded font-semibold bg-white" required>
                             <option value="">Оберіть марку *</option>
                             <option value="Renault">Renault</option>
                             <option value="Haval">Haval</option>
@@ -367,7 +367,7 @@
                 </div>
 
                 <div class="flex justify-end gap-2 pt-2">
-                    <button type="button" onclick="toggleAddForm()" class="px-4 py-1.5 bg-gray-200 text-gray-700 font-bold rounded">Скасувати</button>
+                    <button type="button" onClick="toggleAddForm()" class="px-4 py-1.5 bg-gray-200 text-gray-700 font-bold rounded">Скасувати</button>
                     <button type="submit" class="btn-green-add text-white font-bold px-6 py-2 rounded text-sm shadow">
                         <i class="fa-solid fa-check"></i> Опублікувати оголошення
                     </button>
@@ -403,11 +403,11 @@
                 <div class="border-b border-gray-200 pb-3">
                     <h3 class="font-bold text-gray-900 mb-2">Виберіть марку</h3>
                     <ul class="space-y-1.5 text-blue-700 font-semibold">
-                        <li><a href="#" onclick="filterByBrandQuick('Renault')" class="hover:underline">Renault</a></li>
-                        <li><a href="#" onclick="filterByBrandQuick('Haval')" class="hover:underline">Haval</a></li>
-                        <li><a href="#" onclick="filterByBrandQuick('BMW')" class="hover:underline">BMW</a></li>
-                        <li><a href="#" onclick="filterByBrandQuick('Audi')" class="hover:underline">Audi</a></li>
-                        <li><a href="#" onclick="filterByBrandQuick('Volkswagen')" class="hover:underline">Volkswagen</a></li>
+                        <li><a href="#" onClick="filterByBrandQuick('Renault')" class="hover:underline">Renault</a></li>
+                        <li><a href="#" onClick="filterByBrandQuick('Haval')" class="hover:underline">Haval</a></li>
+                        <li><a href="#" onClick="filterByBrandQuick('BMW')" class="hover:underline">BMW</a></li>
+                        <li><a href="#" onClick="filterByBrandQuick('Audi')" class="hover:underline">Audi</a></li>
+                        <li><a href="#" onClick="filterByBrandQuick('Volkswagen')" class="hover:underline">Volkswagen</a></li>
                     </ul>
                 </div>
 
@@ -419,16 +419,16 @@
 
     <!-- LIGHTBOX ДЛЯ ГАЛЕРЕЇ -->
     <div id="lightboxModal" class="lightbox-modal">
-        <span class="absolute top-4 right-6 text-white text-3xl cursor-pointer font-bold z-50 hover:text-red-400" onclick="closeGallery()">&times;</span>
+        <span class="absolute top-4 right-6 text-white text-3xl cursor-pointer font-bold z-50 hover:text-red-400" onClick="closeGallery()">&times;</span>
         
         <div id="galleryCounter" class="text-white text-xs font-semibold mb-3 bg-black/60 px-3 py-1 rounded-full">
             Фото 1 з 1
         </div>
 
         <div class="relative flex items-center justify-center max-w-[90vw] max-h-[70vh]">
-            <button class="gallery-nav-btn absolute left-2 sm:-left-12 z-40" onclick="prevGalleryImage(event)">‹</button>
+            <button class="gallery-nav-btn absolute left-2 sm:-left-12 z-40" onClick="prevGalleryImage(event)">‹</button>
             <img id="lightboxImg" class="max-w-[85vw] max-h-[70vh] rounded object-contain shadow-2xl" src="" alt="Перегляд фото">
-            <button class="gallery-nav-btn absolute right-2 sm:-right-12 z-40" onclick="nextGalleryImage(event)">›</button>
+            <button class="gallery-nav-btn absolute right-2 sm:-right-12 z-40" onClick="nextGalleryImage(event)">›</button>
         </div>
 
         <div id="galleryThumbs" class="flex gap-2 mt-4 overflow-x-auto max-w-[90vw] p-1"></div>

@@ -5,7 +5,7 @@
     <meta name="theme-color" content="#ffffff">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>350 000+ оголошень про продаж авто з пробігом в Україні</title>
+    <title>NEOSERVICE — Автобазар & Комерція України</title>
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -75,10 +75,9 @@
         <div class="max-w-6xl mx-auto px-4 flex items-center justify-between h-8 text-[11px] text-gray-600">
             <div class="flex items-center gap-4">
                 <a href="index.html" class="hover:text-red-600">Головна</a>
-                <a href="#" class="hover:text-red-600">Автомобілі</a>
-                <a href="#" class="hover:text-red-600">Нерухомість</a>
-                <a href="#" class="hover:text-red-600">Автозапчастини</a>
-                <span class="text-blue-600 font-bold"><i class="fa-solid fa-flag"></i> Збір на авто для ЗСУ</span>
+                <a href="baza.html" class="hover:text-red-600">База знань</a>
+                <a href="chat.html" class="hover:text-red-600">Чат</a>
+                <span class="text-blue-600 font-bold"><i class="fa-solid fa-flag"></i> Підтримка ЗСУ</span>
             </div>
             
             <div class="flex items-center gap-3">
@@ -88,24 +87,24 @@
             </div>
         </div>
 
-        <!-- ОСНОВНА ШАПКА З ЛОГОТИПОМ ТА ЗЕЛЕНОЮ КНОПКОЮ -->
+        <!-- ОСНОВНА ШАПКА З ФІРМОВИМ ЛОГОТИПОМ NEOSERVICE -->
         <div class="border-b border-gray-200 py-2.5 bg-white">
             <div class="max-w-6xl mx-auto px-4 flex items-center justify-between">
                 
-                <a href="auto.html" class="flex items-center gap-2 text-decoration-none">
-                    <div class="bg-red-600 text-white font-black text-xl px-2.5 py-0.5 rounded tracking-tighter">
-                        AUTO<span class="text-yellow-300">.RIA</span>
+                <a href="auto.html" class="flex items-center gap-2.5 text-decoration-none">
+                    <div class="bg-red-600 text-white font-black text-lg px-2.5 py-1 rounded tracking-tight shadow-sm flex items-center gap-1">
+                        <i class="fa-solid fa-car-side"></i> NEO<span class="text-yellow-300">SERVICE</span>
                     </div>
-                    <div class="text-[10px] text-gray-500 font-bold uppercase tracking-widest hidden sm:block">
-                        Автобазар України
+                    <div class="text-[11px] text-gray-600 font-bold uppercase tracking-wider hidden sm:block">
+                        Автобазар & Комерція
                     </div>
                 </a>
 
                 <nav class="hidden md:flex items-center gap-5 text-xs font-bold text-gray-800">
                     <a href="#" class="text-red-600 border-b-2 border-red-600 pb-1">Вживані авто</a>
-                    <a href="#" class="hover:text-red-600 pb-1">Нові авто</a>
-                    <a href="#" class="hover:text-red-600 pb-1">Новини</a>
-                    <a href="#" class="hover:text-red-600 pb-1">Все для авто ▾</a>
+                    <a href="#" class="hover:text-red-600 pb-1">Автозапчастини</a>
+                    <a href="#" class="hover:text-red-600 pb-1">ЕБУ та Прошивки</a>
+                    <a href="#" class="hover:text-red-600 pb-1">Діагностика ▾</a>
                 </nav>
 
                 <button id="toggleFormBtn" onclick="toggleAddForm()" class="btn-green-add text-white font-bold px-4 py-2 rounded text-xs flex items-center gap-1.5 shadow-sm">
@@ -119,10 +118,10 @@
     <main class="max-w-6xl mx-auto px-4 py-4 flex-grow w-full space-y-4">
         
         <div class="text-[11px] text-gray-500">
-            <a href="index.html" class="hover:underline">Головна</a> &gt; <span>Вживані авто</span>
+            <a href="index.html" class="hover:underline">NEOSERVICE</a> &gt; <span>Автобазар</span>
         </div>
         
-        <h1 class="text-xl sm:text-2xl font-black text-gray-900">350 000+ оголошень про продаж авто з пробігом в Україні</h1>
+        <h1 class="text-xl sm:text-2xl font-black text-gray-900">Актуальні оголошення про продаж автомобілів та обладнання в Україні</h1>
 
         <!-- ЧЕРВОНИЙ БЛОК ФІЛЬТРІВ З БАЗОЮ МАРОК ТА МОДЕЛЕЙ -->
         <div class="search-box-red p-4 text-white shadow-md">
@@ -130,10 +129,10 @@
                 
                 <div class="space-y-3">
                     <div class="flex gap-1 text-[11px] font-bold">
-                        <button class="px-3 py-1 bg-white text-red-600 rounded-t">Всі</button>
-                        <button class="px-3 py-1 bg-red-700 text-white rounded-t hover:bg-red-800">✓ Вживані</button>
-                        <button class="px-3 py-1 bg-red-700 text-white rounded-t hover:bg-red-800">Нові</button>
-                        <button class="px-3 py-1 bg-red-700 text-white rounded-t hover:bg-red-800">Під пригон</button>
+                        <button class="px-3 py-1 bg-white text-red-600 rounded-t">Всі товари</button>
+                        <button class="px-3 py-1 bg-red-700 text-white rounded-t hover:bg-red-800">✓ Авто</button>
+                        <button class="px-3 py-1 bg-red-700 text-white rounded-t hover:bg-red-800">Запчастини</button>
+                        <button class="px-3 py-1 bg-red-700 text-white rounded-t hover:bg-red-800">ЕБУ</button>
                     </div>
 
                     <!-- Вибір марки -->
@@ -148,6 +147,9 @@
                         <option value="Renault">Renault</option>
                         <option value="Skoda">Skoda</option>
                         <option value="Toyota">Toyota</option>
+                        <option value="Peugeot">Peugeot</option>
+                        <option value="Citroen">Citroen</option>
+                        <option value="Opel">Opel</option>
                     </select>
 
                     <!-- Динамічний вибір моделі -->
@@ -163,7 +165,7 @@
                 <div class="space-y-3 pt-6 md:pt-7">
                     <select id="filterRegion" class="w-full px-2.5 py-1.5 text-xs bg-white text-gray-800 rounded border-none outline-none font-semibold">
                         <option value="">Регіон: Оберіть область</option>
-                        <option value="Рівненська">Рівненська область</option>
+                        <option value="Рівненська">Рівненська область (Костопіль)</option>
                         <option value="Волинська">Волинська область</option>
                         <option value="Львівська">Львівська область</option>
                         <option value="Київська">Київська область</option>
@@ -197,7 +199,7 @@
         <!-- ФОРМА ДОДАВАННЯ ОГОЛОШЕННЯ -->
         <div id="newAdFormCard" class="hidden bg-gray-50 rounded p-5 border-2 border-dashed border-red-500 shadow-md space-y-3">
             <div class="flex justify-between items-center border-b pb-2">
-                <h3 class="font-bold text-sm text-gray-900"><i class="fa-solid fa-pen"></i> Нове оголошення про продаж авто</h3>
+                <h3 class="font-bold text-sm text-gray-900"><i class="fa-solid fa-pen"></i> Нове оголошення (NEOSERVICE)</h3>
                 <button onclick="toggleAddForm()" class="text-gray-500 font-bold">✕</button>
             </div>
 
@@ -214,6 +216,9 @@
                         <option value="Renault">Renault</option>
                         <option value="Skoda">Skoda</option>
                         <option value="Toyota">Toyota</option>
+                        <option value="Peugeot">Peugeot</option>
+                        <option value="Citroen">Citroen</option>
+                        <option value="Opel">Opel</option>
                     </select>
                     <select id="formModel" class="p-2 border rounded font-semibold bg-white" required>
                         <option value="">Оберіть модель *</option>
@@ -224,12 +229,12 @@
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
                     <input type="number" id="adPrice" required placeholder="Ціна в ($)" class="p-2 border rounded">
                     <input type="number" id="adMileage" placeholder="Пробіг (тис. км)" class="p-2 border rounded">
-                    <input type="text" id="adCity" required placeholder="Місто (напр. Сміла)" class="p-2 border rounded">
+                    <input type="text" id="adCity" required placeholder="Місто (напр. Костопіль)" class="p-2 border rounded">
                     <input type="tel" id="adContact" required placeholder="Телефон" class="p-2 border rounded">
                 </div>
 
                 <div class="grid grid-cols-3 gap-2">
-                    <input type="text" id="adEngine" placeholder="Двигун (напр. Бензин, 2 л.)" class="p-2 border rounded">
+                    <input type="text" id="adEngine" placeholder="Двигун (напр. Дизель, 3 л.)" class="p-2 border rounded">
                     <input type="text" id="adGearbox" placeholder="КПП (напр. Автомат)" class="p-2 border rounded">
                     <input type="text" id="adVin" placeholder="VIN-код" class="p-2 border rounded font-mono">
                 </div>
@@ -239,11 +244,11 @@
                     <input type="url" id="adPhoto2" placeholder="Фото 2 (URL) https://..." class="p-2 border rounded">
                 </div>
 
-                <textarea id="adDescription" rows="2" placeholder="Опис авто..." class="w-full p-2 border rounded"></textarea>
+                <textarea id="adDescription" rows="2" placeholder="Опис авто, комплектації чи запчастин..." class="w-full p-2 border rounded"></textarea>
 
                 <div class="flex justify-end gap-2">
                     <button type="button" onclick="toggleAddForm()" class="px-4 py-1.5 bg-gray-200 text-gray-700 font-bold rounded">Скасувати</button>
-                    <button type="submit" class="btn-green-add text-white font-bold px-5 py-1.5 rounded">Зберегти оголошення</button>
+                    <button type="submit" class="btn-green-add text-white font-bold px-5 py-1.5 rounded">Опублікувати</button>
                 </div>
             </form>
         </div>
@@ -252,7 +257,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 pt-2">
             
             <div class="lg:col-span-3 space-y-4">
-                <div class="text-xs text-gray-500 font-semibold mb-2">Пропозиції про продаж авто</div>
+                <div class="text-xs text-gray-500 font-semibold mb-2">Пропозиції у базі NEOSERVICE</div>
                 
                 <div id="autoProductsContainer" class="space-y-4">
                     <p class="text-center text-gray-400 text-xs py-8">Завантаження бази оголошень з Firestore...</p>
@@ -282,6 +287,8 @@
                         <li><a href="#" onclick="filterByBrandQuick('Mercedes')" class="hover:underline">Mercedes-Benz</a></li>
                         <li><a href="#" onclick="filterByBrandQuick('Volkswagen')" class="hover:underline">Volkswagen</a></li>
                         <li><a href="#" onclick="filterByBrandQuick('Haval')" class="hover:underline">Haval</a></li>
+                        <li><a href="#" onclick="filterByBrandQuick('Peugeot')" class="hover:underline">Peugeot</a></li>
+                        <li><a href="#" onclick="filterByBrandQuick('Citroen')" class="hover:underline">Citroen</a></li>
                     </ul>
                 </div>
 
@@ -310,7 +317,7 @@
 
     <!-- FOOTER -->
     <footer class="border-t border-gray-200 text-gray-500 text-xs py-6 text-center mt-8 bg-white">
-        <p>© 2026 Автомаркет України — Всі права захищені.</p>
+        <p>© 2026 NEOSERVICE — Автобазар & Комерція. Всі права захищені.</p>
     </footer>
 
     <!-- СКРИПТИ ТА БАЗА МАРОК/МОДЕЛЕЙ -->
@@ -334,19 +341,20 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        let currentUser = null;
-
-        // База даних марок та моделей автомобілів
+        // Повна розширена база даних марок та моделей автомобілів
         const carDatabase = {
-            "BMW": ["X5", "X6", "X3", "3 Series", "5 Series", "7 Series", "M3", "M5"],
-            "Audi": ["Q7", "Q5", "A4", "A6", "A8", "RS6", "TT"],
-            "Mercedes-Benz": ["GLE", "GLS", "S-Class", "E-Class", "C-Class", "G-Class", "A-Class"],
-            "Volkswagen": ["Passat", "Golf", "Tiguan", "Touareg", "Jetta", "Polo"],
+            "BMW": ["X5", "X6", "X3", "X7", "3 Series", "5 Series", "7 Series", "M3", "M5"],
+            "Audi": ["Q7", "Q5", "Q3", "A4", "A6", "A8", "RS6", "TT"],
+            "Mercedes-Benz": ["GLE", "GLS", "GLC", "S-Class", "E-Class", "C-Class", "G-Class", "A-Class"],
+            "Volkswagen": ["Passat", "Golf", "Tiguan", "Touareg", "Jetta", "Polo", "Transporter"],
             "Haval": ["Dargo", "H6", "Jolion", "H9"],
             "Tesla": ["Model S", "Model 3", "Model X", "Model Y"],
-            "Renault": ["Megane", "Scenic", "Logan", "Duster", "Kabin"],
+            "Renault": ["Megane", "Scenic", "Logan", "Duster", "Kangoo"],
             "Skoda": ["Octavia", "Superb", "Kodiaq", "Fabia"],
-            "Toyota": ["Camry", "RAV4", "Land Cruiser", "Corolla", "Highlander"]
+            "Toyota": ["Camry", "RAV4", "Land Cruiser", "Corolla", "Highlander"],
+            "Peugeot": ["3008", "5008", "308", "208", "Partner"],
+            "Citroen": ["C4", "C5 Aircross", "Berlingo", "Jumper"],
+            "Opel": ["Astra", "Insignia", "Zafira", "Vivaro", "Combo"]
         };
 
         window.updateModelDropdown = function() {
@@ -399,7 +407,7 @@
             form.classList.toggle('hidden');
         };
 
-        // Додавання оголошення в Firestore з урахуванням марки, моделі та року
+        // Додавання оголошення в Firestore
         document.getElementById('addListingForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             if (!currentUser) return;
@@ -424,9 +432,9 @@
                     priceUSD: priceVal,
                     priceUAH: Math.round(priceVal * 41.5),
                     mileage: document.getElementById('adMileage').value || "15",
-                    city: document.getElementById('adCity').value || "Київ",
+                    city: document.getElementById('adCity').value || "Костопіль",
                     contact: document.getElementById('adContact').value,
-                    engine: document.getElementById('adEngine').value || "Дизель, 3 л.",
+                    engine: document.getElementById('adEngine').value || "Дизель, 2 л.",
                     gearbox: document.getElementById('adGearbox').value || "Автомат",
                     vin: document.getElementById('adVin').value || "WBAFF01020L211798",
                     stateNum: "BC 5555 CM",
@@ -438,7 +446,7 @@
 
                 document.getElementById('addListingForm').reset();
                 document.getElementById('newAdFormCard').classList.add('hidden');
-                alert('Оголошення успішно опубліковано!');
+                alert('Оголошення успішно опубліковано у базі NEOSERVICE!');
             } catch (err) {
                 alert('Помилка: ' + err.message);
             }
@@ -451,7 +459,7 @@
             container.innerHTML = '';
 
             if (snapshot.empty) {
-                container.innerHTML = `<div class="bg-gray-50 border p-6 text-center text-gray-400 text-xs">Немає оголошень у базі.</div>`;
+                container.innerHTML = `<div class="bg-gray-50 border p-6 text-center text-gray-400 text-xs">Немає оголошень у базі NEOSERVICE. Будьте першим!</div>`;
                 return;
             }
 
@@ -488,8 +496,8 @@
 
                         <div class="grid grid-cols-2 gap-y-1 text-gray-600 text-[11px] pt-1">
                             <div>⏱ ${car.mileage || '15'} тис. км</div>
-                            <div>📍 ${car.city || 'Київ'}</div>
-                            <div>⛽ ${car.engine || 'Дизель, 3 л.'}</div>
+                            <div>📍 ${car.city || 'Костопіль'}</div>
+                            <div>⛽ ${car.engine || 'Дизель, 2 л.'}</div>
                             <div>⚙️ ${car.gearbox || 'Автомат'}</div>
                         </div>
 

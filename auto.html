@@ -41,7 +41,6 @@
         }
         .btn-green-add:hover { background-color: #689f38; }
 
-        /* Таги номерних знаків та VIN точно як на АвтоРІА */
         .state-number-tag {
             background: #ffffff;
             border: 1px solid #1976d2;
@@ -137,7 +136,7 @@
         
         <h1 class="text-xl sm:text-2xl font-black text-gray-900">350 000+ оголошень про продаж авто з пробігом в Україні</h1>
 
-        <!-- ЧЕРВОНИЙ БЛОК ФІЛЬТРІВ -->
+        <!-- ЧЕРВОНИЙ БЛОК ФІЛЬТРІВ ТА РОЗШИРЕНОГО ПОШУКУ -->
         <div class="search-box-red p-4 text-white shadow-md">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 
@@ -172,8 +171,9 @@
                         <option value="">Оберіть модель (спочатку марку)</option>
                     </select>
 
-                    <button onclick="toggleAddForm()" class="w-full py-2 btn-red-expanded text-white text-xs font-bold rounded shadow-sm text-center">
-                        Розширений Пошук
+                    <!-- ПРАВИЛЬНА КНОПКА РОЗШИРЕНОГО ПОШУКУ (ВІДКРИВАЄ ДОДАТКОВІ ФІЛЬТРИ) -->
+                    <button onclick="toggleAdvancedSearch()" class="w-full py-2 btn-red-expanded text-white text-xs font-bold rounded shadow-sm text-center">
+                        <i class="fa-solid fa-sliders"></i> Розширений Пошук
                     </button>
                 </div>
 
@@ -189,27 +189,30 @@
                         <option value="Івано-Франківська">Івано-Франківська область</option>
                     </select>
 
-                    <div class="grid grid-cols-2 gap-2">
-                        <input type="number" id="filterYearMin" placeholder="від (рік)" class="px-2.5 py-1.5 text-xs bg-white text-gray-800 rounded outline-none">
-                        <input type="number" id="filterYearMax" placeholder="до" class="px-2.5 py-1.5 text-xs bg-white text-gray-800 rounded outline-none">
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-2">
-                        <input type="number" id="filterPriceMin" placeholder="від ($)" class="px-2.5 py-1.5 text-xs bg-white text-gray-800 rounded outline-none">
-                        <input type="number" id="filterPriceMax" placeholder="до ($)" class="px-2.5 py-1.5 text-xs bg-white text-gray-800 rounded outline-none">
+                    <!-- Блок додаткових фільтрів (відкривається при кліку на Розширений пошук) -->
+                    <div id="advancedSearchFields" class="hidden space-y-2 bg-red-800 p-2.5 rounded">
+                        <div class="text-[10px] font-bold text-yellow-300">Додаткові критерії пошуку:</div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="number" id="filterYearMin" placeholder="Рік від" class="px-2 py-1 text-xs bg-white text-gray-800 rounded outline-none">
+                            <input type="number" id="filterYearMax" placeholder="до" class="px-2 py-1 text-xs bg-white text-gray-800 rounded outline-none">
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="number" id="filterPriceMin" placeholder="Ціна від ($)" class="px-2 py-1 text-xs bg-white text-gray-800 rounded outline-none">
+                            <input type="number" id="filterPriceMax" placeholder="до ($)" class="px-2 py-1 text-xs bg-white text-gray-800 rounded outline-none">
+                        </div>
                     </div>
                 </div>
 
                 <div class="flex items-end pt-2 md:pt-0">
                     <button onclick="filterCards()" class="w-full py-3 btn-blue-search text-white font-black text-sm rounded shadow flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-magnifying-glass"></i> Пошук
+                        <i class="fa-solid fa-magnifying-glass"></i> Пошук за параметрами
                     </button>
                 </div>
 
             </div>
         </div>
 
-        <!-- РОЗШИРЕНА ФОРМА ДОДАВАННЯ ОГОЛОШЕННЯ ДЛЯ ЗАРЕЄСТРОВАНИХ КОРУСТУВАЧІВ -->
+        <!-- РОЗШИРЕНА ФОРМА ДОДАВАННЯ ОГОЛОШЕННЯ (ВІДКРИВАЄТЬСЯ ЗЕЛЕНОЮ КНОПКОЮ ПРОДАТИ АВТО) -->
         <div id="newAdFormCard" class="hidden bg-gray-50 rounded p-5 border-2 border-dashed border-red-500 shadow-md space-y-4">
             <div class="flex justify-between items-center border-b pb-2">
                 <h3 class="font-bold text-sm text-gray-900 flex items-center gap-2">
@@ -220,7 +223,6 @@
 
             <form id="addListingForm" class="space-y-3 text-xs">
                 
-                <!-- Блок 1: Основне -->
                 <div class="font-bold text-gray-700 text-xs border-b pb-1">1. Основні дані автомобіля</div>
                 <div class="grid grid-cols-1 sm:grid-cols-4 gap-2">
                     <div>
@@ -262,7 +264,6 @@
                     </div>
                 </div>
 
-                <!-- Блок 2: Ціна та місце розташування -->
                 <div class="font-bold text-gray-700 text-xs border-b pb-1 pt-2">2. Ціна, пробіг та контакти</div>
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
                     <div>
@@ -283,7 +284,6 @@
                     </div>
                 </div>
 
-                <!-- Блок 3: Специфікації -->
                 <div class="font-bold text-gray-700 text-xs border-b pb-1 pt-2">3. Технічні характеристики</div>
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
                     <div>
@@ -319,7 +319,6 @@
                     </div>
                 </div>
 
-                <!-- Блок 4: Номери та VIN -->
                 <div class="font-bold text-gray-700 text-xs border-b pb-1 pt-2">4. Ідентифікація (Держномер та VIN)</div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     <div>
@@ -332,7 +331,6 @@
                     </div>
                 </div>
 
-                <!-- Блок 5: Фотографії -->
                 <div class="font-bold text-gray-700 text-xs border-b pb-1 pt-2">5. Фотографії авто (посилання URL)</div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     <input type="url" id="adPhoto1" placeholder="Фото 1 (Головне) https://..." class="p-2 border rounded">
@@ -361,7 +359,6 @@
             <div class="lg:col-span-3 space-y-4">
                 <h2 class="text-lg font-bold text-gray-800">Пропозиції про продаж авто</h2>
                 
-                <!-- Контейнер де показуються ВСІ оголошення в базі (доступно і гостям, і авторизованим) -->
                 <div id="autoProductsContainer" class="space-y-4">
                     <p class="text-center text-gray-400 text-xs py-8">Завантаження пропозицій з Firestore...</p>
                 </div>
@@ -408,7 +405,7 @@
 
     </main>
 
-    <!-- LIGHTBOX ДЛЯ ПЕРЕГЛЯДУ ФОТО -->
+    <!-- LIGHTBOX -->
     <div id="lightboxModal" class="lightbox-modal">
         <span class="absolute top-5 right-7 text-white text-3xl cursor-pointer font-bold" id="lightboxClose">&times;</span>
         <img id="lightboxImg" class="max-w-[90vw] max-h-[80vh] rounded object-contain" src="" alt="Перегляд">
@@ -442,7 +439,6 @@
 
         let currentUser = null;
 
-        // База даних марок та моделей
         const carDatabase = {
             "Haval": ["Dargo", "H6", "Jolion", "H9"],
             "BMW": ["X5", "X6", "X3", "X7", "3 Series", "5 Series", "7 Series"],
@@ -457,7 +453,6 @@
             "Ford": ["Focus", "Mondeo", "Fiesta", "Kuga"]
         };
 
-        // Демонстраційне початкове оголошення зі скріншота Haval Dargo 2022
         const initialListings = [
             {
                 title: "Haval Dargo 2022",
@@ -529,7 +524,12 @@
             }
         };
 
-        // Відстеження стану користувача в реальному часі
+        // Перемикач випадаючого блоку РОЗШИРЕНОГО ПОШУКУ
+        window.toggleAdvancedSearch = function() {
+            const advBox = document.getElementById('advancedSearchFields');
+            advBox.classList.toggle('hidden');
+        };
+
         onAuthStateChanged(auth, (user) => {
             currentUser = user;
             const badge = document.getElementById('authStatusBadge');
@@ -550,10 +550,10 @@
             }
         };
 
-        // Відкриття / перевірка форми подачі оголошення
+        // Кнопка «Продати авто» відкриває форму подачі оголошення
         window.toggleAddForm = function() {
             if (!currentUser) {
-                alert('Увага: Додавати оголошення можуть лише зареєстровані користувачі!\n\nВи можете переглядати оголошення як гість. Для публікації авто, будь ласка, увійдіть у свій акаунт.');
+                alert('Увага: Додавати оголошення можуть лише зареєстровані користувачі!\n\nДля публікації авто, будь ласка, увійдіть у свій акаунт.');
                 window.location.href = 'index.html';
                 return;
             }
@@ -561,7 +561,6 @@
             form.classList.toggle('hidden');
         };
 
-        // Наповнення бази даних, якщо вона порожня
         async function seedInitialData() {
             try {
                 const snap = await getDocs(collection(db, "auto_listings"));
@@ -580,7 +579,6 @@
         }
         seedInitialData();
 
-        // Публікація розширеного оголошення зареєстрованим користувачем
         document.getElementById('addListingForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             if (!currentUser) return;
@@ -637,7 +635,6 @@
             }
         });
 
-        // Відображення списку оголошень для ВСІХ користувачів (гості бачать, зареєстровані бачать і можуть керувати своїми)
         const q = query(collection(db, "auto_listings"), orderBy("createdAt", "desc"));
         onSnapshot(q, (snapshot) => {
             const container = document.getElementById('autoProductsContainer');
@@ -658,10 +655,11 @@
                 card.setAttribute('data-city', car.city || '');
                 card.setAttribute('data-brand', car.brand || '');
                 card.setAttribute('data-model', car.model || '');
+                card.setAttribute('data-year', car.year || '2022');
+                card.setAttribute('data-price', car.priceUSD || '0');
 
                 const isOwnerOrAdmin = currentUser && (currentUser.email === ADMIN_EMAIL || currentUser.email === car.userEmail);
 
-                // Оформлення картки
                 card.innerHTML = `
                     <div class="w-full sm:w-64 h-40 bg-gray-900 rounded overflow-hidden relative flex-shrink-0 cursor-pointer" onclick="openLightbox('${photo}')">
                         <img src="${photo}" alt="${car.title}" class="w-full h-full object-cover">
@@ -757,15 +755,25 @@
             const brandVal = (document.getElementById('filterBrand')?.value || '').toLowerCase();
             const modelVal = (document.getElementById('filterModel')?.value || '').toLowerCase();
             const regionVal = (document.getElementById('filterRegion')?.value || '').toLowerCase();
+            
+            const minYear = parseInt(document.getElementById('filterYearMin')?.value) || 0;
+            const maxYear = parseInt(document.getElementById('filterYearMax')?.value) || 9999;
+            const minPrice = parseFloat(document.getElementById('filterPriceMin')?.value) || 0;
+            const maxPrice = parseFloat(document.getElementById('filterPriceMax')?.value) || Infinity;
 
             const cards = document.querySelectorAll('.product-card');
             cards.forEach(card => {
                 const text = card.innerText.toLowerCase();
+                const cardYear = parseInt(card.getAttribute('data-year')) || 2022;
+                const cardPrice = parseFloat(card.getAttribute('data-price')) || 0;
+
                 const matchBrand = !brandVal || text.includes(brandVal);
                 const matchModel = !modelVal || text.includes(modelVal);
                 const matchRegion = !regionVal || text.includes(regionVal);
+                const matchYear = (cardYear >= minYear && cardYear <= maxYear);
+                const matchPrice = (cardPrice >= minPrice && cardPrice <= maxPrice);
 
-                if (matchBrand && matchModel && matchRegion) {
+                if (matchBrand && matchModel && matchRegion && matchYear && matchPrice) {
                     card.style.display = 'flex';
                 } else {
                     card.style.display = 'none';

@@ -91,12 +91,15 @@
         .btn-danger { background: #dc2626; }
         .btn-google { background: #ea4335; }
         
-        /* Стилі для слайдера (колаж зі шторкою) */
+        /* Стилі для слайдера (колаж зі шторкою) з повним збереженням пропорцій */
         .banner-slide {
             position: absolute; inset: 0;
             opacity: 0; transform: translateY(10px);
             transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
             pointer-events: none;
+            background-color: #0b1329; /* Надійний темний фон для адаптивних банерів */
+            background-repeat: no-repeat;
+            background-position: center;
         }
         .banner-slide.active {
             opacity: 1; transform: translateY(0);
@@ -411,16 +414,10 @@
           <!-- Динамічні або базові слайди колажу -->
           <div id="bannerSliderContainer" style="position: absolute; inset: 0; width: 100%; height: 100%;">
             
-            <div class="banner-slide active" style="background: linear-gradient(to top, rgba(15,23,42,0.9), rgba(15,23,42,0.2)), url('https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=1000') center/cover; padding: 25px; display: flex; flex-direction: column; justify-content: flex-end; height: 100%; box-sizing: border-box;">
-              <span style="background: rgba(217,119,6,0.8); color: white; font-size: 0.7rem; font-weight: bold; padding: 3px 10px; border-radius: 20px; width: max-content; margin-bottom: 8px;">📢 Головний банер #1</span>
-              <h3 style="color: white; margin: 0 0 5px 0; font-size: 1.25rem;">Калаж банерів: Автопереключення з ефектами шторки</h3>
-              <p style="color: #cbd5e1; margin: 0; font-size: 0.8rem;">Зміна банера через адмін-панель у реальному часі на головній сторінці.</p>
-            </div>
-
-            <div class="banner-slide" style="background: linear-gradient(to top, rgba(15,23,42,0.9), rgba(15,23,42,0.2)), url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1000') center/cover; padding: 25px; display: flex; flex-direction: column; justify-content: flex-end; height: 100%; box-sizing: border-box;">
-              <span style="background: rgba(37,99,235,0.8); color: white; font-size: 0.7rem; font-weight: bold; padding: 3px 10px; border-radius: 20px; width: max-content; margin-bottom: 8px;">⭐ Партнерський простір #2</span>
-              <h3 style="color: white; margin: 0 0 5px 0; font-size: 1.25rem;">Національний інформаційний хаб громади</h3>
-              <p style="color: #cbd5e1; margin: 0; font-size: 0.8rem;">Професійний автосервіс, комп'ютерна допомога та підтримка регіонів України.</p>
+            <div class="banner-slide active" style="background-image: url('https://lh3.googleusercontent.com/d/11vet7U2ImXj8dZ2yHRRnh_oVjm6SCItG'); background-size: contain; padding: 25px; display: flex; flex-direction: column; justify-content: flex-end; height: 100%; box-sizing: border-box;">
+              <span style="background: rgba(217,119,6,0.8); color: white; font-size: 0.7rem; font-weight: bold; padding: 3px 10px; border-radius: 20px; width: max-content; margin-bottom: 8px;">📢 Підтримка Web-ресурсу</span>
+              <h3 style="color: white; margin: 0 0 5px 0; font-size: 1.25rem; text-shadow: 0 2px 4px rgba(0,0,0,0.8);">Інвестиція і інувація</h3>
+              <p style="color: #cbd5e1; margin: 0; font-size: 0.8rem; text-shadow: 0 1px 3px rgba(0,0,0,0.8);">«Поділись теплом, підтримай проєкт добровільним внеском!»</p>
             </div>
 
           </div>
@@ -428,7 +425,6 @@
           <!-- Крапки-індикатори переключення -->
           <div id="sliderDotsContainer" style="position: absolute; bottom: 12px; right: 20px; display: flex; gap: 6px; z-index: 10;">
             <button onclick="setSlide(0)" class="slider-dot" style="width: 10px; height: 10px; border-radius: 50%; border: none; background: #d97706; cursor: pointer;"></button>
-            <button onclick="setSlide(1)" class="slider-dot" style="width: 10px; height: 10px; border-radius: 50%; border: none; background: #cbd5e1; cursor: pointer;"></button>
           </div>
         </div>
 
@@ -803,7 +799,7 @@
 
     <!-- ================= МОДАЛЬНЕ ВІКНО АДМІНІСТРУВАННЯ КОЛАЖУ ================= -->
     <div id="adminCollageModal" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(8px); z-index: 9999; align-items: center; justify-content: center; padding: 15px;">
-      <div style="background: white; border-radius: 12px; border-top: 5px solid #1e3a8a; max-width: 480px; width: 100%; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); box-sizing: border-box;">
+      <div style="background: white; border-radius: 12px; border-top: 5px solid #1e3a8a; max-width: 480px; width: 100%; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); box-sizing: border-box; max-height: 90vh; overflow-y: auto;">
         
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px; margin-bottom: 15px;">
           <h3 style="margin: 0; color: #1e3a8a; font-size: 1.1rem;">🖼️ Керування колажем банерів</h3>
@@ -813,7 +809,7 @@
         <form id="collageAdminForm" style="display: flex; flex-direction: column; gap: 10px;">
           <div>
             <label style="font-size: 0.8rem; font-weight: bold; color: #334155;">Категорія / Тег банера:</label>
-            <input type="text" id="slideTag" placeholder="наприклад: 📢 Нова акція" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-size: 0.85rem;" required>
+            <input type="text" id="slideTag" placeholder="наприклад: 📢 Підтримка Web-ресурсу" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-size: 0.85rem;" required>
           </div>
 
           <div>
@@ -827,8 +823,16 @@
           </div>
 
           <div>
-            <label style="font-size: 0.8rem; font-weight: bold; color: #334155;">Посилання на фонове фото (URL):</label>
-            <input type="url" id="slideImage" placeholder="https://images.unsplash.com/..." style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-size: 0.85rem;" required>
+            <label style="font-size: 0.8rem; font-weight: bold; color: #334155;">Посилання на фонове фото (URL або Google Drive ID шлях):</label>
+            <input type="url" id="slideImage" placeholder="https://lh3.googleusercontent.com/d/..." style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-size: 0.85rem;" required>
+          </div>
+
+          <div>
+            <label style="font-size: 0.8rem; font-weight: bold; color: #334155;">Режим відображення банера:</label>
+            <select id="slideFitMode" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-size: 0.85rem; background: white;">
+              <option value="contain">Вмістити повністю (ідеально для готових банерів з QR-кодом)</option>
+              <option value="cover">Заповнити весь блок (з обрізанням країв)</option>
+            </select>
           </div>
 
           <div style="display: flex; gap: 10px; margin-top: 10px;">
@@ -836,6 +840,13 @@
             <button type="submit" style="flex: 1; padding: 10px; background: #d97706; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">Опублікувати</button>
           </div>
         </form>
+
+        <div style="margin-top: 20px; border-top: 1px solid #e2e8f0; padding-top: 15px;">
+          <h4 style="font-size: 0.9rem; color: #1e3a8a; margin: 0 0 10px 0;">📋 Активні банери в базі:</h4>
+          <div id="adminBannersList" style="display: flex; flex-direction: column; gap: 8px; max-height: 150px; overflow-y: auto;">
+            <span style="font-size: 0.75rem; color: #64748b;">Завантаження списку...</span>
+          </div>
+        </div>
 
       </div>
     </div>
@@ -848,7 +859,7 @@
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
       import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-      import { getFirestore, collection, addDoc, getDocs, setDoc, doc, query, where, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+      import { getFirestore, collection, addDoc, deleteDoc, doc, getDocs, setDoc, query, where, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
       const firebaseConfig = {
           apiKey: "AIzaSyBlKoP6-M8tdrKq88bSdnWSnak5Gpddnpk",
@@ -908,7 +919,7 @@
               const fullBackupPackage = {
                   app: "Neoservice.ks.ua",
                   exportDate: new Date().toISOString(),
-                  version: "5.1",
+                  version: "5.2",
                   localStorage: localData,
                   firestore: firestoreData
               };
@@ -1089,6 +1100,7 @@
             title: document.getElementById('slideTitle').value,
             desc: document.getElementById('slideDesc').value,
             imageUrl: document.getElementById('slideImage').value,
+            fitMode: document.getElementById('slideFitMode').value,
             createdAt: serverTimestamp()
           });
 
@@ -1100,37 +1112,65 @@
         }
       });
 
+      window.deleteBanner = async function(id) {
+        if (confirm("Ви дійсно хочете видалити цей банер з колажу?")) {
+          try {
+            await deleteDoc(doc(db, "collage_banners", id));
+            alert("Банер успішно видалено!");
+          } catch(err) {
+            alert("Помилка при видаленні: " + err.message);
+          }
+        }
+      };
+
       function listenToBanners() {
         const sliderContainer = document.getElementById('bannerSliderContainer');
         const dotsContainer = document.getElementById('sliderDotsContainer');
+        const adminBannersList = document.getElementById('adminBannersList');
 
         onSnapshot(collection(db, "collage_banners"), (snapshot) => {
           if (snapshot.empty) return;
 
           sliderContainer.innerHTML = '';
           dotsContainer.innerHTML = '';
+          if (adminBannersList) adminBannersList.innerHTML = '';
           let count = 0;
 
-          snapshot.forEach((doc) => {
-            const data = doc.data();
+          snapshot.forEach((docSnap) => {
+            const data = docSnap.data();
+            const docId = docSnap.id;
             const isActive = count === 0 ? 'active' : '';
+            const fitMode = data.fitMode || 'contain'; // за замовчуванням вміщуємо повністю
 
+            // Слайд на головній
             const slideElement = document.createElement('div');
             slideElement.className = `banner-slide ${isActive}`;
-            slideElement.style.cssText = `background: linear-gradient(to top, rgba(15,23,42,0.9), rgba(15,23,42,0.2)), url('${data.imageUrl}') center/cover; padding: 25px; display: flex; flex-direction: column; justify-content: flex-end; height: 100%; box-sizing: border-box;`;
+            slideElement.style.cssText = `background-image: url('${data.imageUrl}'); background-size: ${fitMode}; padding: 25px; display: flex; flex-direction: column; justify-content: flex-end; height: 100%; box-sizing: border-box;`;
             slideElement.innerHTML = `
-              <span style="background: rgba(217,119,6,0.8); color: white; font-size: 0.7rem; font-weight: bold; padding: 3px 10px; border-radius: 20px; width: max-content; margin-bottom: 8px;">${data.tag}</span>
-              <h3 style="color: white; margin: 0 0 5px 0; font-size: 1.25rem;">${data.title}</h3>
-              <p style="color: #cbd5e1; margin: 0; font-size: 0.8rem;">${data.desc}</p>
+              <span style="background: rgba(217,119,6,0.9); color: white; font-size: 0.7rem; font-weight: bold; padding: 3px 10px; border-radius: 20px; width: max-content; margin-bottom: 8px;">${data.tag}</span>
+              <h3 style="color: white; margin: 0 0 5px 0; font-size: 1.25rem; text-shadow: 0 2px 4px rgba(0,0,0,0.8);">${data.title}</h3>
+              <p style="color: #cbd5e1; margin: 0; font-size: 0.8rem; text-shadow: 0 1px 3px rgba(0,0,0,0.8);">${data.desc}</p>
             `;
             sliderContainer.appendChild(slideElement);
 
+            // Крапка індикатор
             const dotBtn = document.createElement('button');
             dotBtn.className = 'slider-dot';
             dotBtn.style.cssText = `width: 10px; height: 10px; border-radius: 50%; border: none; background: ${count === 0 ? '#d97706' : '#cbd5e1'}; cursor: pointer;`;
             const index = count;
             dotBtn.onclick = () => setSlide(index);
             dotsContainer.appendChild(dotBtn);
+
+            // Список в адмінці для видалення
+            if (adminBannersList) {
+              const itemDiv = document.createElement('div');
+              itemDiv.style.cssText = "display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 6px 10px; border-radius: 6px; border: 1px solid #e2e8f0; font-size: 0.75rem;";
+              itemDiv.innerHTML = `
+                <span style="font-weight: bold; color: #1e3a8a; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 260px;">${data.title}</span>
+                <button type="button" onclick="deleteBanner('${docId}')" style="background: #dc2626; color: white; border: none; padding: 3px 8px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 0.7rem;">Видалити</button>
+              `;
+              adminBannersList.appendChild(itemDiv);
+            }
 
             count++;
           });

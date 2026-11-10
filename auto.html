@@ -451,12 +451,8 @@
 
                 <div class="border-b border-gray-200 pb-3">
                     <h3 class="font-bold text-gray-900 mb-2">Виберіть марку</h3>
-                    <ul class="space-y-1.5 text-blue-700 font-semibold">
-                        <li><a href="#" onclick="filterByBrandQuick('Renault')" class="hover:underline">Renault</a></li>
-                        <li><a href="#" onclick="filterByBrandQuick('Haval')" class="hover:underline">Haval</a></li>
-                        <li><a href="#" onclick="filterByBrandQuick('BMW')" class="hover:underline">BMW</a></li>
-                        <li><a href="#" onclick="filterByBrandQuick('Audi')" class="hover:underline">Audi</a></li>
-                        <li><a href="#" onclick="filterByBrandQuick('Volkswagen')" class="hover:underline">Volkswagen</a></li>
+                    <ul id="sidebarBrandList" class="space-y-1.5 text-blue-700 font-semibold max-h-96 overflow-y-auto">
+                        <!-- Список марок автоматично заповнюється з JavaScript на основі основного селекта -->
                     </ul>
                 </div>
 
@@ -514,8 +510,6 @@
         let currentGalleryPhotos = [];
         let currentPhotoIndex = 0;
         
-        // Перевіряємо хеш в URL при відкритті сторінки (наприклад #parts або #auto)
-        // За замовчуванням ставимо 'auto' (автомобілі)
         let activeCategoryFilter = 'auto';
         if (window.location.hash === '#parts') {
             activeCategoryFilter = 'parts';
@@ -538,6 +532,28 @@
             "Peugeot": [],
             "Citroen": []
         };
+
+        // Генерація списку марок у сайдбарі на основі випадаючого списку фільтра
+        function initSidebarBrands() {
+            const selectBrand = document.getElementById('filterBrand');
+            const sidebarList = document.getElementById('sidebarBrandList');
+            if (!selectBrand || !sidebarList) return;
+
+            sidebarList.innerHTML = '';
+            
+            // Додаємо пункт "Усі марки"
+            const allLi = document.createElement('li');
+            allLi.innerHTML = `<a href="#" onclick="filterByBrandQuick('')" class="hover:underline font-bold text-gray-700">Усі марки</a>`;
+            sidebarList.appendChild(allLi);
+
+            Array.from(selectBrand.options).forEach(opt => {
+                if (opt.value) {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<a href="#" onclick="filterByBrandQuick('${opt.value}')" class="hover:underline">${opt.textContent}</a>`;
+                    sidebarList.appendChild(li);
+                }
+            });
+        }
 
         window.updateModelDropdown = function() {
             const brandSel = document.getElementById('filterBrand').value;
@@ -596,16 +612,13 @@
             }
         };
 
-        // Функція перемикання категорії
         window.setMainCategory = function(cat) {
             activeCategoryFilter = cat;
             
-            // Оновлюємо хеш у браузері
             if (cat === 'parts') window.location.hash = 'parts';
             else if (cat === 'auto') window.location.hash = 'auto';
             else window.location.hash = 'all';
 
-            // Візуальне підсвічування кнопок в червоному блоці
             const btnAll = document.getElementById('btnCatAll');
             const btnAuto = document.getElementById('btnCatAuto');
             const btnParts = document.getElementById('btnCatParts');
@@ -614,7 +627,6 @@
             btnAuto.className = "px-3 py-1 rounded-t " + (cat === 'auto' ? "bg-white text-red-600 font-bold" : "bg-red-700 text-white hover:bg-red-800");
             btnParts.className = "px-3 py-1 rounded-t " + (cat === 'parts' ? "bg-white text-red-600 font-bold" : "bg-red-700 text-white hover:bg-red-800");
 
-            // Заголовки сторінки
             const mainHeaderTitle = document.getElementById('mainHeaderTitle');
             const feedTitle = document.getElementById('feedTitle');
             const breadcrumbCategory = document.getElementById('breadcrumbCategory');
@@ -640,7 +652,6 @@
             setMainCategory(cat);
         };
 
-        // Слухаємо зміну URL-хеша в реальному часі
         window.addEventListener('hashchange', () => {
             if (window.location.hash === '#parts') setMainCategory('parts');
             else if (window.location.hash === '#auto') setMainCategory('auto');
@@ -874,7 +885,7 @@
                 });
             });
 
-            // Ініціалізуємо категорію при завантаженні карток
+            initSidebarBrands();
             setMainCategory(activeCategoryFilter);
         });
 
@@ -936,8 +947,11 @@
         });
 
         window.filterByBrandQuick = function(brand) {
-            document.getElementById('filterBrand').value = brand;
-            updateModelDropdown();
+            const brandSelect = document.getElementById('filterBrand');
+            if (brandSelect) {
+                brandSelect.value = brand;
+                updateModelDropdown();
+            }
             window.filterCards();
         };
 

@@ -446,7 +446,7 @@
         import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, doc, deleteDoc, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const ADMIN_EMAIL = "kostopilservice@gmail.com";
-        // АКТУАЛЬНИЙ КУРС ДОЛАРА НБУ (близько 45.41 грн/$)
+        // ФІКСОВАНИЙ АКТУАЛЬНИЙ КУРС ДОЛАРА НБУ (45.41 грн/$)
         const USD_TO_UAH_RATE = 45.41;
 
         const firebaseConfig = {
@@ -543,7 +543,6 @@
             form.classList.toggle('hidden');
         };
 
-        // Публікація оголошення з правильним розрахунком гривень за актуальним курсом
         document.getElementById('addListingForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             if (!currentUser) return;
@@ -569,7 +568,6 @@
             }
 
             const priceVal = Number(document.getElementById('adPrice').value);
-            // Розрахунок еквівалента в грн за актуальним курсом НБУ
             const priceUahVal = Math.round(priceVal * USD_TO_UAH_RATE);
 
             try {
@@ -606,7 +604,6 @@
             }
         });
 
-        // Слухач бази даних та вивід карток
         const q = query(collection(db, "auto_listings"), orderBy("createdAt", "desc"));
         onSnapshot(q, (snapshot) => {
             const container = document.getElementById('autoProductsContainer');
@@ -628,9 +625,9 @@
                 const mainPhoto = photos[0];
                 const photosCount = photos.length;
                 
-                // Перевірка та перерахунок гривень якщо старе оголошення зберігалось із застарілим курсом
                 const priceUsd = car.priceUSD || 0;
-                const priceUah = car.priceUAH || Math.round(priceUsd * USD_TO_UAH_RATE);
+                // Примусовий перерахунок у реальному часі за актуальним курсом для всіх карток
+                const priceUah = Math.round(priceUsd * USD_TO_UAH_RATE);
 
                 const card = document.createElement('div');
                 card.className = 'product-card border border-gray-200 p-3 bg-white rounded flex flex-col sm:flex-row gap-4 items-start shadow-sm';

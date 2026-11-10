@@ -158,7 +158,6 @@
                     </div>
                 </a>
 
-                <!-- Верхнє меню без зайвої кнопки "Всі оголошення" -->
                 <nav class="hidden md:flex items-center gap-5 text-xs font-bold text-gray-800">
                     <a href="#" onclick="switchCategoryFilter('auto')" class="hover:text-red-600 pb-1">Автомобілі</a>
                     <a href="#" onclick="switchCategoryFilter('parts')" class="hover:text-red-600 pb-1">Автозапчастини</a>
@@ -187,7 +186,7 @@
                 
                 <div class="space-y-3">
                     <div class="flex gap-1 text-[11px] font-bold">
-                        <button id="btnCatAll" onclick="setMainCategory('all')" class="px-3 py-1 bg-white text-red-600 rounded-t">Всі товари</button>
+                        <button id="btnCatAll" onclick="setMainCategory('all')" class="px-3 py-1 bg-white text-red-600 rounded-t font-bold">Всі товари</button>
                         <button id="btnCatAuto" onclick="setMainCategory('auto')" class="px-3 py-1 bg-red-700 text-white rounded-t hover:bg-red-800">✓ Авто</button>
                         <button id="btnCatParts" onclick="setMainCategory('parts')" class="px-3 py-1 bg-red-700 text-white rounded-t hover:bg-red-800">Запчастини</button>
                     </div>
@@ -250,7 +249,7 @@
             </div>
         </div>
 
-        <!-- УНІВЕРСАЛЬНА ФОРМА ДОДАВАННЯ ОГОЛОШЕННЯ (АВТО ТА АВТОЗАПЧАСТИНИ) -->
+        <!-- УНІВЕРСАЛЬНА ФОРМА ДОДАВАННЯ ОГОЛОШЕННЯ -->
         <div id="newAdFormCard" class="hidden bg-gray-50 rounded p-5 border-2 border-dashed border-red-500 shadow-md space-y-4">
             <div class="flex justify-between items-center border-b pb-2">
                 <h3 class="font-bold text-sm text-gray-900 flex items-center gap-2">
@@ -261,7 +260,6 @@
 
             <form id="addListingForm" class="space-y-3 text-xs">
                 
-                <!-- Вибір типу оголошення -->
                 <div class="bg-blue-50 p-2.5 rounded border border-blue-200 flex items-center gap-4">
                     <span class="font-bold text-blue-900">Тип оголошення:</span>
                     <label class="flex items-center gap-1.5 cursor-pointer font-semibold text-gray-800">
@@ -274,7 +272,6 @@
                     </label>
                 </div>
 
-                <!-- Блок 1: Сумісність та Назва -->
                 <div class="font-bold text-gray-700 text-xs border-b pb-1">1. Марка, модель та назва</div>
                 <div class="grid grid-cols-1 sm:grid-cols-4 gap-2">
                     <div>
@@ -315,17 +312,16 @@
                     </div>
                 </div>
 
-                <!-- Спеціальний блок для запчастини -->
                 <div id="partFieldsBlock" class="hidden bg-orange-50 p-3 rounded border border-orange-200 space-y-2">
                     <div class="font-bold text-orange-900 text-xs">Параметри автозапчастини</div>
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
                         <div>
                             <label class="block font-semibold mb-1 text-gray-700">Назва деталі / Категорія *</label>
-                            <input type="text" id="partName" placeholder="напр. Важіль підвіски, Фара ліва" class="w-full p-2 border rounded bg-white">
+                            <input type="text" id="partName" placeholder="напр. КПП 6 ступка, Фара ліва" class="w-full p-2 border rounded bg-white">
                         </div>
                         <div>
                             <label class="block font-semibold mb-1 text-gray-700">Оригінальний номер (OEM / Part Number) *</label>
-                            <input type="text" id="partNumber" placeholder="напр. 8200123456" class="w-full p-2 border rounded font-mono uppercase bg-white">
+                            <input type="text" id="partNumber" placeholder="напр. OEM-12345" class="w-full p-2 border rounded font-mono uppercase bg-white">
                         </div>
                         <div>
                             <label class="block font-semibold mb-1 text-gray-700">Стан запчастини *</label>
@@ -338,8 +334,7 @@
                     </div>
                 </div>
 
-                <!-- Блок 2: Ціна та контакти -->
-                <div class="font-bold text-gray-700 text-xs border-b pb-1 pt-2">2. Ціна, пробіг та контакти</div>
+                <div class="font-bold text-gray-700 text-xs border-b pb-1 pt-2">2. Ціна та контакти</div>
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
                     <div>
                         <label class="block font-semibold mb-1 text-gray-600">Ціна ($ USD) *</label>
@@ -359,7 +354,6 @@
                     </div>
                 </div>
 
-                <!-- Блок 3: Технічні характеристики (Авто) -->
                 <div id="autoTechBlock" class="space-y-2">
                     <div class="font-bold text-gray-700 text-xs border-b pb-1 pt-2">3. Технічні характеристики авто</div>
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
@@ -397,7 +391,6 @@
                     </div>
                 </div>
 
-                <!-- Блок 4: Ідентифікація (Держномер та VIN для Авто) -->
                 <div id="autoIdentBlock" class="space-y-2">
                     <div class="font-bold text-gray-700 text-xs border-b pb-1 pt-2">4. Ідентифікація авто</div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -533,7 +526,9 @@
             "Toyota": ["Camry", "RAV4", "Land Cruiser", "Corolla"],
             "Hyundai": ["Tucson", "Santa Fe", "Elantra", "Sonata"],
             "Kia": ["Sportage", "Sorento", "Ceed", "Rio"],
-            "Ford": ["Focus", "Mondeo", "Fiesta", "Kuga"]
+            "Ford": ["Focus", "Mondeo", "Fiesta", "Kuga"],
+            "Peugeot": [],
+            "Citroen": []
         };
 
         window.updateModelDropdown = function() {
@@ -593,14 +588,24 @@
             }
         };
 
+        // Керування активними кнопками категорій в червоній панелі
         window.setMainCategory = function(cat) {
             activeCategoryFilter = cat;
+            
+            // Візуальне підсвічування кнопок категорій
+            const btnAll = document.getElementById('btnCatAll');
+            const btnAuto = document.getElementById('btnCatAuto');
+            const btnParts = document.getElementById('btnCatParts');
+
+            btnAll.className = "px-3 py-1 rounded-t " + (cat === 'all' ? "bg-white text-red-600 font-bold" : "bg-red-700 text-white hover:bg-red-800");
+            btnAuto.className = "px-3 py-1 rounded-t " + (cat === 'auto' ? "bg-white text-red-600 font-bold" : "bg-red-700 text-white hover:bg-red-800");
+            btnParts.className = "px-3 py-1 rounded-t " + (cat === 'parts' ? "bg-white text-red-600 font-bold" : "bg-red-700 text-white hover:bg-red-800");
+
             window.filterCards();
         };
 
         window.switchCategoryFilter = function(cat) {
-            activeCategoryFilter = cat;
-            window.filterCards();
+            setMainCategory(cat);
         };
 
         onAuthStateChanged(auth, (user) => {
@@ -727,6 +732,10 @@
                 const priceUsd = item.priceUSD || 0;
                 const priceUah = Math.round(priceUsd * USD_TO_UAH_RATE);
 
+                // Якщо це старе оголошення без типу, вважаємо його автомобілем ('auto')
+                const cardType = item.type || 'auto';
+                const isPart = (cardType === 'parts' || cardType === 'part');
+
                 const card = document.createElement('div');
                 card.className = 'product-card border border-gray-200 p-3 bg-white rounded flex flex-col sm:flex-row gap-4 items-start shadow-sm';
                 card.setAttribute('data-city', item.city || '');
@@ -734,13 +743,11 @@
                 card.setAttribute('data-model', item.model || '');
                 card.setAttribute('data-year', item.year || '2022');
                 card.setAttribute('data-price', priceUsd);
-                card.setAttribute('data-type', item.type || 'auto');
+                card.setAttribute('data-type', isPart ? 'parts' : 'auto');
                 card.setAttribute('data-partnum', (item.partNumber || '').toLowerCase());
 
                 const isOwnerOrAdmin = currentUser && (currentUser.email === ADMIN_EMAIL || currentUser.email === item.userEmail);
                 const photosJSON = JSON.stringify(photos).replace(/"/g, '&quot;');
-
-                const isPart = (item.type === 'part');
 
                 card.innerHTML = `
                     <div class="w-full sm:w-64 h-40 bg-gray-900 rounded overflow-hidden relative flex-shrink-0 cursor-pointer group" onclick="openGallery(${photosJSON})">
@@ -760,7 +767,7 @@
                         <div class="flex justify-between items-start">
                             <div>
                                 <h3 class="font-bold ${isPart ? 'text-orange-700' : 'text-blue-700'} text-lg hover:underline cursor-pointer leading-tight" onclick="openGallery(${photosJSON})">${item.title}</h3>
-                                <div class="text-[11px] text-gray-500">${isPart ? `Сумісність: ${item.brand} ${item.model} (${item.year})` : (item.generation || 'I покоління')}</div>
+                                <div class="text-[11px] text-gray-500">${isPart ? `Сумісність: ${item.brand || ''} ${item.model || ''} (${item.year || ''})` : (item.generation || 'I покоління')}</div>
                             </div>
                         </div>
 
@@ -828,6 +835,9 @@
                     }
                 });
             });
+
+            // Оновлюємо фільтрацію при завантаженні нових даних
+            window.filterCards();
         });
 
         window.openGallery = function(photos) {
@@ -912,7 +922,16 @@
                 const cardType = card.getAttribute('data-type') || 'auto';
                 const cardPartNum = card.getAttribute('data-partnum') || '';
 
-                const matchCategory = (activeCategoryFilter === 'all') || (cardType === activeCategoryFilter);
+                // Коректна перевірка категорії (all підходить для всього, parts/auto співпадають)
+                let matchCategory = (activeCategoryFilter === 'all');
+                if (!matchCategory) {
+                    if (activeCategoryFilter === 'parts') {
+                        matchCategory = (cardType === 'parts');
+                    } else if (activeCategoryFilter === 'auto') {
+                        matchCategory = (cardType === 'auto');
+                    }
+                }
+
                 const matchBrand = !brandVal || text.includes(brandVal);
                 const matchModel = !modelVal || text.includes(modelVal);
                 const matchRegion = !regionVal || text.includes(regionVal);

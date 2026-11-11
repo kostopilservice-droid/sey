@@ -1053,7 +1053,10 @@
             const priceUahVal = Math.round(priceVal * USD_TO_UAH_RATE);
 
             const region = document.getElementById('formRegion').value;
-            const city = (document.getElementById('formCity').value || '').replace(/,/g, '').trim();
+            let city = (document.getElementById('formCity').value || '').replace(/,/g, '').trim();
+            if (city && !city.toLowerCase().startsWith('м.')) {
+                city = 'м. ' + city;
+            }
 
             const p1 = document.getElementById('adPhoto1').value.trim();
             const p2 = document.getElementById('adPhoto2').value.trim();
@@ -1071,7 +1074,7 @@
                 year: Number(year),
                 priceUSD: priceVal,
                 priceUAH: priceUahVal,
-                city: city || "Костопіль",
+                city: city || "м. Костопіль",
                 region: region || "Рівненська область",
                 contact: document.getElementById('adContact').value,
                 description: document.getElementById('adDescription').value,
@@ -1148,8 +1151,10 @@
             const isFav = userFavoritesList.includes(docId);
             const photosJSON = JSON.stringify(photos).replace(/"/g, '&quot;');
 
-            const rawCity = (item.city || 'Костопіль').replace(/,/g, '').trim();
-            const formattedCity = rawCity.charAt(0).toUpperCase() + rawCity.slice(1);
+            let rawCity = (item.city || 'Костопіль').replace(/,/g, '').trim();
+            if (!rawCity.toLowerCase().startsWith('м.')) {
+                rawCity = 'м. ' + rawCity;
+            }
             const itemRegion = (item.region || 'Рівненська область').trim();
 
             return `
@@ -1192,7 +1197,7 @@
                         ${isPart ? `
                             <div class="grid grid-cols-2 gap-y-1 text-gray-700 text-xs pt-1">
                                 <div class="flex items-center gap-1.5"><i class="fa-solid fa-tag text-orange-500"></i> Стан: <b>${item.partCondition || 'б/в'}</b></div>
-                                <div class="flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-red-500"></i> ${formattedCity}, ${itemRegion}</div>
+                                <div class="flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-red-500"></i> ${rawCity}, ${itemRegion}</div>
                             </div>
 
                             <div class="flex flex-wrap items-center gap-2 pt-1.5">
@@ -1203,7 +1208,7 @@
                         ` : `
                             <div class="grid grid-cols-2 gap-y-1 text-gray-700 text-xs pt-1">
                                 <div class="flex items-center gap-1.5"><i class="fa-regular fa-clock text-blue-600"></i> ${item.mileage || '18'} тис. км</div>
-                                <div class="flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-red-500"></i> ${formattedCity}, ${itemRegion}</div>
+                                <div class="flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-red-500"></i> ${rawCity}, ${itemRegion}</div>
                                 <div class="flex items-center gap-1.5"><i class="fa-solid fa-gas-pump text-gray-600"></i> ${item.engine || 'Дизель, 1.9 л.'}</div>
                                 <div class="flex items-center gap-1.5"><i class="fa-solid fa-gear text-gray-600"></i> ${item.gearbox || 'Механіка'}</div>
                             </div>
@@ -1284,8 +1289,8 @@
                 const priceUsd = item.priceUSD || 0;
                 const isPart = (item.type === 'parts' || item.type === 'part' || item.category === 'Автозапчастини');
                 const photosJSON = JSON.stringify(photos).replace(/"/g, '&quot;');
-                const rawCity = (item.city || 'Костопіль').replace(/,/g, '').trim();
-                const formattedCity = rawCity.charAt(0).toUpperCase() + rawCity.slice(1);
+                let rawCity = (item.city || 'Костопіль').replace(/,/g, '').trim();
+                if (!rawCity.toLowerCase().startsWith('м.')) rawCity = 'м. ' + rawCity;
 
                 const miniCard = document.createElement('div');
                 miniCard.className = "bg-white border rounded p-3 flex flex-col justify-between shadow-sm relative group";
@@ -1299,7 +1304,7 @@
                         </div>
                         <h4 class="font-bold ${isPart ? 'text-orange-700' : 'text-blue-700'} text-sm line-clamp-1 cursor-pointer" onclick="openGallery(${photosJSON})">${item.title}</h4>
                         <div class="text-xs font-black text-green-700 mt-1">${priceUsd.toLocaleString()} $</div>
-                        <div class="text-[11px] text-gray-500 mt-0.5"><i class="fa-solid fa-location-dot text-red-500"></i> ${formattedCity}</div>
+                        <div class="text-[11px] text-gray-500 mt-0.5"><i class="fa-solid fa-location-dot text-red-500"></i> ${rawCity}</div>
                     </div>
                     <div class="pt-2 mt-2 border-t border-gray-100 flex justify-between items-center text-[11px]">
                         <a href="tel:${item.contact}" class="font-bold text-blue-600 hover:underline">📞 ${item.contact}</a>
@@ -1432,7 +1437,11 @@
                 const matchModel = !modelVal || cardModel === modelVal;
                 
                 const matchRegion = !regionVal || !cardRegion || cardRegion === regionVal || cardRegion.includes(regionVal) || cardText.includes(regionVal);
-                const matchCity = !cityVal || !cardCity || cardCity.includes(cityVal) || cardText.includes(cityVal);
+                
+                // Порівняння міста (ігнорує "м." чи пробіли, шукає точне входження назви)
+                const cleanCardCity = cardCity.replace(/^м\.\s*/, '');
+                const cleanFilterCity = cityVal.replace(/^м\.\s*/, '');
+                const matchCity = !cityVal || !cardCity || cleanCardCity.includes(cleanFilterCity) || cardText.includes(cleanFilterCity);
                 
                 const matchPartNum = !partNumVal || cardPartNum.includes(partNumVal) || cardText.includes(partNumVal);
                 const matchYear = (cardYear >= minYear && cardYear <= maxYear);

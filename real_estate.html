@@ -30,7 +30,6 @@
             border-bottom: 2px solid #db4437;
         }
 
-        /* Обкладинка з ефектом 80% непрозорості та мотиваційним фото фоном (архітектура, місто, будівництво) */
         .real-estate-hero {
             position: relative;
             background: linear-gradient(rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.78)), 
@@ -168,7 +167,7 @@
             <a href="index.html" class="hover:underline">NEOSERVICE</a> &gt; <span id="breadcrumbCategory">Нерухомість</span>
         </div>
         
-        <!-- ЕСТЕТИЧНА ОБКЛАДИНКА (80% НЕПРОЗОРОСТІ, АРХІТЕКТУРА, МІСТО, БУДІВНИЦТВО) -->
+        <!-- ЕСТЕТИЧНА ОБКЛАДИНКА -->
         <div class="real-estate-hero p-6 sm:p-8 flex flex-col justify-center">
             <h1 class="text-2xl sm:text-3xl font-black text-gray-900 mb-2" id="mainHeaderTitle">Продаж та оренда нерухомості в Україні</h1>
             <p class="text-xs sm:text-sm text-gray-700 max-w-2xl font-medium">Сучасний портал оголошень житлової та комерційної нерухомості. Надійні пропозиції у місті Костопіль, Рівненській області та по всій Україні.</p>
@@ -206,7 +205,7 @@
                     <select id="filterRegion" onChange="updateFilterCities(); filterCards();" class="w-full px-3 py-2 text-xs bg-white text-gray-800 rounded border-none outline-none font-semibold">
                         <option value="">Регіон: Всі області України</option>
                         <option value="Рівненська область">Рівненська область</option>
-                        <option value="Київська область">Київська область (м. Київ)</option>
+                        <option value="Київська область">Київська область</option>
                         <option value="Львівська область">Львівська область</option>
                         <option value="Волинська область">Волинська область</option>
                         <option value="Житомирська область">Житомирська область</option>
@@ -229,10 +228,11 @@
                         <option value="Запорізька область">Запорізька область</option>
                         <option value="Донецька область">Донецька область</option>
                         <option value="Луганська область">Луганська область</option>
+                        <option value="Крим">АР Крим</option>
                     </select>
 
                     <select id="filterCity" onChange="filterCards()" class="w-full px-3 py-2 text-xs bg-white text-gray-800 rounded border-none outline-none font-semibold">
-                        <option value="">Місто: Спочатку оберіть область</option>
+                        <option value="">Місто: Всі міста області</option>
                     </select>
 
                     <div class="grid grid-cols-2 gap-2">
@@ -333,6 +333,7 @@
                             <option value="Запорізька область">Запорізька область</option>
                             <option value="Донецька область">Донецька область</option>
                             <option value="Луганська область">Луганська область</option>
+                            <option value="Крим">АР Крим</option>
                         </select>
                     </div>
                     <div>
@@ -470,14 +471,14 @@
             "Рівненська область": ["Костопіль", "Рівне", "Березне", "Дубно", "Сарни", "Вараш", "Здолбунів", "Острог"],
             "Київська область": ["Київ", "Бровари", "Бориспіль", "Ірпінь", "Буча", "Біла Церква", "Вишневе", "Вишгород"],
             "Львівська область": ["Львів", "Дрогобич", "Стрий", "Червоноград", "Золочів", "Броди", "Жовква", "Трускавець"],
-            "Волинська область": ["Луцьк", "Ковель", "Нововолинськ", "Владимир", "Ківерці", "Рожище"],
+            "Волинська область": ["Луцьк", "Ковель", "Нововолинськ", "Володимир", "Ківерці", "Рожище"],
             "Житомирська область": ["Житомир", "Бердичів", "Коростень", "Звягель", "Малин"],
             "Вінницька область": ["Вінниця", "Жмеринка", "Козятин", "Ладижин", "Могилів-Подільський", "Гайсин"],
             "Дніпропетровська область": ["Дніпро", "Кривий Ріг", "Кам'янське", "Нікополь", "Павлоград", "Новомосковськ"],
             "Одеська область": ["Одеса", "Ізмаїл", "Чорноморськ", "Білгород-Дністровський", "Подільськ"],
-            "Харківська область": ["Харків", "Лозова", "Ізюм", "Чугуїв", "Первомайський"],
+            "Харківська область": ["Харків", "Лозова", "Ізюм", "Чугуїв"],
             "Черкаська область": ["Черкаси", "Умань", "Сміла", "Золотоноша", "Канів"],
-            "Хмельницька область": ["Хмельницький", "Камянець-Подільський", "Шепетівка", "Нетішин", "Старокостянтинів"],
+            "Хмельницька область": ["Хмельницький", "Кам'янець-Подільський", "Шепетівка", "Нетішин", "Старокостянтинів"],
             "Івано-Франківська область": ["Івано-Франківськ", "Калуш", "Коломия", "Надвірна", "Долина"],
             "Закарпатська область": ["Ужгород", "Мукачево", "Хуст", "Виноградів", "Берегове"],
             "Тернопільська область": ["Тернопіль", "Чортків", "Кременець", "Бережани"],
@@ -490,13 +491,14 @@
             "Херсонська область": ["Херсон", "Нова Каховка", "Каховка", "Генічеськ"],
             "Запорізька область": ["Запоріжжя", "Мелітополь", "Бердянськ", "Енергодар", "Токмак"],
             "Донецька область": ["Маріуполь", "Краматорськ", "Слов'янськ", "Бахмут", "Покровськ"],
-            "Луганська область": ["Сєвєродонецьк", "Лисичанськ", "Луганськ", "Алчевськ", "Рубіжне"]
+            "Луганська область": ["Сєвєродонецьк", "Лисичанськ", "Луганськ", "Алчевськ", "Рубіжне"],
+            "Крим": ["Сімферополь", "Севастополь", "Ялта", "Керч", "Євпаторія"]
         };
 
         window.updateFilterCities = function() {
             const regionSel = document.getElementById('filterRegion').value;
             const citySel = document.getElementById('filterCity');
-            citySel.innerHTML = '<option value="">Всі міста області</option>';
+            citySel.innerHTML = '<option value="">Місто: Всі міста області</option>';
             if (ukraineRegions[regionSel]) {
                 ukraineRegions[regionSel].forEach(city => {
                     const opt = document.createElement('option');
@@ -575,7 +577,6 @@
             }
         };
 
-        // Виправлена функція відкриття/закриття форми подачі оголошення
         window.toggleAddForm = function() {
             if (!currentUser) {
                 alert("Увага: Додавати об'єкти нерухомості можуть лише зареєстровані користувачі!\n\nБудь ласка, увійдіть у свій акаунт.");
@@ -663,7 +664,7 @@
             const priceVal = Number(document.getElementById('adPrice').value);
             const priceUahVal = Math.round(priceVal * USD_TO_UAH_RATE);
             const region = document.getElementById('formRegion').value;
-            const city = document.getElementById('formCity').value;
+            const city = (document.getElementById('formCity').value || '').replace(/,/g, '').trim();
             const contact = document.getElementById('adContact').value;
             const description = document.getElementById('adDescription').value;
 
@@ -727,13 +728,16 @@
             const isFav = userFavoritesList.includes(docId);
             const photosJSON = JSON.stringify(photos).replace(/"/g, '&quot;');
 
+            const rawCity = (item.city || 'Костопіль').replace(/,/g, '').trim();
+            const formattedCity = rawCity.charAt(0).toUpperCase() + rawCity.slice(1);
+
             return `
                 <div class="product-card p-4 bg-white rounded flex flex-col sm:flex-row gap-4 items-start w-full"
                      data-category="${item.category || 'apartment'}"
                      data-deal="${item.dealType || ''}"
                      data-rooms="${item.rooms || ''}"
-                     data-region="${item.region || ''}"
-                     data-city="${item.city || ''}"
+                     data-region="${(item.region || '').toLowerCase()}"
+                     data-city="${rawCity.toLowerCase()}"
                      data-price="${priceUsd}">
                     
                     <div class="w-full sm:w-64 h-40 bg-gray-900 rounded overflow-hidden relative flex-shrink-0 cursor-pointer group" onclick="openGallery(${photosJSON})">
@@ -758,7 +762,7 @@
                         </div>
 
                         <div class="grid grid-cols-2 gap-y-1 text-gray-700 text-xs pt-1">
-                            <div class="flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-red-500"></i> ${item.city || 'Костопіль'}, ${item.region || ''}</div>
+                            <div class="flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-red-500"></i> ${formattedCity}, ${item.region || ''}</div>
                         </div>
 
                         <p class="text-gray-600 text-xs line-clamp-1 pt-1">${item.description || "Опис об'єкта нерухомості."}</p>
@@ -826,6 +830,8 @@
                 const mainPhoto = photos[0];
                 const priceUsd = item.priceUSD || 0;
                 const photosJSON = JSON.stringify(photos).replace(/"/g, '&quot;');
+                const rawCity = (item.city || 'Костопіль').replace(/,/g, '').trim();
+                const formattedCity = rawCity.charAt(0).toUpperCase() + rawCity.slice(1);
 
                 const miniCard = document.createElement('div');
                 miniCard.className = "bg-white border rounded p-3 flex flex-col justify-between shadow-sm relative group";
@@ -839,7 +845,7 @@
                         </div>
                         <h4 class="font-bold text-blue-700 text-sm line-clamp-1 cursor-pointer" onclick="openGallery(${photosJSON})">${item.title}</h4>
                         <div class="text-xs font-black text-green-700 mt-1">${priceUsd.toLocaleString()} $</div>
-                        <div class="text-[11px] text-gray-500 mt-0.5"><i class="fa-solid fa-location-dot text-red-500"></i> ${item.city || ''}</div>
+                        <div class="text-[11px] text-gray-500 mt-0.5"><i class="fa-solid fa-location-dot text-red-500"></i> ${formattedCity}</div>
                     </div>
                     <div class="pt-2 mt-2 border-t border-gray-100 flex justify-between items-center text-[11px]">
                         <a href="tel:${item.contact}" class="font-bold text-blue-600 hover:underline">📞 ${item.contact}</a>
@@ -884,6 +890,7 @@
         window.prevGalleryImage = function(e) {
             if (e) e.stopPropagation();
             if (currentGalleryPhotos.length <= 1) return;
+            currentGalleryPhotos = photos;
             currentPhotoIndex = (currentGalleryPhotos.length - 1 + currentGalleryPhotos.length) % currentGalleryPhotos.length;
             updateGalleryUI();
         };
@@ -921,7 +928,7 @@
             const typeVal = (document.getElementById('filterType')?.value || '').toLowerCase();
             const roomsVal = (document.getElementById('filterRooms')?.value || '').toLowerCase();
             const regionVal = (document.getElementById('filterRegion')?.value || '').toLowerCase();
-            const cityVal = (document.getElementById('filterCity')?.value || '').toLowerCase();
+            const cityVal = (document.getElementById('filterCity')?.value || '').replace(/,/g, '').trim().toLowerCase();
             const minPrice = parseFloat(document.getElementById('filterPriceMin')?.value) || 0;
             const maxPrice = parseFloat(document.getElementById('filterPriceMax')?.value) || Infinity;
 
@@ -929,23 +936,27 @@
             let matchingCards = [];
 
             cards.forEach(card => {
+                const text = card.innerText.toLowerCase();
                 const cardCategory = card.getAttribute('data-category') || '';
                 const cardDeal = (card.getAttribute('data-deal') || '').toLowerCase();
                 const cardRooms = (card.getAttribute('data-rooms') || '').toLowerCase();
                 const cardRegion = (card.getAttribute('data-region') || '').toLowerCase();
-                const cardCity = (card.getAttribute('data-city') || '').toLowerCase();
+                const cardCity = (card.getAttribute('data-city') || '').replace(/,/g, '').trim();
                 const cardPrice = parseFloat(card.getAttribute('data-price')) || 0;
 
                 let matchCategory = (activeCategoryFilter === 'all' || cardCategory === activeCategoryFilter);
                 let matchType = (!typeVal || cardDeal.includes(typeVal));
                 let matchRooms = (!roomsVal || cardRooms.includes(roomsVal));
-                let matchRegion = (!regionVal || cardRegion.includes(regionVal));
+                
+                // Гнучке порівняння області (за першим словом, напр. "рівненськ") та міста
+                const regionKeyword = regionVal.split(' ')[0];
+                let matchRegion = (!regionVal || cardRegion.includes(regionKeyword) || text.includes(regionKeyword));
                 let matchCity = (!cityVal || cardCity.includes(cityVal));
+                
                 let matchPrice = (cardPrice >= minPrice && cardPrice <= maxPrice);
 
                 if (matchCategory && matchType && matchRooms && matchRegion && matchCity && matchPrice) {
                     matchingCards.push(card);
-                    card.style.display = 'flex';
                 } else {
                     card.style.display = 'none';
                 }

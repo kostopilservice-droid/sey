@@ -1438,7 +1438,6 @@
                 
                 const matchRegion = !regionVal || !cardRegion || cardRegion === regionVal || cardRegion.includes(regionVal) || cardText.includes(regionVal);
                 
-                // Порівняння міста (ігнорує "м." чи пробіли, шукає точне входження назви)
                 const cleanCardCity = cardCity.replace(/^м\.\s*/, '');
                 const cleanFilterCity = cityVal.replace(/^м\.\s*/, '');
                 const matchCity = !cityVal || !cardCity || cleanCardCity.includes(cleanFilterCity) || cardText.includes(cleanFilterCity);

@@ -155,7 +155,7 @@
                     <a href="index.html" class="hover:text-red-600 font-semibold"><i class="fa-solid fa-house mr-1"></i>Головна</a>
                     <a href="baza.html" class="hover:text-red-600 font-semibold">База знань</a>
                     <a href="chat.html" class="hover:text-red-600 font-semibold">Чат</a>
-                    <span class="text-blue-600 font-bold"><i class="fa-solid fa-flag"></i> Підтримка ЗСУ</span>
+                    <span class="text-blue-600 font-bold hidden sm:inline"><i class="fa-solid fa-flag"></i> Підтримка ЗСУ</span>
                 </div>
                 
                 <div class="flex items-center gap-4">
@@ -169,14 +169,21 @@
         <div class="ria-header-main py-3">
             <div class="max-w-6xl mx-auto px-4 flex items-center justify-between">
                 
-                <a href="index.html" class="flex items-center gap-2 text-decoration-none">
-                    <div class="bg-[#db4437] text-white font-black text-xl px-3 py-1 rounded tracking-tight shadow-sm flex items-center gap-1">
-                        <i class="fa-solid fa-car-side"></i> NEO<span class="text-yellow-300">SERVICE</span>
-                    </div>
-                    <div class="text-[11px] text-gray-500 font-bold uppercase tracking-wider hidden sm:block">
-                        Автобазар & Оголошення
-                    </div>
-                </a>
+                <div class="flex items-center gap-3">
+                    <!-- Мобільна кнопка меню (Гамбургер) -->
+                    <button onClick="toggleMobileMenu()" class="md:hidden text-gray-700 text-xl focus:outline-none">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+
+                    <a href="index.html" class="flex items-center gap-2 text-decoration-none">
+                        <div class="bg-[#db4437] text-white font-black text-xl px-3 py-1 rounded tracking-tight shadow-sm flex items-center gap-1">
+                            <i class="fa-solid fa-car-side"></i> NEO<span class="text-yellow-300">SERVICE</span>
+                        </div>
+                        <div class="text-[11px] text-gray-500 font-bold uppercase tracking-wider hidden sm:block">
+                            Автобазар & Оголошення
+                        </div>
+                    </a>
+                </div>
 
                 <nav class="hidden md:flex items-center gap-6 text-sm font-bold text-gray-800">
                     <a href="#auto" id="navLinkAuto" onClick="switchCategoryFilter('auto')" class="hover:text-red-600 pb-1">Легкові авто</a>
@@ -184,10 +191,19 @@
                     <a href="real_estate.html" class="hover:text-red-600 pb-1">🏠 Нерухомість</a>
                 </nav>
 
-                <button id="toggleFormBtn" onClick="toggleAddForm()" class="btn-green-add text-white font-bold px-4 py-2 rounded text-xs flex items-center gap-1.5 shadow-md">
-                    <i class="fa-solid fa-plus-circle"></i> Продати авто / Запчастину
+                <button id="toggleFormBtn" onClick="toggleAddForm()" class="btn-green-add text-white font-bold px-3 py-2 sm:px-4 rounded text-xs flex items-center gap-1.5 shadow-md">
+                    <i class="fa-solid fa-plus-circle"></i> <span class="hidden sm:inline">Продати авто / Запчастину</span><span class="sm:hidden">Додати</span>
                 </button>
             </div>
+        </div>
+
+        <!-- ВИДАТНЕ МОБІЛЬНЕ МЕНЮ (Випадає при кліку на гамбургер) -->
+        <div id="mobileMenuDropdown" class="hidden md:hidden bg-white border-b border-gray-200 px-4 py-3 space-y-2 text-xs font-bold text-gray-800 shadow-lg">
+            <a href="#auto" onClick="switchCategoryFilter('auto'); toggleMobileMenu();" class="block py-1.5 border-b border-gray-100"><i class="fa-solid fa-car text-blue-600 mr-2"></i> Легкові авто</a>
+            <a href="#parts" onClick="switchCategoryFilter('parts'); toggleMobileMenu();" class="block py-1.5 border-b border-gray-100"><i class="fa-solid fa-gears text-orange-600 mr-2"></i> Автозапчастини</a>
+            <a href="real_estate.html" class="block py-1.5 border-b border-gray-100"><i class="fa-solid fa-house text-green-600 mr-2"></i> 🏠 Нерухомість</a>
+            <a href="baza.html" class="block py-1.5 border-b border-gray-100"><i class="fa-solid fa-book text-gray-600 mr-2"></i> База знань</a>
+            <a href="chat.html" class="block py-1.5"><i class="fa-solid fa-comments text-gray-600 mr-2"></i> Чат</a>
         </div>
     </header>
 
@@ -537,6 +553,7 @@
                     <ul class="space-y-2 font-semibold">
                         <li><a href="#auto" id="sidebarLinkAuto" onClick="switchCategoryFilter('auto')" class="hover:underline flex justify-between">Легкові авто <span>&rsaquo;</span></a></li>
                         <li><a href="#parts" id="sidebarLinkParts" onClick="switchCategoryFilter('parts')" class="hover:underline flex justify-between">⚙️ Автозапчастини <span>&rsaquo;</span></a></li>
+                        <li><a href="real_estate.html" class="hover:underline flex justify-between text-green-700">🏠 Нерухомість <span>&rsaquo;</span></a></li>
                     </ul>
                 </div>
 
@@ -707,7 +724,8 @@
         let currentGalleryPhotos = [];
         let currentPhotoIndex = 0;
         
-        let activeCategoryFilter = 'parts';
+        // Встановлюємо за замовчуванням "auto" (Легкові авто)
+        let activeCategoryFilter = 'auto';
         if (window.location.hash === '#parts') {
             activeCategoryFilter = 'parts';
         } else if (window.location.hash === '#auto') {
@@ -785,6 +803,11 @@
             advBox.classList.toggle('hidden');
         };
 
+        window.toggleMobileMenu = function() {
+            const menu = document.getElementById('mobileMenuDropdown');
+            if (menu) menu.classList.toggle('hidden');
+        };
+
         window.toggleFormType = function(type) {
             const partBlock = document.getElementById('partFieldsBlock');
             const autoTech = document.getElementById('autoTechBlock');
@@ -821,9 +844,11 @@
             const btnAuto = document.getElementById('btnCatAuto');
             const btnParts = document.getElementById('btnCatParts');
 
-            btnAll.className = "px-3 py-1 rounded-t " + (cat === 'all' ? "bg-white text-red-600 font-bold" : "bg-red-700 text-white hover:bg-red-800");
-            btnAuto.className = "px-3 py-1 rounded-t " + (cat === 'auto' ? "bg-white text-red-600 font-bold" : "bg-red-700 text-white hover:bg-red-800");
-            btnParts.className = "px-3 py-1 rounded-t " + (cat === 'parts' ? "bg-white text-red-600 font-bold" : "bg-red-700 text-white hover:bg-red-800");
+            if (btnAll && btnAuto && btnParts) {
+                btnAll.className = "px-3 py-1 rounded-t " + (cat === 'all' ? "bg-white text-red-600 font-bold" : "bg-red-700 text-white hover:bg-red-800");
+                btnAuto.className = "px-3 py-1 rounded-t " + (cat === 'auto' ? "bg-white text-red-600 font-bold" : "bg-red-700 text-white hover:bg-red-800");
+                btnParts.className = "px-3 py-1 rounded-t " + (cat === 'parts' ? "bg-white text-red-600 font-bold" : "bg-red-700 text-white hover:bg-red-800");
+            }
 
             const mainHeaderTitle = document.getElementById('mainHeaderTitle');
             const feedTitle = document.getElementById('feedTitle');
@@ -921,7 +946,7 @@
 
             if (user) {
                 if (badge) badge.textContent = `👤 ${user.email.split('@')[0]}`;
-                if (toggleFormBtn) toggleFormBtn.innerHTML = `<i class="fa-solid fa-plus-circle"></i> Додати оголошення`;
+                if (toggleFormBtn) toggleFormBtn.innerHTML = `<i class="fa-solid fa-plus-circle"></i> <span class="hidden sm:inline">Додати оголошення</span><span class="sm:hidden">Додати</span>`;
                 
                 onSnapshot(doc(db, "user_favorites", user.uid), (docSnap) => {
                     if (docSnap.exists()) {
@@ -934,7 +959,7 @@
                 });
             } else {
                 if (badge) badge.textContent = "👤 Особистий кабінет (Гість)";
-                if (toggleFormBtn) toggleFormBtn.innerHTML = `<i class="fa-solid fa-lock"></i> Увійдіть для публікації`;
+                if (toggleFormBtn) toggleFormBtn.innerHTML = `<i class="fa-solid fa-lock"></i> <span class="hidden sm:inline">Увійдіть для публікації</span><span class="sm:hidden">Увійти</span>`;
                 userFavoritesList = [];
                 renderListings(allListingsData);
                 renderFavoritesSection();
@@ -1128,9 +1153,11 @@
             renderFavoritesSection();
             initSidebarBrands();
             
+            // Якщо є хеш у URL — використовуємо його, інакше за замовчуванням відкриваємо 'auto' (Легкові авто)
             if (window.location.hash === '#parts') setMainCategory('parts');
             else if (window.location.hash === '#auto') setMainCategory('auto');
-            else setMainCategory(activeCategoryFilter);
+            else if (window.location.hash === '#all') setMainCategory('all');
+            else setMainCategory('auto');
         });
 
         function createListingCardHTML(item, docId) {

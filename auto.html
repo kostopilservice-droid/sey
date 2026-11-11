@@ -2,162 +2,105 @@
 <html lang="uk">
 <head>
     <link rel="manifest" href="./manifest.json">
-    <meta name="theme-color" content="#030712">
+    <meta name="theme-color" content="#db4437">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEOSERVICE — Інженерний хаб автокомерції & запчастин</title>
+    <title>NEOSERVICE — Автобазар & Автозапчастини (AutoRia Style)</title>
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts: Orbitron & Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
 
     <style>
-        :root {
-            --bg-deep: #050b14;
-            --bg-card: #0b1329;
-            --bg-card-hover: #111c38;
-            --neon-cyan: #00f5d4;
-            --neon-blue: #4cc9f0;
-            --neon-purple: #7209b7;
-            --neon-magenta: #f72585;
-            --neon-emerald: #10b981;
-            --neon-orange: #f97316;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --border-tech: rgba(0, 245, 212, 0.25);
-        }
-
         body { 
-            font-family: 'Inter', sans-serif; 
-            background-color: var(--bg-deep); 
-            color: var(--text-main); 
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(114, 9, 183, 0.08) 0%, transparent 40%),
-                radial-gradient(circle at 90% 80%, rgba(0, 245, 212, 0.06) 0%, transparent 40%);
-            background-attachment: fixed;
+            font-family: 'Open Sans', sans-serif; 
+            background-color: #f4f5f7; 
+            color: #2b2b2b; 
         }
 
-        /* Інженерні та кібернетичні світлові ефекти */
-        .tech-glow-cyan {
-            box-shadow: 0 0 25px rgba(0, 245, 212, 0.2), inset 0 0 15px rgba(0, 245, 212, 0.05);
-            border: 1px solid rgba(0, 245, 212, 0.4);
+        /* Стилі AutoRia */
+        .ria-header-top {
+            background-color: #ffffff;
+            border-bottom: 1px solid #e0e0e0;
         }
-        .tech-glow-cyan:hover {
-            box-shadow: 0 0 35px rgba(0, 245, 212, 0.4), inset 0 0 20px rgba(0, 245, 212, 0.15);
-            border-color: var(--neon-cyan);
-        }
-
-        .tech-glow-purple {
-            box-shadow: 0 0 25px rgba(114, 9, 183, 0.25);
-            border: 1px solid rgba(114, 9, 183, 0.5);
-        }
-        .tech-glow-purple:hover {
-            box-shadow: 0 0 35px rgba(114, 9, 183, 0.5);
-            border-color: var(--neon-purple);
+        .ria-header-main {
+            background-color: #ffffff;
+            border-bottom: 2px solid #db4437;
         }
 
-        .tech-glow-emerald {
-            box-shadow: 0 0 25px rgba(16, 185, 129, 0.25);
-            border: 1px solid rgba(16, 185, 129, 0.5);
+        .search-box-red {
+            background-color: #db4437;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(219, 68, 55, 0.15);
         }
+        .btn-blue-search {
+            background-color: #1976d2;
+            transition: background 0.2s, transform 0.1s;
+        }
+        .btn-blue-search:hover { background-color: #1565c0; }
+        .btn-red-expanded {
+            background-color: #c62828;
+            transition: background 0.2s;
+        }
+        .btn-red-expanded:hover { background-color: #b71c1c; }
+        .btn-green-add {
+            background-color: #43a047;
+            transition: background 0.2s;
+        }
+        .btn-green-add:hover { background-color: #388e3c; }
 
-        .tech-card {
-            background-color: var(--bg-card);
-            border: 1px solid var(--border-tech);
-            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        .product-card {
+            background: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            transition: box-shadow 0.2s, border-color 0.2s;
         }
-        .tech-card:hover {
-            border-color: var(--neon-cyan);
-            transform: translateY(-3px);
-            box-shadow: 0 20px 40px -10px rgba(0, 245, 212, 0.2), 0 0 20px rgba(114, 9, 183, 0.2);
-        }
-
-        .tech-header-font {
-            font-family: 'Orbitron', sans-serif;
-            letter-spacing: 0.05em;
-        }
-
-        .tech-mono {
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        .search-box-tech {
-            background: linear-gradient(135deg, #0b1329 0%, #070d1d 100%);
-            border: 1px solid rgba(0, 245, 212, 0.3);
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.6), inset 0 0 15px rgba(0, 245, 212, 0.05);
-            border-radius: 16px;
-        }
-
-        .btn-tech-cyan {
-            background: linear-gradient(135deg, #00f5d4 0%, #00b4d8 100%);
-            color: #030712;
-            font-weight: 800;
-            box-shadow: 0 0 20px rgba(0, 245, 212, 0.35);
-            transition: all 0.2s;
-        }
-        .btn-tech-cyan:hover {
-            box-shadow: 0 0 30px rgba(0, 245, 212, 0.7);
-            transform: translateY(-1px);
-        }
-
-        .btn-tech-emerald {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: #ffffff;
-            font-weight: 800;
-            box-shadow: 0 0 20px rgba(16, 185, 129, 0.35);
-            transition: all 0.2s;
-        }
-        .btn-tech-emerald:hover {
-            box-shadow: 0 0 30px rgba(16, 185, 129, 0.7);
-            transform: translateY(-1px);
+        .product-card:hover {
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+            border-color: #b0bec5;
         }
 
         .state-number-tag {
-            background: #030712;
-            border: 1.5px solid var(--neon-cyan);
-            color: var(--neon-cyan);
+            background: #ffffff;
+            border: 1px solid #1976d2;
+            color: #0d47a1;
             font-weight: 700;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: monospace;
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            box-shadow: 0 0 12px rgba(0, 245, 212, 0.25);
+            gap: 4px;
         }
         .state-flag {
             background: #0057b7;
             color: #ffd700;
-            padding: 1px 4px;
-            font-size: 9px;
-            border-radius: 2px;
-            font-weight: bold;
+            padding: 0 4px;
+            font-size: 8px;
+            border-radius: 1px;
         }
 
         .vin-number-tag {
-            background: #030712;
-            border: 1.5px solid var(--neon-purple);
-            color: #d8b4fe;
+            background: #e8f5e9;
+            border: 1px solid #81c784;
+            color: #2e7d32;
             font-weight: 700;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: monospace;
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            box-shadow: 0 0 12px rgba(114, 9, 183, 0.3);
+            gap: 4px;
         }
 
         .part-number-tag {
-            background: #030712;
-            border: 1.5px solid var(--neon-orange);
-            color: #fed7aa;
+            background: #fff3e0;
+            border: 1px solid #ffb74d;
+            color: #e65100;
             font-weight: 700;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: monospace;
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            box-shadow: 0 0 12px rgba(249, 115, 22, 0.3);
+            gap: 4px;
         }
 
         .lightbox-modal {
@@ -165,141 +108,112 @@
             position: fixed;
             z-index: 9999;
             inset: 0;
-            background: rgba(3, 7, 18, 0.95);
-            backdrop-filter: blur(16px);
+            background: rgba(0, 0, 0, 0.92);
             justify-content: center;
             align-items: center;
             flex-direction: column;
         }
 
         .gallery-nav-btn {
-            background: rgba(11, 19, 41, 0.9);
-            color: var(--neon-cyan);
-            border: 2px solid var(--neon-cyan);
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
             border-radius: 50%;
-            width: 50px;
-            height: 50px;
+            width: 48px;
+            height: 48px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 24px;
             cursor: pointer;
             user-select: none;
-            transition: all 0.2s;
+            transition: background 0.2s;
         }
-        .gallery-nav-btn:hover {
-            background: var(--neon-cyan);
-            color: #030712;
-            box-shadow: 0 0 25px rgba(0, 245, 212, 0.8);
-        }
+        .gallery-nav-btn:hover { background: rgba(255, 255, 255, 0.5); }
 
         .thumb-img {
-            width: 70px;
-            height: 50px;
+            width: 60px;
+            height: 45px;
             object-fit: cover;
-            border-radius: 6px;
+            border-radius: 4px;
             cursor: pointer;
-            opacity: 0.5;
+            opacity: 0.6;
             border: 2px solid transparent;
             transition: all 0.2s;
         }
         .thumb-img.active {
             opacity: 1;
-            border-color: var(--neon-cyan);
-            box-shadow: 0 0 15px rgba(0, 245, 212, 0.8);
+            border-color: #29b6f6;
         }
-
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #030712; }
-        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; border: 1px solid rgba(0, 245, 212, 0.3); }
-        ::-webkit-scrollbar-thumb:hover { background: #334155; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between">
 
-    <!-- ТОП-БАР НАВІГАЦІЇ -->
-    <header class="border-b border-slate-800 bg-[#030712]/90 sticky top-0 z-50 backdrop-blur-md">
-        <div class="max-w-7xl mx-auto px-4 flex items-center justify-between h-10 text-xs text-slate-400 font-medium">
-            <div class="flex items-center gap-6">
-                <a href="index.html" class="hover:text-cyan-400 transition-colors flex items-center gap-1.5"><i class="fa-solid fa-house"></i> Головна</a>
-                <a href="baza.html" class="hover:text-cyan-400 transition-colors">База знань</a>
-                <a href="chat.html" class="hover:text-cyan-400 transition-colors">Чат</a>
-                <span class="text-emerald-400 font-bold flex items-center gap-1.5"><i class="fa-solid fa-microchip text-cyan-400"></i> Інженерний Хаб ЗСУ</span>
-            </div>
-            
-            <div class="flex items-center gap-5">
-                <a href="#" class="hover:text-pink-500 transition-colors"><i class="fa-regular fa-heart text-sm"></i></a>
-                <a href="#" class="hover:text-cyan-400 transition-colors"><i class="fa-regular fa-bell text-sm"></i></a>
-                <span id="authStatusBadge" class="font-semibold text-slate-300 cursor-pointer hover:text-cyan-400 transition-colors tech-mono text-[11px]" onClick="handleAuthClick()">[ 👤 Гість (Увійти) ]</span>
+    <!-- ТОП-БАР НАВІГАЦІЇ В СТИЛІ AUTORIA -->
+    <header class="w-full">
+        <div class="ria-header-top py-1.5">
+            <div class="max-w-6xl mx-auto px-4 flex items-center justify-between text-[11px] text-gray-600">
+                <div class="flex items-center gap-5">
+                    <a href="index.html" class="hover:text-red-600 font-semibold"><i class="fa-solid fa-house mr-1"></i>Головна</a>
+                    <a href="baza.html" class="hover:text-red-600 font-semibold">База знань</a>
+                    <a href="chat.html" class="hover:text-red-600 font-semibold">Чат</a>
+                    <span class="text-blue-600 font-bold"><i class="fa-solid fa-flag"></i> Підтримка ЗСУ</span>
+                </div>
+                
+                <div class="flex items-center gap-4">
+                    <a href="#" class="hover:text-red-600"><i class="fa-regular fa-heart"></i> Обране</a>
+                    <span id="authStatusBadge" class="font-bold text-gray-700 cursor-pointer hover:text-red-600" onClick="handleAuthClick()">👤 Особистий кабінет (Гість)</span>
+                </div>
             </div>
         </div>
 
-        <!-- ОСНОВНА ШАПКА NEOSERVICE (Engineering Cyber Theme) -->
-        <div class="border-b border-slate-800/80 py-4 bg-[#070d1d]">
-            <div class="max-w-7xl mx-auto px-4 flex items-center justify-between">
+        <!-- ОСНОВНА ШАПКА NEOSERVICE -->
+        <div class="ria-header-main py-3">
+            <div class="max-w-6xl mx-auto px-4 flex items-center justify-between">
                 
-                <a href="index.html" class="flex items-center gap-3.5 text-decoration-none group">
-                    <div class="bg-gradient-to-r from-cyan-500 via-purple-600 to-emerald-500 text-slate-950 font-black text-lg px-4 py-2 rounded-xl tracking-wider shadow-lg shadow-cyan-500/20 flex items-center gap-2 tech-header-font">
-                        <i class="fa-solid fa-gauge-high"></i> NEO<span class="text-white">SERVICE</span>
+                <a href="index.html" class="flex items-center gap-2 text-decoration-none">
+                    <div class="bg-[#db4437] text-white font-black text-xl px-3 py-1 rounded tracking-tight shadow-sm flex items-center gap-1">
+                        <i class="fa-solid fa-car-side"></i> AUTO<span class="text-yellow-300">RIA</span> <span class="text-xs bg-white text-red-600 px-1.5 py-0.5 rounded ml-1 font-bold">NEO</span>
                     </div>
-                    <div>
-                        <div class="text-xs text-cyan-400 font-bold uppercase tracking-widest font-mono">
-                            [ AUTOMOTIVE & TELEMETRY HUB ]
-                        </div>
-                        <div class="text-[10px] text-slate-400 font-mono">
-                            Платформа діагностики та інженерних систем
-                        </div>
+                    <div class="text-[11px] text-gray-500 font-bold uppercase tracking-wider hidden sm:block">
+                        №1 Автобазар & Оголошення
                     </div>
                 </a>
 
-                <nav class="hidden md:flex items-center gap-8 text-xs font-bold text-slate-300 tech-header-font">
-                    <a href="#auto" onClick="switchCategoryFilter('auto')" class="hover:text-cyan-400 transition-colors pb-1 border-b-2 border-transparent hover:border-cyan-400">Транспорт & Електромобілі</a>
-                    <a href="#parts" onClick="switchCategoryFilter('parts')" class="hover:text-orange-400 transition-colors pb-1 border-b-2 border-transparent hover:border-orange-400">Запчастини & ЕБУ</a>
-                    <a href="engineering.html" class="hover:text-purple-400 transition-colors pb-1 border-b-2 border-transparent hover:border-purple-400">Схеми & Осцилографи</a>
+                <nav class="hidden md:flex items-center gap-6 text-sm font-bold text-gray-800">
+                    <a href="#auto" onClick="switchCategoryFilter('auto')" class="hover:text-red-600 pb-1">Легкові авто</a>
+                    <a href="#parts" onClick="switchCategoryFilter('parts')" class="hover:text-red-600 pb-1 text-orange-600">Автозапчастини</a>
+                    <a href="#" class="hover:text-red-600 pb-1">Новини</a>
                 </nav>
 
-                <button id="toggleFormBtn" onClick="toggleAddForm()" class="btn-tech-emerald px-5 py-2.5 rounded-xl text-xs flex items-center gap-2 cursor-pointer shadow-lg tech-header-font">
-                    <i class="fa-solid fa-plus-circle"></i> Публікація в хабі
+                <button id="toggleFormBtn" onClick="toggleAddForm()" class="btn-green-add text-white font-bold px-4 py-2 rounded text-xs flex items-center gap-1.5 shadow-md">
+                    <i class="fa-solid fa-plus-circle"></i> Продати авто / Запчастину
                 </button>
             </div>
         </div>
     </header>
 
     <!-- ГОЛОВНИЙ КОНТЕЙНЕР -->
-    <main class="max-w-7xl mx-auto px-4 py-8 flex-grow w-full space-y-8">
+    <main class="max-w-6xl mx-auto px-4 py-4 flex-grow w-full space-y-4">
         
-        <div class="text-xs text-slate-400 font-mono flex items-center gap-2">
-            <a href="index.html" class="hover:text-cyan-400">NEOSERVICE</a> &gt; <span class="text-slate-600">/</span> <span id="breadcrumbCategory" class="text-cyan-400 font-bold">Автобазар & Телеметрія</span>
+        <div class="text-[11px] text-gray-500">
+            <a href="index.html" class="hover:underline">NEOSERVICE</a> &gt; <span id="breadcrumbCategory">Автобазар</span>
         </div>
         
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-slate-800 pb-6">
-            <div>
-                <span class="text-xs font-mono text-cyan-400 uppercase tracking-widest bg-cyan-950/60 px-3 py-1 rounded-full border border-cyan-500/30 inline-block mb-3">
-                    <i class="fa-solid fa-microchip"></i> Hardware & Diagnostic Registry
-                </span>
-                <h1 class="text-2xl sm:text-4xl font-black text-white tracking-wide tech-header-font" id="mainHeaderTitle">
-                    Інженерний каталог <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">транспорту та компонентів</span>
-                </h1>
-            </div>
-            <div class="text-right hidden sm:block font-mono text-xs text-slate-400">
-                <div>Статус системи: <strong class="text-emerald-400">ONLINE [CAN-Bus Active]</strong></div>
-                <div>Протоколи: OBD-II / J2534 / K-Line</div>
-            </div>
-        </div>
+        <h1 class="text-xl sm:text-2xl font-black text-gray-900" id="mainHeaderTitle">Продаж автомобілів в Україні</h1>
 
-        <!-- БЛОК ІНЖЕНЕРНИХ ФІЛЬТРІВ -->
-        <div class="search-box-tech p-6 text-slate-200">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- ЧЕРВОНИЙ БЛОК ФІЛЬТРІВ (КЛАСИЧНИЙ БЛОК AUTORIA) -->
+        <div class="search-box-red p-4 text-white">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 
-                <div class="space-y-4">
-                    <div class="flex gap-2 text-xs font-bold tech-header-font">
-                        <button id="btnCatAll" onClick="setMainCategory('all')" class="px-4 py-2.5 rounded-xl bg-slate-900 text-slate-300 hover:bg-slate-800 transition-all border border-slate-700">Всі системи</button>
-                        <button id="btnCatAuto" onClick="setMainCategory('auto')" class="px-4 py-2.5 rounded-xl bg-cyan-500 text-slate-950 font-black shadow-lg shadow-cyan-500/30">✓ Авто / EV</button>
-                        <button id="btnCatParts" onClick="setMainCategory('parts')" class="px-4 py-2.5 rounded-xl bg-slate-900 text-slate-300 hover:bg-slate-800 transition-all border border-slate-700">Запчастини</button>
+                <div class="space-y-3">
+                    <div class="flex gap-1 text-[11px] font-bold">
+                        <button id="btnCatAll" onClick="setMainCategory('all')" class="px-3 py-1 bg-red-700 text-white rounded-t hover:bg-red-800">Всі товари</button>
+                        <button id="btnCatAuto" onClick="setMainCategory('auto')" class="px-3 py-1 bg-white text-red-600 rounded-t font-bold">✓ Легкові</button>
+                        <button id="btnCatParts" onClick="setMainCategory('parts')" class="px-3 py-1 bg-red-700 text-white rounded-t hover:bg-red-800">Запчастини</button>
                     </div>
 
-                    <select id="filterBrand" onChange="updateModelDropdown()" class="w-full px-4 py-3 text-xs bg-[#030712] text-slate-200 rounded-xl border border-cyan-500/40 outline-none font-semibold focus:border-cyan-400 tech-mono shadow-inner">
-                        <option value="">Всі виробники / марки</option>
+                    <select id="filterBrand" onChange="updateModelDropdown()" class="w-full px-3 py-2 text-xs bg-white text-gray-800 rounded border-none outline-none font-semibold">
+                        <option value="">Марка (всі)</option>
                         <option value="Renault">Renault</option>
                         <option value="Haval">Haval</option>
                         <option value="BMW">BMW</option>
@@ -315,25 +229,25 @@
                         <option value="Citroen">Citroen</option>
                     </select>
 
-                    <select id="filterModel" class="w-full px-4 py-3 text-xs bg-[#030712] text-slate-200 rounded-xl border border-cyan-500/40 outline-none font-semibold focus:border-cyan-400 tech-mono shadow-inner">
-                        <option value="">Оберіть модель (спочатку марку)</option>
+                    <select id="filterModel" class="w-full px-3 py-2 text-xs bg-white text-gray-800 rounded border-none outline-none font-semibold">
+                        <option value="">Модель (спочатку оберіть марку)</option>
                     </select>
 
-                    <button onClick="toggleAdvancedSearch()" class="w-full py-3 bg-purple-950/50 hover:bg-purple-900/50 text-purple-300 text-xs font-bold rounded-xl border border-purple-500/40 transition-all flex items-center justify-center gap-2 shadow-sm tech-header-font">
-                        <i class="fa-solid fa-sliders text-purple-400"></i> Телеметричні параметри & OEM
+                    <button onClick="toggleAdvancedSearch()" class="w-full py-2 btn-red-expanded text-white text-xs font-bold rounded shadow-sm text-center">
+                        <i class="fa-solid fa-sliders"></i> Розширений Пошук
                     </button>
                 </div>
 
-                <div class="space-y-4 pt-1 md:pt-12">
-                    <select id="filterRegion" class="w-full px-4 py-3 text-xs bg-[#030712] text-slate-200 rounded-xl border border-emerald-500/40 outline-none font-semibold focus:border-emerald-400 tech-mono shadow-inner">
-                        <option value="">Локація: Всі регіони України</option>
+                <div class="space-y-3 pt-6 md:pt-7">
+                    <select id="filterRegion" class="w-full px-3 py-2 text-xs bg-white text-gray-800 rounded border-none outline-none font-semibold">
+                        <option value="">Регіон: Всі області України</option>
                         <option value="Вінницька">Вінницька область</option>
                         <option value="Волинська">Волинська область</option>
                         <option value="Дніпропетровська">Дніпропетровська область</option>
                         <option value="Донецька">Донецька область</option>
                         <option value="Житомирська">Житомирська область</option>
                         <option value="Закарпатська">Закарпатська область</option>
-                        <option value="Запорізька">Запорізька область (м. Запоріжжя)</option>
+                        <option value="Запорізька">Запорізька область</option>
                         <option value="Івано-Франківська">Івано-Франківська область</option>
                         <option value="Київська">Київська область (м. Київ)</option>
                         <option value="Кіровоградська">Кіровоградська область</option>
@@ -354,56 +268,56 @@
                         <option value="Крим">АР Крим</option>
                     </select>
 
-                    <div id="advancedSearchFields" class="hidden space-y-3 bg-[#030712]/90 p-4 rounded-xl border border-purple-500/40 shadow-inner">
-                        <div class="text-[11px] font-bold text-purple-400 font-mono">▸ ІНЖЕНЕРНИЙ ФІЛЬТР КОМПОНЕНТІВ:</div>
-                        <input type="text" id="filterPartNumber" placeholder="OEM / Part Number (напр. 028100..." class="w-full px-3.5 py-2.5 text-xs bg-[#0b1329] text-slate-200 rounded-lg border border-purple-500/30 outline-none tech-mono uppercase">
+                    <div id="advancedSearchFields" class="hidden space-y-2 bg-red-800 p-3 rounded">
+                        <div class="text-[10px] font-bold text-yellow-300">Додаткові критерії пошуку:</div>
+                        <input type="text" id="filterPartNumber" placeholder="OEM / Партномер запчастини" class="w-full px-2 py-1.5 text-xs bg-white text-gray-800 rounded outline-none font-mono uppercase">
                         <div class="grid grid-cols-2 gap-2">
-                            <input type="number" id="filterYearMin" placeholder="Рік від" class="px-3.5 py-2.5 text-xs bg-[#0b1329] text-slate-200 rounded-lg border border-slate-700 outline-none tech-mono">
-                            <input type="number" id="filterYearMax" placeholder="до" class="px-3.5 py-2.5 text-xs bg-[#0b1329] text-slate-200 rounded-lg border border-slate-700 outline-none tech-mono">
+                            <input type="number" id="filterYearMin" placeholder="Рік від" class="px-2 py-1.5 text-xs bg-white text-gray-800 rounded outline-none">
+                            <input type="number" id="filterYearMax" placeholder="до" class="px-2 py-1.5 text-xs bg-white text-gray-800 rounded outline-none">
                         </div>
                         <div class="grid grid-cols-2 gap-2">
-                            <input type="number" id="filterPriceMin" placeholder="Бюджет від ($)" class="px-3.5 py-2.5 text-xs bg-[#0b1329] text-slate-200 rounded-lg border border-slate-700 outline-none tech-mono">
-                            <input type="number" id="filterPriceMax" placeholder="до ($)" class="px-3.5 py-2.5 text-xs bg-[#0b1329] text-slate-200 rounded-lg border border-slate-700 outline-none tech-mono">
+                            <input type="number" id="filterPriceMin" placeholder="Ціна від ($)" class="px-2 py-1.5 text-xs bg-white text-gray-800 rounded outline-none">
+                            <input type="number" id="filterPriceMax" placeholder="до ($)" class="px-2 py-1.5 text-xs bg-white text-gray-800 rounded outline-none">
                         </div>
                     </div>
                 </div>
 
                 <div class="flex items-end pt-2 md:pt-0">
-                    <button onClick="filterCards()" class="w-full py-4 btn-tech-cyan text-sm rounded-xl flex items-center justify-center gap-2 cursor-pointer shadow-xl tech-header-font">
-                        <i class="fa-solid fa-terminal"></i> Виконати сканування каталогу
+                    <button onClick="filterCards()" class="w-full py-3 btn-blue-search text-white font-black text-sm rounded shadow flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-magnifying-glass"></i> Пошук
                     </button>
                 </div>
             </div>
         </div>
 
-        <!-- УНІВЕРСАЛЬНА ФОРМА ПУБЛІКАЦІЇ -->
-        <div id="newAdFormCard" class="hidden tech-card rounded-2xl p-6 border-2 border-emerald-500/50 shadow-2xl space-y-6">
-            <div class="flex justify-between items-center border-b border-slate-800 pb-4">
-                <h3 class="font-bold text-sm text-white flex items-center gap-2.5 font-mono">
-                    <i class="fa-solid fa-microchip text-emerald-400"></i> ПУБЛІКАЦІЯ У ХМАРНІЙ БАЗІ ДАНИХ [NEOSERVICE]
+        <!-- УНІВЕРСАЛЬНА ФОРМА ДОДАВАННЯ ОГОЛОШЕННЯ -->
+        <div id="newAdFormCard" class="hidden bg-white rounded-lg p-6 border-2 border-dashed border-red-500 shadow-lg space-y-4">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h3 class="font-bold text-base text-gray-900 flex items-center gap-2">
+                    <i class="fa-solid fa-plus-circle text-red-600"></i> Подача нового оголошення
                 </h3>
-                <button onClick="toggleAddForm()" class="text-slate-400 font-bold hover:text-white">✕</button>
+                <button onClick="toggleAddForm()" class="text-gray-400 font-bold hover:text-black text-lg">✕</button>
             </div>
 
-            <form id="addListingForm" class="space-y-5 text-xs">
+            <form id="addListingForm" class="space-y-4 text-xs">
                 
-                <div class="bg-emerald-950/40 p-4 rounded-xl border border-emerald-500/30 flex items-center gap-6">
-                    <span class="font-bold text-emerald-300">Тип реєстру:</span>
-                    <label class="flex items-center gap-2 cursor-pointer font-semibold text-slate-200">
+                <div class="bg-blue-50 p-3 rounded border border-blue-200 flex items-center gap-6">
+                    <span class="font-bold text-blue-900">Тип пропозиції:</span>
+                    <label class="flex items-center gap-1.5 cursor-pointer font-semibold text-gray-800">
                         <input type="radio" name="listingType" value="auto" checked onChange="toggleFormType('auto')">
-                        🚗 Транспорт / Електромобіль
+                        🚗 Продаж автомобіля
                     </label>
-                    <label class="flex items-center gap-2 cursor-pointer font-semibold text-slate-200">
+                    <label class="flex items-center gap-1.5 cursor-pointer font-semibold text-gray-800">
                         <input type="radio" name="listingType" value="part" onChange="toggleFormType('part')">
-                        ⚙️ Запчастина / ЕБУ / Блок
+                        ⚙️ Автозапчастина / Комплектуючі
                     </label>
                 </div>
 
-                <div class="font-bold text-cyan-400 text-xs border-b border-slate-800 pb-1.5 tech-header-font">1. Виробник, модель та рік випуску</div>
-                <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                <div class="font-bold text-gray-800 text-xs border-b pb-1">1. Марка, модель та назва</div>
+                <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
                     <div>
-                        <label class="block font-semibold mb-1.5 text-slate-400">Марка *</label>
-                        <select id="formBrand" onChange="updateFormModels()" class="w-full p-3 bg-[#030712] text-slate-200 border border-slate-700 rounded-xl font-semibold shadow-inner" required>
+                        <label class="block font-semibold mb-1 text-gray-600">Марка *</label>
+                        <select id="formBrand" onChange="updateFormModels()" class="w-full p-2 border rounded font-semibold bg-white" required>
                             <option value="">Оберіть марку *</option>
                             <option value="Renault">Renault</option>
                             <option value="Haval">Haval</option>
@@ -422,85 +336,85 @@
                     </div>
 
                     <div>
-                        <label class="block font-semibold mb-1.5 text-slate-400">Модель *</label>
-                        <select id="formModel" class="w-full p-3 bg-[#030712] text-slate-200 border border-slate-700 rounded-xl font-semibold shadow-inner" required>
+                        <label class="block font-semibold mb-1 text-gray-600">Модель *</label>
+                        <select id="formModel" class="w-full p-2 border rounded font-semibold bg-white" required>
                             <option value="">Оберіть модель *</option>
                         </select>
                     </div>
 
                     <div id="fieldGenerationWrapper">
-                        <label class="block font-semibold mb-1.5 text-slate-400">Покоління / Комплектація</label>
-                        <input type="text" id="formGeneration" placeholder="напр. 1 покоління" class="w-full p-3 bg-[#030712] text-slate-200 border border-slate-700 rounded-xl shadow-inner">
+                        <label class="block font-semibold mb-1 text-gray-600">Покоління / Комплектація</label>
+                        <input type="text" id="formGeneration" placeholder="напр. 1 покоління" class="w-full p-2 border rounded">
                     </div>
 
                     <div>
-                        <label class="block font-semibold mb-1.5 text-slate-400">Рік випуску *</label>
-                        <input type="number" id="formYear" placeholder="2018" min="1950" max="2026" class="w-full p-3 bg-[#030712] text-slate-200 border border-slate-700 rounded-xl shadow-inner tech-mono" required>
+                        <label class="block font-semibold mb-1 text-gray-600">Рік випуску / Сумісність *</label>
+                        <input type="number" id="formYear" placeholder="2002" min="1950" max="2026" class="w-full p-2 border rounded" required>
                     </div>
                 </div>
 
-                <div id="partFieldsBlock" class="hidden bg-orange-950/30 p-4 rounded-xl border border-orange-500/30 space-y-4">
-                    <div class="font-bold text-orange-400 text-xs tech-header-font">Параметри технічного компонента</div>
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div id="partFieldsBlock" class="hidden bg-orange-50 p-3 rounded border border-orange-200 space-y-2">
+                    <div class="font-bold text-orange-900 text-xs">Параметри автозапчастини</div>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                         <div>
-                            <label class="block font-semibold mb-1.5 text-slate-300">Назва вузла / Деталі *</label>
-                            <input type="text" id="partName" placeholder="напр. ЕБУ двигуна, КПП 6 ст" class="w-full p-3 bg-[#030712] text-slate-200 border border-orange-500/30 rounded-xl shadow-inner">
+                            <label class="block font-semibold mb-1 text-gray-700">Назва деталі / Категорія *</label>
+                            <input type="text" id="partName" placeholder="напр. КПП 6 ступка, Фара ліва" class="w-full p-2 border rounded bg-white">
                         </div>
                         <div>
-                            <label class="block font-semibold mb-1.5 text-slate-300">Оригінальний номер (OEM / Part Number) *</label>
-                            <input type="text" id="partNumber" placeholder="напр. 0281012345" class="w-full p-3 bg-[#030712] text-slate-200 border border-orange-500/30 rounded-xl font-mono uppercase shadow-inner">
+                            <label class="block font-semibold mb-1 text-gray-700">Оригінальний номер (OEM / Part Number) *</label>
+                            <input type="text" id="partNumber" placeholder="напр. OEM-12345" class="w-full p-2 border rounded font-mono uppercase bg-white">
                         </div>
                         <div>
-                            <label class="block font-semibold mb-1.5 text-slate-300">Технічний стан *</label>
-                            <select id="partCondition" class="w-full p-3 bg-[#030712] text-slate-200 border border-orange-500/30 rounded-xl shadow-inner">
-                                <option value="Вживана (б/в)">Вживана (б/в, перевірена)</option>
-                                <option value="Нова">Нова (Original)</option>
-                                <option value="Відновлена">Відновлена / Реставрація</option>
+                            <label class="block font-semibold mb-1 text-gray-700">Стан запчастини *</label>
+                            <select id="partCondition" class="w-full p-2 border rounded bg-white">
+                                <option value="Вживана (б/в)">Вживана (б/в)</option>
+                                <option value="Нова">Нова</option>
+                                <option value="Відновлена">Відновлена (Реставрація)</option>
                             </select>
                         </div>
                     </div>
                 </div>
 
-                <div class="font-bold text-cyan-400 text-xs border-b border-slate-800 pb-1.5 pt-2 tech-header-font">2. Ціна та контакти власника</div>
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <div class="font-bold text-gray-800 text-xs border-b pb-1 pt-2">2. Ціна та контакти</div>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
                     <div>
-                        <label class="block font-semibold mb-1.5 text-slate-400">Ціна ($ USD) *</label>
-                        <input type="number" id="adPrice" required placeholder="6500" class="w-full p-3 bg-[#030712] text-emerald-400 border border-slate-700 rounded-xl font-bold tech-mono shadow-inner">
+                        <label class="block font-semibold mb-1 text-gray-600">Ціна ($ USD) *</label>
+                        <input type="number" id="adPrice" required placeholder="50" class="w-full p-2 border rounded font-bold text-green-700">
                     </div>
                     <div id="fieldMileageWrapper">
-                        <label class="block font-semibold mb-1.5 text-slate-400">Пробіг (тис. км) *</label>
-                        <input type="number" id="adMileage" placeholder="175" class="w-full p-3 bg-[#030712] text-slate-200 border border-slate-700 rounded-xl tech-mono shadow-inner">
+                        <label class="block font-semibold mb-1 text-gray-600">Пробіг авто (тис. км) *</label>
+                        <input type="number" id="adMileage" placeholder="300" class="w-full p-2 border rounded">
                     </div>
                     <div>
-                        <label class="block font-semibold mb-1.5 text-slate-400">Місто локації *</label>
-                        <input type="text" id="adCity" required placeholder="Костопіль / Рівне" class="w-full p-3 bg-[#030712] text-slate-200 border border-slate-700 rounded-xl shadow-inner">
+                        <label class="block font-semibold mb-1 text-gray-600">Місто продажу *</label>
+                        <input type="text" id="adCity" required placeholder="Костопіль" class="w-full p-2 border rounded">
                     </div>
                     <div>
-                        <label class="block font-semibold mb-1.5 text-slate-400">Контактний телефон *</label>
-                        <input type="tel" id="adContact" required placeholder="+380973262532" class="w-full p-3 bg-[#030712] text-slate-200 border border-slate-700 rounded-xl tech-mono shadow-inner">
+                        <label class="block font-semibold mb-1 text-gray-600">Номер телефону *</label>
+                        <input type="tel" id="adContact" required placeholder="+380971234567" class="w-full p-2 border rounded">
                     </div>
                 </div>
 
-                <div id="autoTechBlock" class="space-y-4">
-                    <div class="font-bold text-cyan-400 text-xs border-b border-slate-800 pb-1.5 pt-2 tech-header-font">3. Силовий агрегат та трансмісія</div>
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <div id="autoTechBlock" class="space-y-2">
+                    <div class="font-bold text-gray-800 text-xs border-b pb-1 pt-2">3. Технічні характеристики авто</div>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
                         <div>
-                            <label class="block font-semibold mb-1.5 text-slate-400">Тип палива / Привід</label>
-                            <select id="adFuel" class="w-full p-3 bg-[#030712] text-slate-200 border border-slate-700 rounded-xl shadow-inner">
+                            <label class="block font-semibold mb-1 text-gray-600">Тип палива</label>
+                            <select id="adFuel" class="w-full p-2 border rounded bg-white">
                                 <option value="Дизель">Дизель</option>
                                 <option value="Бензин">Бензин</option>
                                 <option value="Гібрид">Гібрид</option>
-                                <option value="Електро">Електро (EV)</option>
+                                <option value="Електро">Електро</option>
                                 <option value="Газ/Бензин">Газ/Бензин</option>
                             </select>
                         </div>
                         <div>
-                            <label class="block font-semibold mb-1.5 text-slate-400">Об'єм двигуна (л.)</label>
-                            <input type="text" id="adDisplacement" placeholder="2.0 DTI" class="w-full p-3 bg-[#030712] text-slate-200 border border-slate-700 rounded-xl tech-mono shadow-inner">
+                            <label class="block font-semibold mb-1 text-gray-600">Об'єм двигуна (л.)</label>
+                            <input type="text" id="adDisplacement" placeholder="1.9 л." class="w-full p-2 border rounded">
                         </div>
                         <div>
-                            <label class="block font-semibold mb-1.5 text-slate-400">Коробка передач (КПП)</label>
-                            <select id="adGearbox" class="w-full p-3 bg-[#030712] text-slate-200 border border-slate-700 rounded-xl shadow-inner">
+                            <label class="block font-semibold mb-1 text-gray-600">Коробка передач (КПП)</label>
+                            <select id="adGearbox" class="w-full p-2 border rounded bg-white">
                                 <option value="Механіка">Механіка</option>
                                 <option value="Автомат">Автомат</option>
                                 <option value="Робот">Робот</option>
@@ -508,98 +422,89 @@
                             </select>
                         </div>
                         <div>
-                            <label class="block font-semibold mb-1.5 text-slate-400">Тип приводу</label>
-                            <select id="adDrive" class="w-full p-3 bg-[#030712] text-slate-200 border border-slate-700 rounded-xl shadow-inner">
+                            <label class="block font-semibold mb-1 text-gray-600">Тип приводу</label>
+                            <select id="adDrive" class="w-full p-2 border rounded bg-white">
                                 <option value="Передній">Передній</option>
-                                <option value="Повний">Повний 4WD</option>
+                                <option value="Повний">Повний</option>
                                 <option value="Задній">Задній</option>
                             </select>
                         </div>
                     </div>
                 </div>
 
-                <div id="autoIdentBlock" class="space-y-4">
-                    <div class="font-bold text-cyan-400 text-xs border-b border-slate-800 pb-1.5 pt-2 tech-header-font">4. Ідентифікація та телеметрія</div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div id="autoIdentBlock" class="space-y-2">
+                    <div class="font-bold text-gray-800 text-xs border-b pb-1 pt-2">4. Ідентифікація авто</div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
-                            <label class="block font-semibold mb-1.5 text-slate-400">Державний номер</label>
-                            <input type="text" id="adStateNum" placeholder="BK 1234 AB" class="w-full p-3 bg-[#030712] text-cyan-400 border border-slate-700 rounded-xl font-mono uppercase shadow-inner">
+                            <label class="block font-semibold mb-1 text-gray-600">Державний номер авто</label>
+                            <input type="text" id="adStateNum" placeholder="BK 1234 AA" class="w-full p-2 border rounded font-mono uppercase">
                         </div>
                         <div>
-                            <label class="block font-semibold mb-1.5 text-slate-400">VIN-код (17 символів)</label>
-                            <input type="text" id="adVin" placeholder="WOL0000..." class="w-full p-3 bg-[#030712] text-purple-300 border border-slate-700 rounded-xl font-mono uppercase shadow-inner">
+                            <label class="block font-semibold mb-1 text-gray-600">VIN-код авто (17 символів)</label>
+                            <input type="text" id="adVin" placeholder="VF1JA050527..." class="w-full p-2 border rounded font-mono uppercase">
                         </div>
                     </div>
                 </div>
 
-                <div class="font-bold text-cyan-400 text-xs border-b border-slate-800 pb-1.5 pt-2 tech-header-font">5. Фотофіксація (посилання URL)</div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <input type="url" id="adPhoto1" placeholder="Фото 1 (Головне) https://..." class="p-3 bg-[#030712] text-slate-200 border border-slate-700 rounded-xl shadow-inner">
-                    <input type="url" id="adPhoto2" placeholder="Фото 2 https://..." class="p-3 bg-[#030712] text-slate-200 border border-slate-700 rounded-xl shadow-inner">
-                    <input type="url" id="adPhoto3" placeholder="Фото 3 https://..." class="p-3 bg-[#030712] text-slate-200 border border-slate-700 rounded-xl shadow-inner">
-                    <input type="url" id="adPhoto4" placeholder="Фото 4 https://..." class="p-3 bg-[#030712] text-slate-200 border border-slate-700 rounded-xl shadow-inner">
+                <div class="font-bold text-gray-800 text-xs border-b pb-1 pt-2">5. Фотографії (до 4 посилань URL)</div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <input type="url" id="adPhoto1" placeholder="Фото 1 (Головне) https://..." class="p-2 border rounded">
+                    <input type="url" id="adPhoto2" placeholder="Фото 2 https://..." class="p-2 border rounded">
+                    <input type="url" id="adPhoto3" placeholder="Фото 3 https://..." class="p-2 border rounded">
+                    <input type="url" id="adPhoto4" placeholder="Фото 4 https://..." class="p-2 border rounded">
                 </div>
 
                 <div>
-                    <label class="block font-semibold mb-1.5 text-slate-400">Інженерний опис та стан вузлів *</label>
-                    <textarea id="adDescription" rows="3" required placeholder="Опишіть технічний стан, результати комп'ютерної діагностики..." class="w-full p-3 bg-[#030712] text-slate-200 border border-slate-700 rounded-xl shadow-inner"></textarea>
+                    <label class="block font-semibold mb-1 text-gray-600">Опис стану товару *</label>
+                    <textarea id="adDescription" rows="3" required placeholder="Продам деталь у відмінному стані або опис авто..." class="w-full p-2 border rounded"></textarea>
                 </div>
 
-                <div class="flex justify-end gap-3 pt-3">
-                    <button type="button" onClick="toggleAddForm()" class="px-5 py-2.5 bg-slate-800 text-slate-300 font-bold rounded-xl hover:bg-slate-700 tech-header-font">Скасувати</button>
-                    <button type="submit" class="btn-tech-emerald px-7 py-2.5 rounded-xl text-xs cursor-pointer shadow-xl tech-header-font">
-                        <i class="fa-solid fa-cloud-arrow-up"></i> Записати у хмару
+                <div class="flex justify-end gap-3 pt-2">
+                    <button type="button" onClick="toggleAddForm()" class="px-5 py-2 bg-gray-200 text-gray-700 font-bold rounded">Скасувати</button>
+                    <button type="submit" class="btn-green-add text-white font-bold px-6 py-2 rounded shadow">
+                        <i class="fa-solid fa-check"></i> Опублікувати оголошення
                     </button>
                 </div>
             </form>
         </div>
 
-        <!-- ОСНОВНА СІТКА З ОГОЛОШЕННЯМИ -->
-        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8 pt-2">
+        <!-- ОСНОВНА СІТКА З ОГОЛОШЕННЯМИ (АВТО ТА ЗАПЧАСТИНИ) -->
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 pt-2">
             
-            <div class="lg:col-span-3 space-y-6">
-                <div class="flex justify-between items-center">
-                    <h2 class="text-xl font-bold text-white tech-header-font flex items-center gap-2">
-                        <span class="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-ping"></span>
-                        <span id="feedTitle">Актуальні технічні пропозиції</span>
-                    </h2>
-                </div>
+            <div class="lg:col-span-3 space-y-4">
+                <h2 class="text-lg font-bold text-gray-800" id="feedTitle">Пропозиції з продажу авто</h2>
                 
-                <div id="autoProductsContainer" class="space-y-5">
-                    <p class="text-center text-slate-400 text-xs py-16 font-mono">⚡ Синхронізація телеметрії та бази Firebase...</p>
+                <div id="autoProductsContainer" class="space-y-4">
+                    <p class="text-center text-gray-400 text-xs py-8">Завантаження пропозицій з бази даних...</p>
                 </div>
 
-                <!-- ПАГІНАЦІЯ -->
-                <div id="paginationControls" class="flex justify-center items-center gap-4 pt-8 border-t border-slate-800 text-xs">
-                    <button id="prevPageBtn" onclick="changePage(-1)" class="px-4 py-2.5 bg-[#0b1329] hover:bg-slate-800 text-cyan-400 font-bold rounded-xl border border-cyan-500/30 disabled:opacity-30 disabled:cursor-not-allowed shadow-md tech-header-font">
+                <!-- БЛОК ПАГІНАЦІЇ -->
+                <div id="paginationControls" class="flex justify-center items-center gap-3 pt-4 border-t border-gray-300 text-xs">
+                    <button id="prevPageBtn" onclick="changePage(-1)" class="px-4 py-2 bg-white border border-gray-300 text-gray-700 font-bold rounded shadow-sm disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50">
                         ‹ Попередня
                     </button>
-                    <span id="pageIndicator" class="font-bold text-slate-300 font-mono">Сторінка 1</span>
-                    <button id="nextPageBtn" onclick="changePage(1)" class="px-4 py-2.5 bg-[#0b1329] hover:bg-slate-800 text-cyan-400 font-bold rounded-xl border border-cyan-500/30 disabled:opacity-30 disabled:cursor-not-allowed shadow-md tech-header-font">
+                    <span id="pageIndicator" class="font-bold text-gray-700">Сторінка 1</span>
+                    <button id="nextPageBtn" onclick="changePage(1)" class="px-4 py-2 bg-white border border-gray-300 text-gray-700 font-bold rounded shadow-sm disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50">
                         Наступна ›
                     </button>
                 </div>
             </div>
 
-            <!-- САЙДБАР -->
-            <div class="space-y-6 text-xs">
+            <!-- САЙДБАР (СПОСОБИ ФІЛЬТРАЦІЇ) -->
+            <div class="space-y-5 text-xs">
                 
-                <div class="tech-card p-5 rounded-2xl space-y-4 tech-glow-cyan">
-                    <h3 class="font-bold text-white uppercase tracking-wider text-[11px] font-mono border-b border-slate-800 pb-3 flex items-center gap-2">
-                        <i class="fa-solid fa-cubes text-cyan-400"></i> Каталог обладнання
-                    </h3>
-                    <ul class="space-y-2.5 text-cyan-400 font-semibold tech-header-font">
-                        <li><a href="#auto" onClick="switchCategoryFilter('auto')" class="hover:text-white transition-colors flex justify-between items-center"><span>Транспорт & EV</span> <i class="fa-solid fa-angle-right text-[10px]"></i></a></li>
-                        <li><a href="#parts" onClick="switchCategoryFilter('parts')" class="hover:text-white transition-colors flex justify-between items-center text-orange-400"><span>⚙️ Запчастини & ЕБУ</span> <i class="fa-solid fa-angle-right text-[10px]"></i></a></li>
+                <div class="bg-white p-4 rounded border border-gray-200 shadow-sm">
+                    <h3 class="font-bold text-gray-900 mb-2 border-b pb-1">Категорії каталогу</h3>
+                    <ul class="space-y-2 text-blue-700 font-semibold">
+                        <li><a href="#auto" onClick="switchCategoryFilter('auto')" class="hover:underline flex justify-between">Легкові авто <span>&rsaquo;</span></a></li>
+                        <li><a href="#parts" onClick="switchCategoryFilter('parts')" class="hover:underline flex justify-between text-orange-600">⚙️ Автозапчастини <span>&rsaquo;</span></a></li>
                     </ul>
                 </div>
 
-                <div class="tech-card p-5 rounded-2xl space-y-4 tech-glow-purple">
-                    <h3 class="font-bold text-white uppercase tracking-wider text-[11px] font-mono border-b border-slate-800 pb-3 flex items-center gap-2">
-                        <i class="fa-solid fa-car-tunnel text-purple-400"></i> Фільтр виробників
-                    </h3>
-                    <ul id="sidebarBrandList" class="space-y-2 text-slate-300 font-medium max-h-[420px] overflow-y-auto pr-1 tech-mono">
-                        <!-- Динамічний список марок -->
+                <div class="bg-white p-4 rounded border border-gray-200 shadow-sm">
+                    <h3 class="font-bold text-gray-900 mb-2 border-b pb-1">Марки авто</h3>
+                    <ul id="sidebarBrandList" class="space-y-1.5 text-blue-700 font-semibold max-h-96 overflow-y-auto">
+                        <!-- Заповнюється скриптом -->
                     </ul>
                 </div>
 
@@ -609,29 +514,29 @@
 
     </main>
 
-    <!-- LIGHTBOX ДЛЯ ГАЛЕРЕЇ -->
+    <!-- LIGHTBOX ДЛЯ ПЕРЕГЛЯДУ ГАЛЕРЕЇ ФОТО -->
     <div id="lightboxModal" class="lightbox-modal">
-        <span class="absolute top-6 right-8 text-cyan-400 text-3xl cursor-pointer font-bold z-50 hover:text-white transition-colors" onClick="closeGallery()">&times;</span>
+        <span class="absolute top-4 right-6 text-white text-3xl cursor-pointer font-bold z-50 hover:text-red-400" onClick="closeGallery()">&times;</span>
         
-        <div id="galleryCounter" class="text-cyan-300 text-xs font-mono mb-4 bg-[#0b1329] border border-cyan-500/40 px-5 py-2 rounded-full shadow-lg">
+        <div id="galleryCounter" class="text-white text-xs font-semibold mb-3 bg-black/60 px-3 py-1 rounded-full">
             Фото 1 з 1
         </div>
 
         <div class="relative flex items-center justify-center max-w-[90vw] max-h-[70vh]">
-            <button class="gallery-nav-btn absolute left-2 sm:-left-16 z-40" onClick="prevGalleryImage(event)">‹</button>
-            <img id="lightboxImg" class="max-w-[85vw] max-h-[70vh] rounded-2xl object-contain shadow-2xl border-2 border-cyan-500/60" src="" alt="Телеметричне фото">
-            <button class="gallery-nav-btn absolute right-2 sm:-right-16 z-40" onClick="nextGalleryImage(event)">›</button>
+            <button class="gallery-nav-btn absolute left-2 sm:-left-12 z-40" onClick="prevGalleryImage(event)">‹</button>
+            <img id="lightboxImg" class="max-w-[85vw] max-h-[70vh] rounded object-contain shadow-2xl" src="" alt="Перегляд фото">
+            <button class="gallery-nav-btn absolute right-2 sm:-right-12 z-40" onClick="nextGalleryImage(event)">›</button>
         </div>
 
-        <div id="galleryThumbs" class="flex gap-3 mt-6 overflow-x-auto max-w-[90vw] p-1"></div>
+        <div id="galleryThumbs" class="flex gap-2 mt-4 overflow-x-auto max-w-[90vw] p-1"></div>
     </div>
 
     <!-- FOOTER -->
-    <footer class="border-t border-slate-800 text-slate-500 text-xs py-10 text-center mt-16 bg-[#030712] font-mono">
-        <p>© 2026 NEOSERVICE [Engineering Future Edition] — Автобазар & Телеметрія. Всі права захищені.</p>
+    <footer class="border-t border-gray-300 text-gray-600 text-xs py-6 text-center mt-12 bg-white">
+        <p>© 2026 NEOSERVICE & AUTO-RIA — Національний автобазар. Всі права захищені.</p>
     </footer>
 
-    <!-- FIREBASE ТА ІНЖЕНЕРНА ЛОГІКА -->
+    <!-- FIREBASE ТА ОСНОВНА ЛОГІКА -->
     <script type="module">
         import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -691,13 +596,13 @@
             sidebarList.innerHTML = '';
             
             const allLi = document.createElement('li');
-            allLi.innerHTML = `<a href="#" onclick="filterByBrandQuick('')" class="hover:text-cyan-400 font-bold text-slate-200 flex items-center gap-2"><i class="fa-solid fa-microchip text-[10px] text-cyan-400"></i> Всі виробники</a>`;
+            allLi.innerHTML = `<a href="#" onclick="filterByBrandQuick('')" class="hover:underline font-bold text-gray-700">Усі марки</a>`;
             sidebarList.appendChild(allLi);
 
             Array.from(selectBrand.options).forEach(opt => {
                 if (opt.value) {
                     const li = document.createElement('li');
-                    li.innerHTML = `<a href="#" onclick="filterByBrandQuick('${opt.value}')" class="hover:text-purple-400 transition-colors flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-purple-400"></span> ${opt.textContent}</a>`;
+                    li.innerHTML = `<a href="#" onclick="filterByBrandQuick('${opt.value}')" class="hover:underline">${opt.textContent}</a>`;
                     sidebarList.appendChild(li);
                 }
             });
@@ -772,26 +677,26 @@
             const btnAuto = document.getElementById('btnCatAuto');
             const btnParts = document.getElementById('btnCatParts');
 
-            btnAll.className = "px-4 py-2.5 rounded-xl " + (cat === 'all' ? "bg-cyan-500 text-slate-950 font-black shadow-lg shadow-cyan-500/30" : "bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-700");
-            btnAuto.className = "px-4 py-2.5 rounded-xl " + (cat === 'auto' ? "bg-cyan-500 text-slate-950 font-black shadow-lg shadow-cyan-500/30" : "bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-700");
-            btnParts.className = "px-4 py-2.5 rounded-xl " + (cat === 'parts' ? "bg-cyan-500 text-slate-950 font-black shadow-lg shadow-cyan-500/30" : "bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-700");
+            btnAll.className = "px-3 py-1 rounded-t " + (cat === 'all' ? "bg-white text-red-600 font-bold" : "bg-red-700 text-white hover:bg-red-800");
+            btnAuto.className = "px-3 py-1 rounded-t " + (cat === 'auto' ? "bg-white text-red-600 font-bold" : "bg-red-700 text-white hover:bg-red-800");
+            btnParts.className = "px-3 py-1 rounded-t " + (cat === 'parts' ? "bg-white text-red-600 font-bold" : "bg-red-700 text-white hover:bg-red-800");
 
             const mainHeaderTitle = document.getElementById('mainHeaderTitle');
             const feedTitle = document.getElementById('feedTitle');
             const breadcrumbCategory = document.getElementById('breadcrumbCategory');
 
             if (cat === 'parts') {
-                if (mainHeaderTitle) mainHeaderTitle.innerHTML = `Інженерний каталог <span class="text-orange-400">запчастин та ЕБУ</span>`;
-                if (feedTitle) feedTitle.textContent = "Реєстр автозапчастин та вузлів";
-                if (breadcrumbCategory) breadcrumbCategory.textContent = "Запчастини & ЕБУ";
+                if (mainHeaderTitle) mainHeaderTitle.textContent = "Продаж автозапчастин та комплектуючих";
+                if (feedTitle) feedTitle.textContent = "Пропозиції автозапчастин";
+                if (breadcrumbCategory) breadcrumbCategory.textContent = "Автозапчастини";
             } else if (cat === 'auto') {
-                if (mainHeaderTitle) mainHeaderTitle.innerHTML = `Інженерний каталог <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">транспорту та компонентів</span>`;
-                if (feedTitle) feedTitle.textContent = "Актуальні технічні пропозиції";
-                if (breadcrumbCategory) breadcrumbCategory.textContent = "Автобазар & Телеметрія";
+                if (mainHeaderTitle) mainHeaderTitle.textContent = "Продаж автомобілів в Україні";
+                if (feedTitle) feedTitle.textContent = "Пропозиції з продажу авто";
+                if (breadcrumbCategory) breadcrumbCategory.textContent = "Автобазар";
             } else {
-                if (mainHeaderTitle) mainHeaderTitle.innerHTML = `Повний реєстр <span class="text-purple-400">всіх систем NEOSERVICE</span>`;
-                if (feedTitle) feedTitle.textContent = "Всі записи у хмарній базі";
-                if (breadcrumbCategory) breadcrumbCategory.textContent = "Всі оголошення";
+                if (mainHeaderTitle) mainHeaderTitle.textContent = "Всі оголошення (Авто та Запчастини)";
+                if (feedTitle) feedTitle.textContent = "Всі пропозиції у каталозі";
+                if (breadcrumbCategory) breadcrumbCategory.textContent = "Авто & Запчастини";
             }
 
             window.filterCards();
@@ -813,11 +718,11 @@
             const toggleFormBtn = document.getElementById('toggleFormBtn');
             
             if (user) {
-                if (badge) badge.textContent = `[ 👤 ${user.email.split('@')[0]} ]`;
-                if (toggleFormBtn) toggleFormBtn.innerHTML = `<i class="fa-solid fa-plus-circle"></i> Публікація в хабі`;
+                if (badge) badge.textContent = `👤 ${user.email.split('@')[0]}`;
+                if (toggleFormBtn) toggleFormBtn.innerHTML = `<i class="fa-solid fa-plus-circle"></i> Додати оголошення`;
             } else {
-                if (badge) badge.textContent = "[ 👤 Гість (Увійти) ]";
-                if (toggleFormBtn) toggleFormBtn.innerHTML = `<i class="fa-solid fa-lock"></i> Потрібна авторизація`;
+                if (badge) badge.textContent = "👤 Особистий кабінет (Гість)";
+                if (toggleFormBtn) toggleFormBtn.innerHTML = `<i class="fa-solid fa-lock"></i> Увійдіть для публікації`;
             }
         });
 
@@ -829,7 +734,7 @@
 
         window.toggleAddForm = function() {
             if (!currentUser) {
-                alert('Увага: Доступ до публікації обмежено!\n\nДля запису у хмарну базу даних, будь ласка, увійдіть через головну сторінку.');
+                alert('Увага: Додавати оголошення можуть лише зареєстровані користувачі!\n\nДля публікації оголошення, будь ласка, увійдіть у свій акаунт.');
                 window.location.href = 'index.html';
                 return;
             }
@@ -882,28 +787,28 @@
                 payload.partCondition = document.getElementById('partCondition').value;
                 payload.category = "Автозапчастини";
             } else {
-                const gen = document.getElementById('formGeneration').value || "Телеметричний пакет";
+                const gen = document.getElementById('formGeneration').value || "Офіційне авто";
                 const fuel = document.getElementById('adFuel').value;
-                const disp = document.getElementById('adDisplacement').value || "2.0 L";
-                payload.title = `${brand} ${model} (${year})`;
+                const disp = document.getElementById('adDisplacement').value || "1.9 л.";
+                payload.title = `${brand} ${model} ${year}`;
                 payload.generation = gen;
                 payload.category = "Продаж авто";
                 payload.mileage = document.getElementById('adMileage').value || "0";
                 payload.engine = `${fuel}, ${disp}`;
                 payload.gearbox = document.getElementById('adGearbox').value;
                 payload.drive = document.getElementById('adDrive').value;
-                payload.vin = document.getElementById('adVin').value || "WOL0000...";
-                payload.stateNum = document.getElementById('adStateNum').value || "BK 1234 AB";
-                payload.topBadge = "CAN-OK";
+                payload.vin = document.getElementById('adVin').value || "VF1JA050527...";
+                payload.stateNum = document.getElementById('adStateNum').value || "BK 1234 AA";
+                payload.topBadge = "ТОП";
             }
 
             try {
                 await addDoc(collection(db, "auto_listings"), payload);
                 document.getElementById('addListingForm').reset();
                 document.getElementById('newAdFormCard').classList.add('hidden');
-                alert('✅ Запис успішно збережено у хмарній базі Firebase!');
+                alert('Оголошення успішно збережено та додано у базу!');
             } catch (err) {
-                alert('❌ Помилка запису: ' + err.message);
+                alert('Помилка при збереженні: ' + err.message);
             }
         });
 
@@ -913,7 +818,7 @@
             container.innerHTML = '';
 
             if (snapshot.empty) {
-                container.innerHTML = `<div class="tech-card p-10 text-center text-slate-400 text-xs rounded-2xl font-mono">⚠️ Реєстр порожній. Дані у хмарі відсутні.</div>`;
+                container.innerHTML = `<div class="bg-white border p-6 text-center text-gray-400 text-xs rounded">Немає оголошень у базі.</div>`;
                 document.getElementById('paginationControls').style.display = 'none';
                 return;
             }
@@ -936,7 +841,7 @@
                 const isPart = (cardType === 'parts' || cardType === 'part');
 
                 const card = document.createElement('div');
-                card.className = 'product-card tech-card p-5 rounded-2xl flex flex-col sm:flex-row gap-6 items-start tech-glow-cyan';
+                card.className = 'product-card p-4 bg-white rounded flex flex-col sm:flex-row gap-4 items-start';
                 card.setAttribute('data-city', item.city || '');
                 card.setAttribute('data-brand', item.brand || '');
                 card.setAttribute('data-model', item.model || '');
@@ -949,71 +854,71 @@
                 const photosJSON = JSON.stringify(photos).replace(/"/g, '&quot;');
 
                 card.innerHTML = `
-                    <div class="w-full sm:w-64 h-48 bg-[#030712] rounded-xl overflow-hidden relative flex-shrink-0 cursor-pointer group border border-cyan-500/30 shadow-inner" onclick="openGallery(${photosJSON})">
+                    <div class="w-full sm:w-64 h-40 bg-gray-900 rounded overflow-hidden relative flex-shrink-0 cursor-pointer group" onclick="openGallery(${photosJSON})">
                         <img src="${mainPhoto}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                         
                         ${isPart ? 
-                            `<span class="absolute top-2.5 left-2.5 px-2.5 py-1 bg-orange-600 text-white font-bold text-[10px] rounded-lg font-mono flex items-center gap-1 shadow-md">⚙️ OEM PART</span>` :
-                            `<span class="absolute top-2.5 left-2.5 px-2.5 py-1 bg-cyan-600 text-slate-950 font-black text-[10px] rounded-lg font-mono flex items-center gap-1 shadow-md"><i class="fa-solid fa-microchip"></i> OBD-OK</span>`
+                            `<span class="absolute top-2 left-2 px-2 py-0.5 bg-orange-600 text-white font-bold text-[10px] rounded flex items-center gap-1">⚙️ Запчастина</span>` :
+                            `<span class="absolute top-2 left-2 px-2 py-0.5 bg-green-600 text-white font-bold text-[10px] rounded flex items-center gap-1"><i class="fa-solid fa-circle-check"></i> Перевірено VIN</span>`
                         }
                         
-                        <span class="absolute bottom-2.5 right-2.5 px-2.5 py-1 bg-black/80 text-cyan-400 font-bold text-[10px] rounded-lg flex items-center gap-1 font-mono border border-cyan-500/30">
-                            <i class="fa-solid fa-camera"></i> ${photosCount} фото
+                        <span class="absolute bottom-2 right-2 px-2 py-0.5 bg-black/70 text-white font-bold text-[10px] rounded flex items-center gap-1 backdrop-blur-sm">
+                            <i class="fa-solid fa-camera"></i> ${photosCount}
                         </span>
                     </div>
 
-                    <div class="flex-grow space-y-2.5 text-xs w-full">
+                    <div class="flex-grow space-y-1.5 text-xs w-full">
                         <div class="flex justify-between items-start">
                             <div>
-                                <h3 class="font-bold ${isPart ? 'text-orange-400' : 'text-cyan-400'} text-base hover:underline cursor-pointer leading-snug tech-header-font" onclick="openGallery(${photosJSON})">${item.title}</h3>
-                                <div class="text-[11px] text-slate-400 font-mono">${isPart ? `Сумісність: ${item.brand || ''} ${item.model || ''} (${item.year || ''})` : (item.generation || 'Телеметричний пакет')}</div>
+                                <h3 class="font-bold ${isPart ? 'text-orange-700' : 'text-blue-700'} text-lg hover:underline cursor-pointer leading-tight" onclick="openGallery(${photosJSON})">${item.title}</h3>
+                                <div class="text-[11px] text-gray-500 font-semibold">${isPart ? `Сумісність: ${item.brand || ''} ${item.model || ''} (${item.year || ''})` : (item.generation || 'I покоління')}</div>
                             </div>
                         </div>
 
-                        <div class="flex items-baseline gap-3 pt-1">
-                            <span class="text-xl font-black text-emerald-400 font-mono" style="text-shadow: 0 0 12px rgba(16,185,129,0.4);">${priceUsd.toLocaleString()} $</span>
-                            <span class="text-xs text-slate-400 font-mono">≈ ${priceUah.toLocaleString()} грн</span>
+                        <div class="flex items-baseline gap-2 pt-0.5">
+                            <span class="text-xl font-black text-green-700">${priceUsd.toLocaleString()} $</span>
+                            <span class="text-xs text-gray-500 font-semibold">• ${priceUah.toLocaleString()} грн</span>
                         </div>
 
                         ${isPart ? `
-                            <div class="grid grid-cols-2 gap-y-1.5 text-slate-300 text-xs pt-1">
-                                <div class="flex items-center gap-2"><i class="fa-solid fa-screwdriver-wrench text-orange-400"></i> Стан: <b>${item.partCondition || 'б/в'}</b></div>
-                                <div class="flex items-center gap-2"><i class="fa-solid fa-location-dot text-cyan-400"></i> ${item.city || 'Костопіль'}</div>
+                            <div class="grid grid-cols-2 gap-y-1 text-gray-700 text-xs pt-1">
+                                <div class="flex items-center gap-1.5"><i class="fa-solid fa-tag text-orange-500"></i> Стан: <b>${item.partCondition || 'б/в'}</b></div>
+                                <div class="flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-red-500"></i> ${item.city || 'Костопіль'}</div>
                             </div>
 
-                            <div class="flex flex-wrap items-center gap-2 pt-2">
-                                <span class="part-number-tag px-3 py-1.5 text-[10px] rounded-lg">
-                                    <i class="fa-solid fa-barcode text-orange-400"></i> OEM / Part №: ${item.partNumber || 'Не вказано'}
+                            <div class="flex flex-wrap items-center gap-2 pt-1.5">
+                                <span class="part-number-tag px-2 py-0.5 text-[10px] rounded">
+                                    <i class="fa-solid fa-barcode text-orange-600"></i> OEM / Part №: ${item.partNumber || 'Не вказано'}
                                 </span>
                             </div>
                         ` : `
-                            <div class="grid grid-cols-2 gap-y-1.5 text-slate-300 text-xs pt-1 font-mono">
-                                <div class="flex items-center gap-2"><i class="fa-regular fa-clock text-cyan-400"></i> ${item.mileage || '175'} тис. км</div>
-                                <div class="flex items-center gap-2"><i class="fa-solid fa-location-dot text-cyan-400"></i> ${item.city || 'Костопіль'}</div>
-                                <div class="flex items-center gap-2"><i class="fa-solid fa-gas-pump text-cyan-400"></i> ${item.engine || 'Дизель, 2.0 L'}</div>
-                                <div class="flex items-center gap-2"><i class="fa-solid fa-gear text-cyan-400"></i> ${item.gearbox || 'Механіка'}</div>
+                            <div class="grid grid-cols-2 gap-y-1 text-gray-700 text-xs pt-1">
+                                <div class="flex items-center gap-1.5"><i class="fa-regular fa-clock text-blue-600"></i> ${item.mileage || '18'} тис. км</div>
+                                <div class="flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-red-500"></i> ${item.city || 'Костопіль'}</div>
+                                <div class="flex items-center gap-1.5"><i class="fa-solid fa-gas-pump text-gray-600"></i> ${item.engine || 'Дизель, 1.9 л.'}</div>
+                                <div class="flex items-center gap-1.5"><i class="fa-solid fa-gear text-gray-600"></i> ${item.gearbox || 'Механіка'}</div>
                             </div>
 
-                            <div class="flex flex-wrap items-center gap-2 pt-2 font-mono">
-                                <span class="state-number-tag px-3 py-1.5 text-[10px] rounded-lg">
-                                    <span class="state-flag">UA</span> ${item.stateNum || 'BK 1234 AB'}
+                            <div class="flex flex-wrap items-center gap-2 pt-1.5">
+                                <span class="state-number-tag px-2 py-0.5 text-[10px] rounded">
+                                    <span class="state-flag">UA</span> ${item.stateNum || 'CA 9345 KO'}
                                 </span>
-                                <span class="vin-number-tag px-3 py-1.5 text-[10px] rounded-lg">
-                                    <i class="fa-solid fa-shield-halved text-purple-400"></i> VIN: ${item.vin || 'WOL0000...'}
+                                <span class="vin-number-tag px-2 py-0.5 text-[10px] rounded">
+                                    <i class="fa-solid fa-shield-halved text-green-700"></i> VIN ${item.vin || 'LGWFF6A52NH924185'}
                                 </span>
                             </div>
                         `}
 
-                        <p class="text-slate-400 text-xs line-clamp-1 pt-1 font-mono">${item.description || 'Інженерний опис вузла.'}</p>
+                        <p class="text-gray-600 text-xs line-clamp-1 pt-1">${item.description || 'Детальний опис товару.'}</p>
 
-                        <div class="flex justify-between items-center pt-3.5 border-t border-slate-800 text-[11px] text-slate-400">
-                            <div class="flex items-center gap-1.5 font-mono">
-                                <i class="fa-regular fa-calendar-days"></i> ${item.dateStr || '11.11.2026'}
+                        <div class="flex justify-between items-center pt-2 border-t border-gray-100 text-[11px] text-gray-400">
+                            <div class="flex items-center gap-1">
+                                <i class="fa-regular fa-clock"></i> ${item.dateStr || '10.11.2026'}
                             </div>
-                            <div class="flex items-center gap-4 text-slate-300">
-                                <a href="tel:${item.contact}" class="font-bold text-cyan-400 hover:underline tech-mono">📞 ${item.contact}</a>
-                                <button onclick="alert('Додано в обране')" class="hover:text-pink-500 transition-colors"><i class="fa-regular fa-heart text-sm"></i></button>
-                                ${isOwnerOrAdmin ? `<button class="delete-btn text-red-400 font-bold hover:underline font-mono" data-id="${docId}">Видалити</button>` : ''}
+                            <div class="flex items-center gap-4 text-gray-500">
+                                <a href="tel:${item.contact}" class="font-bold text-blue-600 hover:underline">📞 ${item.contact}</a>
+                                <button onclick="alert('Додано в обране')" class="hover:text-red-600"><i class="fa-regular fa-heart text-sm"></i></button>
+                                ${isOwnerOrAdmin ? `<button class="delete-btn text-red-500 font-bold hover:underline" data-id="${docId}">Видалити</button>` : ''}
                             </div>
                         </div>
                     </div>
@@ -1024,10 +929,10 @@
             document.querySelectorAll('.delete-btn').forEach(btn => {
                 btn.addEventListener('click', async (e) => {
                     const id = e.currentTarget.getAttribute('data-id');
-                    if (confirm('Видалити цей запис із хмари?')) {
+                    if (confirm('Видалити це оголошення з бази?')) {
                         try {
                             await deleteDoc(doc(db, "auto_listings", id));
-                            alert('Запис успішно видалено!');
+                            alert('Оголошення видалено!');
                         } catch (err) {
                             alert('Помилка: ' + err.message);
                         }

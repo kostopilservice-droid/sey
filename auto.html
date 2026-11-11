@@ -211,7 +211,7 @@
                         <button id="btnCatParts" onClick="setMainCategory('parts')" class="px-3 py-1 bg-red-700 text-white rounded-t hover:bg-red-800">Запчастини</button>
                     </div>
 
-                    <select id="filterBrand" onChange="updateModelDropdown()" class="w-full px-3 py-2 text-xs bg-white text-gray-800 rounded border-none outline-none font-semibold">
+                    <select id="filterBrand" onChange="updateModelDropdown(); filterCards();" class="w-full px-3 py-2 text-xs bg-white text-gray-800 rounded border-none outline-none font-semibold">
                         <option value="">Марка (всі)</option>
                         <option value="Renault">Renault</option>
                         <option value="Haval">Haval</option>
@@ -228,7 +228,7 @@
                         <option value="Citroen">Citroen</option>
                     </select>
 
-                    <select id="filterModel" class="w-full px-3 py-2 text-xs bg-white text-gray-800 rounded border-none outline-none font-semibold">
+                    <select id="filterModel" onChange="filterCards()" class="w-full px-3 py-2 text-xs bg-white text-gray-800 rounded border-none outline-none font-semibold">
                         <option value="">Модель (спочатку оберіть марку)</option>
                     </select>
 
@@ -1004,8 +1004,8 @@
                 <div class="product-card p-4 bg-white rounded flex flex-col sm:flex-row gap-4 items-start w-full"
                      data-city="${rawCity.toLowerCase()}"
                      data-region="${(item.region || '').toLowerCase()}"
-                     data-brand="${item.brand || ''}"
-                     data-model="${item.model || ''}"
+                     data-brand="${(item.brand || '').toLowerCase()}"
+                     data-model="${(item.model || '').toLowerCase()}"
                      data-year="${item.year || '2022'}"
                      data-price="${priceUsd}"
                      data-type="${isPart ? 'parts' : 'auto'}"
@@ -1261,6 +1261,8 @@
                 const text = card.innerText.toLowerCase();
                 const cardCity = (card.getAttribute('data-city') || '').replace(/,/g, '').trim();
                 const cardRegion = (card.getAttribute('data-region') || '').toLowerCase();
+                const cardBrand = card.getAttribute('data-brand') || '';
+                const cardModel = card.getAttribute('data-model') || '';
                 const cardYear = parseInt(card.getAttribute('data-year')) || 2022;
                 const cardPrice = parseFloat(card.getAttribute('data-price')) || 0;
                 const cardType = card.getAttribute('data-type') || 'auto';
@@ -1275,10 +1277,11 @@
                     }
                 }
 
-                const matchBrand = !brandVal || text.includes(brandVal);
-                const matchModel = !modelVal || text.includes(modelVal);
-                // Гнучка перевірка області: шукає збіг за першим словом області (напр. "рівненська")
-                const matchRegion = !regionVal || cardRegion.includes(regionVal.split(' ')[0]) || text.includes(regionVal.split(' ')[0]);
+                // Суворе порівняння марки та моделі за атрибутами картки
+                const matchBrand = !brandVal || cardBrand === brandVal;
+                const matchModel = !modelVal || cardModel === modelVal;
+                
+                const matchRegion = !regionVal || cardRegion.includes(regionVal.split(' ')[0]);
                 const matchCity = !cityVal || cardCity.includes(cityVal);
                 const matchPartNum = !partNumVal || cardPartNum.includes(partNumVal) || text.includes(partNumVal);
                 const matchYear = (cardYear >= minYear && cardYear <= maxYear);

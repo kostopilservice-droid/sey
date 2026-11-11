@@ -48,11 +48,6 @@
             transition: background 0.2s, transform 0.1s;
         }
         .btn-blue-search:hover { background-color: #1565c0; }
-        .btn-red-expanded {
-            background-color: #c62828;
-            transition: background 0.2s;
-        }
-        .btn-red-expanded:hover { background-color: #b71c1c; }
         .btn-green-add {
             background-color: #43a047;
             transition: background 0.2s;
@@ -118,43 +113,50 @@
     <!-- ТОП-БАР НАВІГАЦІЇ -->
     <header class="w-full">
         <div class="ria-header-top py-1.5">
-            <div class="max-w-6xl mx-auto px-4 flex items-center justify-between text-[11px] text-gray-600">
-                <div class="flex items-center gap-5">
-                    <a href="index.html" class="hover:text-red-600 font-semibold"><i class="fa-solid fa-house mr-1"></i>Головна</a>
-                    <a href="auto.html" class="hover:text-red-600 font-semibold">Автобазар</a>
-                    <a href="baza.html" class="hover:text-red-600 font-semibold">База знань</a>
-                    <a href="chat.html" class="hover:text-red-600 font-semibold">Чат</a>
-                    <span class="text-blue-600 font-bold"><i class="fa-solid fa-flag"></i> Підтримка ЗСУ</span>
+            <div class="max-w-6xl mx-auto px-4 flex flex-wrap items-center justify-between text-[11px] text-gray-600 gap-2">
+                <div class="flex items-center gap-3 sm:gap-5 overflow-x-auto py-1">
+                    <a href="index.html" class="hover:text-red-600 font-semibold whitespace-nowrap"><i class="fa-solid fa-house mr-1"></i>Головна</a>
+                    <a href="auto.html" class="hover:text-red-600 font-semibold whitespace-nowrap">Автобазар</a>
+                    <a href="baza.html" class="hover:text-red-600 font-semibold whitespace-nowrap">База знань</a>
+                    <a href="chat.html" class="hover:text-red-600 font-semibold whitespace-nowrap">Чат</a>
+                    <span class="text-blue-600 font-bold whitespace-nowrap"><i class="fa-solid fa-flag"></i> Підтримка ЗСУ</span>
                 </div>
                 
-                <div class="flex items-center gap-4">
-                    <a href="#favoritesSection" class="hover:text-red-600"><i class="fa-regular fa-heart"></i> Обране</a>
-                    <span id="authStatusBadge" class="font-bold text-gray-700 cursor-pointer hover:text-red-600" onClick="handleAuthClick()">👤 Особистий кабінет (Гість)</span>
+                <div class="flex items-center gap-3">
+                    <a href="#favoritesSection" class="hover:text-red-600 whitespace-nowrap"><i class="fa-regular fa-heart"></i> Обране</a>
+                    <span id="authStatusBadge" class="font-bold text-gray-700 cursor-pointer hover:text-red-600 whitespace-nowrap" onClick="handleAuthClick()">👤 Особистий кабінет (Гість)</span>
                 </div>
             </div>
         </div>
 
         <!-- ОСНОВНА ШАПКА NEOSERVICE -->
         <div class="ria-header-main py-3">
-            <div class="max-w-6xl mx-auto px-4 flex items-center justify-between">
+            <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
                 
-                <a href="index.html" class="flex items-center gap-2 text-decoration-none">
-                    <div class="bg-[#db4437] text-white font-black text-xl px-3 py-1 rounded tracking-tight shadow-sm flex items-center gap-1">
-                        <i class="fa-solid fa-building"></i> NEO<span class="text-yellow-300">SERVICE</span>
-                    </div>
-                    <div class="text-[11px] text-gray-500 font-bold uppercase tracking-wider hidden sm:block">
-                        Нерухомість & Будівництво
-                    </div>
-                </a>
+                <div class="flex items-center justify-between w-full sm:w-auto">
+                    <a href="index.html" class="flex items-center gap-2 text-decoration-none">
+                        <div class="bg-[#db4437] text-white font-black text-xl px-3 py-1 rounded tracking-tight shadow-sm flex items-center gap-1">
+                            <i class="fa-solid fa-building"></i> NEO<span class="text-yellow-300">SERVICE</span>
+                        </div>
+                        <div class="text-[11px] text-gray-500 font-bold uppercase tracking-wider hidden sm:block">
+                            Нерухомість & Будівництво
+                        </div>
+                    </a>
 
-                <nav class="hidden md:flex items-center gap-6 text-sm font-bold text-gray-800">
-                    <a href="auto.html" class="hover:text-red-600 pb-1 text-red-600"><i class="fa-solid fa-car"></i> Автобазар</a>
-                    <a href="#apartments" onClick="setMainCategory('apartment')" class="hover:text-red-600 pb-1">Квартири</a>
-                    <a href="#houses" onClick="setMainCategory('house')" class="hover:text-red-600 pb-1">Будинки та дачі</a>
-                    <a href="commercial.html" class="hover:text-red-600 pb-1">Комерція</a>
+                    <button id="toggleFormBtnMobile" onClick="toggleAddForm()" class="sm:hidden btn-green-add text-white font-bold px-3 py-1.5 rounded text-[11px] flex items-center gap-1 shadow-md">
+                        <i class="fa-solid fa-plus-circle"></i> Додати
+                    </button>
+                </div>
+
+                <!-- НАВІГАЦІЯ КАТЕГОРІЙ (Працює і на мобільних, і на ПК) -->
+                <nav class="flex items-center gap-3 sm:gap-6 text-xs sm:text-sm font-bold text-gray-800 overflow-x-auto w-full sm:w-auto py-1">
+                    <a href="auto.html" class="hover:text-red-600 text-red-600 whitespace-nowrap"><i class="fa-solid fa-car"></i> Автобазар</a>
+                    <button onClick="setMainCategory('apartment')" class="hover:text-red-600 whitespace-nowrap">🏢 Квартири</button>
+                    <button onClick="setMainCategory('house')" class="hover:text-red-600 whitespace-nowrap">🏡 Будинки</button>
+                    <button onClick="setMainCategory('commercial')" class="hover:text-red-600 text-blue-700 whitespace-nowrap">🏬 Комерція</button>
                 </nav>
 
-                <button id="toggleFormBtn" onClick="toggleAddForm()" class="btn-green-add text-white font-bold px-4 py-2 rounded text-xs flex items-center gap-1.5 shadow-md">
+                <button id="toggleFormBtn" onClick="toggleAddForm()" class="hidden sm:flex btn-green-add text-white font-bold px-4 py-2 rounded text-xs items-center gap-1.5 shadow-md">
                     <i class="fa-solid fa-plus-circle"></i> Додати об'єкт нерухомості
                 </button>
             </div>
@@ -179,10 +181,12 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 
                 <div class="space-y-3">
-                    <div class="flex gap-1 text-[11px] font-bold">
-                        <button id="btnCatAll" onClick="setMainCategory('all')" class="px-3 py-1 bg-white text-red-600 rounded-t font-bold">Всі об'єкти</button>
-                        <button id="btnCatApt" onClick="setMainCategory('apartment')" class="px-3 py-1 bg-red-700 text-white rounded-t hover:bg-red-800">Квартири</button>
-                        <button id="btnCatHouse" onClick="setMainCategory('house')" class="px-3 py-1 bg-red-700 text-white rounded-t hover:bg-red-800">Будинки</button>
+                    <!-- Додано кнопку "Комерція" у фільтри -->
+                    <div class="flex flex-wrap gap-1 text-[11px] font-bold">
+                        <button id="btnCatAll" onClick="setMainCategory('all')" class="px-2.5 py-1 bg-white text-red-600 rounded-t font-bold">Всі</button>
+                        <button id="btnCatApt" onClick="setMainCategory('apartment')" class="px-2.5 py-1 bg-red-700 text-white rounded-t hover:bg-red-800">Квартири</button>
+                        <button id="btnCatHouse" onClick="setMainCategory('house')" class="px-2.5 py-1 bg-red-700 text-white rounded-t hover:bg-red-800">Будинки</button>
+                        <button id="btnCatComm" onClick="setMainCategory('commercial')" class="px-2.5 py-1 bg-red-700 text-white rounded-t hover:bg-red-800">Комерція</button>
                     </div>
 
                     <select id="filterType" onChange="filterCards()" class="w-full px-3 py-2 text-xs bg-white text-gray-800 rounded border-none outline-none font-semibold">
@@ -201,8 +205,7 @@
                     </select>
                 </div>
 
-                <div class="space-y-3 pt-6 md:pt-7">
-                    <!-- ВИБІР ОБЛАСТІ ТА МІСТА ДЛЯ ПОШУКУ -->
+                <div class="space-y-3 pt-2 md:pt-7">
                     <select id="filterRegion" onChange="updateFilterCities(); filterCards();" class="w-full px-3 py-2 text-xs bg-white text-gray-800 rounded border-none outline-none font-semibold">
                         <option value="">Регіон: Всі області України</option>
                         <option value="Рівненська область">Рівненська область</option>
@@ -261,7 +264,7 @@
 
             <form id="addListingForm" class="space-y-4 text-xs">
                 
-                <div class="bg-blue-50 p-3 rounded border border-blue-200 flex items-center gap-6">
+                <div class="bg-blue-50 p-3 rounded border border-blue-200 flex flex-wrap items-center gap-4">
                     <span class="font-bold text-blue-900">Категорія об'єкта:</span>
                     <label class="flex items-center gap-1.5 cursor-pointer font-semibold text-gray-800">
                         <input type="radio" name="listingCategory" value="apartment" checked> 🏢 Квартира
@@ -286,10 +289,10 @@
                     </div>
                     <div>
                         <label class="block font-semibold mb-1 text-gray-600">Заголовок оголошення *</label>
-                        <input type="text" id="formTitle" required placeholder="напр. 2-к квартира в центрі" class="w-full p-2 border rounded">
+                        <input type="text" id="formTitle" required placeholder="напр. Приміщення під магазин в центрі" class="w-full p-2 border rounded">
                     </div>
                     <div>
-                        <label class="block font-semibold mb-1 text-gray-600">Кількість кімнат</label>
+                        <label class="block font-semibold mb-1 text-gray-600">Кількість кімнат / приміщень</label>
                         <select id="formRooms" class="w-full p-2 border rounded font-semibold bg-white">
                             <option value="1">1 кімната</option>
                             <option value="2">2 кімнати</option>
@@ -357,14 +360,14 @@
                     </div>
                     <div>
                         <label class="block font-semibold mb-1 text-gray-600">Фото 1 (Головне посилання URL) *</label>
-                        <input type="url" id="adPhoto1" required placeholder="https://..." class="p-2 border rounded">
+                        <input type="url" id="adPhoto1" required placeholder="https://..." class="w-full p-2 border rounded">
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <input type="url" id="adPhoto2" placeholder="Фото 2 https://..." class="p-2 border rounded">
-                    <input type="url" id="adPhoto3" placeholder="Фото 3 https://..." class="p-2 border rounded">
-                    <input type="url" id="adPhoto4" placeholder="Фото 4 https://..." class="p-2 border rounded">
+                    <input type="url" id="adPhoto2" placeholder="Фото 2 https://..." class="w-full p-2 border rounded">
+                    <input type="url" id="adPhoto3" placeholder="Фото 3 https://..." class="w-full p-2 border rounded">
+                    <input type="url" id="adPhoto4" placeholder="Фото 4 https://..." class="w-full p-2 border rounded">
                 </div>
 
                 <div>
@@ -409,9 +412,9 @@
                     <h3 class="font-bold text-gray-900 mb-2 border-b pb-1">Категорії нерухомості</h3>
                     <ul class="space-y-2 font-semibold">
                         <li><a href="auto.html" class="hover:underline flex justify-between text-red-600 font-bold"><i class="fa-solid fa-car mr-1"></i> Автобазар <span>&rsaquo;</span></a></li>
-                        <li><a href="#apartments" onClick="setMainCategory('apartment')" class="hover:underline flex justify-between text-blue-700">Квартири <span>&rsaquo;</span></a></li>
-                        <li><a href="#houses" onClick="setMainCategory('house')" class="hover:underline flex justify-between text-blue-700">Будинки та дачі <span>&rsaquo;</span></a></li>
-                        <li><a href="commercial.html" class="hover:underline flex justify-between text-blue-700">Комерція / Ділянки <span>&rsaquo;</span></a></li>
+                        <li><button onClick="setMainCategory('apartment')" class="hover:underline flex justify-between text-blue-700 w-full text-left">🏢 Квартири <span>&rsaquo;</span></button></li>
+                        <li><button onClick="setMainCategory('house')" class="hover:underline flex justify-between text-blue-700 w-full text-left">🏡 Будинки та дачі <span>&rsaquo;</span></button></li>
+                        <li><button onClick="setMainCategory('commercial')" class="hover:underline flex justify-between text-blue-700 font-bold w-full text-left">🏬 Комерція / Ділянки <span>&rsaquo;</span></button></li>
                     </ul>
                 </div>
             </div>
@@ -550,10 +553,12 @@
             currentUser = user;
             const badge = document.getElementById('authStatusBadge');
             const toggleFormBtn = document.getElementById('toggleFormBtn');
+            const toggleFormBtnMobile = document.getElementById('toggleFormBtnMobile');
             
             if (user) {
                 if (badge) badge.textContent = `👤 ${user.email.split('@')[0]}`;
                 if (toggleFormBtn) toggleFormBtn.innerHTML = `<i class="fa-solid fa-plus-circle"></i> Додати об'єкт`;
+                if (toggleFormBtnMobile) toggleFormBtnMobile.innerHTML = `<i class="fa-solid fa-plus-circle"></i> Додати`;
                 
                 onSnapshot(doc(db, "real_estate_favorites", user.uid), (docSnap) => {
                     if (docSnap.exists()) {
@@ -567,6 +572,7 @@
             } else {
                 if (badge) badge.textContent = "👤 Особистий кабінет (Гість)";
                 if (toggleFormBtn) toggleFormBtn.innerHTML = `<i class="fa-solid fa-lock"></i> Увійдіть для публікації`;
+                if (toggleFormBtnMobile) toggleFormBtnMobile.innerHTML = `<i class="fa-solid fa-lock"></i> Вхід`;
                 userFavoritesList = [];
                 renderListings(allListingsData);
                 renderFavoritesSection();
@@ -596,11 +602,13 @@
             const btnAll = document.getElementById('btnCatAll');
             const btnApt = document.getElementById('btnCatApt');
             const btnHouse = document.getElementById('btnCatHouse');
+            const btnComm = document.getElementById('btnCatComm');
 
-            if (btnAll && btnApt && btnHouse) {
-                btnAll.className = "px-3 py-1 rounded-t " + (cat === 'all' ? "bg-white text-red-600 font-bold" : "bg-red-700 text-white hover:bg-red-800");
-                btnApt.className = "px-3 py-1 rounded-t " + (cat === 'apartment' ? "bg-white text-red-600 font-bold" : "bg-red-700 text-white hover:bg-red-800");
-                btnHouse.className = "px-3 py-1 rounded-t " + (cat === 'house' ? "bg-white text-red-600 font-bold" : "bg-red-700 text-white hover:bg-red-800");
+            if (btnAll && btnApt && btnHouse && btnComm) {
+                btnAll.className = "px-2.5 py-1 rounded-t " + (cat === 'all' ? "bg-white text-red-600 font-bold" : "bg-red-700 text-white hover:bg-red-800");
+                btnApt.className = "px-2.5 py-1 rounded-t " + (cat === 'apartment' ? "bg-white text-red-600 font-bold" : "bg-red-700 text-white hover:bg-red-800");
+                btnHouse.className = "px-2.5 py-1 rounded-t " + (cat === 'house' ? "bg-white text-red-600 font-bold" : "bg-red-700 text-white hover:bg-red-800");
+                btnComm.className = "px-2.5 py-1 rounded-t " + (cat === 'commercial' ? "bg-white text-red-600 font-bold" : "bg-red-700 text-white hover:bg-red-800");
             }
 
             const mainHeaderTitle = document.getElementById('mainHeaderTitle');
@@ -616,8 +624,8 @@
                 if (feedTitle) feedTitle.textContent = "Каталог будинків";
                 if (breadcrumbCategory) breadcrumbCategory.textContent = "Будинки";
             } else if (cat === 'commercial') {
-                if (mainHeaderTitle) mainHeaderTitle.textContent = "Комерційна нерухомість та ділянки";
-                if (feedTitle) feedTitle.textContent = "Комерційні об'єкти";
+                if (mainHeaderTitle) mainHeaderTitle.textContent = "Комерційна нерухомість та земельні ділянки";
+                if (feedTitle) feedTitle.textContent = "Комерційні об'єкти та ділянки";
                 if (breadcrumbCategory) breadcrumbCategory.textContent = "Комерція";
             } else {
                 if (mainHeaderTitle) mainHeaderTitle.textContent = "Продаж та оренда нерухомості в Україні";
@@ -892,7 +900,7 @@
         window.prevGalleryImage = function(e) {
             if (e) e.stopPropagation();
             if (currentGalleryPhotos.length <= 1) return;
-            currentPhotoIndex = (currentPhotoIndex - 1 + currentGalleryPhotos.length) % currentGalleryPhotos.length;
+            currentPhotoIndex = (currentGalleryPhotos.length - 1 + currentGalleryPhotos.length) % currentGalleryPhotos.length;
             updateGalleryUI();
         };
 

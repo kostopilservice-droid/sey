@@ -905,7 +905,8 @@
             const priceUahVal = Math.round(priceVal * USD_TO_UAH_RATE);
 
             const region = document.getElementById('formRegion').value;
-            const city = document.getElementById('formCity').value;
+            // Очищаємо місто від можливих зайвих ком або пробілів
+            const city = (document.getElementById('formCity').value || '').replace(/,/g, '').trim();
 
             const p1 = document.getElementById('adPhoto1').value.trim();
             const p2 = document.getElementById('adPhoto2').value.trim();
@@ -997,13 +998,13 @@
             const isFav = userFavoritesList.includes(docId);
             const photosJSON = JSON.stringify(photos).replace(/"/g, '&quot;');
 
-            // Робимо місто з першої великої літери для красивого виведення
-            const rawCity = item.city || 'Костопіль';
+            // Очищаємо місто від ком і робимо першу літера великою
+            const rawCity = (item.city || 'Костопіль').replace(/,/g, '').trim();
             const formattedCity = rawCity.charAt(0).toUpperCase() + rawCity.slice(1);
 
             return `
                 <div class="product-card p-4 bg-white rounded flex flex-col sm:flex-row gap-4 items-start w-full"
-                     data-city="${(item.city || '').toLowerCase()}"
+                     data-city="${rawCity.toLowerCase()}"
                      data-region="${(item.region || '').toLowerCase()}"
                      data-brand="${item.brand || ''}"
                      data-model="${item.model || ''}"
@@ -1133,7 +1134,7 @@
                 const priceUsd = item.priceUSD || 0;
                 const isPart = (item.type === 'parts' || item.type === 'part');
                 const photosJSON = JSON.stringify(photos).replace(/"/g, '&quot;');
-                const rawCity = item.city || 'Костопіль';
+                const rawCity = (item.city || 'Костопіль').replace(/,/g, '').trim();
                 const formattedCity = rawCity.charAt(0).toUpperCase() + rawCity.slice(1);
 
                 const miniCard = document.createElement('div');
@@ -1247,7 +1248,8 @@
             const brandVal = (document.getElementById('filterBrand')?.value || '').toLowerCase();
             const modelVal = (document.getElementById('filterModel')?.value || '').toLowerCase();
             const regionVal = (document.getElementById('filterRegion')?.value || '').toLowerCase();
-            const cityVal = (document.getElementById('filterCity')?.value || '').toLowerCase();
+            // Очищаємо пошуковий запит міста від ком на випадок збігів
+            const cityVal = (document.getElementById('filterCity')?.value || '').replace(/,/g, '').trim().toLowerCase();
             const partNumVal = (document.getElementById('filterPartNumber')?.value || '').toLowerCase();
             
             const minYear = parseInt(document.getElementById('filterYearMin')?.value) || 0;
@@ -1260,8 +1262,8 @@
 
             cards.forEach(card => {
                 const text = card.innerText.toLowerCase();
-                const cardCity = card.getAttribute('data-city') || '';
-                const cardRegion = card.getAttribute('data-region') || '';
+                const cardCity = (card.getAttribute('data-city') || '').replace(/,/g, '').trim();
+                const cardRegion = (card.getAttribute('data-region') || '').toLowerCase();
                 const cardYear = parseInt(card.getAttribute('data-year')) || 2022;
                 const cardPrice = parseFloat(card.getAttribute('data-price')) || 0;
                 const cardType = card.getAttribute('data-type') || 'auto';
@@ -1308,7 +1310,7 @@
 
             const paginationEl = document.getElementById('paginationControls');
             const pageIndicator = document.getElementById('pageIndicator');
-            const prevBtn = document.getElementById('prevPageBtn');
+            const prevBtn = document.getElementById('prevPage`btn');
             const nextBtn = document.getElementById('nextPageBtn');
 
             if (paginationEl && pageIndicator) {

@@ -238,11 +238,11 @@
                 </div>
 
                 <div class="space-y-3 pt-6 md:pt-7">
-                    <!-- ВИБІР ОБЛАСТІ ТА МІСТА -->
+                    <!-- ЧИСТІ НАЗВИ ОБЛАСТЕЙ УКРАЇНИ -->
                     <select id="filterRegion" onChange="updateFilterCities(); filterCards();" class="w-full px-3 py-2 text-xs bg-white text-gray-800 rounded border-none outline-none font-semibold">
                         <option value="">Регіон: Всі області України</option>
-                        <option value="Рівненська область">Рівненська область (м. Костопіль)</option>
-                        <option value="Київська область">Київська область (м. Київ)</option>
+                        <option value="Рівненська область">Рівненська область</option>
+                        <option value="Київська область">Київська область</option>
                         <option value="Львівська область">Львівська область</option>
                         <option value="Волинська область">Волинська область</option>
                         <option value="Житомирська область">Житомирська область</option>
@@ -250,7 +250,7 @@
                         <option value="Дніпропетровська область">Дніпропетровська область</option>
                         <option value="Одеська область">Одеська область</option>
                         <option value="Харківська область">Харківська область</option>
-                        <option value="Черкаська область">Черкаська область (м. Сміла)</option>
+                        <option value="Черкаська область">Черкаська область</option>
                         <option value="Хмельницька область">Хмельницька область</option>
                         <option value="Івано-Франківська область">Івано-Франківська область</option>
                         <option value="Закарпатська область">Закарпатська область</option>
@@ -1187,6 +1187,7 @@
         window.prevGalleryImage = function(e) {
             if (e) e.stopPropagation();
             if (currentGalleryPhotos.length <= 1) return;
+            currentGalleryPhotos = photos;
             currentPhotoIndex = (currentGalleryPhotos.length - 1 + currentGalleryPhotos.length) % currentGalleryPhotos.length;
             updateGalleryUI();
         };
@@ -1271,8 +1272,8 @@
 
                 const matchBrand = !brandVal || text.includes(brandVal);
                 const matchModel = !modelVal || text.includes(modelVal);
-                const matchRegion = !regionVal || cardRegion.includes(regionVal) || text.includes(regionVal);
-                const matchCity = !cityVal || cardCity.includes(cityVal) || text.includes(cityVal);
+                const matchRegion = !regionVal || cardRegion.includes(regionVal);
+                const matchCity = !cityVal || cardCity.includes(cityVal);
                 const matchPartNum = !partNumVal || cardPartNum.includes(partNumVal) || text.includes(partNumVal);
                 const matchYear = (cardYear >= minYear && cardYear <= maxYear);
                 const matchPrice = (cardPrice >= minPrice && cardPrice <= maxPrice);

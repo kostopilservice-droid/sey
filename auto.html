@@ -579,7 +579,7 @@
 
     </main>
 
-    <!-- БЛОК ОБРАНИХ ОГОЛОШЕННЯ -->
+    <!-- БЛОК ОБРАНИХ ОГОЛОШЕНЬ -->
     <section id="favoritesSection" class="max-w-6xl mx-auto px-4 py-6 mt-8 border-t border-gray-300 w-full">
         <div class="flex items-center justify-between mb-4">
             <h2 class="text-lg font-bold text-gray-900 flex items-center gap-2">
@@ -649,7 +649,7 @@
             "Кіровоградська область": ["Кропивницький", "Олександрія", "Світловодськ", "Знам'янка"],
             "Миколаївська область": ["Миколаїв", "Первомайськ", "Южноукраїнськ", "Вознесенськ"],
             "Херсонська область": ["Херсон", "Нова Каховка", "Каховка", "Генічеськ"],
-            "Запорізька область": ["Запоріжжя", "Мелітополь", "Берлянськ", "Енергодар", "Токмак"],
+            "Запорізька область": ["Запоріжжя", "Мелітополь", "Бердянськ", "Енергодар", "Токмак"],
             "Донецька область": ["Маріуполь", "Краматорськ", "Слов'янськ", "Бахмут", "Покровськ"],
             "Луганська область": ["Сєвєродонецьк", "Лисичанськ", "Луганськ", "Алчевськ", "Рубіжне"],
             "Крим": ["Сімферополь", "Севастополь", "Ялта", "Керч", "Євпаторія"]
@@ -1316,7 +1316,8 @@
         window.prevGalleryImage = function(e) {
             if (e) e.stopPropagation();
             if (currentGalleryPhotos.length <= 1) return;
-            currentPhotoIndex = (currentPhotoIndex - 1 + currentGalleryPhotos.length) % currentGalleryPhotos.length;
+            currentGalleryPhotos = photos;
+            currentPhotoIndex = (currentGalleryPhotos.length - 1 + currentGalleryPhotos.length) % currentGalleryPhotos.length;
             updateGalleryUI();
         };
 

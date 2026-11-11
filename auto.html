@@ -160,7 +160,7 @@
                 </div>
                 
                 <div class="flex items-center gap-4">
-                    <a href="#" class="hover:text-red-600"><i class="fa-regular fa-heart"></i> Обране</a>
+                    <a href="#favoritesSection" class="hover:text-red-600"><i class="fa-regular fa-heart"></i> Обране</a>
                     <span id="authStatusBadge" class="font-bold text-gray-700 cursor-pointer hover:text-red-600" onClick="handleAuthClick()">👤 Особистий кабінет (Гість)</span>
                 </div>
             </div>
@@ -514,6 +514,20 @@
 
     </main>
 
+    <!-- БЛОК ОБРАНИХ ОГОЛОШЕНЬ ПЕРЕД ФУТЕРОМ -->
+    <section id="favoritesSection" class="max-w-6xl mx-auto px-4 py-6 mt-8 border-t border-gray-300 w-full">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg font-bold text-gray-900 flex items-center gap-2">
+                <i class="fa-solid fa-heart text-red-600"></i> Ваші вподобані оголошення (<span id="favCount">0</span>)
+            </h2>
+            <span class="text-xs text-gray-500">Персональне обране вашого аккаунта</span>
+        </div>
+        
+        <div id="favoriteProductsContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <p class="text-gray-400 text-xs italic col-span-full">Увійдіть у систему та натисніть на сердечко ❤️ на оголошенні, щоб додати його сюди.</p>
+        </div>
+    </section>
+
     <!-- LIGHTBOX ДЛЯ ПЕРЕГЛЯДУ ГАЛЕРЕЇ ФОТО -->
     <div id="lightboxModal" class="lightbox-modal">
         <span class="absolute top-4 right-6 text-white text-3xl cursor-pointer font-bold z-50 hover:text-red-400" onClick="closeGallery()">&times;</span>
@@ -540,7 +554,7 @@
     <script type="module">
         import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, doc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, doc, deleteDoc, updateDoc, setDoc, getDoc, serverTimestamp, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const ADMIN_EMAIL = "kostopilservice@gmail.com";
         const USD_TO_UAH_RATE = 45.41;
@@ -562,6 +576,9 @@
         const db = getFirestore(app);
 
         let currentUser = null;
+        let userFavoritesList = [];
+        let allListingsData = []; // Зберігаємо всі завантажені оголошення для фільтрації обраного
+
         let currentGalleryPhotos = [];
         let currentPhotoIndex = 0;
         
@@ -673,7 +690,6 @@
             else if (cat === 'auto') window.location.hash = 'auto';
             else window.location.hash = 'all';
 
-            // Кнопки у червоному блоці
             const btnAll = document.getElementById('btnCatAll');
             const btnAuto = document.getElementById('btnCatAuto');
             const btnParts = document.getElementById('btnCatParts');
@@ -682,7 +698,6 @@
             btnAuto.className = "px-3 py-1 rounded-t " + (cat === 'auto' ? "bg-white text-red-600 font-bold" : "bg-red-700 text-white hover:bg-red-800");
             btnParts.className = "px-3 py-1 rounded-t " + (cat === 'parts' ? "bg-white text-red-600 font-bold" : "bg-red-700 text-white hover:bg-red-800");
 
-            // Верхня навігація в шапці (Легкові авто / Автозапчастини)
             const navLinkAuto = document.getElementById('navLinkAuto');
             const navLinkParts = document.getElementById('navLinkParts');
             if (navLinkAuto && navLinkParts) {
@@ -698,7 +713,6 @@
                 }
             }
 
-            // Посилання в сайдбарі
             const sidebarLinkAuto = document.getElementById('sidebarLinkAuto');
             const sidebarLinkParts = document.getElementById('sidebarLinkParts');
             if (sidebarLinkAuto && sidebarLinkParts) {
@@ -745,6 +759,7 @@
             else if (window.location.hash === '#all') setMainCategory('all');
         });
 
+        // Слухач стану авторизації та завантаження вподобань користувача
         onAuthStateChanged(auth, (user) => {
             currentUser = user;
             const badge = document.getElementById('authStatusBadge');
@@ -753,9 +768,23 @@
             if (user) {
                 if (badge) badge.textContent = `👤 ${user.email.split('@')[0]}`;
                 if (toggleFormBtn) toggleFormBtn.innerHTML = `<i class="fa-solid fa-plus-circle"></i> Додати оголошення`;
+                
+                // Підписуємося на оновлення вподобань поточного користувача
+                onSnapshot(doc(db, "user_favorites", user.uid), (docSnap) => {
+                    if (docSnap.exists()) {
+                        userFavoritesList = docSnap.data().favorites || [];
+                    } else {
+                        userFavoritesList = [];
+                    }
+                    renderListings(allListingsData);
+                    renderFavoritesSection();
+                });
             } else {
                 if (badge) badge.textContent = "👤 Особистий кабінет (Гість)";
                 if (toggleFormBtn) toggleFormBtn.innerHTML = `<i class="fa-solid fa-lock"></i> Увійдіть для публікації`;
+                userFavoritesList = [];
+                renderListings(allListingsData);
+                renderFavoritesSection();
             }
         });
 
@@ -773,6 +802,40 @@
             }
             const form = document.getElementById('newAdFormCard');
             form.classList.toggle('hidden');
+        };
+
+        // Функція додавання/видалення з обраного
+        window.toggleFavorite = async function(docId) {
+            if (!currentUser) {
+                alert("Будь ласка, увійдіть у свій акаунт, щоб додавати оголошення в обране!");
+                window.location.href = 'index.html';
+                return;
+            }
+
+            const favRef = doc(db, "user_favorites", currentUser.uid);
+            const isFav = userFavoritesList.includes(docId);
+
+            try {
+                if (isFav) {
+                    await updateDoc(favRef, {
+                        favorites: arrayRemove(docId)
+                    });
+                } else {
+                    const docSnap = await getDoc(favRef);
+                    if (docSnap.exists()) {
+                        await updateDoc(favRef, {
+                            favorites: arrayUnion(docId)
+                        });
+                    } else {
+                        await setDoc(favRef, {
+                            favorites: [docId],
+                            userEmail: currentUser.email
+                        });
+                    }
+                }
+            } catch (err) {
+                console.error("Помилка оновлення обраного:", err);
+            }
         };
 
         document.getElementById('addListingForm').addEventListener('submit', async (e) => {
@@ -845,48 +908,49 @@
             }
         });
 
+        // Завантаження всіх оголошень із бази у реальному часі
         const q = query(collection(db, "auto_listings"), orderBy("createdAt", "desc"));
         onSnapshot(q, (snapshot) => {
-            const container = document.getElementById('autoProductsContainer');
-            container.innerHTML = '';
-
-            if (snapshot.empty) {
-                container.innerHTML = `<div class="bg-white border p-6 text-center text-gray-400 text-xs rounded">Немає оголошень у базі.</div>`;
-                document.getElementById('paginationControls').style.display = 'none';
-                return;
-            }
-
+            allListingsData = [];
             snapshot.forEach((docSnap) => {
-                const item = docSnap.data();
-                const docId = docSnap.id;
-                
-                const photos = (item.photosArray && item.photosArray.length > 0) 
-                    ? item.photosArray 
-                    : ['https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=600'];
-                
-                const mainPhoto = photos[0];
-                const photosCount = photos.length;
-                
-                const priceUsd = item.priceUSD || 0;
-                const priceUah = Math.round(priceUsd * USD_TO_UAH_RATE);
+                allListingsData.push({ id: docSnap.id, ...docSnap.data() });
+            });
 
-                const cardType = item.type || 'auto';
-                const isPart = (cardType === 'parts' || cardType === 'part');
+            renderListings(allListingsData);
+            renderFavoritesSection();
+            initSidebarBrands();
+            setMainCategory(activeCategoryFilter);
+        });
 
-                const card = document.createElement('div');
-                card.className = 'product-card p-4 bg-white rounded flex flex-col sm:flex-row gap-4 items-start';
-                card.setAttribute('data-city', item.city || '');
-                card.setAttribute('data-brand', item.brand || '');
-                card.setAttribute('data-model', item.model || '');
-                card.setAttribute('data-year', item.year || '2022');
-                card.setAttribute('data-price', priceUsd);
-                card.setAttribute('data-type', isPart ? 'parts' : 'auto');
-                card.setAttribute('data-partnum', (item.partNumber || '').toLowerCase());
+        // Функція побудови HTML-картки оголошення
+        function createListingCardHTML(item, docId) {
+            const photos = (item.photosArray && item.photosArray.length > 0) 
+                ? item.photosArray 
+                : ['https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=600'];
+            
+            const mainPhoto = photos[0];
+            const photosCount = photos.length;
+            
+            const priceUsd = item.priceUSD || 0;
+            const priceUah = Math.round(priceUsd * USD_TO_UAH_RATE);
 
-                const isOwnerOrAdmin = currentUser && (currentUser.email === ADMIN_EMAIL || currentUser.email === item.userEmail);
-                const photosJSON = JSON.stringify(photos).replace(/"/g, '&quot;');
+            const cardType = item.type || 'auto';
+            const isPart = (cardType === 'parts' || cardType === 'part');
 
-                card.innerHTML = `
+            const isOwnerOrAdmin = currentUser && (currentUser.email === ADMIN_EMAIL || currentUser.email === item.userEmail);
+            const isFav = userFavoritesList.includes(docId);
+            const photosJSON = JSON.stringify(photos).replace(/"/g, '&quot;');
+
+            return `
+                <div class="product-card p-4 bg-white rounded flex flex-col sm:flex-row gap-4 items-start w-full"
+                     data-city="${item.city || ''}"
+                     data-brand="${item.brand || ''}"
+                     data-model="${item.model || ''}"
+                     data-year="${item.year || '2022'}"
+                     data-price="${priceUsd}"
+                     data-type="${isPart ? 'parts' : 'auto'}"
+                     data-partnum="${(item.partNumber || '').toLowerCase()}">
+                    
                     <div class="w-full sm:w-64 h-40 bg-gray-900 rounded overflow-hidden relative flex-shrink-0 cursor-pointer group" onclick="openGallery(${photosJSON})">
                         <img src="${mainPhoto}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                         
@@ -951,32 +1015,112 @@
                             </div>
                             <div class="flex items-center gap-4 text-gray-500">
                                 <a href="tel:${item.contact}" class="font-bold text-blue-600 hover:underline">📞 ${item.contact}</a>
-                                <button onclick="alert('Додано в обране')" class="hover:text-red-600"><i class="fa-regular fa-heart text-sm"></i></button>
+                                
+                                <!-- КНОПКА ВПОДОБАЙКИ (СЕРДЕЧКО) -->
+                                <button onclick="toggleFavorite('${docId}')" class="text-base transition-transform active:scale-125 ${isFav ? 'text-red-600' : 'text-gray-400 hover:text-red-500'}" title="${isFav ? 'Видалити з обраного' : 'Додати в обране'}">
+                                    <i class="${isFav ? 'fa-solid' : 'fa-regular'} fa-heart"></i>
+                                </button>
+
                                 ${isOwnerOrAdmin ? `<button class="delete-btn text-red-500 font-bold hover:underline" data-id="${docId}">Видалити</button>` : ''}
                             </div>
                         </div>
                     </div>
+                </div>
+            `;
+        }
+
+        function renderListings(listings) {
+            const container = document.getElementById('autoProductsContainer');
+            container.innerHTML = '';
+
+            if (listings.length === 0) {
+                container.innerHTML = `<div class="bg-white border p-6 text-center text-gray-400 text-xs rounded">Немає оголошень у базі.</div>`;
+                document.getElementById('paginationControls').style.display = 'none';
+                return;
+            }
+
+            listings.forEach((item) => {
+                container.insertAdjacentHTML('beforeend', createListingCardHTML(item, item.id));
+            });
+
+            attachDeleteListeners();
+            window.filterCards();
+        }
+
+        // Рендеринг секції обраного біля футера
+        function renderFavoritesSection() {
+            const container = document.getElementById('favoriteProductsContainer');
+            const countEl = document.getElementById('favCount');
+            if (!container || !countEl) return;
+
+            countEl.textContent = userFavoritesList.length;
+
+            if (!currentUser) {
+                container.innerHTML = `<p class="text-gray-400 text-xs italic col-span-full">Увійдіть у систему, щоб переглядати свої вподобані оголошення.</p>`;
+                return;
+            }
+
+            if (userFavoritesList.length === 0) {
+                container.innerHTML = `<p class="text-gray-400 text-xs italic col-span-full">У вас поки немає обраних оголошень. Натисніть на сердечко ❤️ на будь-якій картці, щоб додати її сюди.</p>`;
+                return;
+            }
+
+            container.innerHTML = '';
+            const favItems = allListingsData.filter(item => userFavoritesList.includes(item.id));
+
+            if (favItems.length === 0) {
+                container.innerHTML = `<p class="text-gray-400 text-xs italic col-span-full">Обрані оголошення не знайдені або були видалені.</p>`;
+                return;
+            }
+
+            favItems.forEach(item => {
+                const photos = item.photosArray || ['https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=600'];
+                const mainPhoto = photos[0];
+                const priceUsd = item.priceUSD || 0;
+                const isPart = (item.type === 'parts' || item.type === 'part');
+                const photosJSON = JSON.stringify(photos).replace(/"/g, '&quot;');
+
+                const miniCard = document.createElement('div');
+                miniCard.className = "bg-white border rounded p-3 flex flex-col justify-between shadow-sm relative group";
+                miniCard.innerHTML = `
+                    <div>
+                        <div class="h-28 bg-gray-900 rounded overflow-hidden relative cursor-pointer mb-2" onclick="openGallery(${photosJSON})">
+                            <img src="${mainPhoto}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
+                            <button onclick="event.stopPropagation(); toggleFavorite('${item.id}')" class="absolute top-2 right-2 bg-white/80 p-1.5 rounded-full text-red-600 hover:bg-white shadow">
+                                <i class="fa-solid fa-heart"></i>
+                            </button>
+                        </div>
+                        <h4 class="font-bold ${isPart ? 'text-orange-700' : 'text-blue-700'} text-sm line-clamp-1 cursor-pointer" onclick="openGallery(${photosJSON})">${item.title}</h4>
+                        <div class="text-xs font-black text-green-700 mt-1">${priceUsd.toLocaleString()} $</div>
+                        <div class="text-[11px] text-gray-500 mt-0.5"><i class="fa-solid fa-location-dot text-red-500"></i> ${item.city || 'Костопіль'}</div>
+                    </div>
+                    <div class="pt-2 mt-2 border-t border-gray-100 flex justify-between items-center text-[11px]">
+                        <a href="tel:${item.contact}" class="font-bold text-blue-600 hover:underline">📞 ${item.contact}</a>
+                        <span class="text-gray-400">${item.dateStr || ''}</span>
+                    </div>
                 `;
-                container.appendChild(card);
+                container.appendChild(miniCard);
             });
+        }
 
+        function attachDeleteListeners() {
             document.querySelectorAll('.delete-btn').forEach(btn => {
-                btn.addEventListener('click', async (e) => {
-                    const id = e.currentTarget.getAttribute('data-id');
-                    if (confirm('Видалити це оголошення з бази?')) {
-                        try {
-                            await deleteDoc(doc(db, "auto_listings", id));
-                            alert('Оголошення видалено!');
-                        } catch (err) {
-                            alert('Помилка: ' + err.message);
-                        }
-                    }
-                });
+                btn.removeEventListener('click', handleDelete);
+                btn.addEventListener('click', handleDelete);
             });
+        }
 
-            initSidebarBrands();
-            setMainCategory(activeCategoryFilter);
-        });
+        async function handleDelete(e) {
+            const id = e.currentTarget.getAttribute('data-id');
+            if (confirm('Видалити це оголошення з бази?')) {
+                try {
+                    await deleteDoc(doc(db, "auto_listings", id));
+                    alert('Оголошення видалено!');
+                } catch (err) {
+                    alert('Помилка: ' + err.message);
+                }
+            }
+        }
 
         window.openGallery = function(photos) {
             if (!photos || photos.length === 0) return;

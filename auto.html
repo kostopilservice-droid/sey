@@ -182,7 +182,7 @@
                 <nav class="hidden md:flex items-center gap-6 text-sm font-bold text-gray-800">
                     <a href="#auto" id="navLinkAuto" onClick="switchCategoryFilter('auto')" class="hover:text-red-600 pb-1">Легкові авто</a>
                     <a href="#parts" id="navLinkParts" onClick="switchCategoryFilter('parts')" class="hover:text-red-600 pb-1">Автозапчастини</a>
-                    <a href="#" class="hover:text-red-600 pb-1">Новини</a>
+                    <a href="real_estate.html" class="hover:text-red-600 pb-1">🏠 Нерухомість</a>
                 </nav>
 
                 <button id="toggleFormBtn" onClick="toggleAddForm()" class="btn-green-add text-white font-bold px-4 py-2 rounded text-xs flex items-center gap-1.5 shadow-md">
@@ -577,7 +577,7 @@
 
         let currentUser = null;
         let userFavoritesList = [];
-        let allListingsData = []; // Зберігаємо всі завантажені оголошення для фільтрації обраного
+        let allListingsData = [];
 
         let currentGalleryPhotos = [];
         let currentPhotoIndex = 0;
@@ -759,7 +759,6 @@
             else if (window.location.hash === '#all') setMainCategory('all');
         });
 
-        // Слухач стану авторизації та завантаження вподобань користувача
         onAuthStateChanged(auth, (user) => {
             currentUser = user;
             const badge = document.getElementById('authStatusBadge');
@@ -769,7 +768,6 @@
                 if (badge) badge.textContent = `👤 ${user.email.split('@')[0]}`;
                 if (toggleFormBtn) toggleFormBtn.innerHTML = `<i class="fa-solid fa-plus-circle"></i> Додати оголошення`;
                 
-                // Підписуємося на оновлення вподобань поточного користувача
                 onSnapshot(doc(db, "user_favorites", user.uid), (docSnap) => {
                     if (docSnap.exists()) {
                         userFavoritesList = docSnap.data().favorites || [];
@@ -804,7 +802,6 @@
             form.classList.toggle('hidden');
         };
 
-        // Функція додавання/видалення з обраного
         window.toggleFavorite = async function(docId) {
             if (!currentUser) {
                 alert("Будь ласка, увійдіть у свій акаунт, щоб додавати оголошення в обране!");
@@ -908,7 +905,6 @@
             }
         });
 
-        // Завантаження всіх оголошень із бази у реальному часі
         const q = query(collection(db, "auto_listings"), orderBy("createdAt", "desc"));
         onSnapshot(q, (snapshot) => {
             allListingsData = [];
@@ -922,7 +918,6 @@
             setMainCategory(activeCategoryFilter);
         });
 
-        // Функція побудови HTML-картки оголошення
         function createListingCardHTML(item, docId) {
             const photos = (item.photosArray && item.photosArray.length > 0) 
                 ? item.photosArray 
@@ -1016,7 +1011,6 @@
                             <div class="flex items-center gap-4 text-gray-500">
                                 <a href="tel:${item.contact}" class="font-bold text-blue-600 hover:underline">📞 ${item.contact}</a>
                                 
-                                <!-- КНОПКА ВПОДОБАЙКИ (СЕРДЕЧКО) -->
                                 <button onclick="toggleFavorite('${docId}')" class="text-base transition-transform active:scale-125 ${isFav ? 'text-red-600' : 'text-gray-400 hover:text-red-500'}" title="${isFav ? 'Видалити з обраного' : 'Додати в обране'}">
                                     <i class="${isFav ? 'fa-solid' : 'fa-regular'} fa-heart"></i>
                                 </button>
@@ -1047,7 +1041,6 @@
             window.filterCards();
         }
 
-        // Рендеринг секції обраного біля футера
         function renderFavoritesSection() {
             const container = document.getElementById('favoriteProductsContainer');
             const countEl = document.getElementById('favCount');

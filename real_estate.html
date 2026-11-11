@@ -30,10 +30,10 @@
             border-bottom: 2px solid #db4437;
         }
 
-        /* Обкладинка з ефектом 80% непрозорості та мотиваційним фото фоном */
+        /* Обкладинка з ефектом 80% непрозорості та мотиваційним фото фоном (архітектура, місто, будівництво) */
         .real-estate-hero {
             position: relative;
-            background: linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.80)), 
+            background: linear-gradient(rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.78)), 
                         url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1600') center/cover no-repeat;
             border-radius: 8px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
@@ -149,9 +149,9 @@
                 </a>
 
                 <nav class="hidden md:flex items-center gap-6 text-sm font-bold text-gray-800">
-                    <a href="#apartments" id="navLinkApt" onClick="setMainCategory('apartment')" class="hover:text-red-600 pb-1">Квартири</a>
-                    <a href="#houses" id="navLinkHouse" onClick="setMainCategory('house')" class="hover:text-red-600 pb-1">Будинки та дачі</a>
-                    <a href="#commercial" id="navLinkComm" onClick="setMainCategory('commercial')" class="hover:text-red-600 pb-1">Комерція</a>
+                    <a href="#apartments" onClick="setMainCategory('apartment')" class="hover:text-red-600 pb-1">Квартири</a>
+                    <a href="#houses" onClick="setMainCategory('house')" class="hover:text-red-600 pb-1">Будинки та дачі</a>
+                    <a href="#commercial" onClick="setMainCategory('commercial')" class="hover:text-red-600 pb-1">Комерція</a>
                 </nav>
 
                 <button id="toggleFormBtn" onClick="toggleAddForm()" class="btn-green-add text-white font-bold px-4 py-2 rounded text-xs flex items-center gap-1.5 shadow-md">
@@ -168,10 +168,10 @@
             <a href="index.html" class="hover:underline">NEOSERVICE</a> &gt; <span id="breadcrumbCategory">Нерухомість</span>
         </div>
         
-        <!-- ЕСТЕТИЧНА ОБКЛАДИНКА (ХЕРОУ-БЛОК З ФОТО АРХІТЕКТУРИ, МІСТА ТА БУДІВНИЦТВА) -->
+        <!-- ЕСТЕТИЧНА ОБКЛАДИНКА (80% НЕПРОЗОРОСТІ, АРХІТЕКТУРА, МІСТО, БУДІВНИЦТВО) -->
         <div class="real-estate-hero p-6 sm:p-8 flex flex-col justify-center">
             <h1 class="text-2xl sm:text-3xl font-black text-gray-900 mb-2" id="mainHeaderTitle">Продаж та оренда нерухомості в Україні</h1>
-            <p class="text-xs sm:text-sm text-gray-700 max-w-2xl font-medium">Сучасний портал оголошень житлової та комерційної нерухомості. Надійні пропозиції у місті Костопіль, Рівненській області та по всій території України.</p>
+            <p class="text-xs sm:text-sm text-gray-700 max-w-2xl font-medium">Сучасний портал оголошень житлової та комерційної нерухомості. Надійні пропозиції у місті Костопіль, Рівненській області та по всій Україні.</p>
         </div>
 
         <!-- ЧЕРВОНИЙ БЛОК ФІЛЬТРІВ -->
@@ -180,8 +180,8 @@
                 
                 <div class="space-y-3">
                     <div class="flex gap-1 text-[11px] font-bold">
-                        <button id="btnCatAll" onClick="setMainCategory('all')" class="px-3 py-1 bg-red-700 text-white rounded-t hover:bg-red-800">Всі об'єкти</button>
-                        <button id="btnCatApt" onClick="setMainCategory('apartment')" class="px-3 py-1 bg-white text-red-600 rounded-t font-bold">Квартири</button>
+                        <button id="btnCatAll" onClick="setMainCategory('all')" class="px-3 py-1 bg-white text-red-600 rounded-t font-bold">Всі об'єкти</button>
+                        <button id="btnCatApt" onClick="setMainCategory('apartment')" class="px-3 py-1 bg-red-700 text-white rounded-t hover:bg-red-800">Квартири</button>
                         <button id="btnCatHouse" onClick="setMainCategory('house')" class="px-3 py-1 bg-red-700 text-white rounded-t hover:bg-red-800">Будинки</button>
                     </div>
 
@@ -202,33 +202,37 @@
                 </div>
 
                 <div class="space-y-3 pt-6 md:pt-7">
-                    <select id="filterRegion" onChange="filterCards()" class="w-full px-3 py-2 text-xs bg-white text-gray-800 rounded border-none outline-none font-semibold">
+                    <!-- ВИБІР ОБЛАСТІ ТА МІСТА ДЛЯ ПОШУКУ -->
+                    <select id="filterRegion" onChange="updateFilterCities(); filterCards();" class="w-full px-3 py-2 text-xs bg-white text-gray-800 rounded border-none outline-none font-semibold">
                         <option value="">Регіон: Всі області України</option>
-                        <option value="Вінницька">Вінницька область</option>
-                        <option value="Волинська">Волинська область</option>
-                        <option value="Дніпропетровська">Дніпропетровська область</option>
-                        <option value="Донецька">Донецька область</option>
-                        <option value="Житомирська">Житомирська область</option>
-                        <option value="Закарпатська">Закарпатська область</option>
-                        <option value="Запорізька">Запорізька область</option>
-                        <option value="Івано-Франківська">Івано-Франківська область</option>
-                        <option value="Київська">Київська область (м. Київ)</option>
-                        <option value="Кіровоградська">Кіровоградська область</option>
-                        <option value="Луганська">Луганська область</option>
-                        <option value="Львівська">Львівська область</option>
-                        <option value="Миколаївська">Миколаївська область</option>
-                        <option value="Одеська">Одеська область</option>
-                        <option value="Полтавська">Полтавська область</option>
-                        <option value="Рівненська">Рівненська область (Костопіль)</option>
-                        <option value="Сумська">Сумська область</option>
-                        <option value="Тернопільська">Тернопільська область</option>
-                        <option value="Харківська">Харківська область</option>
-                        <option value="Херсонська">Херсонська область</option>
-                        <option value="Хмельницька">Хмельницька область</option>
-                        <option value="Черкаська">Черкаська область</option>
-                        <option value="Чернівецька">Чернівецька область</option>
-                        <option value="Чернігівська">Чернігівська область</option>
-                        <option value="Крим">АР Крим</option>
+                        <option value="Рівненська область">Рівненська область</option>
+                        <option value="Київська область">Київська область (м. Київ)</option>
+                        <option value="Львівська область">Львівська область</option>
+                        <option value="Волинська область">Волинська область</option>
+                        <option value="Житомирська область">Житомирська область</option>
+                        <option value="Вінницька область">Вінницька область</option>
+                        <option value="Дніпропетровська область">Дніпропетровська область</option>
+                        <option value="Одеська область">Одеська область</option>
+                        <option value="Харківська область">Харківська область</option>
+                        <option value="Черкаська область">Черкаська область</option>
+                        <option value="Хмельницька область">Хмельницька область</option>
+                        <option value="Івано-Франківська область">Івано-Франківська область</option>
+                        <option value="Закарпатська область">Закарпатська область</option>
+                        <option value="Тернопільська область">Тернопільська область</option>
+                        <option value="Чернівецька область">Чернівецька область</option>
+                        <option value="Чернігівська область">Чернігівська область</option>
+                        <option value="Сумська область">Сумська область</option>
+                        <option value="Полтавська область">Полтавська область</option>
+                        <option value="Кіровоградська область">Кіровоградська область</option>
+                        <option value="Миколаївська область">Миколаївська область</option>
+                        <option value="Херсонська область">Херсонська область</option>
+                        <option value="Запорізька область">Запорізька область</option>
+                        <option value="Донецька область">Донецька область</option>
+                        <option value="Луганська область">Луганська область</option>
+                    </select>
+
+                    <select id="filterCity" onChange="filterCards()" class="w-full px-3 py-2 text-xs bg-white text-gray-800 rounded border-none outline-none font-semibold">
+                        <option value="">Місто: Спочатку оберіть область</option>
                     </select>
 
                     <div class="grid grid-cols-2 gap-2">
@@ -299,19 +303,43 @@
                     </div>
                 </div>
 
-                <div class="font-bold text-gray-800 text-xs border-b pb-1 pt-2">2. Вартість та контакти</div>
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                    <div>
-                        <label class="block font-semibold mb-1 text-gray-600">Ціна ($ USD) *</label>
-                        <input type="number" id="adPrice" required placeholder="45000" class="w-full p-2 border rounded font-bold text-green-700">
-                    </div>
-                    <div>
-                        <label class="block font-semibold mb-1 text-gray-600">Населений пункт / Місто *</label>
-                        <input type="text" id="adCity" required placeholder="Костопіль" class="w-full p-2 border rounded">
-                    </div>
+                <div class="font-bold text-gray-800 text-xs border-b pb-1 pt-2">2. Локація (Область та Місто)</div>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div>
                         <label class="block font-semibold mb-1 text-gray-600">Область *</label>
-                        <input type="text" id="adRegion" required placeholder="Рівненська" class="w-full p-2 border rounded">
+                        <select id="formRegion" onChange="updateFormCities()" class="w-full p-2 border rounded font-semibold bg-white" required>
+                            <option value="">Оберіть область *</option>
+                            <option value="Рівненська область">Рівненська область</option>
+                            <option value="Київська область">Київська область</option>
+                            <option value="Львівська область">Львівська область</option>
+                            <option value="Волинська область">Волинська область</option>
+                            <option value="Житомирська область">Житомирська область</option>
+                            <option value="Вінницька область">Вінницька область</option>
+                            <option value="Дніпропетровська область">Дніпропетровська область</option>
+                            <option value="Одеська область">Одеська область</option>
+                            <option value="Харківська область">Харківська область</option>
+                            <option value="Черкаська область">Черкаська область</option>
+                            <option value="Хмельницька область">Хмельницька область</option>
+                            <option value="Івано-Франківська область">Івано-Франківська область</option>
+                            <option value="Закарпатська область">Закарпатська область</option>
+                            <option value="Тернопільська область">Тернопільська область</option>
+                            <option value="Чернівецька область">Чернівецька область</option>
+                            <option value="Чернігівська область">Чернігівська область</option>
+                            <option value="Сумська область">Сумська область</option>
+                            <option value="Полтавська область">Полтавська область</option>
+                            <option value="Кіровоградська область">Кіровоградська область</option>
+                            <option value="Миколаївська область">Миколаївська область</option>
+                            <option value="Херсонська область">Херсонська область</option>
+                            <option value="Запорізька область">Запорізька область</option>
+                            <option value="Донецька область">Донецька область</option>
+                            <option value="Луганська область">Луганська область</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1 text-gray-600">Місто / Населений пункт *</label>
+                        <select id="formCity" class="w-full p-2 border rounded font-semibold bg-white" required>
+                            <option value="">Спочатку оберіть область *</option>
+                        </select>
                     </div>
                     <div>
                         <label class="block font-semibold mb-1 text-gray-600">Номер телефону *</label>
@@ -319,9 +347,19 @@
                     </div>
                 </div>
 
-                <div class="font-bold text-gray-800 text-xs border-b pb-1 pt-2">3. Фотографії (до 4 посилань URL)</div>
+                <div class="font-bold text-gray-800 text-xs border-b pb-1 pt-2">3. Ціна ($ USD) та Фотографії</div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <input type="url" id="adPhoto1" placeholder="Фото 1 (Головне) https://..." class="p-2 border rounded">
+                    <div>
+                        <label class="block font-semibold mb-1 text-gray-600">Ціна ($ USD) *</label>
+                        <input type="number" id="adPrice" required placeholder="45000" class="w-full p-2 border rounded font-bold text-green-700">
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1 text-gray-600">Фото 1 (Головне посилання URL) *</label>
+                        <input type="url" id="adPhoto1" required placeholder="https://..." class="p-2 border rounded">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <input type="url" id="adPhoto2" placeholder="Фото 2 https://..." class="p-2 border rounded">
                     <input type="url" id="adPhoto3" placeholder="Фото 3 https://..." class="p-2 border rounded">
                     <input type="url" id="adPhoto4" placeholder="Фото 4 https://..." class="p-2 border rounded">
@@ -427,6 +465,62 @@
         const ITEMS_PER_PAGE = 12;
         let currentPage = 1;
 
+        // БАЗА ОБЛАСТЕЙ ТА МІСТ УКРАЇНИ
+        const ukraineRegions = {
+            "Рівненська область": ["Костопіль", "Рівне", "Березне", "Дубно", "Сарни", "Вараш", "Здолбунів", "Острог"],
+            "Київська область": ["Київ", "Бровари", "Бориспіль", "Ірпінь", "Буча", "Біла Церква", "Вишневе", "Вишгород"],
+            "Львівська область": ["Львів", "Дрогобич", "Стрий", "Червоноград", "Золочів", "Броди", "Жовква", "Трускавець"],
+            "Волинська область": ["Луцьк", "Ковель", "Нововолинськ", "Владимир", "Ківерці", "Рожище"],
+            "Житомирська область": ["Житомир", "Бердичів", "Коростень", "Звягель", "Малин"],
+            "Вінницька область": ["Вінниця", "Жмеринка", "Козятин", "Ладижин", "Могилів-Подільський", "Гайсин"],
+            "Дніпропетровська область": ["Дніпро", "Кривий Ріг", "Кам'янське", "Нікополь", "Павлоград", "Новомосковськ"],
+            "Одеська область": ["Одеса", "Ізмаїл", "Чорноморськ", "Білгород-Дністровський", "Подільськ"],
+            "Харківська область": ["Харків", "Лозова", "Ізюм", "Чугуїв", "Первомайський"],
+            "Черкаська область": ["Черкаси", "Умань", "Сміла", "Золотоноша", "Канів"],
+            "Хмельницька область": ["Хмельницький", "Камянець-Подільський", "Шепетівка", "Нетішин", "Старокостянтинів"],
+            "Івано-Франківська область": ["Івано-Франківськ", "Калуш", "Коломия", "Надвірна", "Долина"],
+            "Закарпатська область": ["Ужгород", "Мукачево", "Хуст", "Виноградів", "Берегове"],
+            "Тернопільська область": ["Тернопіль", "Чортків", "Кременець", "Бережани"],
+            "Чернівецька область": ["Чернівці", "Новодністровськ", "Хотин", "Сторожинець"],
+            "Чернігівська область": ["Чернігів", "Ніжин", "Прилуки", "Бахмач"],
+            "Сумська область": ["Суми", "Конотоп", "Шостка", "Охтирка", "Ромни"],
+            "Полтавська область": ["Полтава", "Кременчук", "Горішні Плавні", "Лубни", "Миргород"],
+            "Кіровоградська область": ["Кропивницький", "Олександрія", "Світловодськ", "Знам'янка"],
+            "Миколаївська область": ["Миколаїв", "Первомайськ", "Южноукраїнськ", "Вознесенськ"],
+            "Херсонська область": ["Херсон", "Нова Каховка", "Каховка", "Генічеськ"],
+            "Запорізька область": ["Запоріжжя", "Мелітополь", "Бердянськ", "Енергодар", "Токмак"],
+            "Донецька область": ["Маріуполь", "Краматорськ", "Слов'янськ", "Бахмут", "Покровськ"],
+            "Луганська область": ["Сєвєродонецьк", "Лисичанськ", "Луганськ", "Алчевськ", "Рубіжне"]
+        };
+
+        window.updateFilterCities = function() {
+            const regionSel = document.getElementById('filterRegion').value;
+            const citySel = document.getElementById('filterCity');
+            citySel.innerHTML = '<option value="">Всі міста області</option>';
+            if (ukraineRegions[regionSel]) {
+                ukraineRegions[regionSel].forEach(city => {
+                    const opt = document.createElement('option');
+                    opt.value = city;
+                    opt.textContent = city;
+                    citySel.appendChild(opt);
+                });
+            }
+        };
+
+        window.updateFormCities = function() {
+            const regionSel = document.getElementById('formRegion').value;
+            const citySel = document.getElementById('formCity');
+            citySel.innerHTML = '<option value="">Оберіть місто *</option>';
+            if (ukraineRegions[regionSel]) {
+                ukraineRegions[regionSel].forEach(city => {
+                    const opt = document.createElement('option');
+                    opt.value = city;
+                    opt.textContent = city;
+                    citySel.appendChild(opt);
+                });
+            }
+        };
+
         const firebaseConfig = {
             apiKey: "AIzaSyBlKoP6-M8tdrKq88bSdnWSnak5Gpddnpk",
             authDomain: "neoservice-ks-ua.firebaseapp.com",
@@ -481,9 +575,10 @@
             }
         };
 
+        // Виправлена функція відкриття/закриття форми подачі оголошення
         window.toggleAddForm = function() {
             if (!currentUser) {
-                alert('Увага: Додавати об'єкти нерухомості можуть лише зареєстровані користувачі!\n\nБудь ласка, увійдіть у свій акаунт.');
+                alert("Увага: Додавати об'єкти нерухомості можуть лише зареєстровані користувачі!\n\nБудь ласка, увійдіть у свій акаунт.");
                 window.location.href = 'index.html';
                 return;
             }
@@ -567,8 +662,8 @@
             const area = Number(document.getElementById('formArea').value);
             const priceVal = Number(document.getElementById('adPrice').value);
             const priceUahVal = Math.round(priceVal * USD_TO_UAH_RATE);
-            const city = document.getElementById('adCity').value;
-            const region = document.getElementById('adRegion').value;
+            const region = document.getElementById('formRegion').value;
+            const city = document.getElementById('formCity').value;
             const contact = document.getElementById('adContact').value;
             const description = document.getElementById('adDescription').value;
 
@@ -589,8 +684,8 @@
                 area: area,
                 priceUSD: priceVal,
                 priceUAH: priceUahVal,
-                city: city,
                 region: region,
+                city: city,
                 contact: contact,
                 description: description,
                 photosArray: photosArray,
@@ -603,9 +698,9 @@
                 await addDoc(collection(db, "real_estate_listings"), payload);
                 document.getElementById('addListingForm').reset();
                 document.getElementById('newAdFormCard').classList.add('hidden');
-                alert('Об'єкт нерухомості успішно додано до бази!');
+                alert("Об'єкт нерухомості успішно додано до бази!");
             } catch (err) {
-                alert('Помилка при збереженні: ' + err.message);
+                alert("Помилка при збереженні: " + err.message);
             }
         });
 
@@ -638,6 +733,7 @@
                      data-deal="${item.dealType || ''}"
                      data-rooms="${item.rooms || ''}"
                      data-region="${item.region || ''}"
+                     data-city="${item.city || ''}"
                      data-price="${priceUsd}">
                     
                     <div class="w-full sm:w-64 h-40 bg-gray-900 rounded overflow-hidden relative flex-shrink-0 cursor-pointer group" onclick="openGallery(${photosJSON})">
@@ -662,10 +758,10 @@
                         </div>
 
                         <div class="grid grid-cols-2 gap-y-1 text-gray-700 text-xs pt-1">
-                            <div class="flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-red-500"></i> ${item.city || 'Костопіль'}, ${item.region || ''} обл.</div>
+                            <div class="flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-red-500"></i> ${item.city || 'Костопіль'}, ${item.region || ''}</div>
                         </div>
 
-                        <p class="text-gray-600 text-xs line-clamp-1 pt-1">${item.description || 'Опис об'єкта нерухомості.'}</p>
+                        <p class="text-gray-600 text-xs line-clamp-1 pt-1">${item.description || "Опис об'єкта нерухомості."}</p>
 
                         <div class="flex justify-between items-center pt-2 border-t border-gray-100 text-[11px] text-gray-400">
                             <div class="flex items-center gap-2">
@@ -763,12 +859,12 @@
 
         async function handleDelete(e) {
             const id = e.currentTarget.getAttribute('data-id');
-            if (confirm('Видалити цей об'єкт з бази?')) {
+            if (confirm("Видалити цей об'єкт з бази?")) {
                 try {
                     await deleteDoc(doc(db, "real_estate_listings", id));
-                    alert('Об'єкт видалено!');
+                    alert("Об'єкт видалено!");
                 } catch (err) {
-                    alert('Помилка: ' + err.message);
+                    alert("Помилка: " + err.message);
                 }
             }
         }
@@ -788,7 +884,7 @@
         window.prevGalleryImage = function(e) {
             if (e) e.stopPropagation();
             if (currentGalleryPhotos.length <= 1) return;
-            currentPhotoIndex = (currentGalleryPhotos.index - 1 + currentGalleryPhotos.length) % currentGalleryPhotos.length;
+            currentPhotoIndex = (currentGalleryPhotos.length - 1 + currentGalleryPhotos.length) % currentGalleryPhotos.length;
             updateGalleryUI();
         };
 
@@ -825,6 +921,7 @@
             const typeVal = (document.getElementById('filterType')?.value || '').toLowerCase();
             const roomsVal = (document.getElementById('filterRooms')?.value || '').toLowerCase();
             const regionVal = (document.getElementById('filterRegion')?.value || '').toLowerCase();
+            const cityVal = (document.getElementById('filterCity')?.value || '').toLowerCase();
             const minPrice = parseFloat(document.getElementById('filterPriceMin')?.value) || 0;
             const maxPrice = parseFloat(document.getElementById('filterPriceMax')?.value) || Infinity;
 
@@ -832,20 +929,21 @@
             let matchingCards = [];
 
             cards.forEach(card => {
-                const text = card.innerText.toLowerCase();
                 const cardCategory = card.getAttribute('data-category') || '';
                 const cardDeal = (card.getAttribute('data-deal') || '').toLowerCase();
                 const cardRooms = (card.getAttribute('data-rooms') || '').toLowerCase();
                 const cardRegion = (card.getAttribute('data-region') || '').toLowerCase();
+                const cardCity = (card.getAttribute('data-city') || '').toLowerCase();
                 const cardPrice = parseFloat(card.getAttribute('data-price')) || 0;
 
                 let matchCategory = (activeCategoryFilter === 'all' || cardCategory === activeCategoryFilter);
                 let matchType = (!typeVal || cardDeal.includes(typeVal));
                 let matchRooms = (!roomsVal || cardRooms.includes(roomsVal));
                 let matchRegion = (!regionVal || cardRegion.includes(regionVal));
+                let matchCity = (!cityVal || cardCity.includes(cityVal));
                 let matchPrice = (cardPrice >= minPrice && cardPrice <= maxPrice);
 
-                if (matchCategory && matchType && matchRooms && matchRegion && matchPrice) {
+                if (matchCategory && matchType && matchRooms && matchRegion && matchCity && matchPrice) {
                     matchingCards.push(card);
                     card.style.display = 'flex';
                 } else {
@@ -860,11 +958,9 @@
             const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
             const endIndex = startIndex + ITEMS_PER_PAGE;
 
-            let visibleCount = 0;
             matchingCards.forEach((card, index) => {
                 if (index >= startIndex && index < endIndex) {
                     card.style.display = 'flex';
-                    visibleCount++;
                 } else {
                     card.style.display = 'none';
                 }

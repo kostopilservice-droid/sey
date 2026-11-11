@@ -547,7 +547,7 @@
                     </ul>
                 </div>
 
-                <!-- РЕКЛАМНИЙ БЛОК-БАННЕР ДЛЯ МОНЕТИЗАЦІЇ (ПІД МАРКАМИ АВТО) -->
+                <!-- РЕКЛАМНИЙ БЛОК-БАННЕР ДЛЯ МОНЕТИЗАЦІЇ (СЛАЙДЕР ПІД МАРКАМИ АВТО) -->
                 <div class="bg-white p-3 rounded border border-gray-200 shadow-sm space-y-2">
                     <div class="flex items-center justify-between border-b pb-1">
                         <span class="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Реклама / Партнери</span>
@@ -568,8 +568,8 @@
                         </div>
                     </div>
 
-                    <!-- Контейнер для відображення рекламних баннерів -->
-                    <div id="sidebarBannersContainer" class="space-y-3">
+                    <!-- Контейнер для відображення рекламних баннерів (Слайдер) -->
+                    <div id="sidebarBannersContainer" class="relative overflow-hidden rounded">
                         <p class="text-gray-400 text-[11px] italic text-center py-2">Завантаження реклами...</p>
                     </div>
                 </div>
@@ -626,6 +626,11 @@
 
         const ITEMS_PER_PAGE = 12;
         let currentPage = 1;
+
+        // Змінні для слайдера баннерів
+        let bannerList = [];
+        let currentBannerIndex = 0;
+        let bannerSliderInterval = null;
 
         const ukraineRegions = {
             "Рівненська область": ["Костопіль", "Рівне", "Березне", "Дубно", "Сарни", "Вараш", "Здолбунів", "Острог"],
@@ -936,15 +941,30 @@
             }
         });
 
-        // Слухач баннерів монетизації у реальному часі
+        // Функції відображення слайдера баннерів у реальному часі
         const bannersQuery = query(collection(db, "ad_banners"), orderBy("createdAt", "desc"));
         onSnapshot(bannersQuery, (snapshot) => {
+            bannerList = [];
+            snapshot.forEach((docSnap) => {
+                bannerList.push({ id: docSnap.id, ...docSnap.data() });
+            });
+
+            if (bannerSliderInterval) clearInterval(bannerSliderInterval);
+            renderCurrentBanner();
+
+            if (bannerList.length > 1) {
+                bannerSliderInterval = setInterval(() => {
+                    currentBannerIndex = (currentBannerIndex + 1) % bannerList.length;
+                    renderCurrentBanner();
+                }, 4000); // Перемикання кожні 4 секунди
+            }
+        });
+
+        function renderCurrentBanner() {
             const container = document.getElementById('sidebarBannersContainer');
             if (!container) return;
 
-            container.innerHTML = '';
-
-            if (snapshot.empty) {
+            if (bannerList.length === 0) {
                 container.innerHTML = `
                     <div class="border-2 border-dashed border-gray-200 p-4 rounded text-center text-gray-400">
                         <i class="fa-solid fa-rectangle-ad text-2xl mb-1 text-gray-300"></i>
@@ -953,26 +973,31 @@
                 return;
             }
 
-            snapshot.forEach((docSnap) => {
-                const data = docSnap.data();
-                const bannerId = docSnap.id;
-                const isAdmin = currentUser && currentUser.email === ADMIN_EMAIL;
+            if (currentBannerIndex >= bannerList.length) {
+                currentBannerIndex = 0;
+            }
 
-                const bannerHTML = `
-                    <div class="relative group rounded overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition">
-                        <a href="${data.targetUrl}" target="_blank" rel="noopener noreferrer" class="block">
-                            <img src="${data.imgUrl}" alt="${data.title}" class="w-full h-auto object-cover rounded hover:opacity-95 transition">
-                        </a>
-                        ${isAdmin ? `
-                            <button onclick="deleteAdminBanner('${bannerId}')" class="absolute top-1 right-1 bg-red-600 text-white font-bold text-[10px] px-1.5 py-0.5 rounded shadow hover:bg-red-700">
-                                ✕
-                            </button>
-                        ` : ''}
-                    </div>
-                `;
-                container.insertAdjacentHTML('beforeend', bannerHTML);
-            });
-        });
+            const item = bannerList[currentBannerIndex];
+            const isAdmin = currentUser && currentUser.email === ADMIN_EMAIL;
+
+            container.innerHTML = `
+                <div class="relative group rounded overflow-hidden border border-gray-200 shadow-sm transition animate-fadeIn">
+                    <a href="${item.targetUrl}" target="_blank" rel="noopener noreferrer" class="block">
+                        <img src="${item.imgUrl}" alt="${item.title}" class="w-full h-auto object-cover rounded hover:opacity-95 transition">
+                    </a>
+                    ${isAdmin ? `
+                        <button onclick="deleteAdminBanner('${item.id}')" class="absolute top-1 right-1 bg-red-600 text-white font-bold text-[10px] px-1.5 py-0.5 rounded shadow hover:bg-red-700 z-10">
+                            ✕
+                        </button>
+                    ` : ''}
+                    ${bannerList.length > 1 ? `
+                        <div class="absolute bottom-1 right-1 bg-black/60 text-white text-[9px] px-1.5 py-0.5 rounded-full">
+                            ${currentBannerIndex + 1}/${bannerList.length}
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        }
 
         window.handleAuthClick = function() {
             if (!currentUser) {
@@ -1316,8 +1341,7 @@
         window.prevGalleryImage = function(e) {
             if (e) e.stopPropagation();
             if (currentGalleryPhotos.length <= 1) return;
-            currentGalleryPhotos = photos;
-            currentPhotoIndex = (currentGalleryPhotos.length - 1 + currentGalleryPhotos.length) % currentGalleryPhotos.length;
+            currentPhotoIndex = (currentPhotoIndex - 1 + currentGalleryPhotos.length) % currentGalleryPhotos.length;
             updateGalleryUI();
         };
 

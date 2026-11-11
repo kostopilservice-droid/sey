@@ -202,12 +202,12 @@
           
           <!-- Кнопки резервного копіювання сайту (тільки для адміністратора) -->
           <div id="globalAdminBackupTools" style="display: none; align-items: center; gap: 6px;">
-            <button onclick="exportEntireWebsiteData()" style="background: rgba(245, 158, 11, 0.2); border: 1px solid rgba(245, 158, 11, 0.5); color: #fde047; padding: 6px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 4px;" title="Експортувати повну базу даних сайту у JSON">
+            <button onClick="exportEntireWebsiteData()" style="background: rgba(245, 158, 11, 0.2); border: 1px solid rgba(245, 158, 11, 0.5); color: #fde047; padding: 6px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 4px;" title="Експортувати повну базу даних сайту у JSON">
               <i class="fa-solid fa-download"></i> Бекап
             </button>
             <label style="background: rgba(245, 158, 11, 0.2); border: 1px solid rgba(245, 158, 11, 0.5); color: #fde047; padding: 6px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 4px;" title="Відновити базу даних сайту з JSON">
               <i class="fa-solid fa-upload"></i> Відновлення
-              <input type="file" accept=".json" onchange="importEntireWebsiteData(event)" style="display: none;">
+              <input type="file" accept=".json" onChange="importEntireWebsiteData(event)" style="display: none;">
             </label>
           </div>
 
@@ -343,7 +343,7 @@
         
         <!-- Розділ 1: Автокомерція & Автобазар -->
         <a href="auto.html" style="text-decoration: none; color: inherit;">
-          <div style="background: white; border-radius: 12px; padding: 15px; border-top: 4px solid #d97706; box-shadow: 0 4px 6px rgba(0,0,0,0.04); height: 100%; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='translateY(0)'">
+          <div style="background: white; border-radius: 12px; padding: 15px; border-top: 4px solid #d97706; box-shadow: 0 4px 6px rgba(0,0,0,0.04); height: 100%; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s;" onMouseOver="this.style.transform='translateY(-3px)'" onMouseOut="this.style.transform='translateY(0)'">
             <div>
               <div style="font-size: 1.5rem; margin-bottom: 8px;">🚘</div>
               <h3 style="font-size: 0.95rem; font-weight: bold; color: #1e3a8a; margin: 0 0 6px 0;">Автокомерція & Запчастини</h3>
@@ -355,7 +355,7 @@
 
         <!-- Розділ 2: Спорт та аналітика --> 
         <a href="sport.html" style="text-decoration: none; color: inherit;">
-          <div style="background: white; border-radius: 12px; padding: 15px; border-top: 4px solid #16a34a; box-shadow: 0 4px 6px rgba(0,0,0,0.04); height: 100%; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='translateY(0)'">
+          <div style="background: white; border-radius: 12px; padding: 15px; border-top: 4px solid #16a34a; box-shadow: 0 4px 6px rgba(0,0,0,0.04); height: 100%; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s;" onMouseOver="this.style.transform='translateY(-3px)'" onMouseOut="this.style.transform='translateY(0)'">
             <div>
               <div style="font-size: 1.5rem; margin-bottom: 8px;">⚽</div>
               <h3 style="font-size: 0.95rem; font-weight: bold; color: #1e3a8a; margin: 0 0 6px 0;">Спорт та Аналітика</h3>
@@ -367,7 +367,7 @@
 
         <!-- Розділ 3: Комп'ютери та IT -->
         <a href="shop.html" style="text-decoration: none; color: inherit;">
-          <div style="background: white; border-radius: 12px; padding: 15px; border-top: 4px solid #2563eb; box-shadow: 0 4px 6px rgba(0,0,0,0.04); height: 100%; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='translateY(0)'">
+          <div style="background: white; border-radius: 12px; padding: 15px; border-top: 4px solid #2563eb; box-shadow: 0 4px 6px rgba(0,0,0,0.04); height: 100%; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s;" onMouseOver="this.style.transform='translateY(-3px)'" onMouseOut="this.style.transform='translateY(0)'">
             <div>
               <div style="font-size: 1.5rem; margin-bottom: 8px;">💻</div>
               <h3 style="font-size: 0.95rem; font-weight: bold; color: #1e3a8a; margin: 0 0 6px 0;">Комп'ютери та IT</h3>
@@ -379,7 +379,7 @@
 
         <!-- Розділ 4: Інженерія та схемотехніка --> 
         <a href="engineering.html#" style="text-decoration: none; color: inherit;">
-          <div style="background: white; border-radius: 12px; padding: 15px; border-top: 4px solid #7c3aed; box-shadow: 0 4px 6px rgba(0,0,0,0.04); height: 100%; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='translateY(0)'">
+          <div style="background: white; border-radius: 12px; padding: 15px; border-top: 4px solid #7c3aed; box-shadow: 0 4px 6px rgba(0,0,0,0.04); height: 100%; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s;" onMouseOver="this.style.transform='translateY(-3px)'" onMouseOut="this.style.transform='translateY(0)'">
             <div>
               <div style="font-size: 1.5rem; margin-bottom: 8px;">⚙️</div>
               <h3 style="font-size: 0.95rem; font-weight: bold; color: #1e3a8a; margin: 0 0 6px 0;">Інженерія & Схеми</h3>
@@ -391,7 +391,7 @@
 
         <!-- Розділ 5: Духовне слово -->
         <a href="duhovne.html" style="text-decoration: none; color: inherit;">
-          <div style="background: white; border-radius: 12px; padding: 15px; border-top: 4px solid #dc2626; box-shadow: 0 4px 6px rgba(0,0,0,0.04); height: 100%; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='translateY(0)'">
+          <div style="background: white; border-radius: 12px; padding: 15px; border-top: 4px solid #dc2626; box-shadow: 0 4px 6px rgba(0,0,0,0.04); height: 100%; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s;" onMouseOver="this.style.transform='translateY(-3px)'" onMouseOut="this.style.transform='translateY(0)'">
             <div>
               <div style="font-size: 1.5rem; margin-bottom: 8px;">🕊️</div>
               <h3 style="font-size: 0.95rem; font-weight: bold; color: #1e3a8a; margin: 0 0 6px 0;">Духовне Слово</h3>
@@ -424,7 +424,7 @@
 
           <!-- Крапки-індикатори переключення -->
           <div id="sliderDotsContainer" style="position: absolute; bottom: 12px; right: 20px; display: flex; gap: 6px; z-index: 10;">
-            <button onclick="setSlide(0)" class="slider-dot" style="width: 10px; height: 10px; border-radius: 50%; border: none; background: #d97706; cursor: pointer;"></button>
+            <button onClick="setSlide(0)" class="slider-dot" style="width: 10px; height: 10px; border-radius: 50%; border: none; background: #d97706; cursor: pointer;"></button>
           </div>
         </div>
 
@@ -444,7 +444,7 @@
                 <h4 style="font-size: 0.75rem; margin: 2px 0 0 0; color: #1e3a8a; line-height: 1.1;">Valeriy Anatolievich nservice@gmail.com</h4>
               </div>
               <!-- Кнопка прихована за замовчуванням (display: none), з'явиться лише після вашого входу -->
-              <button id="adminCollageBtn" onclick="openCollageAdmin()" style="display: none; background: #1e3a8a; color: white; border: none; padding: 6px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: bold; cursor: pointer; text-align: center; width: 100%;">
+              <button id="adminCollageBtn" onClick="openCollageAdmin()" style="display: none; background: #1e3a8a; color: white; border: none; padding: 6px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: bold; cursor: pointer; text-align: center; width: 100%;">
                 Керувати колажем &rarr;
               </button>
             </div>
@@ -457,7 +457,7 @@
                 <i class="fa-solid fa-shield-halved"></i> Статус & Довіра
               </div>
               <p style="font-size: 0.75rem; color: #475569; margin: 0; line-height: 1.3;">
-                Neoservice — це простір, де вирішують проблеми, а не створюють паперову тяганину. Особисто відповідаю за якість сервісу та технічну підтримку. Відкритий до конструктивних пропозицій — давайте робити корисні справи разом.
+                Neoservice — «Спільна робота на благо громади вимагає не слів, а рішучих кроків. Відкритий до звернень, ініціатив та конструктивного діалогу. Забезпечую підтримку проєктів, які покращують життя кожного мешканця. Працюємо на результат!»
               </p>
             </div>
             <a href="service.html" style="background: #f1f5f9; color: #1e3a8a; border: 1px solid #cbd5e1; padding: 6px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; text-decoration: none; text-align: center; display: block; box-sizing: border-box;">
@@ -751,7 +751,7 @@
     <!-- Нижній рядок: Статус і кнопка -->
     <div class="pt-2 border-t border-slate-100 flex items-center justify-between">
         <span class="text-[10px] text-slate-500 font-medium">Статус: <strong class="text-emerald-600">Активно</strong></span>
-        <button onclick="openModal()" class="bg-blue-600 hover:bg-blue-700 text-white text-[11px] px-3 py-1 rounded-md font-semibold transition-all shadow-sm flex items-center space-x-1 cursor-pointer">
+        <button onClick="openModal()" class="bg-blue-600 hover:bg-blue-700 text-white text-[11px] px-3 py-1 rounded-md font-semibold transition-all shadow-sm flex items-center space-x-1 cursor-pointer">
             <span>Деталі</span>
             <i class="fa-solid fa-arrow-right text-[9px]"></i>
         </button>
@@ -803,7 +803,7 @@
         
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px; margin-bottom: 15px;">
           <h3 style="margin: 0; color: #1e3a8a; font-size: 1.1rem;">🖼️ Керування колажем банерів</h3>
-          <button onclick="closeCollageAdmin()" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #64748b;">✕</button>
+          <button onClick="closeCollageAdmin()" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #64748b;">✕</button>
         </div>
 
         <form id="collageAdminForm" style="display: flex; flex-direction: column; gap: 10px;">
@@ -836,7 +836,7 @@
           </div>
 
           <div style="display: flex; gap: 10px; margin-top: 10px;">
-            <button type="button" onclick="closeCollageAdmin()" style="flex: 1; padding: 10px; background: #94a3b8; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">Скасувати</button>
+            <button type="button" onClick="closeCollageAdmin()" style="flex: 1; padding: 10px; background: #94a3b8; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">Скасувати</button>
             <button type="submit" style="flex: 1; padding: 10px; background: #d97706; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">Опублікувати</button>
           </div>
         </form>

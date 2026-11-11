@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#db4437">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEOSERVICE — Нерухомість України</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        body { 
+            font-family: 'Open Sans', sans-serif; 
+            background-color: #f4f5f7; 
+            color: #2b2b2b; 
+        }
+
+        .ria-header-top {
+            background-color: #ffffff;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .ria-header-main {
+            background-color: #ffffff;
+            border-bottom: 2px solid #db4437;
+        }
+
+        /* Обкладинка з ефектом 80% непрозорості та мотиваційним фото фоном */
+        .real-estate-hero {
+            position: relative;
+            background: linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.80)), 
+                        url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1600') center/cover no-repeat;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .search-box-red {
+            background-color: #db4437;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(219, 68, 55, 0.15);
+        }
+        .btn-blue-search {
+            background-color: #1976d2;
+            transition: background 0.2s, transform 0.1s;
+        }
+        .btn-blue-search:hover { background-color: #1565c0; }
+        .btn-red-expanded {
+            background-color: #c62828;
+            transition: background 0.2s;
+        }
+        .btn-red-expanded:hover { background-color: #b71c1c; }
+        .btn-green-add {
+            background-color: #43a047;
+            transition: background 0.2s;
+        }
+        .btn-green-add:hover { background-color: #388e3c; }
+
+        .product-card {
+            background: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            transition: box-shadow 0.2s, border-color 0.2s;
+        }
+        .product-card:hover {
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+            border-color: #b0bec5;
+        }
+
+        .lightbox-modal {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.92);
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .gallery-nav-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.2s;
+        }
+        .gallery-nav-btn:hover { background: rgba(255, 255, 255, 0.5); }
+
+        .thumb-img {
+            width: 60px;
+            height: 45px;
+            object-fit: cover;
+            border-radius: 4px;
+            cursor: pointer;
+            opacity: 0.6;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        .thumb-img.active {
+            opacity: 1;
+            border-color: #29b6f6;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+    <!-- ТОП-БАР НАВІГАЦІЇ -->
+    <header class="w-full">
+        <div class="ria-header-top py-1.5">
+            <div class="max-w-6xl mx-auto px-4 flex items-center justify-between text-[11px] text-gray-600">
+                <div class="flex items-center gap-5">
+                    <a href="index.html" class="hover:text-red-600 font-semibold"><i class="fa-solid fa-house mr-1"></i>Головна</a>
+                    <a href="auto.html" class="hover:text-red-600 font-semibold">Автобазар</a>
+                    <a href="baza.html" class="hover:text-red-600 font-semibold">База знань</a>
+                    <a href="chat.html" class="hover:text-red-600 font-semibold">Чат</a>
+                    <span class="text-blue-600 font-bold"><i class="fa-solid fa-flag"></i> Підтримка ЗСУ</span>
+                </div>
+                
+                <div class="flex items-center gap-4">
+                    <a href="#favoritesSection" class="hover:text-red-600"><i class="fa-regular fa-heart"></i> Обране</a>
+                    <span id="authStatusBadge" class="font-bold text-gray-700 cursor-pointer hover:text-red-600" onClick="handleAuthClick()">👤 Особистий кабінет (Гість)</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ОСНОВНА ШАПКА NEOSERVICE -->
+        <div class="ria-header-main py-3">
+            <div class="max-w-6xl mx-auto px-4 flex items-center justify-between">
+                
+                <a href="index.html" class="flex items-center gap-2 text-decoration-none">
+                    <div class="bg-[#db4437] text-white font-black text-xl px-3 py-1 rounded tracking-tight shadow-sm flex items-center gap-1">
+                        <i class="fa-solid fa-building"></i> NEO<span class="text-yellow-300">SERVICE</span>
+                    </div>
+                    <div class="text-[11px] text-gray-500 font-bold uppercase tracking-wider hidden sm:block">
+                        Нерухомість & Будівництво
+                    </div>
+                </a>
+
+                <nav class="hidden md:flex items-center gap-6 text-sm font-bold text-gray-800">
+                    <a href="#apartments" id="navLinkApt" onClick="setMainCategory('apartment')" class="hover:text-red-600 pb-1">Квартири</a>
+                    <a href="#houses" id="navLinkHouse" onClick="setMainCategory('house')" class="hover:text-red-600 pb-1">Будинки та дачі</a>
+                    <a href="#commercial" id="navLinkComm" onClick="setMainCategory('commercial')" class="hover:text-red-600 pb-1">Комерція</a>
+                </nav>
+
+                <button id="toggleFormBtn" onClick="toggleAddForm()" class="btn-green-add text-white font-bold px-4 py-2 rounded text-xs flex items-center gap-1.5 shadow-md">
+                    <i class="fa-solid fa-plus-circle"></i> Додати об'єкт нерухомості
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ГОЛОВНИЙ КОНТЕЙНЕР -->
+    <main class="max-w-6xl mx-auto px-4 py-4 flex-grow w-full space-y-4">
+        
+        <div class="text-[11px] text-gray-500">
+            <a href="index.html" class="hover:underline">NEOSERVICE</a> &gt; <span id="breadcrumbCategory">Нерухомість</span>
+        </div>
+        
+        <!-- ЕСТЕТИЧНА ОБКЛАДИНКА (ХЕРОУ-БЛОК З ФОТО АРХІТЕКТУРИ, МІСТА ТА БУДІВНИЦТВА) -->
+        <div class="real-estate-hero p-6 sm:p-8 flex flex-col justify-center">
+            <h1 class="text-2xl sm:text-3xl font-black text-gray-900 mb-2" id="mainHeaderTitle">Продаж та оренда нерухомості в Україні</h1>
+            <p class="text-xs sm:text-sm text-gray-700 max-w-2xl font-medium">Сучасний портал оголошень житлової та комерційної нерухомості. Надійні пропозиції у місті Костопіль, Рівненській області та по всій території України.</p>
+        </div>
+
+        <!-- ЧЕРВОНИЙ БЛОК ФІЛЬТРІВ -->
+        <div class="search-box-red p-4 text-white">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                
+                <div class="space-y-3">
+                    <div class="flex gap-1 text-[11px] font-bold">
+                        <button id="btnCatAll" onClick="setMainCategory('all')" class="px-3 py-1 bg-red-700 text-white rounded-t hover:bg-red-800">Всі об'єкти</button>
+                        <button id="btnCatApt" onClick="setMainCategory('apartment')" class="px-3 py-1 bg-white text-red-600 rounded-t font-bold">Квартири</button>
+                        <button id="btnCatHouse" onClick="setMainCategory('house')" class="px-3 py-1 bg-red-700 text-white rounded-t hover:bg-red-800">Будинки</button>
+                    </div>
+
+                    <select id="filterType" onChange="filterCards()" class="w-full px-3 py-2 text-xs bg-white text-gray-800 rounded border-none outline-none font-semibold">
+                        <option value="">Операція (продаж / оренда)</option>
+                        <option value="Продаж">Продаж</option>
+                        <option value="Оренда довгострокова">Оренда довгострокова</option>
+                        <option value="Оренда посуточна">Оренда посуточна</option>
+                    </select>
+
+                    <select id="filterRooms" onChange="filterCards()" class="w-full px-3 py-2 text-xs bg-white text-gray-800 rounded border-none outline-none font-semibold">
+                        <option value="">Кількість кімнат (будь-яка)</option>
+                        <option value="1">1 кімната</option>
+                        <option value="2">2 кімнати</option>
+                        <option value="3">3 кімнати</option>
+                        <option value="4+">4 і більше кімнат</option>
+                    </select>
+                </div>
+
+                <div class="space-y-3 pt-6 md:pt-7">
+                    <select id="filterRegion" onChange="filterCards()" class="w-full px-3 py-2 text-xs bg-white text-gray-800 rounded border-none outline-none font-semibold">
+                        <option value="">Регіон: Всі області України</option>
+                        <option value="Вінницька">Вінницька область</option>
+                        <option value="Волинська">Волинська область</option>
+                        <option value="Дніпропетровська">Дніпропетровська область</option>
+                        <option value="Донецька">Донецька область</option>
+                        <option value="Житомирська">Житомирська область</option>
+                        <option value="Закарпатська">Закарпатська область</option>
+                        <option value="Запорізька">Запорізька область</option>
+                        <option value="Івано-Франківська">Івано-Франківська область</option>
+                        <option value="Київська">Київська область (м. Київ)</option>
+                        <option value="Кіровоградська">Кіровоградська область</option>
+                        <option value="Луганська">Луганська область</option>
+                        <option value="Львівська">Львівська область</option>
+                        <option value="Миколаївська">Миколаївська область</option>
+                        <option value="Одеська">Одеська область</option>
+                        <option value="Полтавська">Полтавська область</option>
+                        <option value="Рівненська">Рівненська область (Костопіль)</option>
+                        <option value="Сумська">Сумська область</option>
+                        <option value="Тернопільська">Тернопільська область</option>
+                        <option value="Харківська">Харківська область</option>
+                        <option value="Херсонська">Херсонська область</option>
+                        <option value="Хмельницька">Хмельницька область</option>
+                        <option value="Черкаська">Черкаська область</option>
+                        <option value="Чернівецька">Чернівецька область</option>
+                        <option value="Чернігівська">Чернігівська область</option>
+                        <option value="Крим">АР Крим</option>
+                    </select>
+
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="number" id="filterPriceMin" placeholder="Ціна від ($)" onInput="filterCards()" class="px-2 py-2 text-xs bg-white text-gray-800 rounded outline-none">
+                        <input type="number" id="filterPriceMax" placeholder="до ($)" onInput="filterCards()" class="px-2 py-2 text-xs bg-white text-gray-800 rounded outline-none">
+                    </div>
+                </div>
+
+                <div class="flex items-end pt-2 md:pt-0">
+                    <button onClick="filterCards()" class="w-full py-3 btn-blue-search text-white font-black text-sm rounded shadow flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-magnifying-glass"></i> Знайти об'єкт
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- УНІВЕРСАЛЬНА ФОРМА ДОДАВАННЯ ОБ'ЄКТА -->
+        <div id="newAdFormCard" class="hidden bg-white rounded-lg p-6 border-2 border-dashed border-red-500 shadow-lg space-y-4">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h3 class="font-bold text-base text-gray-900 flex items-center gap-2">
+                    <i class="fa-solid fa-plus-circle text-red-600"></i> Подання оголошення з нерухомості
+                </h3>
+                <button onClick="toggleAddForm()" class="text-gray-400 font-bold hover:text-black text-lg">✕</button>
+            </div>
+
+            <form id="addListingForm" class="space-y-4 text-xs">
+                
+                <div class="bg-blue-50 p-3 rounded border border-blue-200 flex items-center gap-6">
+                    <span class="font-bold text-blue-900">Категорія об'єкта:</span>
+                    <label class="flex items-center gap-1.5 cursor-pointer font-semibold text-gray-800">
+                        <input type="radio" name="listingCategory" value="apartment" checked> 🏢 Квартира
+                    </label>
+                    <label class="flex items-center gap-1.5 cursor-pointer font-semibold text-gray-800">
+                        <input type="radio" name="listingCategory" value="house"> 🏡 Будинок / Дача
+                    </label>
+                    <label class="flex items-center gap-1.5 cursor-pointer font-semibold text-gray-800">
+                        <input type="radio" name="listingCategory" value="commercial"> 🏬 Комерція / Ділянка
+                    </label>
+                </div>
+
+                <div class="font-bold text-gray-800 text-xs border-b pb-1">1. Основні параметри</div>
+                <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                    <div>
+                        <label class="block font-semibold mb-1 text-gray-600">Тип угоди *</label>
+                        <select id="formDealType" class="w-full p-2 border rounded font-semibold bg-white" required>
+                            <option value="Продаж">Продаж</option>
+                            <option value="Оренда довгострокова">Оренда довгострокова</option>
+                            <option value="Оренда посуточна">Оренда посуточна</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1 text-gray-600">Заголовок оголошення *</label>
+                        <input type="text" id="formTitle" required placeholder="напр. 2-к квартира в центрі" class="w-full p-2 border rounded">
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1 text-gray-600">Кількість кімнат</label>
+                        <select id="formRooms" class="w-full p-2 border rounded font-semibold bg-white">
+                            <option value="1">1 кімната</option>
+                            <option value="2">2 кімнати</option>
+                            <option value="3">3 кімнати</option>
+                            <option value="4+">4+ кімнат</option>
+                            <option value="Студія">Студія / Вільне планування</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1 text-gray-600">Загальна площа (м²) *</label>
+                        <input type="number" id="formArea" required placeholder="65" class="w-full p-2 border rounded">
+                    </div>
+                </div>
+
+                <div class="font-bold text-gray-800 text-xs border-b pb-1 pt-2">2. Вартість та контакти</div>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    <div>
+                        <label class="block font-semibold mb-1 text-gray-600">Ціна ($ USD) *</label>
+                        <input type="number" id="adPrice" required placeholder="45000" class="w-full p-2 border rounded font-bold text-green-700">
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1 text-gray-600">Населений пункт / Місто *</label>
+                        <input type="text" id="adCity" required placeholder="Костопіль" class="w-full p-2 border rounded">
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1 text-gray-600">Область *</label>
+                        <input type="text" id="adRegion" required placeholder="Рівненська" class="w-full p-2 border rounded">
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1 text-gray-600">Номер телефону *</label>
+                        <input type="tel" id="adContact" required placeholder="+380971234567" class="w-full p-2 border rounded">
+                    </div>
+                </div>
+
+                <div class="font-bold text-gray-800 text-xs border-b pb-1 pt-2">3. Фотографії (до 4 посилань URL)</div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <input type="url" id="adPhoto1" placeholder="Фото 1 (Головне) https://..." class="p-2 border rounded">
+                    <input type="url" id="adPhoto2" placeholder="Фото 2 https://..." class="p-2 border rounded">
+                    <input type="url" id="adPhoto3" placeholder="Фото 3 https://..." class="p-2 border rounded">
+                    <input type="url" id="adPhoto4" placeholder="Фото 4 https://..." class="p-2 border rounded">
+                </div>
+
+                <div>
+                    <label class="block font-semibold mb-1 text-gray-600">Детальний опис нерухомості *</label>
+                    <textarea id="adDescription" rows="3" required placeholder="Опис стану, опалення, інфраструктури..." class="w-full p-2 border rounded"></textarea>
+                </div>
+
+                <div class="flex justify-end gap-3 pt-2">
+                    <button type="button" onClick="toggleAddForm()" class="px-5 py-2 bg-gray-200 text-gray-700 font-bold rounded">Скасувати</button>
+                    <button type="submit" class="btn-green-add text-white font-bold px-6 py-2 rounded shadow">
+                        <i class="fa-solid fa-check"></i> Опублікувати об'єкт
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- ОСНОВНА СІТКА ОБ'ЄКТІВ -->
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 pt-2">
+            
+            <div class="lg:col-span-3 space-y-4">
+                <h2 class="text-lg font-bold text-gray-800" id="feedTitle">Каталог нерухомості</h2>
+                
+                <div id="realEstateProductsContainer" class="space-y-4">
+                    <p class="text-center text-gray-400 text-xs py-8">Завантаження об'єктів нерухомості з бази даних...</p>
+                </div>
+
+                <!-- ПАГІНАЦІЯ -->
+                <div id="paginationControls" class="flex justify-center items-center gap-3 pt-4 border-t border-gray-300 text-xs">
+                    <button id="prevPageBtn" onclick="changePage(-1)" class="px-4 py-2 bg-white border border-gray-300 text-gray-700 font-bold rounded shadow-sm disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50">
+                        ‹ Попередня
+                    </button>
+                    <span id="pageIndicator" class="font-bold text-gray-700">Сторінка 1</span>
+                    <button id="nextPageBtn" onclick="changePage(1)" class="px-4 py-2 bg-white border border-gray-300 text-gray-700 font-bold rounded shadow-sm disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50">
+                        Наступна ›
+                    </button>
+                </div>
+            </div>
+
+            <!-- САЙДБАР -->
+            <div class="space-y-5 text-xs">
+                <div class="bg-white p-4 rounded border border-gray-200 shadow-sm">
+                    <h3 class="font-bold text-gray-900 mb-2 border-b pb-1">Категорії нерухомості</h3>
+                    <ul class="space-y-2 font-semibold">
+                        <li><a href="#apartments" onClick="setMainCategory('apartment')" class="hover:underline flex justify-between text-blue-700">Квартири <span>&rsaquo;</span></a></li>
+                        <li><a href="#houses" onClick="setMainCategory('house')" class="hover:underline flex justify-between text-blue-700">Будинки та дачі <span>&rsaquo;</span></a></li>
+                        <li><a href="#commercial" onClick="setMainCategory('commercial')" class="hover:underline flex justify-between text-blue-700">Комерція / Ділянки <span>&rsaquo;</span></a></li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- БЛОК ОБРАНИХ ОБ'ЄКТІВ ПЕРЕД ФУТЕРОМ -->
+    <section id="favoritesSection" class="max-w-6xl mx-auto px-4 py-6 mt-8 border-t border-gray-300 w-full">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg font-bold text-gray-900 flex items-center gap-2">
+                <i class="fa-solid fa-heart text-red-600"></i> Ваші вподобані об'єкти (<span id="favCount">0</span>)
+            </h2>
+            <span class="text-xs text-gray-500">Персональне обране вашого аккаунта</span>
+        </div>
+        
+        <div id="favoriteProductsContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <p class="text-gray-400 text-xs italic col-span-full">Увійдіть у систему та натисніть на сердечко ❤️ на об'єкті, щоб зберегти його.</p>
+        </div>
+    </section>
+
+    <!-- LIGHTBOX ДЛЯ ГАЛЕРЕЇ -->
+    <div id="lightboxModal" class="lightbox-modal">
+        <span class="absolute top-4 right-6 text-white text-3xl cursor-pointer font-bold z-50 hover:text-red-400" onClick="closeGallery()">&times;</span>
+        
+        <div id="galleryCounter" class="text-white text-xs font-semibold mb-3 bg-black/60 px-3 py-1 rounded-full">
+            Фото 1 з 1
+        </div>
+
+        <div class="relative flex items-center justify-center max-w-[90vw] max-h-[70vh]">
+            <button class="gallery-nav-btn absolute left-2 sm:-left-12 z-40" onClick="prevGalleryImage(event)">‹</button>
+            <img id="lightboxImg" class="max-w-[85vw] max-h-[70vh] rounded object-contain shadow-2xl" src="" alt="Перегляд фото">
+            <button class="gallery-nav-btn absolute right-2 sm:-right-12 z-40" onClick="nextGalleryImage(event)">›</button>
+        </div>
+
+        <div id="galleryThumbs" class="flex gap-2 mt-4 overflow-x-auto max-w-[90vw] p-1"></div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-gray-300 text-gray-600 text-xs py-6 text-center mt-12 bg-white">
+        <p>© 2026 NEOSERVICE — Нерухомість України. Всі права захищені.</p>
+    </footer>
+
+    <!-- FIREBASE ТА ЛОГІКА -->
+    <script type="module">
+        import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, doc, deleteDoc, updateDoc, setDoc, getDoc, serverTimestamp, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const ADMIN_EMAIL = "kostopilservice@gmail.com";
+        const USD_TO_UAH_RATE = 45.41;
+
+        const ITEMS_PER_PAGE = 12;
+        let currentPage = 1;
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBlKoP6-M8tdrKq88bSdnWSnak5Gpddnpk",
+            authDomain: "neoservice-ks-ua.firebaseapp.com",
+            projectId: "neoservice-ks-ua",
+            storageBucket: "neoservice-ks-ua.firebasestorage.app",
+            messagingSenderId: "528941827813",
+            appId: "1:528941827813:web:354ef989d200087634b60c"
+        };
+
+        const app = !getApps().length ? initializeApp(firebaseConfig) : getApps()[0];
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUser = null;
+        let userFavoritesList = [];
+        let allListingsData = [];
+
+        let currentGalleryPhotos = [];
+        let currentPhotoIndex = 0;
+        let activeCategoryFilter = 'all';
+
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+            const badge = document.getElementById('authStatusBadge');
+            const toggleFormBtn = document.getElementById('toggleFormBtn');
+            
+            if (user) {
+                if (badge) badge.textContent = `👤 ${user.email.split('@')[0]}`;
+                if (toggleFormBtn) toggleFormBtn.innerHTML = `<i class="fa-solid fa-plus-circle"></i> Додати об'єкт`;
+                
+                onSnapshot(doc(db, "real_estate_favorites", user.uid), (docSnap) => {
+                    if (docSnap.exists()) {
+                        userFavoritesList = docSnap.data().favorites || [];
+                    } else {
+                        userFavoritesList = [];
+                    }
+                    renderListings(allListingsData);
+                    renderFavoritesSection();
+                });
+            } else {
+                if (badge) badge.textContent = "👤 Особистий кабінет (Гість)";
+                if (toggleFormBtn) toggleFormBtn.innerHTML = `<i class="fa-solid fa-lock"></i> Увійдіть для публікації`;
+                userFavoritesList = [];
+                renderListings(allListingsData);
+                renderFavoritesSection();
+            }
+        });
+
+        window.handleAuthClick = function() {
+            if (!currentUser) {
+                window.location.href = 'index.html';
+            }
+        };
+
+        window.toggleAddForm = function() {
+            if (!currentUser) {
+                alert('Увага: Додавати об'єкти нерухомості можуть лише зареєстровані користувачі!\n\nБудь ласка, увійдіть у свій акаунт.');
+                window.location.href = 'index.html';
+                return;
+            }
+            const form = document.getElementById('newAdFormCard');
+            form.classList.toggle('hidden');
+        };
+
+        window.setMainCategory = function(cat) {
+            activeCategoryFilter = cat;
+            currentPage = 1;
+
+            const btnAll = document.getElementById('btnCatAll');
+            const btnApt = document.getElementById('btnCatApt');
+            const btnHouse = document.getElementById('btnCatHouse');
+
+            if (btnAll && btnApt && btnHouse) {
+                btnAll.className = "px-3 py-1 rounded-t " + (cat === 'all' ? "bg-white text-red-600 font-bold" : "bg-red-700 text-white hover:bg-red-800");
+                btnApt.className = "px-3 py-1 rounded-t " + (cat === 'apartment' ? "bg-white text-red-600 font-bold" : "bg-red-700 text-white hover:bg-red-800");
+                btnHouse.className = "px-3 py-1 rounded-t " + (cat === 'house' ? "bg-white text-red-600 font-bold" : "bg-red-700 text-white hover:bg-red-800");
+            }
+
+            const mainHeaderTitle = document.getElementById('mainHeaderTitle');
+            const feedTitle = document.getElementById('feedTitle');
+            const breadcrumbCategory = document.getElementById('breadcrumbCategory');
+
+            if (cat === 'apartment') {
+                if (mainHeaderTitle) mainHeaderTitle.textContent = "Продаж та оренда квартир в Україні";
+                if (feedTitle) feedTitle.textContent = "Каталог квартир";
+                if (breadcrumbCategory) breadcrumbCategory.textContent = "Квартири";
+            } else if (cat === 'house') {
+                if (mainHeaderTitle) mainHeaderTitle.textContent = "Продаж будинків, дач та котеджів";
+                if (feedTitle) feedTitle.textContent = "Каталог будинків";
+                if (breadcrumbCategory) breadcrumbCategory.textContent = "Будинки";
+            } else if (cat === 'commercial') {
+                if (mainHeaderTitle) mainHeaderTitle.textContent = "Комерційна нерухомість та ділянки";
+                if (feedTitle) feedTitle.textContent = "Комерційні об'єкти";
+                if (breadcrumbCategory) breadcrumbCategory.textContent = "Комерція";
+            } else {
+                if (mainHeaderTitle) mainHeaderTitle.textContent = "Продаж та оренда нерухомості в Україні";
+                if (feedTitle) feedTitle.textContent = "Каталог нерухомості";
+                if (breadcrumbCategory) breadcrumbCategory.textContent = "Нерухомість";
+            }
+
+            window.filterCards();
+        };
+
+        window.toggleFavorite = async function(docId) {
+            if (!currentUser) {
+                alert("Будь ласка, увійдіть у свій акаунт, щоб зберігати об'єкти в обране!");
+                window.location.href = 'index.html';
+                return;
+            }
+
+            const favRef = doc(db, "real_estate_favorites", currentUser.uid);
+            const isFav = userFavoritesList.includes(docId);
+
+            try {
+                if (isFav) {
+                    await updateDoc(favRef, { favorites: arrayRemove(docId) });
+                } else {
+                    const docSnap = await getDoc(favRef);
+                    if (docSnap.exists()) {
+                        await updateDoc(favRef, { favorites: arrayUnion(docId) });
+                    } else {
+                        await setDoc(favRef, { favorites: [docId], userEmail: currentUser.email });
+                    }
+                }
+            } catch (err) {
+                console.error("Помилка обраного нерухомості:", err);
+            }
+        };
+
+        document.getElementById('addListingForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!currentUser) return;
+
+            const category = document.querySelector('input[name="listingCategory"]:checked').value;
+            const dealType = document.getElementById('formDealType').value;
+            const title = document.getElementById('formTitle').value;
+            const rooms = document.getElementById('formRooms').value;
+            const area = Number(document.getElementById('formArea').value);
+            const priceVal = Number(document.getElementById('adPrice').value);
+            const priceUahVal = Math.round(priceVal * USD_TO_UAH_RATE);
+            const city = document.getElementById('adCity').value;
+            const region = document.getElementById('adRegion').value;
+            const contact = document.getElementById('adContact').value;
+            const description = document.getElementById('adDescription').value;
+
+            const p1 = document.getElementById('adPhoto1').value.trim();
+            const p2 = document.getElementById('adPhoto2').value.trim();
+            const p3 = document.getElementById('adPhoto3').value.trim();
+            const p4 = document.getElementById('adPhoto4').value.trim();
+            const photosArray = [p1, p2, p3, p4].filter(url => url.startsWith('http'));
+            if (photosArray.length === 0) {
+                photosArray.push('https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600');
+            }
+
+            const payload = {
+                category: category,
+                dealType: dealType,
+                title: title,
+                rooms: rooms,
+                area: area,
+                priceUSD: priceVal,
+                priceUAH: priceUahVal,
+                city: city,
+                region: region,
+                contact: contact,
+                description: description,
+                photosArray: photosArray,
+                userEmail: currentUser.email,
+                dateStr: new Date().toLocaleDateString('uk-UA'),
+                createdAt: serverTimestamp()
+            };
+
+            try {
+                await addDoc(collection(db, "real_estate_listings"), payload);
+                document.getElementById('addListingForm').reset();
+                document.getElementById('newAdFormCard').classList.add('hidden');
+                alert('Об'єкт нерухомості успішно додано до бази!');
+            } catch (err) {
+                alert('Помилка при збереженні: ' + err.message);
+            }
+        });
+
+        const q = query(collection(db, "real_estate_listings"), orderBy("createdAt", "desc"));
+        onSnapshot(q, (snapshot) => {
+            allListingsData = [];
+            snapshot.forEach((docSnap) => {
+                allListingsData.push({ id: docSnap.id, ...docSnap.data() });
+            });
+
+            renderListings(allListingsData);
+            renderFavoritesSection();
+            window.filterCards();
+        });
+
+        function createListingCardHTML(item, docId) {
+            const photos = item.photosArray || ['https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600'];
+            const mainPhoto = photos[0];
+            const photosCount = photos.length;
+            const priceUsd = item.priceUSD || 0;
+            const priceUah = Math.round(priceUsd * USD_TO_UAH_RATE);
+
+            const isOwnerOrAdmin = currentUser && (currentUser.email === ADMIN_EMAIL || currentUser.email === item.userEmail);
+            const isFav = userFavoritesList.includes(docId);
+            const photosJSON = JSON.stringify(photos).replace(/"/g, '&quot;');
+
+            return `
+                <div class="product-card p-4 bg-white rounded flex flex-col sm:flex-row gap-4 items-start w-full"
+                     data-category="${item.category || 'apartment'}"
+                     data-deal="${item.dealType || ''}"
+                     data-rooms="${item.rooms || ''}"
+                     data-region="${item.region || ''}"
+                     data-price="${priceUsd}">
+                    
+                    <div class="w-full sm:w-64 h-40 bg-gray-900 rounded overflow-hidden relative flex-shrink-0 cursor-pointer group" onclick="openGallery(${photosJSON})">
+                        <img src="${mainPhoto}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                        <span class="absolute top-2 left-2 px-2 py-0.5 bg-blue-600 text-white font-bold text-[10px] rounded">${item.dealType || 'Продаж'}</span>
+                        <span class="absolute bottom-2 right-2 px-2 py-0.5 bg-black/75 text-white font-bold text-[10px] rounded flex items-center gap-1">
+                            <i class="fa-solid fa-camera"></i> ${photosCount}
+                        </span>
+                    </div>
+
+                    <div class="flex-grow space-y-1.5 text-xs w-full">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="font-bold text-blue-700 text-lg hover:underline cursor-pointer leading-tight" onclick="openGallery(${photosJSON})">${item.title}</h3>
+                                <div class="text-[11px] text-gray-500 font-semibold">${item.rooms ? item.rooms + ' кімн. • ' : ''} Загальна площа: <b>${item.area || 0} м²</b></div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-baseline gap-2 pt-0.5">
+                            <span class="text-xl font-black text-green-700">${priceUsd.toLocaleString()} $</span>
+                            <span class="text-xs text-gray-500 font-semibold">• ${priceUah.toLocaleString()} грн</span>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-y-1 text-gray-700 text-xs pt-1">
+                            <div class="flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-red-500"></i> ${item.city || 'Костопіль'}, ${item.region || ''} обл.</div>
+                        </div>
+
+                        <p class="text-gray-600 text-xs line-clamp-1 pt-1">${item.description || 'Опис об'єкта нерухомості.'}</p>
+
+                        <div class="flex justify-between items-center pt-2 border-t border-gray-100 text-[11px] text-gray-400">
+                            <div class="flex items-center gap-2">
+                                <span><i class="fa-regular fa-clock"></i> ${item.dateStr || ''}</span>
+                                <span class="text-gray-500 font-semibold">• Автор: ${item.userEmail || 'Не вказано'}</span>
+                            </div>
+                            <div class="flex items-center gap-4 text-gray-500">
+                                <a href="tel:${item.contact}" class="font-bold text-blue-600 hover:underline">📞 ${item.contact}</a>
+                                
+                                <button onclick="toggleFavorite('${docId}')" class="text-base transition-transform active:scale-125 ${isFav ? 'text-red-600' : 'text-gray-400 hover:text-red-500'}">
+                                    <i class="${isFav ? 'fa-solid' : 'fa-regular'} fa-heart"></i>
+                                </button>
+
+                                ${isOwnerOrAdmin ? `<button class="delete-btn text-red-500 font-bold hover:underline" data-id="${docId}">Видалити</button>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderListings(listings) {
+            const container = document.getElementById('realEstateProductsContainer');
+            container.innerHTML = '';
+
+            if (listings.length === 0) {
+                container.innerHTML = `<div class="bg-white border p-6 text-center text-gray-400 text-xs rounded">Немає об'єктів нерухомості у базі.</div>`;
+                document.getElementById('paginationControls').style.display = 'none';
+                return;
+            }
+
+            listings.forEach((item) => {
+                container.insertAdjacentHTML('beforeend', createListingCardHTML(item, item.id));
+            });
+
+            attachDeleteListeners();
+            window.filterCards();
+        }
+
+        function renderFavoritesSection() {
+            const container = document.getElementById('favoriteProductsContainer');
+            const countEl = document.getElementById('favCount');
+            if (!container || !countEl) return;
+
+            countEl.textContent = userFavoritesList.length;
+
+            if (!currentUser) {
+                container.innerHTML = `<p class="text-gray-400 text-xs italic col-span-full">Увійдіть у систему, щоб переглядати збережені об'єкти.</p>`;
+                return;
+            }
+
+            if (userFavoritesList.length === 0) {
+                container.innerHTML = `<p class="text-gray-400 text-xs italic col-span-full">У вас поки немає збережених об'єктів нерухомості.</p>`;
+                return;
+            }
+
+            container.innerHTML = '';
+            const favItems = allListingsData.filter(item => userFavoritesList.includes(item.id));
+
+            favItems.forEach(item => {
+                const photos = item.photosArray || ['https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600'];
+                const mainPhoto = photos[0];
+                const priceUsd = item.priceUSD || 0;
+                const photosJSON = JSON.stringify(photos).replace(/"/g, '&quot;');
+
+                const miniCard = document.createElement('div');
+                miniCard.className = "bg-white border rounded p-3 flex flex-col justify-between shadow-sm relative group";
+                miniCard.innerHTML = `
+                    <div>
+                        <div class="h-28 bg-gray-900 rounded overflow-hidden relative cursor-pointer mb-2" onclick="openGallery(${photosJSON})">
+                            <img src="${mainPhoto}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
+                            <button onclick="event.stopPropagation(); toggleFavorite('${item.id}')" class="absolute top-2 right-2 bg-white/80 p-1.5 rounded-full text-red-600 hover:bg-white shadow">
+                                <i class="fa-solid fa-heart"></i>
+                            </button>
+                        </div>
+                        <h4 class="font-bold text-blue-700 text-sm line-clamp-1 cursor-pointer" onclick="openGallery(${photosJSON})">${item.title}</h4>
+                        <div class="text-xs font-black text-green-700 mt-1">${priceUsd.toLocaleString()} $</div>
+                        <div class="text-[11px] text-gray-500 mt-0.5"><i class="fa-solid fa-location-dot text-red-500"></i> ${item.city || ''}</div>
+                    </div>
+                    <div class="pt-2 mt-2 border-t border-gray-100 flex justify-between items-center text-[11px]">
+                        <a href="tel:${item.contact}" class="font-bold text-blue-600 hover:underline">📞 ${item.contact}</a>
+                        <span class="text-gray-400">${item.dealType || ''}</span>
+                    </div>
+                `;
+                container.appendChild(miniCard);
+            });
+        }
+
+        function attachDeleteListeners() {
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.removeEventListener('click', handleDelete);
+                btn.addEventListener('click', handleDelete);
+            });
+        }
+
+        async function handleDelete(e) {
+            const id = e.currentTarget.getAttribute('data-id');
+            if (confirm('Видалити цей об'єкт з бази?')) {
+                try {
+                    await deleteDoc(doc(db, "real_estate_listings", id));
+                    alert('Об'єкт видалено!');
+                } catch (err) {
+                    alert('Помилка: ' + err.message);
+                }
+            }
+        }
+
+        window.openGallery = function(photos) {
+            if (!photos || photos.length === 0) return;
+            currentGalleryPhotos = photos;
+            currentPhotoIndex = 0;
+            updateGalleryUI();
+            document.getElementById('lightboxModal').style.display = 'flex';
+        };
+
+        window.closeGallery = function() {
+            document.getElementById('lightboxModal').style.display = 'none';
+        };
+
+        window.prevGalleryImage = function(e) {
+            if (e) e.stopPropagation();
+            if (currentGalleryPhotos.length <= 1) return;
+            currentPhotoIndex = (currentGalleryPhotos.index - 1 + currentGalleryPhotos.length) % currentGalleryPhotos.length;
+            updateGalleryUI();
+        };
+
+        window.nextGalleryImage = function(e) {
+            if (e) e.stopPropagation();
+            if (currentGalleryPhotos.length <= 1) return;
+            currentPhotoIndex = (currentPhotoIndex + 1) % currentGalleryPhotos.length;
+            updateGalleryUI();
+        };
+
+        function updateGalleryUI() {
+            const imgEl = document.getElementById('lightboxImg');
+            const counterEl = document.getElementById('galleryCounter');
+            const thumbsContainer = document.getElementById('galleryThumbs');
+
+            imgEl.src = currentGalleryPhotos[currentPhotoIndex];
+            counterEl.textContent = `Фото ${currentPhotoIndex + 1} з ${currentGalleryPhotos.length}`;
+
+            thumbsContainer.innerHTML = '';
+            currentGalleryPhotos.forEach((url, idx) => {
+                const thumb = document.createElement('img');
+                thumb.src = url;
+                thumb.className = `thumb-img ${idx === currentPhotoIndex ? 'active' : ''}`;
+                thumb.onclick = (e) => {
+                    e.stopPropagation();
+                    currentPhotoIndex = idx;
+                    updateGalleryUI();
+                };
+                thumbsContainer.appendChild(thumb);
+            });
+        }
+
+        window.filterCards = function() {
+            const typeVal = (document.getElementById('filterType')?.value || '').toLowerCase();
+            const roomsVal = (document.getElementById('filterRooms')?.value || '').toLowerCase();
+            const regionVal = (document.getElementById('filterRegion')?.value || '').toLowerCase();
+            const minPrice = parseFloat(document.getElementById('filterPriceMin')?.value) || 0;
+            const maxPrice = parseFloat(document.getElementById('filterPriceMax')?.value) || Infinity;
+
+            const cards = Array.from(document.querySelectorAll('.product-card'));
+            let matchingCards = [];
+
+            cards.forEach(card => {
+                const text = card.innerText.toLowerCase();
+                const cardCategory = card.getAttribute('data-category') || '';
+                const cardDeal = (card.getAttribute('data-deal') || '').toLowerCase();
+                const cardRooms = (card.getAttribute('data-rooms') || '').toLowerCase();
+                const cardRegion = (card.getAttribute('data-region') || '').toLowerCase();
+                const cardPrice = parseFloat(card.getAttribute('data-price')) || 0;
+
+                let matchCategory = (activeCategoryFilter === 'all' || cardCategory === activeCategoryFilter);
+                let matchType = (!typeVal || cardDeal.includes(typeVal));
+                let matchRooms = (!roomsVal || cardRooms.includes(roomsVal));
+                let matchRegion = (!regionVal || cardRegion.includes(regionVal));
+                let matchPrice = (cardPrice >= minPrice && cardPrice <= maxPrice);
+
+                if (matchCategory && matchType && matchRooms && matchRegion && matchPrice) {
+                    matchingCards.push(card);
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            const totalPages = Math.ceil(matchingCards.length / ITEMS_PER_PAGE) || 1;
+            if (currentPage > totalPages) currentPage = totalPages;
+            if (currentPage < 1) currentPage = 1;
+
+            const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+            const endIndex = startIndex + ITEMS_PER_PAGE;
+
+            let visibleCount = 0;
+            matchingCards.forEach((card, index) => {
+                if (index >= startIndex && index < endIndex) {
+                    card.style.display = 'flex';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            const paginationEl = document.getElementById('paginationControls');
+            const pageIndicator = document.getElementById('pageIndicator');
+            const prevBtn = document.getElementById('prevPageBtn');
+            const nextBtn = document.getElementById('nextPageBtn');
+
+            if (paginationEl && pageIndicator) {
+                if (matchingCards.length === 0) {
+                    paginationEl.style.display = 'none';
+                } else {
+                    paginationEl.style.display = 'flex';
+                    pageIndicator.textContent = `Сторінка ${currentPage} з ${totalPages}`;
+                    prevBtn.disabled = (currentPage === 1);
+                    nextBtn.disabled = (currentPage === totalPages);
+                }
+            }
+        };
+
+        window.changePage = function(direction) {
+            currentPage += direction;
+            window.filterCards();
+            window.scrollTo({ top: 300, behavior: 'smooth' });
+        };
+    </script>
+</body>
+</html>

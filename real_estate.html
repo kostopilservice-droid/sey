@@ -148,9 +148,10 @@
                 </a>
 
                 <nav class="hidden md:flex items-center gap-6 text-sm font-bold text-gray-800">
+                    <a href="auto.html" class="hover:text-red-600 pb-1 text-red-600"><i class="fa-solid fa-car"></i> Автобазар</a>
                     <a href="#apartments" onClick="setMainCategory('apartment')" class="hover:text-red-600 pb-1">Квартири</a>
                     <a href="#houses" onClick="setMainCategory('house')" class="hover:text-red-600 pb-1">Будинки та дачі</a>
-                    <a href="commercial.html" onClick="setMainCategory('commercial')" class="hover:text-red-600 pb-1">Комерція</a>
+                    <a href="commercial.html" class="hover:text-red-600 pb-1">Комерція</a>
                 </nav>
 
                 <button id="toggleFormBtn" onClick="toggleAddForm()" class="btn-green-add text-white font-bold px-4 py-2 rounded text-xs flex items-center gap-1.5 shadow-md">
@@ -407,9 +408,10 @@
                 <div class="bg-white p-4 rounded border border-gray-200 shadow-sm">
                     <h3 class="font-bold text-gray-900 mb-2 border-b pb-1">Категорії нерухомості</h3>
                     <ul class="space-y-2 font-semibold">
+                        <li><a href="auto.html" class="hover:underline flex justify-between text-red-600 font-bold"><i class="fa-solid fa-car mr-1"></i> Автобазар <span>&rsaquo;</span></a></li>
                         <li><a href="#apartments" onClick="setMainCategory('apartment')" class="hover:underline flex justify-between text-blue-700">Квартири <span>&rsaquo;</span></a></li>
                         <li><a href="#houses" onClick="setMainCategory('house')" class="hover:underline flex justify-between text-blue-700">Будинки та дачі <span>&rsaquo;</span></a></li>
-                        <li><a href="#commercial" onClick="setMainCategory('commercial')" class="hover:underline flex justify-between text-blue-700">Комерція / Ділянки <span>&rsaquo;</span></a></li>
+                        <li><a href="commercial.html" class="hover:underline flex justify-between text-blue-700">Комерція / Ділянки <span>&rsaquo;</span></a></li>
                     </ul>
                 </div>
             </div>
@@ -890,8 +892,7 @@
         window.prevGalleryImage = function(e) {
             if (e) e.stopPropagation();
             if (currentGalleryPhotos.length <= 1) return;
-            currentGalleryPhotos = photos;
-            currentPhotoIndex = (currentGalleryPhotos.length - 1 + currentGalleryPhotos.length) % currentGalleryPhotos.length;
+            currentPhotoIndex = (currentPhotoIndex - 1 + currentGalleryPhotos.length) % currentGalleryPhotos.length;
             updateGalleryUI();
         };
 
@@ -948,7 +949,6 @@
                 let matchType = (!typeVal || cardDeal.includes(typeVal));
                 let matchRooms = (!roomsVal || cardRooms.includes(roomsVal));
                 
-                // Гнучке порівняння області (за першим словом, напр. "рівненськ") та міста
                 const regionKeyword = regionVal.split(' ')[0];
                 let matchRegion = (!regionVal || cardRegion.includes(regionKeyword) || text.includes(regionKeyword));
                 let matchCity = (!cityVal || cardCity.includes(cityVal));

@@ -148,12 +148,12 @@
                     </button>
                 </div>
 
-                <!-- НАВІГАЦІЯ КАТЕГОРІЙ (Працює і на мобільних, і на ПК) -->
+                <!-- НАВІГАЦІЯ КАТЕГОРІЙ ДЛЯ МОБІЛЬНИХ ТА ПК (з посиланням на commercial.html) -->
                 <nav class="flex items-center gap-3 sm:gap-6 text-xs sm:text-sm font-bold text-gray-800 overflow-x-auto w-full sm:w-auto py-1">
                     <a href="auto.html" class="hover:text-red-600 text-red-600 whitespace-nowrap"><i class="fa-solid fa-car"></i> Автобазар</a>
                     <button onClick="setMainCategory('apartment')" class="hover:text-red-600 whitespace-nowrap">🏢 Квартири</button>
                     <button onClick="setMainCategory('house')" class="hover:text-red-600 whitespace-nowrap">🏡 Будинки</button>
-                    <button onClick="setMainCategory('commercial')" class="hover:text-red-600 text-blue-700 whitespace-nowrap">🏬 Комерція</button>
+                    <a href="commercial.html" class="hover:text-red-600 text-blue-700 whitespace-nowrap"><i class="fa-solid fa-store"></i> Комерція</a>
                 </nav>
 
                 <button id="toggleFormBtn" onClick="toggleAddForm()" class="hidden sm:flex btn-green-add text-white font-bold px-4 py-2 rounded text-xs items-center gap-1.5 shadow-md">
@@ -181,12 +181,11 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 
                 <div class="space-y-3">
-                    <!-- Додано кнопку "Комерція" у фільтри -->
                     <div class="flex flex-wrap gap-1 text-[11px] font-bold">
                         <button id="btnCatAll" onClick="setMainCategory('all')" class="px-2.5 py-1 bg-white text-red-600 rounded-t font-bold">Всі</button>
                         <button id="btnCatApt" onClick="setMainCategory('apartment')" class="px-2.5 py-1 bg-red-700 text-white rounded-t hover:bg-red-800">Квартири</button>
                         <button id="btnCatHouse" onClick="setMainCategory('house')" class="px-2.5 py-1 bg-red-700 text-white rounded-t hover:bg-red-800">Будинки</button>
-                        <button id="btnCatComm" onClick="setMainCategory('commercial')" class="px-2.5 py-1 bg-red-700 text-white rounded-t hover:bg-red-800">Комерція</button>
+                        <a href="commercial.html" class="px-2.5 py-1 bg-red-700 text-white rounded-t hover:bg-red-800 flex items-center">Комерція</a>
                     </div>
 
                     <select id="filterType" onChange="filterCards()" class="w-full px-3 py-2 text-xs bg-white text-gray-800 rounded border-none outline-none font-semibold">
@@ -414,7 +413,7 @@
                         <li><a href="auto.html" class="hover:underline flex justify-between text-red-600 font-bold"><i class="fa-solid fa-car mr-1"></i> Автобазар <span>&rsaquo;</span></a></li>
                         <li><button onClick="setMainCategory('apartment')" class="hover:underline flex justify-between text-blue-700 w-full text-left">🏢 Квартири <span>&rsaquo;</span></button></li>
                         <li><button onClick="setMainCategory('house')" class="hover:underline flex justify-between text-blue-700 w-full text-left">🏡 Будинки та дачі <span>&rsaquo;</span></button></li>
-                        <li><button onClick="setMainCategory('commercial')" class="hover:underline flex justify-between text-blue-700 font-bold w-full text-left">🏬 Комерція / Ділянки <span>&rsaquo;</span></button></li>
+                        <li><a href="commercial.html" class="hover:underline flex justify-between text-blue-700 font-bold w-full text-left">🏬 Комерція / Ділянки <span>&rsaquo;</span></a></li>
                     </ul>
                 </div>
             </div>
@@ -602,13 +601,11 @@
             const btnAll = document.getElementById('btnCatAll');
             const btnApt = document.getElementById('btnCatApt');
             const btnHouse = document.getElementById('btnCatHouse');
-            const btnComm = document.getElementById('btnCatComm');
 
-            if (btnAll && btnApt && btnHouse && btnComm) {
+            if (btnAll && btnApt && btnHouse) {
                 btnAll.className = "px-2.5 py-1 rounded-t " + (cat === 'all' ? "bg-white text-red-600 font-bold" : "bg-red-700 text-white hover:bg-red-800");
                 btnApt.className = "px-2.5 py-1 rounded-t " + (cat === 'apartment' ? "bg-white text-red-600 font-bold" : "bg-red-700 text-white hover:bg-red-800");
                 btnHouse.className = "px-2.5 py-1 rounded-t " + (cat === 'house' ? "bg-white text-red-600 font-bold" : "bg-red-700 text-white hover:bg-red-800");
-                btnComm.className = "px-2.5 py-1 rounded-t " + (cat === 'commercial' ? "bg-white text-red-600 font-bold" : "bg-red-700 text-white hover:bg-red-800");
             }
 
             const mainHeaderTitle = document.getElementById('mainHeaderTitle');
@@ -623,10 +620,6 @@
                 if (mainHeaderTitle) mainHeaderTitle.textContent = "Продаж будинків, дач та котеджів";
                 if (feedTitle) feedTitle.textContent = "Каталог будинків";
                 if (breadcrumbCategory) breadcrumbCategory.textContent = "Будинки";
-            } else if (cat === 'commercial') {
-                if (mainHeaderTitle) mainHeaderTitle.textContent = "Комерційна нерухомість та земельні ділянки";
-                if (feedTitle) feedTitle.textContent = "Комерційні об'єкти та ділянки";
-                if (breadcrumbCategory) breadcrumbCategory.textContent = "Комерція";
             } else {
                 if (mainHeaderTitle) mainHeaderTitle.textContent = "Продаж та оренда нерухомості в Україні";
                 if (feedTitle) feedTitle.textContent = "Каталог нерухомості";

@@ -546,13 +546,40 @@
                         <!-- Заповнюється скриптом -->
                     </ul>
                 </div>
+
+                <!-- РЕКЛАМНИЙ БЛОК-БАННЕР ДЛЯ МОНЕТИЗАЦІЇ (ПІД МАРКАМИ АВТО) -->
+                <div class="bg-white p-3 rounded border border-gray-200 shadow-sm space-y-2">
+                    <div class="flex items-center justify-between border-b pb-1">
+                        <span class="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Реклама / Партнери</span>
+                        <button id="adminAddBannerBtn" onclick="toggleAdminBannerForm()" class="hidden text-[10px] bg-red-600 hover:bg-red-700 text-white font-bold px-2 py-0.5 rounded">
+                            <i class="fa-solid fa-plus"></i> Баннер
+                        </button>
+                    </div>
+
+                    <!-- Форма додавання баннеру (для адміна) -->
+                    <div id="adminBannerForm" class="hidden bg-red-50 p-2.5 border border-red-200 rounded space-y-2 text-xs">
+                        <div class="font-bold text-red-900 text-[11px]">Новий рекламний баннер</div>
+                        <input type="text" id="bannerTitle" placeholder="Заголовок баннеру" class="w-full p-1.5 border rounded text-xs">
+                        <input type="url" id="bannerImgUrl" placeholder="URL зображення / колажу (https://...)" class="w-full p-1.5 border rounded text-xs">
+                        <input type="url" id="bannerTargetUrl" placeholder="Посилання для переходу (https://...)" class="w-full p-1.5 border rounded text-xs">
+                        <div class="flex gap-2 justify-end pt-1">
+                            <button type="button" onclick="toggleAdminBannerForm()" class="px-2 py-1 bg-gray-200 rounded text-[11px] font-bold">Скасувати</button>
+                            <button type="button" onclick="saveAdminBanner()" class="px-2 py-1 bg-green-600 text-white rounded text-[11px] font-bold">Зберегти</button>
+                        </div>
+                    </div>
+
+                    <!-- Контейнер для відображення рекламних баннерів -->
+                    <div id="sidebarBannersContainer" class="space-y-3">
+                        <p class="text-gray-400 text-[11px] italic text-center py-2">Завантаження реклами...</p>
+                    </div>
+                </div>
             </div>
 
         </div>
 
     </main>
 
-    <!-- БЛОК ОБРАНИХ ОГОЛОШЕНЬ -->
+    <!-- БЛОК ОБРАНИХ ОГОЛОШЕННЯ -->
     <section id="favoritesSection" class="max-w-6xl mx-auto px-4 py-6 mt-8 border-t border-gray-300 w-full">
         <div class="flex items-center justify-between mb-4">
             <h2 class="text-lg font-bold text-gray-900 flex items-center gap-2">
@@ -622,7 +649,7 @@
             "Кіровоградська область": ["Кропивницький", "Олександрія", "Світловодськ", "Знам'янка"],
             "Миколаївська область": ["Миколаїв", "Первомайськ", "Южноукраїнськ", "Вознесенськ"],
             "Херсонська область": ["Херсон", "Нова Каховка", "Каховка", "Генічеськ"],
-            "Запорізька область": ["Запоріжжя", "Мелітополь", "Бердянськ", "Енергодар", "Токмак"],
+            "Запорізька область": ["Запоріжжя", "Мелітополь", "Берлянськ", "Енергодар", "Токмак"],
             "Донецька область": ["Маріуполь", "Краматорськ", "Слов'янськ", "Бахмут", "Покровськ"],
             "Луганська область": ["Сєвєродонецьк", "Лисичанськ", "Луганськ", "Алчевськ", "Рубіжне"],
             "Крим": ["Сімферополь", "Севастополь", "Ялта", "Керч", "Євпаторія"]
@@ -823,11 +850,70 @@
             else if (window.location.hash === '#all') setMainCategory('all');
         });
 
+        // Управління баннерами для адміністратора
+        window.toggleAdminBannerForm = function() {
+            const form = document.getElementById('adminBannerForm');
+            if (form) form.classList.toggle('hidden');
+        };
+
+        window.saveAdminBanner = async function() {
+            if (!currentUser || currentUser.email !== ADMIN_EMAIL) {
+                alert("Доступ заборонено!");
+                return;
+            }
+
+            const title = document.getElementById('bannerTitle').value.trim();
+            const imgUrl = document.getElementById('bannerImgUrl').value.trim();
+            const targetUrl = document.getElementById('bannerTargetUrl').value.trim();
+
+            if (!imgUrl) {
+                alert("Будь ласка, вкажіть URL зображення баннеру!");
+                return;
+            }
+
+            try {
+                await addDoc(collection(db, "ad_banners"), {
+                    title: title || "Реклама",
+                    imgUrl: imgUrl,
+                    targetUrl: targetUrl || "#",
+                    createdBy: currentUser.email,
+                    createdAt: serverTimestamp()
+                });
+                document.getElementById('bannerTitle').value = '';
+                document.getElementById('bannerImgUrl').value = '';
+                document.getElementById('bannerTargetUrl').value = '';
+                toggleAdminBannerForm();
+                alert("Рекламний баннер успішно додано!");
+            } catch (err) {
+                alert("Помилка додавання баннера: " + err.message);
+            }
+        };
+
+        window.deleteAdminBanner = async function(bannerId) {
+            if (!currentUser || currentUser.email !== ADMIN_EMAIL) return;
+            if (confirm("Видалити цей рекламний баннер?")) {
+                try {
+                    await deleteDoc(doc(db, "ad_banners", bannerId));
+                } catch (err) {
+                    alert("Помилка видалення: " + err.message);
+                }
+            }
+        };
+
         onAuthStateChanged(auth, (user) => {
             currentUser = user;
             const badge = document.getElementById('authStatusBadge');
             const toggleFormBtn = document.getElementById('toggleFormBtn');
+            const adminBtn = document.getElementById('adminAddBannerBtn');
             
+            if (adminBtn) {
+                if (user && user.email === ADMIN_EMAIL) {
+                    adminBtn.classList.remove('hidden');
+                } else {
+                    adminBtn.classList.add('hidden');
+                }
+            }
+
             if (user) {
                 if (badge) badge.textContent = `👤 ${user.email.split('@')[0]}`;
                 if (toggleFormBtn) toggleFormBtn.innerHTML = `<i class="fa-solid fa-plus-circle"></i> Додати оголошення`;
@@ -848,6 +934,44 @@
                 renderListings(allListingsData);
                 renderFavoritesSection();
             }
+        });
+
+        // Слухач баннерів монетизації у реальному часі
+        const bannersQuery = query(collection(db, "ad_banners"), orderBy("createdAt", "desc"));
+        onSnapshot(bannersQuery, (snapshot) => {
+            const container = document.getElementById('sidebarBannersContainer');
+            if (!container) return;
+
+            container.innerHTML = '';
+
+            if (snapshot.empty) {
+                container.innerHTML = `
+                    <div class="border-2 border-dashed border-gray-200 p-4 rounded text-center text-gray-400">
+                        <i class="fa-solid fa-rectangle-ad text-2xl mb-1 text-gray-300"></i>
+                        <p class="text-[11px]">Місце для вашої реклами</p>
+                    </div>`;
+                return;
+            }
+
+            snapshot.forEach((docSnap) => {
+                const data = docSnap.data();
+                const bannerId = docSnap.id;
+                const isAdmin = currentUser && currentUser.email === ADMIN_EMAIL;
+
+                const bannerHTML = `
+                    <div class="relative group rounded overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition">
+                        <a href="${data.targetUrl}" target="_blank" rel="noopener noreferrer" class="block">
+                            <img src="${data.imgUrl}" alt="${data.title}" class="w-full h-auto object-cover rounded hover:opacity-95 transition">
+                        </a>
+                        ${isAdmin ? `
+                            <button onclick="deleteAdminBanner('${bannerId}')" class="absolute top-1 right-1 bg-red-600 text-white font-bold text-[10px] px-1.5 py-0.5 rounded shadow hover:bg-red-700">
+                                ✕
+                            </button>
+                        ` : ''}
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', bannerHTML);
+            });
         });
 
         window.handleAuthClick = function() {
@@ -1192,8 +1316,7 @@
         window.prevGalleryImage = function(e) {
             if (e) e.stopPropagation();
             if (currentGalleryPhotos.length <= 1) return;
-            currentGalleryPhotos = photos;
-            currentPhotoIndex = (currentGalleryPhotos.length - 1 + currentGalleryPhotos.length) % currentGalleryPhotos.length;
+            currentPhotoIndex = (currentPhotoIndex - 1 + currentGalleryPhotos.length) % currentGalleryPhotos.length;
             updateGalleryUI();
         };
 
@@ -1280,11 +1403,9 @@
                 const matchBrand = !brandVal || cardBrand === brandVal;
                 const matchModel = !modelVal || cardModel === modelVal;
                 
-                // Гнучке порівняння області (шукає основне слово, напр. "рівненськ")
                 const regionKeyword = regionVal.split(' ')[0];
                 const matchRegion = !regionVal || cardRegion.includes(regionKeyword) || text.includes(regionKeyword);
                 
-                // Гнучке порівняння міста
                 const matchCity = !cityVal || cardCity.includes(cityVal);
                 
                 const matchPartNum = !partNumVal || cardPartNum.includes(partNumVal) || text.includes(partNumVal);

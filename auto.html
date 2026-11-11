@@ -21,7 +21,6 @@
             color: #2b2b2b; 
         }
 
-        /* Стилі AutoRia */
         .ria-header-top {
             background-color: #ffffff;
             border-bottom: 1px solid #e0e0e0;
@@ -239,33 +238,38 @@
                 </div>
 
                 <div class="space-y-3 pt-6 md:pt-7">
-                    <select id="filterRegion" class="w-full px-3 py-2 text-xs bg-white text-gray-800 rounded border-none outline-none font-semibold">
+                    <!-- ВИБІР ОБЛАСТІ ТА МІСТА ДЛЯ ФІЛЬТРАЦІЇ -->
+                    <select id="filterRegion" onChange="updateFilterCities(); filterCards();" class="w-full px-3 py-2 text-xs bg-white text-gray-800 rounded border-none outline-none font-semibold">
                         <option value="">Регіон: Всі області України</option>
-                        <option value="Вінницька">Вінницька область</option>
-                        <option value="Волинська">Волинська область</option>
-                        <option value="Дніпропетровська">Дніпропетровська область</option>
-                        <option value="Донецька">Донецька область</option>
-                        <option value="Житомирська">Житомирська область</option>
-                        <option value="Закарпатська">Закарпатська область</option>
-                        <option value="Запорізька">Запорізька область</option>
-                        <option value="Івано-Франківська">Івано-Франківська область</option>
-                        <option value="Київська">Київська область (м. Київ)</option>
-                        <option value="Кіровоградська">Кіровоградська область</option>
-                        <option value="Луганська">Луганська область</option>
-                        <option value="Львівська">Львівська область</option>
-                        <option value="Миколаївська">Миколаївська область</option>
-                        <option value="Одеська">Одеська область</option>
-                        <option value="Полтавська">Полтавська область</option>
-                        <option value="Рівненська">Рівненська область (Костопіль)</option>
-                        <option value="Сумська">Сумська область</option>
-                        <option value="Тернопільська">Тернопільська область</option>
-                        <option value="Харківська">Харківська область</option>
-                        <option value="Херсонська">Херсонська область</option>
-                        <option value="Хмельницька">Хмельницька область</option>
-                        <option value="Черкаська">Черкаська область (Сміла)</option>
-                        <option value="Чернівецька">Чернівецька область</option>
-                        <option value="Чернігівська">Чернігівська область</option>
+                        <option value="Рівненська область">Рівненська область (м. Костопіль)</option>
+                        <option value="Київська область">Київська область (м. Київ)</option>
+                        <option value="Львівська область">Львівська область</option>
+                        <option value="Волинська область">Волинська область</option>
+                        <option value="Житомирська область">Житомирська область</option>
+                        <option value="Вінницька область">Вінницька область</option>
+                        <option value="Дніпропетровська область">Дніпропетровська область</option>
+                        <option value="Одеська область">Одеська область</option>
+                        <option value="Харківська область">Харківська область</option>
+                        <option value="Черкаська область">Черкаська область (м. Сміла)</option>
+                        <option value="Хмельницька область">Хмельницька область</option>
+                        <option value="Івано-Франківська область">Івано-Франківська область</option>
+                        <option value="Закарпатська область">Закарпатська область</option>
+                        <option value="Тернопільська область">Тернопільська область</option>
+                        <option value="Чернівецька область">Чернівецька область</option>
+                        <option value="Чернігівська область">Чернігівська область</option>
+                        <option value="Сумська область">Сумська область</option>
+                        <option value="Полтавська область">Полтавська область</option>
+                        <option value="Кіровоградська область">Кіровоградська область</option>
+                        <option value="Миколаївська область">Миколаївська область</option>
+                        <option value="Херсонська область">Херсонська область</option>
+                        <option value="Запорізька область">Запорізька область</option>
+                        <option value="Донецька область">Донецька область</option>
+                        <option value="Луганська область">Луганська область</option>
                         <option value="Крим">АР Крим</option>
+                    </select>
+
+                    <select id="filterCity" onChange="filterCards()" class="w-full px-3 py-2 text-xs bg-white text-gray-800 rounded border-none outline-none font-semibold">
+                        <option value="">Місто: Всі міста області</option>
                     </select>
 
                     <div id="advancedSearchFields" class="hidden space-y-2 bg-red-800 p-3 rounded">
@@ -375,23 +379,59 @@
                     </div>
                 </div>
 
-                <div class="font-bold text-gray-800 text-xs border-b pb-1 pt-2">2. Ціна та контакти</div>
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div class="font-bold text-gray-800 text-xs border-b pb-1 pt-2">2. Локація (Область та Місто) і контакти</div>
+                <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                    <div>
+                        <label class="block font-semibold mb-1 text-gray-600">Область *</label>
+                        <select id="formRegion" onChange="updateFormCities()" class="w-full p-2 border rounded font-semibold bg-white" required>
+                            <option value="">Оберіть область *</option>
+                            <option value="Рівненська область">Рівненська область</option>
+                            <option value="Київська область">Київська область</option>
+                            <option value="Львівська область">Львівська область</option>
+                            <option value="Волинська область">Волинська область</option>
+                            <option value="Житомирська область">Житомирська область</option>
+                            <option value="Вінницька область">Вінницька область</option>
+                            <option value="Дніпропетровська область">Дніпропетровська область</option>
+                            <option value="Одеська область">Одеська область</option>
+                            <option value="Харківська область">Харківська область</option>
+                            <option value="Черкаська область">Черкаська область</option>
+                            <option value="Хмельницька область">Хмельницька область</option>
+                            <option value="Івано-Франківська область">Івано-Франківська область</option>
+                            <option value="Закарпатська область">Закарпатська область</option>
+                            <option value="Тернопільська область">Тернопільська область</option>
+                            <option value="Чернівецька область">Чернівецька область</option>
+                            <option value="Чернігівська область">Чернігівська область</option>
+                            <option value="Сумська область">Сумська область</option>
+                            <option value="Полтавська область">Полтавська область</option>
+                            <option value="Кіровоградська область">Кіровоградська область</option>
+                            <option value="Миколаївська область">Миколаївська область</option>
+                            <option value="Херсонська область">Херсонська область</option>
+                            <option value="Запорізька область">Запорізька область</option>
+                            <option value="Донецька область">Донецька область</option>
+                            <option value="Луганська область">Луганська область</option>
+                            <option value="Крим">АР Крим</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1 text-gray-600">Місто продажу *</label>
+                        <select id="formCity" class="w-full p-2 border rounded font-semibold bg-white" required>
+                            <option value="">Спочатку оберіть область *</option>
+                        </select>
+                    </div>
                     <div>
                         <label class="block font-semibold mb-1 text-gray-600">Ціна ($ USD) *</label>
                         <input type="number" id="adPrice" required placeholder="50" class="w-full p-2 border rounded font-bold text-green-700">
                     </div>
-                    <div id="fieldMileageWrapper">
-                        <label class="block font-semibold mb-1 text-gray-600">Пробіг авто (тис. км) *</label>
-                        <input type="number" id="adMileage" placeholder="300" class="w-full p-2 border rounded">
-                    </div>
-                    <div>
-                        <label class="block font-semibold mb-1 text-gray-600">Місто продажу *</label>
-                        <input type="text" id="adCity" required placeholder="Костопіль" class="w-full p-2 border rounded">
-                    </div>
                     <div>
                         <label class="block font-semibold mb-1 text-gray-600">Номер телефону *</label>
                         <input type="tel" id="adContact" required placeholder="+380971234567" class="w-full p-2 border rounded">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="fieldMileageWrapper">
+                    <div>
+                        <label class="block font-semibold mb-1 text-gray-600">Пробіг авто (тис. км) *</label>
+                        <input type="number" id="adMileage" placeholder="300" class="w-full p-2 border rounded">
                     </div>
                 </div>
 
@@ -468,7 +508,7 @@
             </form>
         </div>
 
-        <!-- ОСНОВНА СІТКА З ОГОЛОШЕННЯМИ (АВТО ТА ЗАПЧАСТИНИ) -->
+        <!-- ОСНОВНА СІТКА З ОГОЛОШЕННЯМИ -->
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 pt-2">
             
             <div class="lg:col-span-3 space-y-4">
@@ -490,9 +530,8 @@
                 </div>
             </div>
 
-            <!-- САЙДБАР (СПОСОБИ ФІЛЬТРАЦІЇ) -->
+            <!-- САЙДБАР -->
             <div class="space-y-5 text-xs">
-                
                 <div class="bg-white p-4 rounded border border-gray-200 shadow-sm">
                     <h3 class="font-bold text-gray-900 mb-2 border-b pb-1">Категорії каталогу</h3>
                     <ul class="space-y-2 font-semibold">
@@ -507,14 +546,13 @@
                         <!-- Заповнюється скриптом -->
                     </ul>
                 </div>
-
             </div>
 
         </div>
 
     </main>
 
-    <!-- БЛОК ОБРАНИХ ОГОЛОШЕНЬ ПЕРЕД ФУТЕРОМ -->
+    <!-- БЛОК ОБРАНИХ ОГОЛОШЕНЬ -->
     <section id="favoritesSection" class="max-w-6xl mx-auto px-4 py-6 mt-8 border-t border-gray-300 w-full">
         <div class="flex items-center justify-between mb-4">
             <h2 class="text-lg font-bold text-gray-900 flex items-center gap-2">
@@ -528,7 +566,7 @@
         </div>
     </section>
 
-    <!-- LIGHTBOX ДЛЯ ПЕРЕГЛЯДУ ГАЛЕРЕЇ ФОТО -->
+    <!-- LIGHTBOX ДЛЯ ГАЛЕРЕЇ -->
     <div id="lightboxModal" class="lightbox-modal">
         <span class="absolute top-4 right-6 text-white text-3xl cursor-pointer font-bold z-50 hover:text-red-400" onClick="closeGallery()">&times;</span>
         
@@ -550,7 +588,7 @@
         <p>© 2026 NEOSERVICE — Автобазар & Запчастини. Всі права захищені.</p>
     </footer>
 
-    <!-- FIREBASE ТА ОСНОВНА ЛОГІКА -->
+    <!-- FIREBASE ТА ЛОГІКА -->
     <script type="module">
         import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -561,6 +599,63 @@
 
         const ITEMS_PER_PAGE = 12;
         let currentPage = 1;
+
+        // БАЗА ОБЛАСТЕЙ ТА МІСТ УКРАЇНИ
+        const ukraineRegions = {
+            "Рівненська область": ["Костопіль", "Рівне", "Березне", "Дубно", "Сарни", "Вараш", "Здолбунів", "Острог"],
+            "Київська область": ["Київ", "Бровари", "Бориспіль", "Ірпінь", "Буча", "Біла Церква", "Вишневе", "Вишгород"],
+            "Львівська область": ["Львів", "Дрогобич", "Стрий", "Червоноград", "Золочів", "Броди", "Жовква", "Трускавець"],
+            "Волинська область": ["Луцьк", "Ковель", "Нововолинськ", "Володимир", "Ківерці", "Рожище"],
+            "Житомирська область": ["Житомир", "Бердичів", "Коростень", "Звягель", "Малин"],
+            "Вінницька область": ["Вінниця", "Жмеринка", "Козятин", "Ладижин", "Могилів-Подільський", "Гайсин"],
+            "Дніпропетровська область": ["Дніпро", "Кривий Ріг", "Кам'янське", "Нікополь", "Павлоград", "Новомосковськ"],
+            "Одеська область": ["Одеса", "Ізмаїл", "Чорноморськ", "Білгород-Дністровський", "Подільськ"],
+            "Харківська область": ["Харків", "Лозова", "Ізюм", "Чугуїв"],
+            "Черкаська область": ["Черкаси", "Умань", "Сміла", "Золотоноша", "Канів"],
+            "Хмельницька область": ["Хмельницький", "Кам'янець-Подільський", "Шепетівка", "Нетішин", "Старокостянтинів"],
+            "Івано-Франківська область": ["Івано-Франківськ", "Калуш", "Коломия", "Надвірна", "Долина"],
+            "Закарпатська область": ["Ужгород", "Мукачево", "Хуст", "Виноградів", "Берегове"],
+            "Тернопільська область": ["Тернопіль", "Чортків", "Кременець", "Бережани"],
+            "Чернівецька область": ["Чернівці", "Новодністровськ", "Хотин", "Сторожинець"],
+            "Чернігівська область": ["Чернігів", "Ніжин", "Прилуки", "Бахмач"],
+            "Сумська область": ["Суми", "Конотоп", "Шостка", "Охтирка", "Ромни"],
+            "Полтавська область": ["Полтава", "Кременчук", "Горішні Плавні", "Лубни", "Миргород"],
+            "Кіровоградська область": ["Кропивницький", "Олександрія", "Світловодськ", "Знам'янка"],
+            "Миколаївська область": ["Миколаїв", "Первомайськ", "Южноукраїнськ", "Вознесенськ"],
+            "Херсонська область": ["Херсон", "Нова Каховка", "Каховка", "Генічеськ"],
+            "Запорізька область": ["Запоріжжя", "Мелітополь", "Бердянськ", "Енергодар", "Токмак"],
+            "Донецька область": ["Маріуполь", "Краматорськ", "Слов'янськ", "Бахмут", "Покровськ"],
+            "Луганська область": ["Сєвєродонецьк", "Лисичанськ", "Луганськ", "Алчевськ", "Рубіжне"],
+            "Крим": ["Сімферополь", "Севастополь", "Ялта", "Керч", "Євпаторія"]
+        };
+
+        window.updateFilterCities = function() {
+            const regionSel = document.getElementById('filterRegion').value;
+            const citySel = document.getElementById('filterCity');
+            citySel.innerHTML = '<option value="">Місто: Всі міста області</option>';
+            if (ukraineRegions[regionSel]) {
+                ukraineRegions[regionSel].forEach(city => {
+                    const opt = document.createElement('option');
+                    opt.value = city;
+                    opt.textContent = city;
+                    citySel.appendChild(opt);
+                });
+            }
+        };
+
+        window.updateFormCities = function() {
+            const regionSel = document.getElementById('formRegion').value;
+            const citySel = document.getElementById('formCity');
+            citySel.innerHTML = '<option value="">Оберіть місто *</option>';
+            if (ukraineRegions[regionSel]) {
+                ukraineRegions[regionSel].forEach(city => {
+                    const opt = document.createElement('option');
+                    opt.value = city;
+                    opt.textContent = city;
+                    citySel.appendChild(opt);
+                });
+            }
+        };
 
         const firebaseConfig = {
             apiKey: "AIzaSyBlKoP6-M8tdrKq88bSdnWSnak5Gpddnpk",
@@ -698,36 +793,6 @@
             btnAuto.className = "px-3 py-1 rounded-t " + (cat === 'auto' ? "bg-white text-red-600 font-bold" : "bg-red-700 text-white hover:bg-red-800");
             btnParts.className = "px-3 py-1 rounded-t " + (cat === 'parts' ? "bg-white text-red-600 font-bold" : "bg-red-700 text-white hover:bg-red-800");
 
-            const navLinkAuto = document.getElementById('navLinkAuto');
-            const navLinkParts = document.getElementById('navLinkParts');
-            if (navLinkAuto && navLinkParts) {
-                if (cat === 'auto') {
-                    navLinkAuto.className = "text-red-600 font-bold pb-1 border-b-2 border-red-600";
-                    navLinkParts.className = "text-gray-800 hover:text-red-600 pb-1";
-                } else if (cat === 'parts') {
-                    navLinkAuto.className = "text-gray-800 hover:text-red-600 pb-1";
-                    navLinkParts.className = "text-orange-600 font-bold pb-1 border-b-2 border-orange-600";
-                } else {
-                    navLinkAuto.className = "text-gray-800 hover:text-red-600 pb-1";
-                    navLinkParts.className = "text-gray-800 hover:text-red-600 pb-1";
-                }
-            }
-
-            const sidebarLinkAuto = document.getElementById('sidebarLinkAuto');
-            const sidebarLinkParts = document.getElementById('sidebarLinkParts');
-            if (sidebarLinkAuto && sidebarLinkParts) {
-                if (cat === 'auto') {
-                    sidebarLinkAuto.className = "text-red-600 font-bold hover:underline flex justify-between";
-                    sidebarLinkParts.className = "text-blue-700 hover:underline flex justify-between";
-                } else if (cat === 'parts') {
-                    sidebarLinkAuto.className = "text-blue-700 hover:underline flex justify-between";
-                    sidebarLinkParts.className = "text-orange-600 font-bold hover:underline flex justify-between";
-                } else {
-                    sidebarLinkAuto.className = "text-blue-700 hover:underline flex justify-between";
-                    sidebarLinkParts.className = "text-blue-700 hover:underline flex justify-between";
-                }
-            }
-
             const mainHeaderTitle = document.getElementById('mainHeaderTitle');
             const feedTitle = document.getElementById('feedTitle');
             const breadcrumbCategory = document.getElementById('breadcrumbCategory');
@@ -794,7 +859,7 @@
 
         window.toggleAddForm = function() {
             if (!currentUser) {
-                alert('Увага: Додавати оголошення можуть лише зареєстровані користувачі!\n\nДля публікації оголошення, будь ласка, увійдіть у свій акаунт.');
+                alert("Увага: Додавати оголошення можуть лише зареєстровані користувачі!\n\nДля публікації оголошення, будь ласка, увійдіть у свій акаунт.");
                 window.location.href = 'index.html';
                 return;
             }
@@ -814,20 +879,13 @@
 
             try {
                 if (isFav) {
-                    await updateDoc(favRef, {
-                        favorites: arrayRemove(docId)
-                    });
+                    await updateDoc(favRef, { favorites: arrayRemove(docId) });
                 } else {
                     const docSnap = await getDoc(favRef);
                     if (docSnap.exists()) {
-                        await updateDoc(favRef, {
-                            favorites: arrayUnion(docId)
-                        });
+                        await updateDoc(favRef, { favorites: arrayUnion(docId) });
                     } else {
-                        await setDoc(favRef, {
-                            favorites: [docId],
-                            userEmail: currentUser.email
-                        });
+                        await setDoc(favRef, { favorites: [docId], userEmail: currentUser.email });
                     }
                 }
             } catch (err) {
@@ -847,6 +905,10 @@
             const priceVal = Number(document.getElementById('adPrice').value);
             const priceUahVal = Math.round(priceVal * USD_TO_UAH_RATE);
 
+            const region = document.getElementById('formRegion').value;
+            const city = document.getElementById('formCity').value;
+            const fullLocation = `${city}, ${region}`;
+
             const p1 = document.getElementById('adPhoto1').value.trim();
             const p2 = document.getElementById('adPhoto2').value.trim();
             const p3 = document.getElementById('adPhoto3').value.trim();
@@ -863,7 +925,8 @@
                 year: Number(year),
                 priceUSD: priceVal,
                 priceUAH: priceUahVal,
-                city: document.getElementById('adCity').value,
+                city: fullLocation,
+                region: region,
                 contact: document.getElementById('adContact').value,
                 description: document.getElementById('adDescription').value,
                 photosArray: photosArray,
@@ -899,9 +962,9 @@
                 await addDoc(collection(db, "auto_listings"), payload);
                 document.getElementById('addListingForm').reset();
                 document.getElementById('newAdFormCard').classList.add('hidden');
-                alert('Оголошення успішно збережено та додано у базу!');
+                alert("Оголошення успішно збережено та додано у базу!");
             } catch (err) {
-                alert('Помилка при збереженні: ' + err.message);
+                alert("Помилка при збереженні: " + err.message);
             }
         });
 
@@ -938,7 +1001,8 @@
 
             return `
                 <div class="product-card p-4 bg-white rounded flex flex-col sm:flex-row gap-4 items-start w-full"
-                     data-city="${item.city || ''}"
+                     data-city="${(item.city || '').toLowerCase()}"
+                     data-region="${(item.region || '').toLowerCase()}"
                      data-brand="${item.brand || ''}"
                      data-model="${item.model || ''}"
                      data-year="${item.year || '2022'}"
@@ -993,7 +1057,7 @@
 
                             <div class="flex flex-wrap items-center gap-2 pt-1.5">
                                 <span class="state-number-tag px-2 py-0.5 text-[10px] rounded">
-                                    <span class="state-flag">UA</span> ${item.stateNum || 'CA 9345 KO'}
+                                    <span class="state-flag">UA</span> ${item.stateNum || 'BK 1234 AA'}
                                 </span>
                                 <span class="vin-number-tag px-2 py-0.5 text-[10px] rounded">
                                     <i class="fa-solid fa-shield-halved text-green-700"></i> VIN ${item.vin || 'LGWFF6A52NH924185'}
@@ -1001,7 +1065,7 @@
                             </div>
                         `}
 
-                        <p class="text-gray-600 text-xs line-clamp-1 pt-1">${item.description || 'Детальний опис товару.'}</p>
+                        <p class="text-gray-600 text-xs line-clamp-1 pt-1">${item.description || "Детальний опис товару."}</p>
 
                         <div class="flex justify-between items-center pt-2 border-t border-gray-100 text-[11px] text-gray-400">
                             <div class="flex items-center gap-2">
@@ -1061,11 +1125,6 @@
             container.innerHTML = '';
             const favItems = allListingsData.filter(item => userFavoritesList.includes(item.id));
 
-            if (favItems.length === 0) {
-                container.innerHTML = `<p class="text-gray-400 text-xs italic col-span-full">Обрані оголошення не знайдені або були видалені.</p>`;
-                return;
-            }
-
             favItems.forEach(item => {
                 const photos = item.photosArray || ['https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=600'];
                 const mainPhoto = photos[0];
@@ -1105,12 +1164,12 @@
 
         async function handleDelete(e) {
             const id = e.currentTarget.getAttribute('data-id');
-            if (confirm('Видалити це оголошення з бази?')) {
+            if (confirm("Видалити це оголошення з бази?")) {
                 try {
                     await deleteDoc(doc(db, "auto_listings", id));
-                    alert('Оголошення видалено!');
+                    alert("Оголошення видалено!");
                 } catch (err) {
-                    alert('Помилка: ' + err.message);
+                    alert("Помилка: " + err.message);
                 }
             }
         }
@@ -1130,6 +1189,7 @@
         window.prevGalleryImage = function(e) {
             if (e) e.stopPropagation();
             if (currentGalleryPhotos.length <= 1) return;
+            currentGalleryPhotos = photos;
             currentPhotoIndex = (currentPhotoIndex - 1 + currentGalleryPhotos.length) % currentGalleryPhotos.length;
             updateGalleryUI();
         };
@@ -1163,15 +1223,6 @@
             });
         }
 
-        document.addEventListener('keydown', (e) => {
-            const modal = document.getElementById('lightboxModal');
-            if (modal.style.display === 'flex') {
-                if (e.key === 'ArrowLeft') window.prevGalleryImage();
-                if (e.key === 'ArrowRight') window.nextGalleryImage();
-                if (e.key === 'Escape') window.closeGallery();
-            }
-        });
-
         window.filterByBrandQuick = function(brand) {
             const brandSelect = document.getElementById('filterBrand');
             if (brandSelect) {
@@ -1192,6 +1243,7 @@
             const brandVal = (document.getElementById('filterBrand')?.value || '').toLowerCase();
             const modelVal = (document.getElementById('filterModel')?.value || '').toLowerCase();
             const regionVal = (document.getElementById('filterRegion')?.value || '').toLowerCase();
+            const cityVal = (document.getElementById('filterCity')?.value || '').toLowerCase();
             const partNumVal = (document.getElementById('filterPartNumber')?.value || '').toLowerCase();
             
             const minYear = parseInt(document.getElementById('filterYearMin')?.value) || 0;
@@ -1204,6 +1256,8 @@
 
             cards.forEach(card => {
                 const text = card.innerText.toLowerCase();
+                const cardCity = card.getAttribute('data-city') || '';
+                const cardRegion = card.getAttribute('data-region') || '';
                 const cardYear = parseInt(card.getAttribute('data-year')) || 2022;
                 const cardPrice = parseFloat(card.getAttribute('data-price')) || 0;
                 const cardType = card.getAttribute('data-type') || 'auto';
@@ -1220,12 +1274,13 @@
 
                 const matchBrand = !brandVal || text.includes(brandVal);
                 const matchModel = !modelVal || text.includes(modelVal);
-                const matchRegion = !regionVal || text.includes(regionVal);
+                const matchRegion = !regionVal || cardRegion.includes(regionVal) || text.includes(regionVal);
+                const matchCity = !cityVal || cardCity.includes(cityVal) || text.includes(cityVal);
                 const matchPartNum = !partNumVal || cardPartNum.includes(partNumVal) || text.includes(partNumVal);
                 const matchYear = (cardYear >= minYear && cardYear <= maxYear);
                 const matchPrice = (cardPrice >= minPrice && cardPrice <= maxPrice);
 
-                if (matchCategory && matchBrand && matchModel && matchRegion && matchPartNum && matchYear && matchPrice) {
+                if (matchCategory && matchBrand && matchModel && matchRegion && matchCity && matchPartNum && matchYear && matchPrice) {
                     matchingCards.push(card);
                 } else {
                     card.style.display = 'none';

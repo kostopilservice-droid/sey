@@ -1277,12 +1277,16 @@
                     }
                 }
 
-                // Суворе порівняння марки та моделі за атрибутами картки
                 const matchBrand = !brandVal || cardBrand === brandVal;
                 const matchModel = !modelVal || cardModel === modelVal;
                 
-                const matchRegion = !regionVal || cardRegion.includes(regionVal.split(' ')[0]);
+                // Гнучке порівняння області (шукає основне слово, напр. "рівненськ")
+                const regionKeyword = regionVal.split(' ')[0];
+                const matchRegion = !regionVal || cardRegion.includes(regionKeyword) || text.includes(regionKeyword);
+                
+                // Гнучке порівняння міста
                 const matchCity = !cityVal || cardCity.includes(cityVal);
+                
                 const matchPartNum = !partNumVal || cardPartNum.includes(partNumVal) || text.includes(partNumVal);
                 const matchYear = (cardYear >= minYear && cardYear <= maxYear);
                 const matchPrice = (cardPrice >= minPrice && cardPrice <= maxPrice);

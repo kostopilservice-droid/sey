@@ -238,7 +238,7 @@
                 </div>
 
                 <div class="space-y-3 pt-6 md:pt-7">
-                    <!-- ЧИСТІ НАЗВИ ОБЛАСТЕЙ УКРАЇНИ -->
+                    <!-- ВИБІР ОБЛАСТІ ТА МІСТА -->
                     <select id="filterRegion" onChange="updateFilterCities(); filterCards();" class="w-full px-3 py-2 text-xs bg-white text-gray-800 rounded border-none outline-none font-semibold">
                         <option value="">Регіон: Всі області України</option>
                         <option value="Рівненська область">Рівненська область</option>
@@ -997,6 +997,10 @@
             const isFav = userFavoritesList.includes(docId);
             const photosJSON = JSON.stringify(photos).replace(/"/g, '&quot;');
 
+            // Робимо місто з першої великої літери для красивого виведення
+            const rawCity = item.city || 'Костопіль';
+            const formattedCity = rawCity.charAt(0).toUpperCase() + rawCity.slice(1);
+
             return `
                 <div class="product-card p-4 bg-white rounded flex flex-col sm:flex-row gap-4 items-start w-full"
                      data-city="${(item.city || '').toLowerCase()}"
@@ -1037,7 +1041,7 @@
                         ${isPart ? `
                             <div class="grid grid-cols-2 gap-y-1 text-gray-700 text-xs pt-1">
                                 <div class="flex items-center gap-1.5"><i class="fa-solid fa-tag text-orange-500"></i> Стан: <b>${item.partCondition || 'б/в'}</b></div>
-                                <div class="flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-red-500"></i> ${item.city || 'Костопіль'}, ${item.region || ''}</div>
+                                <div class="flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-red-500"></i> ${formattedCity}, ${item.region || ''}</div>
                             </div>
 
                             <div class="flex flex-wrap items-center gap-2 pt-1.5">
@@ -1048,7 +1052,7 @@
                         ` : `
                             <div class="grid grid-cols-2 gap-y-1 text-gray-700 text-xs pt-1">
                                 <div class="flex items-center gap-1.5"><i class="fa-regular fa-clock text-blue-600"></i> ${item.mileage || '18'} тис. км</div>
-                                <div class="flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-red-500"></i> ${item.city || 'Костопіль'}, ${item.region || ''}</div>
+                                <div class="flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-red-500"></i> ${formattedCity}, ${item.region || ''}</div>
                                 <div class="flex items-center gap-1.5"><i class="fa-solid fa-gas-pump text-gray-600"></i> ${item.engine || 'Дизель, 1.9 л.'}</div>
                                 <div class="flex items-center gap-1.5"><i class="fa-solid fa-gear text-gray-600"></i> ${item.gearbox || 'Механіка'}</div>
                             </div>
@@ -1129,6 +1133,8 @@
                 const priceUsd = item.priceUSD || 0;
                 const isPart = (item.type === 'parts' || item.type === 'part');
                 const photosJSON = JSON.stringify(photos).replace(/"/g, '&quot;');
+                const rawCity = item.city || 'Костопіль';
+                const formattedCity = rawCity.charAt(0).toUpperCase() + rawCity.slice(1);
 
                 const miniCard = document.createElement('div');
                 miniCard.className = "bg-white border rounded p-3 flex flex-col justify-between shadow-sm relative group";
@@ -1142,7 +1148,7 @@
                         </div>
                         <h4 class="font-bold ${isPart ? 'text-orange-700' : 'text-blue-700'} text-sm line-clamp-1 cursor-pointer" onclick="openGallery(${photosJSON})">${item.title}</h4>
                         <div class="text-xs font-black text-green-700 mt-1">${priceUsd.toLocaleString()} $</div>
-                        <div class="text-[11px] text-gray-500 mt-0.5"><i class="fa-solid fa-location-dot text-red-500"></i> ${item.city || 'Костопіль'}</div>
+                        <div class="text-[11px] text-gray-500 mt-0.5"><i class="fa-solid fa-location-dot text-red-500"></i> ${formattedCity}</div>
                     </div>
                     <div class="pt-2 mt-2 border-t border-gray-100 flex justify-between items-center text-[11px]">
                         <a href="tel:${item.contact}" class="font-bold text-blue-600 hover:underline">📞 ${item.contact}</a>

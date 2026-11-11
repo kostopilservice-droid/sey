@@ -238,7 +238,7 @@
                 </div>
 
                 <div class="space-y-3 pt-6 md:pt-7">
-                    <!-- ВИБІР ОБЛАСТІ ТА МІСТА ДЛЯ ФІЛЬТРАЦІЇ -->
+                    <!-- ВИБІР ОБЛАСТІ ТА МІСТА -->
                     <select id="filterRegion" onChange="updateFilterCities(); filterCards();" class="w-full px-3 py-2 text-xs bg-white text-gray-800 rounded border-none outline-none font-semibold">
                         <option value="">Регіон: Всі області України</option>
                         <option value="Рівненська область">Рівненська область (м. Костопіль)</option>
@@ -600,7 +600,6 @@
         const ITEMS_PER_PAGE = 12;
         let currentPage = 1;
 
-        // БАЗА ОБЛАСТЕЙ ТА МІСТ УКРАЇНИ
         const ukraineRegions = {
             "Рівненська область": ["Костопіль", "Рівне", "Березне", "Дубно", "Сарни", "Вараш", "Здолбунів", "Острог"],
             "Київська область": ["Київ", "Бровари", "Бориспіль", "Ірпінь", "Буча", "Біла Церква", "Вишневе", "Вишгород"],
@@ -907,7 +906,6 @@
 
             const region = document.getElementById('formRegion').value;
             const city = document.getElementById('formCity').value;
-            const fullLocation = `${city}, ${region}`;
 
             const p1 = document.getElementById('adPhoto1').value.trim();
             const p2 = document.getElementById('adPhoto2').value.trim();
@@ -925,7 +923,7 @@
                 year: Number(year),
                 priceUSD: priceVal,
                 priceUAH: priceUahVal,
-                city: fullLocation,
+                city: city,
                 region: region,
                 contact: document.getElementById('adContact').value,
                 description: document.getElementById('adDescription').value,
@@ -1039,7 +1037,7 @@
                         ${isPart ? `
                             <div class="grid grid-cols-2 gap-y-1 text-gray-700 text-xs pt-1">
                                 <div class="flex items-center gap-1.5"><i class="fa-solid fa-tag text-orange-500"></i> Стан: <b>${item.partCondition || 'б/в'}</b></div>
-                                <div class="flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-red-500"></i> ${item.city || 'Костопіль'}</div>
+                                <div class="flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-red-500"></i> ${item.city || 'Костопіль'}, ${item.region || ''}</div>
                             </div>
 
                             <div class="flex flex-wrap items-center gap-2 pt-1.5">
@@ -1050,14 +1048,14 @@
                         ` : `
                             <div class="grid grid-cols-2 gap-y-1 text-gray-700 text-xs pt-1">
                                 <div class="flex items-center gap-1.5"><i class="fa-regular fa-clock text-blue-600"></i> ${item.mileage || '18'} тис. км</div>
-                                <div class="flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-red-500"></i> ${item.city || 'Костопіль'}</div>
+                                <div class="flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-red-500"></i> ${item.city || 'Костопіль'}, ${item.region || ''}</div>
                                 <div class="flex items-center gap-1.5"><i class="fa-solid fa-gas-pump text-gray-600"></i> ${item.engine || 'Дизель, 1.9 л.'}</div>
                                 <div class="flex items-center gap-1.5"><i class="fa-solid fa-gear text-gray-600"></i> ${item.gearbox || 'Механіка'}</div>
                             </div>
 
                             <div class="flex flex-wrap items-center gap-2 pt-1.5">
                                 <span class="state-number-tag px-2 py-0.5 text-[10px] rounded">
-                                    <span class="state-flag">UA</span> ${item.stateNum || 'BK 1234 AA'}
+                                    <span class="state-flag">UA</span> ${item.stateNum || 'CA 9345 KO'}
                                 </span>
                                 <span class="vin-number-tag px-2 py-0.5 text-[10px] rounded">
                                     <i class="fa-solid fa-shield-halved text-green-700"></i> VIN ${item.vin || 'LGWFF6A52NH924185'}
@@ -1189,8 +1187,7 @@
         window.prevGalleryImage = function(e) {
             if (e) e.stopPropagation();
             if (currentGalleryPhotos.length <= 1) return;
-            currentGalleryPhotos = photos;
-            currentPhotoIndex = (currentPhotoIndex - 1 + currentGalleryPhotos.length) % currentGalleryPhotos.length;
+            currentPhotoIndex = (currentGalleryPhotos.length - 1 + currentGalleryPhotos.length) % currentGalleryPhotos.length;
             updateGalleryUI();
         };
 

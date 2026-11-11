@@ -905,7 +905,6 @@
             const priceUahVal = Math.round(priceVal * USD_TO_UAH_RATE);
 
             const region = document.getElementById('formRegion').value;
-            // Очищаємо місто від можливих зайвих ком або пробілів
             const city = (document.getElementById('formCity').value || '').replace(/,/g, '').trim();
 
             const p1 = document.getElementById('adPhoto1').value.trim();
@@ -998,7 +997,6 @@
             const isFav = userFavoritesList.includes(docId);
             const photosJSON = JSON.stringify(photos).replace(/"/g, '&quot;');
 
-            // Очищаємо місто від ком і робимо першу літера великою
             const rawCity = (item.city || 'Костопіль').replace(/,/g, '').trim();
             const formattedCity = rawCity.charAt(0).toUpperCase() + rawCity.slice(1);
 
@@ -1248,7 +1246,6 @@
             const brandVal = (document.getElementById('filterBrand')?.value || '').toLowerCase();
             const modelVal = (document.getElementById('filterModel')?.value || '').toLowerCase();
             const regionVal = (document.getElementById('filterRegion')?.value || '').toLowerCase();
-            // Очищаємо пошуковий запит міста від ком на випадок збігів
             const cityVal = (document.getElementById('filterCity')?.value || '').replace(/,/g, '').trim().toLowerCase();
             const partNumVal = (document.getElementById('filterPartNumber')?.value || '').toLowerCase();
             
@@ -1280,7 +1277,8 @@
 
                 const matchBrand = !brandVal || text.includes(brandVal);
                 const matchModel = !modelVal || text.includes(modelVal);
-                const matchRegion = !regionVal || cardRegion.includes(regionVal);
+                // Гнучка перевірка області: шукає збіг за першим словом області (напр. "рівненська")
+                const matchRegion = !regionVal || cardRegion.includes(regionVal.split(' ')[0]) || text.includes(regionVal.split(' ')[0]);
                 const matchCity = !cityVal || cardCity.includes(cityVal);
                 const matchPartNum = !partNumVal || cardPartNum.includes(partNumVal) || text.includes(partNumVal);
                 const matchYear = (cardYear >= minYear && cardYear <= maxYear);
@@ -1310,7 +1308,7 @@
 
             const paginationEl = document.getElementById('paginationControls');
             const pageIndicator = document.getElementById('pageIndicator');
-            const prevBtn = document.getElementById('prevPage`btn');
+            const prevBtn = document.getElementById('prevPageBtn');
             const nextBtn = document.getElementById('nextPageBtn');
 
             if (paginationEl && pageIndicator) {

@@ -62,7 +62,7 @@
             <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
               <i class="fa-solid fa-magnifying-glass text-xs"></i>
             </span>
-            <input type="text" id="searchInput" oninput="filterArticles()" placeholder="Пошук у базі знань (теми, ECU, прикладки)..." class="w-full pl-9 pr-4 py-1.5 text-xs bg-slate-800 text-white placeholder-slate-400 border border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <input type="text" id="searchInput" oninput="filterArticles()" placeholder="Пошук у базі знань (теми, закони, ECU, прикладки)..." class="w-full pl-9 pr-4 py-1.5 text-xs bg-slate-800 text-white placeholder-slate-400 border border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
           </div>
         </div>
 
@@ -126,7 +126,7 @@
         <h2 class="text-lg font-black text-slate-900 flex items-center gap-2">
           <i class="fa-solid fa-book-open text-blue-600"></i> База знань та технічні мануали
         </h2>
-        <p class="text-xs text-slate-500">Діагностика, посібники, інструкції з ремонту та партнерські матеріали.</p>
+        <p class="text-xs text-slate-500">Діагностика, закони, діловодство, посібники, інструкції з ремонту та корисні матеріали.</p>
       </div>
 
       <a href="admin.html" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-sm transition-colors flex items-center justify-center gap-1.5 shrink-0">
@@ -134,7 +134,7 @@
       </a>
     </div>
 
-    <!-- КАТЕГОРІЇ (ФІЛЬТРИ) -->
+    <!-- КАТЕГОРІЇ (14 ФІЛЬТРІВ) -->
     <div class="flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar">
       <button onclick="filterCategory('all', this)" class="cat-btn px-4 py-2 bg-blue-600 text-white text-xs font-bold rounded-xl shadow-sm whitespace-nowrap transition-colors">
         🔥 Всі
@@ -156,6 +156,27 @@
       </button>
       <button onclick="filterCategory('ev_battery', this)" class="cat-btn px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl whitespace-nowrap transition-colors">
         🔋 Електротранспорт & АКБ
+      </button>
+      <button onclick="filterCategory('law', this)" class="cat-btn px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl whitespace-nowrap transition-colors">
+        ⚖️ Законодавство & Юриспруденція
+      </button>
+      <button onclick="filterCategory('paperwork', this)" class="cat-btn px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl whitespace-nowrap transition-colors">
+        📑 Діловодство & Документи
+      </button>
+      <button onclick="filterCategory('local_biz', this)" class="cat-btn px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl whitespace-nowrap transition-colors">
+        🏪 Місцевий бізнес & Послуги
+      </button>
+      <button onclick="filterCategory('construction', this)" class="cat-btn px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl whitespace-nowrap transition-colors">
+        🏗️ Будівництво & Ремонт
+      </button>
+      <button onclick="filterCategory('cybersecurity', this)" class="cat-btn px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl whitespace-nowrap transition-colors">
+        🛡️ Цифрова безпека & IT
+      </button>
+      <button onclick="filterCategory('education', this)" class="cat-btn px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl whitespace-nowrap transition-colors">
+        🎓 Навчання & Освіта
+      </button>
+      <button onclick="filterCategory('energy', this)" class="cat-btn px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl whitespace-nowrap transition-colors">
+        💡 Енергонезалежність & ДБЖ
       </button>
       <button onclick="filterCategory('sponsored', this)" class="cat-btn px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl whitespace-nowrap transition-colors">
         📢 Спонсоровано
@@ -208,15 +229,15 @@
   <!-- SCRIPTS                                    -->
   <!-- ========================================== -->
   <script>
-const firebaseConfig = {
-    apiKey: "AIzaSyBlKoP6-M8tdrKq88bSdnWSnak5Gpddnpk",
-    authDomain: "neoservice-ks-ua.firebaseapp.com",
-    projectId: "neoservice-ks-ua",
-    storageBucket: "neoservice-ks-ua.firebasestorage.app",
-    messagingSenderId: "528941827813",
-    appId: "1:528941827813:web:354ef989d200087634b60c",
-    measurementId: "G-BYGHEHVYY3"
-  }; 
+    const firebaseConfig = {
+      apiKey: "AIzaSyBlKoP6-M8tdrKq88bSdnWSnak5Gpddnpk",
+      authDomain: "neoservice-ks-ua.firebaseapp.com",
+      projectId: "neoservice-ks-ua",
+      storageBucket: "neoservice-ks-ua.firebasestorage.app",
+      messagingSenderId: "528941827813",
+      appId: "1:528941827813:web:354ef989d200087634b60c",
+      measurementId: "G-BYGHEHVYY3"
+    }; 
 
     if (!firebase.apps.length) {
       firebase.initializeApp(firebaseConfig);
@@ -289,7 +310,6 @@ const firebaseConfig = {
           firebaseArticles.push({ id: doc.id, ...doc.data() });
         });
         
-        // Об'єднуємо: спочатку нові з Firebase, потім статичні
         allArticles = [...firebaseArticles, ...staticArticles];
         renderGrid(allArticles);
       } catch (err) {
@@ -311,12 +331,20 @@ const firebaseConfig = {
       data.forEach(art => {
         let catName = art.category;
         let badgeColor = "bg-blue-600 text-white";
+
         if (art.category === 'auto') { catName = 'Автодіагностика'; badgeColor = "bg-amber-500 text-slate-950"; }
         else if (art.category === 'computers') { catName = "Комп'ютери"; badgeColor = "bg-blue-600 text-white"; }
         else if (art.category === 'printers') { catName = 'Оргтехніка'; badgeColor = "bg-indigo-600 text-white"; }
         else if (art.category === 'engineering') { catName = 'Інженерія & Схеми'; badgeColor = "bg-purple-600 text-white"; }
         else if (art.category === 'radio') { catName = "Радіозв'язок"; badgeColor = "bg-emerald-600 text-white"; }
         else if (art.category === 'ev_battery') { catName = 'Електротранспорт & АКБ'; badgeColor = "bg-red-600 text-white"; }
+        else if (art.category === 'law') { catName = 'Законодавство'; badgeColor = "bg-sky-700 text-white"; }
+        else if (art.category === 'paperwork') { catName = 'Діловодство'; badgeColor = "bg-teal-600 text-white"; }
+        else if (art.category === 'local_biz') { catName = 'Місцевий бізнес'; badgeColor = "bg-orange-600 text-white"; }
+        else if (art.category === 'construction') { catName = 'Будівництво'; badgeColor = "bg-yellow-600 text-white"; }
+        else if (art.category === 'cybersecurity') { catName = 'Цифрова безпека'; badgeColor = "bg-rose-700 text-white"; }
+        else if (art.category === 'education') { catName = 'Освіта & Курси'; badgeColor = "bg-violet-600 text-white"; }
+        else if (art.category === 'energy') { catName = 'Енергонезалежність'; badgeColor = "bg-green-600 text-white"; }
         else if (art.category === 'sponsored') { catName = 'Спонсоровано'; badgeColor = "bg-amber-500 text-slate-950"; }
 
         const card = `
@@ -398,7 +426,7 @@ const firebaseConfig = {
       document.getElementById('modalTitle').textContent = art.title;
       document.getElementById('modalDate').textContent = art.date || 'Нещодавно';
       document.getElementById('modalAuthor').textContent = art.author || 'Admin';
-      document.getElementById('modalCategory').textContent = art.category.toUpperCase();
+      document.getElementById('modalCategory').textContent = (art.category || '').toUpperCase();
       document.getElementById('modalText').innerHTML = art.text ? art.text.replace(/\n/g, '<br>') : art.summary;
 
       const imgContainer = document.getElementById('modalImageContainer');

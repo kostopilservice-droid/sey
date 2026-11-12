@@ -106,6 +106,59 @@
             backdrop-filter: blur(20px);
             box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
         }
+
+        /* Стилі візуального редактора тексту новин */
+        #newsRichEditor:empty:before {
+            content: attr(data-placeholder);
+            color: #64748b;
+            pointer-events: none;
+        }
+        #newsRichEditor h3, .rich-news-content h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #fde047;
+            margin: 0.5rem 0;
+        }
+        #newsRichEditor ul, .rich-news-content ul {
+            list-style-type: disc;
+            padding-left: 1.5rem;
+            margin: 0.5rem 0;
+        }
+        #newsRichEditor ol, .rich-news-content ol {
+            list-style-type: decimal;
+            padding-left: 1.5rem;
+            margin: 0.5rem 0;
+        }
+        #newsRichEditor blockquote, .rich-news-content blockquote {
+            border-left: 3px solid #f59e0b;
+            padding-left: 1rem;
+            margin: 0.75rem 0;
+            font-style: italic;
+            color: #fcd34d;
+            background: rgba(245, 158, 11, 0.08);
+            padding-top: 0.4rem;
+            padding-bottom: 0.4rem;
+            border-radius: 0 8px 8px 0;
+        }
+        #newsRichEditor a, .rich-news-content a {
+            color: #60a5fa;
+            text-decoration: underline;
+        }
+        .editor-tool-btn {
+            padding: 5px 8px;
+            border-radius: 6px;
+            background: #0f172a;
+            border: 1px solid #334155;
+            color: #e2e8f0;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .editor-tool-btn:hover {
+            background: #f59e0b;
+            color: #0f172a;
+            border-color: #f59e0b;
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between">
@@ -245,10 +298,14 @@
                     </h3>
                     <p class="text-xs text-slate-400 mt-0.5">Клацніть на картку новини, щоб відкрити її у повноекранному форматі з відео та медіа</p>
                 </div>
-                <!-- Кнопка додавання новини (Тільки для адміністратора) -->
-                <button id="adminAddNewsBtn" onclick="openAddNewsModal()" style="display: none;" class="btn-divine px-4 py-2 rounded-xl text-xs flex items-center gap-2 shadow-md cursor-pointer">
+                <!-- Кнопка додавання новини (Для всіх зареєстрованих користувачів) -->
+                <button id="userAddNewsBtn" onclick="openAddNewsModal()" style="display: none;" class="btn-divine px-4 py-2 rounded-xl text-xs flex items-center gap-2 shadow-md cursor-pointer">
                     <i class="fa-solid fa-plus-circle"></i> Додати новину міста
                 </button>
+                <!-- Підказка для гостей -->
+                <a id="guestLoginNewsHint" href="index.html#auth-section" class="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 border border-amber-500/30 text-amber-300/90 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all">
+                    <i class="fa-solid fa-right-to-bracket text-amber-400"></i> Увійдіть, щоб додати новину
+                </a>
             </div>
 
             <!-- ПОШУК ПО НОВИНАХ -->
@@ -431,6 +488,7 @@
                 <div class="flex items-center gap-2">
                     <span id="detailNewsTag" class="px-3.5 py-1 rounded-full bg-amber-500/20 text-amber-300 text-xs font-bold border border-amber-500/40 shadow-sm">📢 Новина міста</span>
                     <span id="detailNewsDate" class="text-xs font-semibold italic text-slate-400"></span>
+                    <span id="detailNewsAuthor" class="text-xs text-amber-300/80 font-semibold"></span>
                 </div>
                 <button onclick="closeNewsDetailModal()" class="w-9 h-9 rounded-full bg-amber-500/10 border border-amber-500/40 text-amber-400 hover:bg-amber-500 hover:text-slate-950 flex items-center justify-center font-bold transition-all shadow-md cursor-pointer">✕</button>
             </div>
@@ -447,69 +505,102 @@
 
                 <div id="detailVideoContainer" class="hidden w-full aspect-video rounded-2xl overflow-hidden border-2 border-amber-500/30 shadow-2xl bg-black"></div>
 
-                <div id="detailNewsText" class="font-serif-sacred text-base sm:text-xl leading-relaxed text-slate-200 p-6 rounded-2xl border border-slate-800 bg-slate-900/60 shadow-inner whitespace-pre-wrap"></div>
+                <!-- Форматований HTML-контент новини -->
+                <div id="detailNewsText" class="rich-news-content font-serif-sacred text-base sm:text-xl leading-relaxed text-slate-200 p-6 rounded-2xl border border-slate-800 bg-slate-900/60 shadow-inner"></div>
 
                 <div id="detailAdBannerContainer" class="hidden rounded-2xl p-4 border border-amber-500/40 bg-gradient-to-r from-amber-500/10 to-slate-900 flex items-center justify-between gap-4">
                     <div class="flex items-center gap-3">
                         <span class="text-2xl">⭐</span>
                         <div>
                             <div class="text-[10px] uppercase font-bold text-amber-400">Реклама</div>
-                            <div id="detailAdText" class="text-xs text-slate-300 font-semibold">Партнерський матеріял або оголошення</div>
+                            <div id="detailAdText" class="text-xs text-slate-300 font-semibold">Партнерський матеріал або оголошення</div>
                         </div>
                     </div>
                     <a id="detailAdLink" href="#" target="_blank" class="px-4 py-2 bg-amber-500 text-slate-950 font-bold text-xs rounded-xl shadow hover:bg-amber-400 whitespace-nowrap">Перейти ➔</a>
                 </div>
 
                 <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-amber-500/30">
-                    <div id="ownerActionsBlock" class="flex items-center gap-2 w-full sm:w-auto">
+                    <!-- Кнопки редагування/видалення відображаються лише автору новини або адміністратору -->
+                    <div id="ownerActionsBlock" class="hidden items-center gap-2 w-full sm:w-auto">
                         <button onclick="triggerEditNews()" class="px-4 py-2 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400 text-amber-300 text-xs font-bold rounded-xl transition-all flex items-center gap-1.5 cursor-pointer"><i class="fa-solid fa-pen-to-square"></i> Редагувати</button>
                         <button onclick="triggerDeleteNews()" class="px-4 py-2 bg-rose-500/20 hover:bg-rose-500/30 border border-rose-400 text-rose-400 text-xs font-bold rounded-xl transition-all flex items-center gap-1.5 cursor-pointer"><i class="fa-solid fa-trash"></i> Видалити</button>
                     </div>
 
-                    <button onclick="closeNewsDetailModal()" class="btn-divine w-full sm:w-auto px-6 py-2.5 text-xs rounded-xl cursor-pointer">Закрити перегляд</button>
+                    <button onclick="closeNewsDetailModal()" class="btn-divine w-full sm:w-auto px-6 py-2.5 text-xs rounded-xl cursor-pointer ml-auto">Закрити перегляд</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- 4. МОДАЛЬНЕ ВІКНО СТВОРЕННЯ / РЕДАГУВАННЯ НОВИНИ -->
+    <!-- 4. МОДАЛЬНЕ ВІКНО СТВОРЕННЯ / РЕДАГУВАННЯ НОВИНИ З ФОРМАТУВАННЯМ ТЕКСТУ -->
     <div id="addNewsModal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md hidden items-center justify-center p-4 z-50">
-        <div class="bg-slate-900 border border-amber-500/40 rounded-2xl p-6 max-w-lg w-full shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+        <div class="bg-slate-900 border border-amber-500/40 rounded-2xl p-6 max-w-2xl w-full shadow-2xl space-y-4 max-h-[92vh] overflow-y-auto">
             <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-                <h3 id="addModalTitle" class="text-lg font-bold text-amber-300 flex items-center gap-2">📰 Додати новину з медіа та рекламою</h3>
+                <h3 id="addModalTitle" class="text-lg font-bold text-amber-300 flex items-center gap-2">📰 Додати новину з медіа та форматуванням</h3>
                 <button onclick="closeAddNewsModal()" class="text-slate-400 hover:text-white text-sm font-bold cursor-pointer">✕</button>
             </div>
 
             <form onsubmit="saveCityNews(event)" class="space-y-3.5">
-                <input type="hidden" id="editNewsIndex" value="-1">
+                <input type="hidden" id="editNewsDocId" value="">
+                <input type="hidden" id="editLegacyIndex" value="-1">
+
                 <div>
                     <label class="block text-[11px] font-bold text-slate-300 mb-1">Заголовок новини *</label>
-                    <input type="text" id="inputNewsTitle" required placeholder="Заголовок події..." class="w-full px-3.5 py-2 text-xs bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-amber-400">
+                    <input type="text" id="inputNewsTitle" required placeholder="Заголовок події громади..." class="w-full px-3.5 py-2 text-xs bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-amber-400">
                 </div>
-                <div>
-                    <label class="block text-[11px] font-bold text-slate-300 mb-1">Посилання на фотографії (через кому)</label>
-                    <input type="text" id="inputNewsPhotos" placeholder="https://photo1.jpg, https://photo2.jpg..." class="w-full px-3.5 py-2 text-xs bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-amber-400">
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-300 mb-1">Посилання на фотографії (через кому)</label>
+                        <input type="text" id="inputNewsPhotos" placeholder="https://photo1.jpg, https://photo2.jpg..." class="w-full px-3.5 py-2 text-xs bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-amber-400">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-300 mb-1">YouTube посилання на відео</label>
+                        <input type="text" id="inputNewsVideo" placeholder="https://www.youtube.com/watch?v=..." class="w-full px-3.5 py-2 text-xs bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-amber-400">
+                    </div>
                 </div>
+
+                <!-- ВІЗУАЛЬНИЙ РЕДАКТОР З ПАНЕЛЛЮ ФОРМАТУВАННЯ -->
                 <div>
-                    <label class="block text-[11px] font-bold text-slate-300 mb-1">YouTube посилання на відео</label>
-                    <input type="text" id="inputNewsVideo" placeholder="https://www.youtube.com/watch?v=..." class="w-full px-3.5 py-2 text-xs bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-amber-400">
-                </div>
-                <div>
-                    <label class="block text-[11px] font-bold text-slate-300 mb-1">Текст новини *</label>
-                    <textarea id="inputNewsText" rows="5" required placeholder="Детальний опис новини, абзаци..." class="w-full px-3.5 py-2 text-xs bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-amber-400"></textarea>
+                    <label class="block text-[11px] font-bold text-slate-300 mb-1">Текст новини (з форматуванням) *</label>
+                    
+                    <!-- Панель форматування -->
+                    <div class="flex flex-wrap items-center gap-1.5 p-2 bg-slate-950 border border-b-0 border-slate-700 rounded-t-xl">
+                        <button type="button" onmousedown="event.preventDefault(); formatEditor('bold')" class="editor-tool-btn font-bold" title="Жирний текст"><i class="fa-solid fa-bold"></i></button>
+                        <button type="button" onmousedown="event.preventDefault(); formatEditor('italic')" class="editor-tool-btn italic" title="Курсив"><i class="fa-solid fa-italic"></i></button>
+                        <button type="button" onmousedown="event.preventDefault(); formatEditor('underline')" class="editor-tool-btn underline" title="Підкреслений"><i class="fa-solid fa-underline"></i></button>
+                        <button type="button" onmousedown="event.preventDefault(); formatEditor('strikeThrough')" class="editor-tool-btn line-through" title="Закреслений"><i class="fa-solid fa-strikethrough"></i></button>
+                        <span class="text-slate-700 mx-0.5">|</span>
+                        <button type="button" onmousedown="event.preventDefault(); formatEditorBlock('H3')" class="editor-tool-btn font-bold" title="Підзаголовок">H3</button>
+                        <button type="button" onmousedown="event.preventDefault(); formatEditorBlock('P')" class="editor-tool-btn" title="Звичайний абзац">¶</button>
+                        <button type="button" onmousedown="event.preventDefault(); formatEditorBlock('BLOCKQUOTE')" class="editor-tool-btn" title="Цитата"><i class="fa-solid fa-quote-right"></i></button>
+                        <span class="text-slate-700 mx-0.5">|</span>
+                        <button type="button" onmousedown="event.preventDefault(); formatEditor('insertUnorderedList')" class="editor-tool-btn" title="Маркований список"><i class="fa-solid fa-list-ul"></i></button>
+                        <button type="button" onmousedown="event.preventDefault(); formatEditor('insertOrderedList')" class="editor-tool-btn" title="Нумерований список"><i class="fa-solid fa-list-ol"></i></button>
+                        <span class="text-slate-700 mx-0.5">|</span>
+                        <button type="button" onmousedown="event.preventDefault(); formatEditor('justifyLeft')" class="editor-tool-btn" title="Вирівняти ліворуч"><i class="fa-solid fa-align-left"></i></button>
+                        <button type="button" onmousedown="event.preventDefault(); formatEditor('justifyCenter')" class="editor-tool-btn" title="По центру"><i class="fa-solid fa-align-center"></i></button>
+                        <button type="button" onmousedown="event.preventDefault(); insertEditorLink()" class="editor-tool-btn" title="Додати посилання"><i class="fa-solid fa-link"></i></button>
+                        <button type="button" onmousedown="event.preventDefault(); formatEditor('removeFormat')" class="editor-tool-btn text-rose-400" title="Очистити форматування"><i class="fa-solid fa-eraser"></i></button>
+                    </div>
+
+                    <!-- Редагована область -->
+                    <div id="newsRichEditor" contenteditable="true" data-placeholder="Напишіть детальний текст новини чи події громади..." class="w-full min-h-[150px] max-h-[280px] overflow-y-auto px-3.5 py-2.5 text-xs sm:text-sm bg-slate-950 border border-slate-700 rounded-b-xl text-white focus:outline-none focus:border-amber-400 leading-relaxed"></div>
                 </div>
 
                 <div class="p-3 bg-slate-950/80 rounded-xl border border-amber-500/20 space-y-2">
-                    <div class="text-[11px] font-bold text-amber-400">⭐ Рекламний блок у новині (За бажанням)</div>
-                    <div>
-                        <input type="text" id="inputAdText" placeholder="Текст оголошення чи назва спонсора" class="w-full px-3 py-1.5 text-xs bg-slate-900 border border-slate-700 rounded-lg text-white mb-1.5">
-                        <input type="url" id="inputAdLink" placeholder="Посилання на сайт спонсора (https://...)" class="w-full px-3 py-1.5 text-xs bg-slate-900 border border-slate-700 rounded-lg text-white">
+                    <div class="text-[11px] font-bold text-amber-400">⭐ Партнерське посилання або оголошення (За бажанням)</div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <input type="text" id="inputAdText" placeholder="Текст оголошення чи назва спонсора" class="w-full px-3 py-1.5 text-xs bg-slate-900 border border-slate-700 rounded-lg text-white">
+                        <input type="url" id="inputAdLink" placeholder="Посилання (https://...)" class="w-full px-3 py-1.5 text-xs bg-slate-900 border border-slate-700 rounded-lg text-white">
                     </div>
                 </div>
 
                 <div class="flex justify-end gap-2 pt-2">
                     <button type="button" onclick="closeAddNewsModal()" class="px-4 py-2 bg-slate-800 text-slate-300 text-xs font-bold rounded-xl hover:bg-slate-700 cursor-pointer">Скасувати</button>
-                    <button type="submit" class="btn-divine px-5 py-2 text-xs rounded-xl cursor-pointer">Зберегти новину</button>
+                    <button type="submit" class="btn-divine px-5 py-2 text-xs rounded-xl cursor-pointer">
+                        <i class="fa-solid fa-check mr-1"></i> Опублікувати новину
+                    </button>
                 </div>
             </form>
         </div>
@@ -522,6 +613,7 @@
 
     <!-- FIREBASE ІНІЦІАЛІЗАЦІЯ ТА СИНХРОНІЗАЦІЯ ДАНИХ -->
     <script>
+        const ADMIN_EMAIL = 'kostopilservice@gmail.com';
         const firebaseConfig = {
             apiKey: "AIzaSyBlKoP6-M8tdrKq88bSdnWSnak5Gpddnpk",
             authDomain: "neoservice-ks-ua.firebaseapp.com",
@@ -547,7 +639,7 @@
             sumy: { name: "Сумська область", mainCity: "Суми", cities: { sumy: "Суми", konotop: "Конотоп", shostka: "Шостка", okhtyrka: "Охтирка", romny: "Ромни", hlukhiv: "Глухів", lebedyn: "Лебедин", krostlevets: "Кролевець", trostyanets: "Тростянець", bilopillia: "Білопілля", putyvl: "Путивль", buryn: "Буринь", vorozhba: "Ворожба", seredyna_buda: "Середина-Буда" } },
             lviv: { name: "Львівська область", mainCity: "Львів", cities: { lviv: "Львів", drohobych: "Дрогобич", stryi: "Стрий", chervonohrad: "Червоноград", sambir: "Самбір", boryslav: "Борислав", novoyavorivsk: "Новояворівськ", truskavets: "Трускавець", novyi_rozdil: "Новий Розділ", zolochiv: "Золочів", brody: "Броди", sokal: "Сокаль", yavoriv: "Яворів", zhovkva: "Жовква", zhydachiv: "Жидачів", rava_ruska: "Рава-Руська", kamianka_buzka: "Кам'янка-Бузька", busk: "Буськ", morshyn: "Моршин", horodok: "Городок", mykolaiv_lviv: "Миколаїв", skole: "Сколе", peremyshlyany: "Перемишляни" } },
             ternopil: { name: "Тернопільська область", mainCity: "Тернопіль", cities: { ternopil: "Тернопіль", chortkiv: "Чортків", kremenets: "Кременець", berezhany: "Бережани", zbarazh: "Збараж", terebovlya: "Теребовля", buchach: "Бучач", borshchiv: "Борщів", zboriv: "Зборів", zalishchyky: "Заліщики", lanivtsi: "Ланівці", pochaiv: "Почаїв", kopychyntsi: "Копичинці", pidhaitsi: "Підгайці", shumsk: "Шумськ" } },
-            khmelnytskyi: { name: "Хмельницька область", mainCity: "Хмельницький", cities: { khmelnytskyi: "Хмельницький", kamianets: "Кам'янець-Подільський", shepetivka: "Шепетівка", netishyn: "Нітешин", slavuta: "Славута", starokostyantyniv: "Старокостянтинів", polonne: "Полонне", krasyliv: "Красилів", volochysk: "Волочиськ", horodok_khm: "Городок", dunaiivtsi: "Дунаївці", iziaslav: "Ізяслав", derazhnya: "Деражня" } },
+            khmelnytskyi: { name: "Хмельницька область", mainCity: "Хмельницький", cities: { khmelnytskyi: "Хмельницький", kamianets: "Кам'янець-Подільський", shepetivka: "Шепетівка", netishyn: "Нетішин", slavuta: "Славута", starokostyantyniv: "Старокостянтинів", polonne: "Полонне", krasyliv: "Красилів", volochysk: "Волочиськ", horodok_khm: "Городок", dunaiivtsi: "Дунаївці", iziaslav: "Ізяслав", derazhnya: "Деражня" } },
             vinnytsia: { name: "Вінницька область", mainCity: "Вінниця", cities: { vinnytsia: "Вінниця", zhmerynka: "Жмеринка", mohyliv: "Могилів-Подільський", koziatyn: "Козятин", khmilnyk: "Хмільник", haisyn: "Гайсин", ladyzhyn: "Ладижин", tulchyn: "Тульчин", bershad: "Бершадь", bar: "Бар", kalynivka: "Калинівка", hnivan: "Гнівань", illintsi: "Іллінці", nemyriv: "Немирів", yampol: "Ямпіль", pohrebyshche: "Погребище" } },
             cherkasy: { name: "Черкаська область", mainCity: "Черкаси", cities: { cherkasy: "Черкаси", uman: "Умань", smila: "Сміла", zolotonosha: "Золотоноша", kaniv: "Канів", korsun: "Корсунь-Шевченківський", zvenyhorodka: "Звенигородка", shpola: "Шпола", vatutine: "Ватутіне", zhashkiv: "Жашків", talne: "Тальне", kamianka: "Кам'янка", khrystynivka: "Христинівка", chyhyryn: "Чигирин", monastyryshche: "Монастирище" } },
             poltava: { name: "Полтавська область", mainCity: "Полтава", cities: { poltava: "Полтава", kremenchuk: "Кременчук", horishni_plavni: "Горішні Плавні", lubny: "Лубни", myrhorod: "Миргород", hadiach: "Гадяч", pyriatyn: "Пирятин", karlovka: "Карлівка", kobeliaky: "Кобеляки", zinkiv: "Зіньків", hrebinka: "Гребінка", lokhvytsia: "Лохвиця", zavodske: "Заводське" } },
@@ -556,7 +648,7 @@
             frankivsk: { name: "Івано-Франківська область", mainCity: "Івано-Франківськ", cities: { frankivsk: "Івано-Франківськ", kalush: "Калуш", kolomyia: "Коломия", nadvirna: "Надвірна", dolyna: "Долина", burshtyn: "Бурштин", perehinske: "Перегінське", bolekhiv: "Болехів", sniatyn: "Снятин", tysmenytsia: "Тисмениця", horodenka: "Городенка", rohatyn: "Рогатин", kosiv: "Косів", yaremche: "Яремче" } },
             chernivtsi: { name: "Чернівецька область", mainCity: "Чернівці", cities: { chernivtsi: "Чернівці", novodnistrovsk: "Новодністровськ", storozhynets: "Сторожинець", khotyn: "Хотин", sokyryany: "Сокиряни", zaitseva: "Заставна", novoselytsia: "Новоселиця", kitsman: "Кіцмань", vyzhnytsia: "Вижниця", hertsya: "Герца" } },
             kropyvnytskyi: { name: "Кіровоградська область", mainCity: "Кропивницький", cities: { kropyvnytskyi: "Кропивницький", oleksandriia: "Олександрія", svitlovodsk: "Світловодськ", znamianka: "Знам'янка", novoukrainka: "Новоукраїнка", dolynnska: "Долинська", haivoron: "Гайворон", novomyrhorod: "Новомиргород", mala_vyska: "Мала Виска", bobrynets: "Бобринець" } },
-            dnipro: { name: "Дніпропетровська область", mainCity: "Дніпро", cities: { dnipro: "Дніпро", kryvyi_rih: "Кривий Ріг", kamianske: "Кам'янське", nikopol: "Нікополь", pavlohrad: "Павлоград", novomoskovsk: "Новомосковськ", zhovti_vody: "Жовті Води", marhanets: "Марганець", pokrov: "Покров", synelnykove: "Синельникове", pershotravensk: "Першотravensk", ternivka: "Тернівка", vilnohirsk: "Вільногірськ", piatykhatky: "П'ятихатки", apostolove: "Апостолове" } },
+            dnipro: { name: "Дніпропетровська область", mainCity: "Дніпро", cities: { dnipro: "Дніпро", kryvyi_rih: "Кривий Ріг", kamianske: "Кам'янське", nikopol: "Нікополь", pavlohrad: "Павлоград", novomoskovsk: "Новомосковськ", zhovti_vody: "Жовті Води", marhanets: "Марганець", pokrov: "Покров", synelnykove: "Синельникове", pershotravensk: "Першотравенськ", ternivka: "Тернівка", vilnohirsk: "Вільногірськ", piatykhatky: "П'ятихатки", apostolove: "Апостолове" } },
             lugansk: { name: "Луганська область", mainCity: "Луганськ", cities: { lugansk: "Луганськ", severodonetsk: "Сєвєродонецьк", lysychansk: "Лисичанськ", alchevsk: "Алчевськ", krasnyi_luch: "Хрустальний", kadiivka: "Кадіївка", rubizhne: "Рубіжне", sverdlovsk: "Довжанськ", krasnodon: "Сорокине", popasna: "Попасна", kreminna: "Кремінна", starobilsk: "Старобільськ", svatove: "Сватове" } },
             donetsk: { name: "Донецька область", mainCity: "Донецьк", cities: { donetsk: "Донецьк", mariupol: "Маріуполь", makiyivka: "Макіївка", horlivka: "Горлівка", kramatorsk: "Краматорськ", sloviansk: "Слов'янськ", yenakiyeve: "Єнакієве", bakhmut: "Бахмут", pokrovsk: "Покровськ", kostiantynivka: "Костянтинівка", khartsyzk: "Харцизьк", druzhkivka: "Дружківка", dobropillia: "Добропілля", lyman: "Лиман", avdiyivka: "Авдіївка", toretsk: "Торецьк", selidove: "Селидове", volnovakaha: "Волноваха", kurakhove: "Курахове" } },
             odesa: { name: "Одеська область", mainCity: "Одеса", cities: { odesa: "Одеса", izmail: "Ізмаїл", chornomorsk: "Чорноморськ", bilhorod_dnistrovskyi: "Білгород-Дністровський", podilsk: "Подільськ", yuzhne: "Південне", kilia: "Кілія", reni: "Рені", balta: "Балта", rozdilna: "Роздільна", bolhrad: "Болград", artsyz: "Арциз", bilyaivka: "Біляївка", ovidiopol: "Овідіополь", tatarbunary: "Татарбунари" } },
@@ -566,20 +658,23 @@
             crimea: { name: "АР Крим", mainCity: "Сімферополь", cities: { simferopol: "Сімферополь", sevastopol: "Севастополь", kerch: "Керч", yevpatoria: "Євпаторія", yalta: "Ялта", feodosia: "Феодосія", dzhankoy: "Джанкой", alushta: "Алушта", bakhchysarai: "Бахчисарай", krasnoperekopsk: "Яни Капу", saky: "Саки", armiansk: "Армянськ" } }
         };
 
-        let currentRegionKey = 'kyiv';
-        let currentCityKey = 'kyiv';
+        let currentRegionKey = 'rivne';
+        let currentCityKey = 'kostopil';
         let currentBusinessPage = 1;
         let currentNewsPage = 1;
         const ITEMS_PER_PAGE = 6;
         let activeCityData = null;
+        let communityNewsList = []; // Новини з колекції city_news
         let unsubscribeCity = null;
+        let unsubscribeNews = null;
 
         auth.onAuthStateChanged((user) => {
             currentUser = user;
             const badge = document.getElementById('authStatusBadge');
             const adminPanoramaBtn = document.getElementById('adminPanoramaBtn');
             const adminAddBusinessBtn = document.getElementById('adminAddBusinessBtn');
-            const adminAddNewsBtn = document.getElementById('adminAddNewsBtn');
+            const userAddNewsBtn = document.getElementById('userAddNewsBtn');
+            const guestLoginNewsHint = document.getElementById('guestLoginNewsHint');
             const adminBackupTools = document.getElementById('adminBackupTools');
 
             if (badge) {
@@ -587,29 +682,32 @@
                     badge.textContent = `👤 ${user.email.split('@')[0]}`;
                     badge.className = "text-[10px] px-2 py-0.5 rounded-md bg-amber-500/20 border border-amber-500/40 text-amber-300 font-bold";
 
-                    if (user.email === 'kostopilservice@gmail.com') {
+                    // Кнопка додавання новини доступна ВСІМ зареєстрованим користувачам
+                    if (userAddNewsBtn) userAddNewsBtn.style.display = 'flex';
+                    if (guestLoginNewsHint) guestLoginNewsHint.style.display = 'none';
+
+                    // Кнопки адміністратора
+                    if (user.email === ADMIN_EMAIL) {
                         if (adminPanoramaBtn) adminPanoramaBtn.style.display = 'flex';
                         if (adminAddBusinessBtn) adminAddBusinessBtn.style.display = 'flex';
-                        if (adminAddNewsBtn) adminAddNewsBtn.style.display = 'flex';
                         if (adminBackupTools) adminBackupTools.style.display = 'flex';
                     } else {
                         if (adminPanoramaBtn) adminPanoramaBtn.style.display = 'none';
                         if (adminAddBusinessBtn) adminAddBusinessBtn.style.display = 'none';
-                        if (adminAddNewsBtn) adminAddNewsBtn.style.display = 'none';
                         if (adminBackupTools) adminBackupTools.style.display = 'none';
                     }
                 } else {
                     badge.textContent = "Гість";
                     badge.className = "text-[10px] px-2 py-0.5 rounded-md bg-slate-900 border border-slate-700 text-slate-400";
+                    if (userAddNewsBtn) userAddNewsBtn.style.display = 'none';
+                    if (guestLoginNewsHint) guestLoginNewsHint.style.display = 'flex';
                     if (adminPanoramaBtn) adminPanoramaBtn.style.display = 'none';
                     if (adminAddBusinessBtn) adminAddBusinessBtn.style.display = 'none';
-                    if (adminAddNewsBtn) adminAddNewsBtn.style.display = 'none';
                     if (adminBackupTools) adminBackupTools.style.display = 'none';
                 }
             }
-            if (typeof renderBusinessGrid === 'function') {
-                renderBusinessGrid();
-            }
+            if (typeof renderBusinessGrid === 'function') renderBusinessGrid();
+            if (typeof renderNewsGrid === 'function') renderNewsGrid();
         });
 
         window.getCurrentUser = function() { return currentUser || auth.currentUser; };
@@ -655,9 +753,8 @@
         });
 
         function subToActiveCity() {
-            if (unsubscribeCity) {
-                unsubscribeCity();
-            }
+            if (unsubscribeCity) unsubscribeCity();
+            if (unsubscribeNews) unsubscribeNews();
 
             const storageKey = `${currentRegionKey}_${currentCityKey}`;
             const regObj = UKRAINE_REGIONS[currentRegionKey];
@@ -678,12 +775,34 @@
                         news: [],
                         businesses: []
                     };
-                    docRef.set(activeCityData).catch(err => console.error("Помилка створення міста:", err));
+                    // Створюємо документ міста в базі лише якщо зайшов адмін
+                    if (currentUser && currentUser.email === ADMIN_EMAIL) {
+                        docRef.set(activeCityData).catch(() => {});
+                    }
                 }
                 renderCurrentCity();
             }, err => {
-                console.error("Помилка підписки на Firestore:", err);
+                console.warn("Помилка підписки на місто:", err.message);
+                renderCurrentCity();
             });
+
+            // Підписка на колекцію новин громади (city_news) для обраного міста
+            unsubscribeNews = db.collection('city_news')
+                .where('cityKey', '==', storageKey)
+                .onSnapshot(snapshot => {
+                    communityNewsList = [];
+                    snapshot.forEach(docSnap => {
+                        communityNewsList.push({
+                            docId: docSnap.id,
+                            ...docSnap.data()
+                        });
+                    });
+                    // Сортуємо за датою створення (новіші зверху)
+                    communityNewsList.sort((a, b) => (b.createdAtMs || 0) - (a.createdAtMs || 0));
+                    renderNewsGrid();
+                }, err => {
+                    console.warn("Помилка підписки на новини громади:", err.message);
+                });
         }
 
         function getActiveCityData() {
@@ -709,7 +828,7 @@
                 await db.collection('city_portals').doc(storageKey).set(activeCityData);
             } catch (err) {
                 console.error("Помилка збереження в Firestore:", err);
-                alert("Не вдалося зберегти зміни в хмарі.");
+                alert("Не вдалося зберегти зміни в хмарі: " + err.message);
             }
         }
 
@@ -795,7 +914,7 @@
 
         async function changePhotoAdmin() {
             const user = window.getCurrentUser ? window.getCurrentUser() : null;
-            if (!user || user.email !== 'kostopilservice@gmail.com') {
+            if (!user || user.email !== ADMIN_EMAIL) {
                 alert("Помилка: змінювати панораму міста може тільки адміністратор!");
                 return;
             }
@@ -812,7 +931,7 @@
         // --- ЕКСПОРТ ТА ІМПОРТ БАЗИ ДАНИХ (FIREBASE JSON) ---
         async function exportDatabaseJson() {
             const user = window.getCurrentUser ? window.getCurrentUser() : null;
-            if (!user || user.email !== 'kostopilservice@gmail.com') {
+            if (!user || user.email !== ADMIN_EMAIL) {
                 alert("Експортувати базу даних може лише адміністратор!");
                 return;
             }
@@ -822,10 +941,22 @@
                 snapshot.forEach(doc => {
                     allData[doc.id] = doc.data();
                 });
-                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(allData, null, 2));
+
+                const newsSnapshot = await db.collection('city_news').get();
+                let allNews = {};
+                newsSnapshot.forEach(doc => {
+                    allNews[doc.id] = doc.data();
+                });
+
+                const backupObj = {
+                    city_portals: allData,
+                    city_news: allNews
+                };
+
+                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupObj, null, 2));
                 const downloadAnchor = document.createElement('a');
                 downloadAnchor.setAttribute("href", dataStr);
-                downloadAnchor.setAttribute("download", `neoservice_firebase_backup_${new Date().toISOString().slice(0,10)}.json`);
+                downloadAnchor.setAttribute("download", `neoservice_city_backup_${new Date().toISOString().slice(0,10)}.json`);
                 document.body.appendChild(downloadAnchor);
                 downloadAnchor.click();
                 downloadAnchor.remove();
@@ -837,7 +968,7 @@
 
         async function importDatabaseJson(event) {
             const user = window.getCurrentUser ? window.getCurrentUser() : null;
-            if (!user || user.email !== 'kostopilservice@gmail.com') {
+            if (!user || user.email !== ADMIN_EMAIL) {
                 alert("Імпортувати базу даних може лише адміністратор!");
                 return;
             }
@@ -850,9 +981,19 @@
                     const parsed = JSON.parse(e.target.result);
                     if (parsed && typeof parsed === 'object') {
                         const batch = db.batch();
-                        for (let key in parsed) {
-                            let docRef = db.collection('city_portals').doc(key);
-                            batch.set(docRef, parsed[key]);
+                        if (parsed.city_portals) {
+                            for (let key in parsed.city_portals) {
+                                batch.set(db.collection('city_portals').doc(key), parsed.city_portals[key]);
+                            }
+                            if (parsed.city_news) {
+                                for (let nKey in parsed.city_news) {
+                                    batch.set(db.collection('city_news').doc(nKey), parsed.city_news[nKey]);
+                                }
+                            }
+                        } else {
+                            for (let key in parsed) {
+                                batch.set(db.collection('city_portals').doc(key), parsed[key]);
+                            }
                         }
                         await batch.commit();
                         subToActiveCity();
@@ -870,7 +1011,7 @@
         // --- БІЗНЕС КАТАЛОГ З ПОШУКОМ ТА ПАГІНАЦІЄЮ ---
         function openAddBusinessModal() {
             const user = window.getCurrentUser ? window.getCurrentUser() : null;
-            if (!user || user.email !== 'kostopilservice@gmail.com') {
+            if (!user || user.email !== ADMIN_EMAIL) {
                 alert("Додавати підприємства може лише адміністратор!");
                 return;
             }
@@ -897,7 +1038,7 @@
         async function saveCityBusiness(e) {
             e.preventDefault();
             const user = window.getCurrentUser ? window.getCurrentUser() : null;
-            if (!user || user.email !== 'kostopilservice@gmail.com') return;
+            if (!user || user.email !== ADMIN_EMAIL) return;
 
             const name = document.getElementById('inputBusName').value.trim();
             const category = document.getElementById('inputBusCategory').value.trim();
@@ -1154,7 +1295,7 @@
             }
 
             const currentUser = window.getCurrentUser ? window.getCurrentUser() : null;
-            const isAdmin = currentUser && currentUser.email === 'kostopilservice@gmail.com';
+            const isAdmin = currentUser && currentUser.email === ADMIN_EMAIL;
 
             reviews.forEach((rev) => {
                 let starsStr = '★'.repeat(rev.rating) + '☆'.repeat(5 - rev.rating);
@@ -1179,7 +1320,7 @@
 
         async function deleteBusinessReview(busId, revId) {
             const user = window.getCurrentUser ? window.getCurrentUser() : null;
-            if (!user || user.email !== 'kostopilservice@gmail.com') return;
+            if (!user || user.email !== ADMIN_EMAIL) return;
             if (confirm("Видалити цей відгук?")) {
                 const data = getActiveCityData();
                 const item = (data.businesses || []).find(b => b.id === busId);
@@ -1192,20 +1333,61 @@
             }
         }
 
-        // --- НОВИНИ МІСТА З ПОШУКОМ ТА ПАГІНАЦІЄЮ ---
+        // --- ФУНКЦІЇ ВІЗУАЛЬНОГО РЕДАКТОРА ТЕКСТУ ---
+        function formatEditor(command) {
+            document.execCommand(command, false, null);
+            document.getElementById('newsRichEditor').focus();
+        }
+
+        function formatEditorBlock(tag) {
+            document.execCommand('formatBlock', false, tag);
+            document.getElementById('newsRichEditor').focus();
+        }
+
+        function insertEditorLink() {
+            const url = prompt("Введіть посилання (URL):", "https://");
+            if (url && url !== "https://") {
+                document.execCommand('createLink', false, url);
+                document.getElementById('newsRichEditor').focus();
+            }
+        }
+
+        function stripHtmlTags(htmlStr) {
+            const temp = document.createElement('div');
+            temp.innerHTML = htmlStr || '';
+            return temp.textContent || temp.innerText || '';
+        }
+
+        function sanitizeHtml(htmlStr) {
+            const temp = document.createElement('div');
+            temp.innerHTML = htmlStr || '';
+            temp.querySelectorAll('script, style, iframe, object, embed').forEach(el => el.remove());
+            temp.querySelectorAll('*').forEach(el => {
+                for (let i = el.attributes.length - 1; i >= 0; i--) {
+                    const attrName = el.attributes[i].name.toLowerCase();
+                    if (attrName.startsWith('on')) {
+                        el.removeAttribute(el.attributes[i].name);
+                    }
+                }
+            });
+            return temp.innerHTML;
+        }
+
+        // --- НОВИНИ МІСТА (ДЛЯ ВСІХ ЗАРЕЄСТРОВАНИХ КОРИСТУВАЧІВ) ---
         function openAddNewsModal() {
             const user = window.getCurrentUser ? window.getCurrentUser() : null;
-            if (!user || user.email !== 'kostopilservice@gmail.com') {
-                alert("Додавати новини може лише адміністратор!");
+            if (!user) {
+                alert("Будь ласка, увійдіть у свій акаунт, щоб додавати новини громади!");
                 return;
             }
 
-            document.getElementById('editNewsIndex').value = '-1';
-            document.getElementById('addModalTitle').textContent = '📰 Додати новину з медіа та рекламою';
+            document.getElementById('editNewsDocId').value = '';
+            document.getElementById('editLegacyIndex').value = '-1';
+            document.getElementById('addModalTitle').textContent = '📰 Додати новину з медіа та форматуванням';
             document.getElementById('inputNewsTitle').value = '';
             document.getElementById('inputNewsPhotos').value = '';
             document.getElementById('inputNewsVideo').value = '';
-            document.getElementById('inputNewsText').value = '';
+            document.getElementById('newsRichEditor').innerHTML = '';
             document.getElementById('inputAdText').value = '';
             document.getElementById('inputAdLink').value = '';
 
@@ -1223,35 +1405,90 @@
         async function saveCityNews(e) {
             e.preventDefault();
             const user = window.getCurrentUser ? window.getCurrentUser() : null;
-            if (!user || user.email !== 'kostopilservice@gmail.com') return;
+            if (!user) {
+                alert("Для публікації новини потрібно увійти в систему.");
+                return;
+            }
 
-            const editIdx = parseInt(document.getElementById('editNewsIndex').value);
-            const title = document.getElementById('inputNewsTitle').value;
+            const editDocId = document.getElementById('editNewsDocId').value.trim();
+            const editLegacyIdx = parseInt(document.getElementById('editLegacyIndex').value);
+            const title = document.getElementById('inputNewsTitle').value.trim();
             const photosRaw = document.getElementById('inputNewsPhotos').value;
             const photos = photosRaw ? photosRaw.split(',').map(s => s.trim()).filter(Boolean) : [];
             const video = document.getElementById('inputNewsVideo').value.trim();
-            const text = document.getElementById('inputNewsText').value;
-            const adText = document.getElementById('inputAdText').value.trim();
-            const adLink = document.getElementById('inputAdLink').value.trim();
+            
+            const editorEl = document.getElementById('newsRichEditor');
+            const richHtml = sanitizeHtml(editorEl.innerHTML).trim();
+            const plainText = stripHtmlTags(richHtml).trim();
 
-            const data = getActiveCityData();
-            if (!data.news) data.news = [];
-
-            const newsItem = {
-                title, photos, video, text, adText, adLink,
-                author: user.email,
-                date: new Date().toLocaleDateString('uk-UA', {day: 'numeric', month: 'long', year: 'numeric'})
-            };
-
-            if (editIdx >= 0) {
-                data.news[editIdx] = newsItem;
-            } else {
-                data.news.unshift(newsItem);
+            if (!plainText) {
+                alert("Будь ласка, введіть текст новини!");
+                return;
             }
 
-            await saveActiveCityDataToFirebase();
-            closeAddNewsModal();
-            alert('Новину успішно збережено в хмарі!');
+            const adText = document.getElementById('inputAdText').value.trim();
+            const adLink = document.getElementById('inputAdLink').value.trim();
+            const storageKey = `${currentRegionKey}_${currentCityKey}`;
+
+            try {
+                // Якщо редагується стара новина зі списку city_portals (доступно адміну)
+                if (editLegacyIdx >= 0 && user.email === ADMIN_EMAIL) {
+                    const data = getActiveCityData();
+                    data.news[editLegacyIdx] = {
+                        ...data.news[editLegacyIdx],
+                        title, photos, video,
+                        text: plainText,
+                        htmlContent: richHtml,
+                        adText, adLink
+                    };
+                    await saveActiveCityDataToFirebase();
+                } else if (editDocId) {
+                    // Оновлення існуючої новини в колекції city_news
+                    await db.collection('city_news').doc(editDocId).update({
+                        title,
+                        photos,
+                        video,
+                        text: plainText,
+                        htmlContent: richHtml,
+                        adText,
+                        adLink,
+                        updatedAtMs: Date.now()
+                    });
+                } else {
+                    // Створення нової новини в колекції city_news
+                    await db.collection('city_news').add({
+                        cityKey: storageKey,
+                        regionKey: currentRegionKey,
+                        cityName: getActiveCityData().name,
+                        title,
+                        photos,
+                        video,
+                        text: plainText,
+                        htmlContent: richHtml,
+                        adText,
+                        adLink,
+                        userEmail: user.email,
+                        author: user.email,
+                        date: new Date().toLocaleDateString('uk-UA', {day: 'numeric', month: 'long', year: 'numeric'}),
+                        createdAtMs: Date.now()
+                    });
+                }
+
+                closeAddNewsModal();
+                alert('Новину успішно опубліковано!');
+            } catch (err) {
+                console.error("Помилка збереження новини:", err);
+                alert("Помилка збереження новини: " + err.message);
+            }
+        }
+
+        function getCombinedNewsList() {
+            const legacyNews = (getActiveCityData().news || []).map((item, idx) => ({
+                ...item,
+                isLegacy: true,
+                legacyIdx: idx
+            }));
+            return [...communityNewsList, ...legacyNews];
         }
 
         function filterNews() {
@@ -1264,12 +1501,13 @@
             const paginationContainer = document.getElementById('newsPagination');
             if (!grid) return;
 
-            const data = getActiveCityData();
+            const allNews = getCombinedNewsList();
             const searchInput = document.getElementById('newsSearchInput');
             const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
 
-            let filteredNews = (data.news || []).filter(item => {
-                return !query || item.title.toLowerCase().includes(query) || item.text.toLowerCase().includes(query);
+            let filteredNews = allNews.filter(item => {
+                const textContent = stripHtmlTags(item.htmlContent || item.text || '').toLowerCase();
+                return !query || (item.title || '').toLowerCase().includes(query) || textContent.includes(query);
             });
 
             grid.innerHTML = '';
@@ -1287,13 +1525,15 @@
             const startIdx = (currentNewsPage - 1) * ITEMS_PER_PAGE;
             const pageItems = filteredNews.slice(startIdx, startIdx + ITEMS_PER_PAGE);
 
-            pageItems.forEach((item) => {
-                const originalIndex = data.news.indexOf(item);
+            pageItems.forEach((item, pagePos) => {
+                const combinedIndex = startIdx + pagePos;
                 const coverPhoto = item.photos && item.photos.length > 0 ? item.photos[0] : 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=500';
+                const previewText = stripHtmlTags(item.htmlContent || item.text || '');
+                const authorEmail = item.userEmail || item.author || '';
                 
                 let card = document.createElement('div');
                 card.className = 'news-card overflow-hidden flex flex-col justify-between cursor-pointer';
-                card.onclick = () => openNewsDetail(originalIndex);
+                card.onclick = () => openNewsDetail(filteredNews[combinedIndex]);
                 card.innerHTML = `
                     <div>
                         <div class="w-full h-44 overflow-hidden bg-slate-950 relative">
@@ -1303,16 +1543,16 @@
                         </div>
                         <div class="p-4 space-y-2">
                             <div class="flex justify-between items-center text-[10px] text-amber-400 font-semibold">
-                                <span>${item.date}</span>
-                                <span class="text-slate-400">${item.author ? 'Автор: ' + item.author.split('@')[0] : ''}</span>
+                                <span>${item.date || ''}</span>
+                                <span class="text-slate-400">${authorEmail ? 'Автор: ' + authorEmail.split('@')[0] : ''}</span>
                             </div>
                             <h4 class="font-serif-sacred text-lg font-bold text-amber-200 line-clamp-2">${item.title}</h4>
-                            <p class="text-xs text-slate-300 line-clamp-2">${item.text}</p>
+                            <p class="text-xs text-slate-300 line-clamp-2">${previewText}</p>
                         </div>
                     </div>
                     <div class="p-4 pt-0 flex items-center justify-between text-[11px] text-amber-400 font-bold">
                         <span>Читати повністю ➔</span>
-                        ${item.adText ? '<span class="text-[10px] px-2 py-0.5 bg-amber-500/20 rounded-md border border-amber-500/30 text-amber-300">⭐ Реклама</span>' : ''}
+                        ${item.adText ? '<span class="text-[10px] px-2 py-0.5 bg-amber-500/20 rounded-md border border-amber-500/30 text-amber-300">⭐ Партнер</span>' : ''}
                     </div>
                 `;
                 grid.appendChild(card);
@@ -1334,17 +1574,42 @@
             window.scrollTo({ top: document.getElementById('cityNewsGrid').offsetTop - 120, behavior: 'smooth' });
         }
 
-        let activeNewsIndex = -1;
+        let activeNewsItem = null;
         let activePhotoIdx = 0;
 
-        function openNewsDetail(idx) {
-            activeNewsIndex = idx;
+        function openNewsDetail(item) {
+            if (!item) return;
+            activeNewsItem = item;
             activePhotoIdx = 0;
-            const item = getActiveCityData().news[idx];
 
+            const authorEmail = item.userEmail || item.author || '';
             document.getElementById('detailNewsTitle').textContent = item.title;
-            document.getElementById('detailNewsDate').textContent = item.date;
-            document.getElementById('detailNewsText').textContent = item.text;
+            document.getElementById('detailNewsDate').textContent = item.date || '';
+            document.getElementById('detailNewsAuthor').textContent = authorEmail ? `• Автор: ${authorEmail.split('@')[0]}` : '';
+
+            // Відображаємо форматований HTML або безпечний текст
+            const textEl = document.getElementById('detailNewsText');
+            if (item.htmlContent) {
+                textEl.innerHTML = sanitizeHtml(item.htmlContent);
+                textEl.classList.remove('whitespace-pre-wrap');
+            } else {
+                textEl.textContent = item.text || '';
+                textEl.classList.add('whitespace-pre-wrap');
+            }
+
+            // Перевіряємо права на редагування/видалення (Автор або Адмін)
+            const user = window.getCurrentUser ? window.getCurrentUser() : null;
+            const ownerBlock = document.getElementById('ownerActionsBlock');
+            const canEdit = user && (user.email === ADMIN_EMAIL || (authorEmail && user.email === authorEmail));
+            if (ownerBlock) {
+                if (canEdit) {
+                    ownerBlock.classList.remove('hidden');
+                    ownerBlock.classList.add('flex');
+                } else {
+                    ownerBlock.classList.remove('flex');
+                    ownerBlock.classList.add('hidden');
+                }
+            }
 
             const galleryContainer = document.getElementById('detailGalleryContainer');
             const mainPhoto = document.getElementById('detailNewsPhoto');
@@ -1406,35 +1671,50 @@
         }
 
         function nextGalleryPhoto() {
-            const item = getActiveCityData().news[activeNewsIndex];
-            if (!item || !item.photos) return;
-            activePhotoIdx = (activePhotoIdx + 1) % item.photos.length;
-            document.getElementById('detailNewsPhoto').src = item.photos[activePhotoIdx];
-            document.getElementById('galleryCounter').textContent = `${activePhotoIdx + 1} / ${item.photos.length}`;
+            if (!activeNewsItem || !activeNewsItem.photos) return;
+            activePhotoIdx = (activePhotoIdx + 1) % activeNewsItem.photos.length;
+            document.getElementById('detailNewsPhoto').src = activeNewsItem.photos[activePhotoIdx];
+            document.getElementById('galleryCounter').textContent = `${activePhotoIdx + 1} / ${activeNewsItem.photos.length}`;
         }
 
         function prevGalleryPhoto() {
-            const item = getActiveCityData().news[activeNewsIndex];
-            if (!item || !item.photos) return;
-            activePhotoIdx = (activePhotoIdx - 1 + item.photos.length) % item.photos.length;
-            document.getElementById('detailNewsPhoto').src = item.photos[activePhotoIdx];
-            document.getElementById('galleryCounter').textContent = `${activePhotoIdx + 1} / ${item.photos.length}`;
+            if (!activeNewsItem || !activeNewsItem.photos) return;
+            activePhotoIdx = (activePhotoIdx - 1 + activeNewsItem.photos.length) % activeNewsItem.photos.length;
+            document.getElementById('detailNewsPhoto').src = activeNewsItem.photos[activePhotoIdx];
+            document.getElementById('galleryCounter').textContent = `${activePhotoIdx + 1} / ${activeNewsItem.photos.length}`;
         }
 
         function triggerEditNews() {
             const user = window.getCurrentUser ? window.getCurrentUser() : null;
-            if (!user || user.email !== 'kostopilservice@gmail.com') return;
-            const item = getActiveCityData().news[activeNewsIndex];
+            if (!user || !activeNewsItem) return;
+            const authorEmail = activeNewsItem.userEmail || activeNewsItem.author || '';
+            if (user.email !== ADMIN_EMAIL && user.email !== authorEmail) return;
+
+            const itemToEdit = activeNewsItem;
             closeNewsDetailModal();
 
-            document.getElementById('editNewsIndex').value = activeNewsIndex;
-            document.getElementById('addModalTitle').textContent = '✏️ Редагувати новину';
-            document.getElementById('inputNewsTitle').value = item.title;
-            document.getElementById('inputNewsPhotos').value = item.photos ? item.photos.join(', ') : '';
-            document.getElementById('inputNewsVideo').value = item.video || '';
-            document.getElementById('inputNewsText').value = item.text;
-            document.getElementById('inputAdText').value = item.adText || '';
-            document.getElementById('inputAdLink').value = item.adLink || '';
+            if (itemToEdit.isLegacy) {
+                document.getElementById('editNewsDocId').value = '';
+                document.getElementById('editLegacyIndex').value = itemToEdit.legacyIdx;
+            } else {
+                document.getElementById('editNewsDocId').value = itemToEdit.docId;
+                document.getElementById('editLegacyIndex').value = '-1';
+            }
+
+            document.getElementById('addModalTitle').textContent = '✏️ Редагувати новину громади';
+            document.getElementById('inputNewsTitle').value = itemToEdit.title || '';
+            document.getElementById('inputNewsPhotos').value = itemToEdit.photos ? itemToEdit.photos.join(', ') : '';
+            document.getElementById('inputNewsVideo').value = itemToEdit.video || '';
+            
+            const editorEl = document.getElementById('newsRichEditor');
+            if (itemToEdit.htmlContent) {
+                editorEl.innerHTML = sanitizeHtml(itemToEdit.htmlContent);
+            } else {
+                editorEl.textContent = itemToEdit.text || '';
+            }
+
+            document.getElementById('inputAdText').value = itemToEdit.adText || '';
+            document.getElementById('inputAdLink').value = itemToEdit.adLink || '';
 
             const modal = document.getElementById('addNewsModal');
             modal.classList.remove('hidden');
@@ -1443,13 +1723,24 @@
 
         async function triggerDeleteNews() {
             const user = window.getCurrentUser ? window.getCurrentUser() : null;
-            if (!user || user.email !== 'kostopilservice@gmail.com') return;
+            if (!user || !activeNewsItem) return;
+            const authorEmail = activeNewsItem.userEmail || activeNewsItem.author || '';
+            if (user.email !== ADMIN_EMAIL && user.email !== authorEmail) return;
+
             if (confirm("Видалити цю новину?")) {
-                const data = getActiveCityData();
-                data.news.splice(activeNewsIndex, 1);
-                await saveActiveCityDataToFirebase();
-                closeNewsDetailModal();
-                alert("Новину видалено!");
+                try {
+                    if (activeNewsItem.isLegacy) {
+                        const data = getActiveCityData();
+                        data.news.splice(activeNewsItem.legacyIdx, 1);
+                        await saveActiveCityDataToFirebase();
+                    } else if (activeNewsItem.docId) {
+                        await db.collection('city_news').doc(activeNewsItem.docId).delete();
+                    }
+                    closeNewsDetailModal();
+                    alert("Новину видалено!");
+                } catch (err) {
+                    alert("Помилка при видаленні: " + err.message);
+                }
             }
         }
     </script>

@@ -32,10 +32,10 @@
 
         .real-estate-hero {
             position: relative;
-            background: linear-gradient(rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.78)), 
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.94) 0%, rgba(248, 250, 252, 0.82) 100%), 
                         url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1600') center/cover no-repeat;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
         }
 
         .search-box-red {
@@ -169,10 +169,14 @@
             <a href="index.html" class="hover:underline">NEOSERVICE</a> &gt; <span id="breadcrumbCategory">Нерухомість</span>
         </div>
         
-        <!-- ЕСТЕТИЧНА ОБКЛАДИНКА -->
-        <div class="real-estate-hero p-6 sm:p-8 flex flex-col justify-center">
-            <h1 class="text-2xl sm:text-3xl font-black text-gray-900 mb-2" id="mainHeaderTitle">Продаж та оренда нерухомості в Україні</h1>
-            <p class="text-xs sm:text-sm text-gray-700 max-w-2xl font-medium">Сучасний портал оголошень житлової та комерційної нерухомості. Надійні пропозиції у місті Костопіль, Рівненській області та по всій Україні.</p>
+        <!-- ЕСТЕТИЧНА ОБКЛАДИНКА З ЗМ’ЯКШЕНИМ СІРИМ ТЕКСТОМ -->
+        <div class="real-estate-hero p-6 sm:p-10 flex flex-col justify-center rounded-2xl border border-slate-200/60 shadow-sm relative overflow-hidden">
+            <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-800 tracking-tight mb-2 drop-shadow-sm" id="mainHeaderTitle">
+                Продаж та оренда нерухомості в Україні
+            </h1>
+            <p class="text-xs sm:text-sm text-slate-600 max-w-2xl font-medium leading-relaxed">
+                Сучасний портал оголошень житлової та комерційної нерухомості. Надійні пропозиції у місті Костопіль, Рівненській області та по всій Україні.
+            </p>
         </div>
 
         <!-- ЧЕРВОНИЙ БЛОК ФІЛЬТРІВ -->

@@ -97,7 +97,7 @@
             opacity: 0; transform: translateY(10px);
             transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
             pointer-events: none;
-            background-color: #0b1329; /* Надійний темний фон для адаптивних банерів */
+            background-color: #0b1329;
             background-repeat: no-repeat;
             background-position: center;
         }
@@ -165,6 +165,30 @@
         }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* CSS стилі для циклічної анімації тексту у віджеті */
+        .ticker-wrapper {
+            position: relative;
+            height: 20px;
+        }
+        .ticker-item {
+            position: absolute;
+            width: 100%;
+            opacity: 0;
+            transform: translateY(6px);
+            animation: fadeTicker 9s infinite;
+        }
+        .ticker-item:nth-child(1) { animation-delay: 0s; }
+        .ticker-item:nth-child(2) { animation-delay: 3s; }
+        .ticker-item:nth-child(3) { animation-delay: 6s; }
+
+        @keyframes fadeTicker {
+            0% { opacity: 0; transform: translateY(6px); }
+            8% { opacity: 1; transform: translateY(0); }
+            33% { opacity: 1; transform: translateY(0); }
+            41% { opacity: 0; transform: translateY(-6px); }
+            100% { opacity: 0; transform: translateY(-6px); }
+        }
 
         @media(max-width: 768px) {
             .banner-trust-grid { grid-template-columns: 1fr !important; }
@@ -378,7 +402,7 @@
         </a>
 
         <!-- Розділ 4: Інженерія та схемотехніка --> 
-        <a href="engineering.html#" style="text-decoration: none; color: inherit;">
+        <a href="engineering.html" style="text-decoration: none; color: inherit;">
           <div style="background: white; border-radius: 12px; padding: 15px; border-top: 4px solid #7c3aed; box-shadow: 0 4px 6px rgba(0,0,0,0.04); height: 100%; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s;" onMouseOver="this.style.transform='translateY(-3px)'" onMouseOut="this.style.transform='translateY(0)'">
             <div>
               <div style="font-size: 1.5rem; margin-bottom: 8px;">⚙️</div>
@@ -441,7 +465,7 @@
                 <div style="font-size: 0.6rem; text-transform: uppercase; font-weight: bold; color: #d97706;">ОСОБИСТИЙ КОНТРОЛЬ</div>
                 <h4 style="font-size: 0.75rem; margin: 2px 0 0 0; color: #1e3a8a; line-height: 1.1;">Технічний контроль і підтримка • Експертний нагляд:</h4>
                 <h4 style="font-size: 0.75rem; margin: 2px 0 0 0; color: #1e3a8a; line-height: 1.1;"> <a href="https://www.facebook.com/profile.php?id=100002258565875" target="_blank">Facebook </a></h4>
-                <h4 style="font-size: 0.75rem; margin: 2px 0 0 0; color: #1e3a8a; line-height: 1.1;">Valeriy Anatolievich nservice@gmail.com</h4>
+                <h4 style="font-size: 0.75rem; margin: 2px 0 0 0; color: #1e3a8a; line-height: 1.1;">Valeriy Anatolievich kostopilservice@gmail.com</h4>
               </div>
               <!-- Кнопка прихована за замовчуванням (display: none), з'явиться лише після вашого входу -->
               <button id="adminCollageBtn" onClick="openCollageAdmin()" style="display: none; background: #1e3a8a; color: white; border: none; padding: 6px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: bold; cursor: pointer; text-align: center; width: 100%;">
@@ -718,71 +742,45 @@
                   </div>
 
                   <div class="mt-8">
-<!-- Суперкомпактний анімований банер-віджет -->
-<div class="bg-white rounded-xl p-3 shadow-sm border border-slate-100 w-full text-slate-900 relative overflow-hidden">
-    
-    <!-- Верхній рядок: Іконка + Заголовок + Індикатор -->
-    <div class="flex items-center justify-between mb-2">
-        <div class="flex items-center space-x-2">
-            <div class="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-xs shadow-inner">
-                <i class="fa-solid fa-city"></i>
-            </div>
-            <div>
-                <h4 class="text-[11px] font-bold uppercase tracking-wider text-blue-600 leading-none">Регіональне відділення</h4>
-                <span class="text-[10px] text-slate-400 font-medium">NEOSERVICE.KS.UA</span>
-            </div>
-        </div>
-        <!-- Індикатор активності -->
-        <span class="relative flex h-2 w-2" title="Мережа активна">
-          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-          <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-        </span>
-    </div>
+                    <!-- Суперкомпактний анімований банер-віджет -->
+                    <div class="bg-white rounded-xl p-3 shadow-sm border border-slate-100 w-full text-slate-900 relative overflow-hidden">
+                        
+                        <!-- Верхній рядок: Іконка + Заголовок + Індикатор -->
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="flex items-center space-x-2">
+                                <div class="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-xs shadow-inner">
+                                    <i class="fa-solid fa-city"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-[11px] font-bold uppercase tracking-wider text-blue-600 leading-none">Регіональне відділення</h4>
+                                    <span class="text-[10px] text-slate-400 font-medium">NEOSERVICE.KS.UA</span>
+                                </div>
+                            </div>
+                            <!-- Індикатор активності -->
+                            <span class="relative flex h-2 w-2" title="Мережа активна">
+                              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                              <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                            </span>
+                        </div>
 
-    <!-- Анімований рядок тексту (зміна слоганів) -->
-    <div class="h-7 flex items-center mb-2 relative overflow-hidden px-1">
-        <div class="ticker-wrapper w-full">
-            <div class="ticker-item text-xs font-bold text-slate-800">Твори історію твого міста</div>
-            <div class="ticker-item text-xs font-bold text-blue-600">Координаційні центри підтримки</div>
-            <div class="ticker-item text-xs font-bold text-slate-800">Актуальні довідники та сервіси</div>
-        </div>
-    </div>
+                        <!-- Анімований рядок тексту (зміна слоганів) -->
+                        <div class="h-7 flex items-center mb-2 relative overflow-hidden px-1">
+                            <div class="ticker-wrapper w-full">
+                                <div class="ticker-item text-xs font-bold text-slate-800">Твори історію твого міста</div>
+                                <div class="ticker-item text-xs font-bold text-blue-600">Координаційні центри підтримки</div>
+                                <div class="ticker-item text-xs font-bold text-slate-800">Актуальні довідники та сервіси</div>
+                            </div>
+                        </div>
 
-    <!-- Нижній рядок: Статус і кнопка -->
-    <div class="pt-2 border-t border-slate-100 flex items-center justify-between">
-        <span class="text-[10px] text-slate-500 font-medium">Статус: <strong class="text-emerald-600">Активно</strong></span>
-        <button onClick="openModal()" class="bg-blue-600 hover:bg-blue-700 text-white text-[11px] px-3 py-1 rounded-md font-semibold transition-all shadow-sm flex items-center space-x-1 cursor-pointer">
-            <span>Деталі</span>
-            <i class="fa-solid fa-arrow-right text-[9px]"></i>
-        </button>
-    </div>
-</div>
-
-<!-- CSS стилі для циклічної анімації тексту -->
-<style>
-    .ticker-wrapper {
-        position: relative;
-        height: 20px;
-    }
-    .ticker-item {
-        position: absolute;
-        width: 100%;
-        opacity: 0;
-        transform: translateY(6px);
-        animation: fadeTicker 9s infinite;
-    }
-    .ticker-item:nth-child(1) { animation-delay: 0s; }
-    .ticker-item:nth-child(2) { animation-delay: 3s; }
-    .ticker-item:nth-child(3) { animation-delay: 6s; }
-
-    @keyframes fadeTicker {
-        0% { opacity: 0; transform: translateY(6px); }
-        8% { opacity: 1; transform: translateY(0); }
-        33% { opacity: 1; transform: translateY(0); }
-        41% { opacity: 0; transform: translateY(-6px); }
-        100% { opacity: 0; transform: translateY(-6px); }
-    }
-</style>
+                        <!-- Нижній рядок: Статус і кнопка -->
+                        <div class="pt-2 border-t border-slate-100 flex items-center justify-between">
+                            <span class="text-[10px] text-slate-500 font-medium">Статус: <strong class="text-emerald-600">Активно</strong></span>
+                            <a id="regionDetailsLink" href="city.html?region=rivne&name=%D0%A0%D1%96%D0%B2%D0%BD%D0%B5%D0%BD%D1%81%D1%8C%D0%BA%D0%B0%20%D0%BE%D0%B1%D0%BB%D0%B0%D1%81%D1%82%D1%8C&city=%D0%A0%D1%96%D0%B2%D0%BD%D0%B5" class="bg-blue-600 hover:bg-blue-700 text-white text-[11px] px-3 py-1 rounded-md font-semibold transition-all shadow-sm flex items-center space-x-1 no-underline">
+                                <span>Деталі</span>
+                                <i class="fa-solid fa-arrow-right text-[9px]"></i>
+                            </a>
+                        </div>
+                    </div>
                   </div>
               </div>
 
@@ -901,7 +899,7 @@
                   localData = JSON.parse(localStorage.getItem('neoservice_ukraine_custom_v5') || '{}');
               } catch(e) {}
 
-              const collectionsToBackup = ['city_portals', 'collage_banners', 'requests', 'auto_listings', 'sport_news', 'shop_listings', 'spiritual_words'];
+              const collectionsToBackup = ['city_portals', 'collage_banners', 'requests', 'auto_listings', 'sport_news', 'shop_listings', 'spiritual_words', 'real_estate_listings', 'real_estate_sidebar_banner'];
               let firestoreData = {};
 
               for (let colName of collectionsToBackup) {
@@ -919,7 +917,7 @@
               const fullBackupPackage = {
                   app: "Neoservice.ks.ua",
                   exportDate: new Date().toISOString(),
-                  version: "5.2",
+                  version: "5.3",
                   localStorage: localData,
                   firestore: firestoreData
               };
@@ -1081,6 +1079,8 @@
             `;
             ordersTableBody.appendChild(row);
           });
+        }, (err) => {
+          console.warn("Помилка завантаження замовлень:", err.message);
         });
       }
 
@@ -1140,7 +1140,7 @@
             const data = docSnap.data();
             const docId = docSnap.id;
             const isActive = count === 0 ? 'active' : '';
-            const fitMode = data.fitMode || 'contain'; // за замовчуванням вміщуємо повністю
+            const fitMode = data.fitMode || 'contain';
 
             // Слайд на головній
             const slideElement = document.createElement('div');
@@ -1174,13 +1174,15 @@
 
             count++;
           });
+        }, (err) => {
+          console.warn("Помилка завантаження колажу банерів:", err.message);
         });
       }
 
       listenToBanners();
     </script>
 
-    <!-- СКРИПТ АВТОПЕРЕКЛЮЧЕННЯ, МОДАЛЬНОГО ВІКНА ТА ІНТЕРАКТИВНОЇ КАРТИ УКРАЇНИ -->
+    <!-- СКРИПТ АВТОПЕРЕКЛЮЧЕННЯ, МОДАЛЬНОГО ВІКНА, PWA ТА ІНТЕРАКТИВНОЇ КАРТИ УКРАЇНИ -->
     <script>
       let currentSlideIdx = 0;
 
@@ -1214,6 +1216,17 @@
         document.getElementById('adminCollageModal').style.display = 'none';
       }
 
+      // Безпечна реєстрація Service Worker з примусовим оновленням
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('./sw.js')
+            .then((reg) => {
+              reg.update();
+            })
+            .catch(() => {});
+        });
+      }
+
       document.addEventListener('DOMContentLoaded', () => {
           const regionGroups = document.querySelectorAll('.region-group');
           const tooltip = document.getElementById('map-tooltip');
@@ -1223,9 +1236,11 @@
           const panelTitle = document.getElementById('panel-title');
           const panelCity = document.getElementById('panel-city');
           const selectedBadge = document.getElementById('selected-badge');
+          const regionDetailsLink = document.getElementById('regionDetailsLink');
 
           regionGroups.forEach(group => {
               group.addEventListener('mouseenter', (e) => {
+                  const regionCode = group.getAttribute('data-code');
                   const regionName = group.getAttribute('data-name');
                   const cityName = group.getAttribute('data-city');
 
@@ -1236,6 +1251,10 @@
                   panelTitle.textContent = regionName;
                   panelCity.textContent = `Обласний центр: м. ${cityName}`;
                   selectedBadge.innerHTML = `📍 <b>${cityName}</b> (${regionName})`;
+
+                  if (regionDetailsLink) {
+                      regionDetailsLink.href = `city.html?region=${regionCode}&name=${encodeURIComponent(regionName)}&city=${encodeURIComponent(cityName)}`;
+                  }
               });
 
               group.addEventListener('mousemove', (e) => {

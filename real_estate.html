@@ -496,49 +496,72 @@
         <div id="galleryThumbs" class="flex gap-2 mt-4 overflow-x-auto max-w-[90vw] p-1"></div>
     </div>
 
-    <!-- МОДАЛЬНЕ ВІКНО НАЛАШТУВАННЯ БАНЕРА (ДЛЯ АДМІНА) -->
+    <!-- МОДАЛЬНЕ ВІКНО НАЛАШТУВАННЯ ТА КЕРУВАННЯ СЛАЙДЕРОМ БАНЕРІВ (ДЛЯ АДМІНА) -->
     <div id="adminBannerModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/75 backdrop-blur-sm">
-        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full overflow-hidden text-xs">
-            <div class="bg-slate-900 text-white p-4 flex justify-between items-center">
+        <div class="bg-white rounded-xl shadow-2xl max-w-lg w-full overflow-hidden text-xs max-h-[90vh] flex flex-col">
+            <div class="bg-slate-900 text-white p-4 flex justify-between items-center flex-shrink-0">
                 <h3 class="font-extrabold text-sm flex items-center gap-2">
-                    <i class="fa-solid fa-sliders text-amber-400"></i> Редагування банера нерухомості
+                    <i class="fa-solid fa-sliders text-amber-400"></i> Керування слайдером банерів
                 </h3>
                 <button onClick="closeBannerModal()" class="text-slate-400 hover:text-white font-bold text-base">&times;</button>
             </div>
             
-            <form id="bannerConfigForm" class="p-5 space-y-3">
+            <div class="p-5 space-y-4 overflow-y-auto">
+                <!-- СПИСОК ІСНУЮЧИХ СЛАЙДІВ ДЛЯ ШВИДКОГО ВИБОРУ АБО ВИДАЛЕННЯ -->
                 <div>
-                    <label class="block font-bold text-gray-700 mb-1">Заголовок банера *</label>
-                    <input type="text" id="cfgBannerTitle" required class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-600">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-bold text-gray-800 uppercase text-[11px]">Активні слайди (<span id="adminSlidesCount">0</span>):</span>
+                        <button type="button" onClick="prepareNewSlide()" class="px-2.5 py-1 bg-green-600 hover:bg-green-700 text-white font-bold rounded text-[11px]">
+                            <i class="fa-solid fa-plus"></i> Новий слайд
+                        </button>
+                    </div>
+                    <div id="adminBannerList" class="space-y-2 max-h-40 overflow-y-auto border border-gray-200 rounded p-2 bg-gray-50">
+                        <!-- Сюди рендеряться картки активних банерів -->
+                    </div>
                 </div>
 
-                <div>
-                    <label class="block font-bold text-gray-700 mb-1">Підзаголовок / Опис</label>
-                    <input type="text" id="cfgBannerSubtitle" class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-600">
-                </div>
+                <!-- ФОРМА РЕДАГУВАННЯ / ДОДАВАННЯ -->
+                <form id="bannerConfigForm" class="space-y-3 border-t pt-3">
+                    <input type="hidden" id="cfgBannerId" value="">
+                    
+                    <div class="font-bold text-blue-700 text-xs" id="bannerFormModeLabel">
+                        <i class="fa-solid fa-pen-to-square"></i> Редагування обраного слайда
+                    </div>
 
-                <div>
-                    <label class="block font-bold text-gray-700 mb-1">URL зображення (Unsplash або фонове) *</label>
-                    <input type="url" id="cfgBannerImg" required class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-600">
-                </div>
+                    <div>
+                        <label class="block font-bold text-gray-700 mb-1">Заголовок банера *</label>
+                        <input type="text" id="cfgBannerTitle" required class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-600">
+                    </div>
 
-                <div>
-                    <label class="block font-bold text-gray-700 mb-1">URL посилання при кліку *</label>
-                    <input type="url" id="cfgBannerLink" required class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-600">
-                </div>
+                    <div>
+                        <label class="block font-bold text-gray-700 mb-1">Підзаголовок / Опис</label>
+                        <input type="text" id="cfgBannerSubtitle" class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-600">
+                    </div>
 
-                <div>
-                    <label class="block font-bold text-gray-700 mb-1">Текст на кнопці</label>
-                    <input type="text" id="cfgBannerBtnText" placeholder="Дізнатися більше" class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-600">
-                </div>
+                    <div>
+                        <label class="block font-bold text-gray-700 mb-1">URL зображення *</label>
+                        <input type="url" id="cfgBannerImg" required class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-600">
+                    </div>
 
-                <div class="pt-3 flex justify-end gap-2 border-t">
-                    <button type="button" onClick="closeBannerModal()" class="px-4 py-2 bg-gray-200 text-gray-700 font-bold rounded">Скасувати</button>
-                    <button type="submit" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded shadow">
-                        <i class="fa-solid fa-floppy-disk mr-1"></i> Зберегти банер
-                    </button>
-                </div>
-            </form>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <div>
+                            <label class="block font-bold text-gray-700 mb-1">URL посилання *</label>
+                            <input type="url" id="cfgBannerLink" required class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-600">
+                        </div>
+                        <div>
+                            <label class="block font-bold text-gray-700 mb-1">Текст кнопки</label>
+                            <input type="text" id="cfgBannerBtnText" placeholder="Дізнатися більше" class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-600">
+                        </div>
+                    </div>
+
+                    <div class="pt-3 flex justify-end gap-2 border-t">
+                        <button type="button" onClick="closeBannerModal()" class="px-4 py-2 bg-gray-200 text-gray-700 font-bold rounded">Закрити</button>
+                        <button type="submit" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded shadow">
+                            <i class="fa-solid fa-floppy-disk mr-1"></i> Зберегти зміни
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -704,9 +727,16 @@
                 }];
             }
 
-            currentSidebarBannerIndex = 0;
+            if (currentSidebarBannerIndex >= sidebarBannersList.length) {
+                currentSidebarBannerIndex = 0;
+            }
             renderCurrentSidebarSlide();
             startSidebarAutoSlide();
+            
+            // Якщо модальне вікно адміна відкрите — оновлюємо список у реальному часі
+            if (!document.getElementById('adminBannerModal').classList.contains('hidden')) {
+                renderAdminBannerList();
+            }
         });
 
         // ВІДОБРАЖЕННЯ ПОТОЧНОГО СЛАЙДА
@@ -768,14 +798,91 @@
             startSidebarAutoSlide();
         };
 
-        // ВІДКРИТТЯ МОДАЛЬНОГО ВІКНА ДЛЯ ДОДАВАННЯ / РЕДАГУВАННЯ БАНЕРА (ДЛЯ АДМІНА)
+        // РЕНДЕР СПИСКУ СЛАЙДІВ У МОДАЛЬНОМУ ВІКНІ АДМІНА
+        function renderAdminBannerList() {
+            const listContainer = document.getElementById('adminBannerList');
+            const countEl = document.getElementById('adminSlidesCount');
+            if (!listContainer || !countEl) return;
+
+            const realBanners = sidebarBannersList.filter(b => b.id);
+            countEl.textContent = realBanners.length;
+            listContainer.innerHTML = '';
+
+            if (realBanners.length === 0) {
+                listContainer.innerHTML = '<p class="text-gray-400 text-center py-2">У базі ще немає збережених слайдів.</p>';
+                return;
+            }
+
+            realBanners.forEach((banner, idx) => {
+                const itemEl = document.createElement('div');
+                itemEl.className = "flex items-center justify-between bg-white p-2 rounded border border-gray-200 gap-2";
+                itemEl.innerHTML = `
+                    <div class="flex items-center gap-2 overflow-hidden cursor-pointer flex-grow" onclick="selectBannerToEdit('${banner.id}')">
+                        <img src="${banner.imgUrl}" class="w-10 h-8 object-cover rounded flex-shrink-0 bg-gray-100">
+                        <div class="truncate">
+                            <div class="font-bold text-gray-800 truncate">${idx + 1}. ${banner.title || 'Без назви'}</div>
+                            <div class="text-[10px] text-gray-500 truncate">${banner.subtitle || ''}</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-1 flex-shrink-0">
+                        <button type="button" onclick="selectBannerToEdit('${banner.id}')" title="Редагувати" class="px-2 py-1 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded font-bold">
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+                        <button type="button" onclick="deleteSidebarBanner('${banner.id}')" title="Видалити" class="px-2 py-1 bg-red-100 hover:bg-red-200 text-red-700 rounded font-bold">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                listContainer.appendChild(itemEl);
+            });
+        }
+
+        // ВИБІР КОНКРЕТНОГО СЛАЙДА ДЛЯ РЕДАГУВАННЯ
+        window.selectBannerToEdit = function(bannerId) {
+            const banner = sidebarBannersList.find(b => b.id === bannerId);
+            if (!banner) return;
+
+            document.getElementById('cfgBannerId').value = banner.id;
+            document.getElementById('cfgBannerTitle').value = banner.title || '';
+            document.getElementById('cfgBannerSubtitle').value = banner.subtitle || '';
+            document.getElementById('cfgBannerImg').value = banner.imgUrl || '';
+            document.getElementById('cfgBannerLink').value = banner.linkUrl || '';
+            document.getElementById('cfgBannerBtnText').value = banner.btnText || 'Дізнатися більше';
+            document.getElementById('bannerFormModeLabel').innerHTML = `<i class="fa-solid fa-pen-to-square"></i> Редагування: ${banner.title}`;
+        };
+
+        // ПІДГОТОВКА ФОРМИ ДЛЯ СТВОРЕННЯ НОВОГО СЛАЙДА
+        window.prepareNewSlide = function() {
+            document.getElementById('cfgBannerId').value = '';
+            document.getElementById('bannerConfigForm').reset();
+            document.getElementById('cfgBannerBtnText').value = 'Дізнатися більше';
+            document.getElementById('bannerFormModeLabel').innerHTML = `<i class="fa-solid fa-plus-circle text-green-600"></i> Додавання нового слайда`;
+        };
+
+        // ВИДАЛЕННЯ БАНЕРА З БАЗИ
+        window.deleteSidebarBanner = async function(bannerId) {
+            if (!currentUser || currentUser.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) return;
+            if (!confirm("Видалити цей банер зі слайдера?")) return;
+
+            try {
+                await deleteDoc(doc(db, "real_estate_sidebar_banner", bannerId));
+                if (document.getElementById('cfgBannerId').value === bannerId) {
+                    prepareNewSlide();
+                }
+            } catch (err) {
+                alert("Помилка видалення: " + err.message);
+            }
+        };
+
+        // ВІДКРИТТЯ МОДАЛЬНОГО ВІКНА
         window.openBannerModal = function() {
-            const currentData = sidebarBannersList[currentSidebarBannerIndex] || {};
-            document.getElementById('cfgBannerTitle').value = currentData.title || '';
-            document.getElementById('cfgBannerSubtitle').value = currentData.subtitle || '';
-            document.getElementById('cfgBannerImg').value = currentData.imgUrl || '';
-            document.getElementById('cfgBannerLink').value = currentData.linkUrl || '';
-            document.getElementById('cfgBannerBtnText').value = currentData.btnText || 'Дізнатися більше';
+            renderAdminBannerList();
+            const currentData = sidebarBannersList[currentSidebarBannerIndex];
+            if (currentData && currentData.id) {
+                selectBannerToEdit(currentData.id);
+            } else {
+                prepareNewSlide();
+            }
 
             document.getElementById('adminBannerModal').classList.remove('hidden');
             document.getElementById('adminBannerModal').classList.add('flex');
@@ -786,11 +893,12 @@
             document.getElementById('adminBannerModal').classList.add('hidden');
         };
 
-        // ЗБЕРЕЖЕННЯ БАНЕРА У FIREBASE
+        // ЗБЕРЕЖЕННЯ (ОНОВЛЕННЯ ІСНУЮЧОГО АБО ДОДАВАННЯ НОВОГО)
         document.getElementById('bannerConfigForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             if (!currentUser || currentUser.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) return;
 
+            const editId = document.getElementById('cfgBannerId').value.trim();
             const payload = {
                 title: document.getElementById('cfgBannerTitle').value,
                 subtitle: document.getElementById('cfgBannerSubtitle').value,
@@ -801,10 +909,14 @@
             };
 
             try {
-                // Додаємо новий слайд у колекцію
-                await addDoc(collection(db, "real_estate_sidebar_banner"), payload);
-                closeBannerModal();
-                alert("Новий банер успішно додано до слайдера!");
+                if (editId) {
+                    await updateDoc(doc(db, "real_estate_sidebar_banner", editId), payload);
+                    alert("Банер оновлено!");
+                } else {
+                    await addDoc(collection(db, "real_estate_sidebar_banner"), payload);
+                    prepareNewSlide();
+                    alert("Новий банер додано!");
+                }
             } catch (err) {
                 alert("Помилка збереження: " + err.message);
             }

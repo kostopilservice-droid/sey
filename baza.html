@@ -34,6 +34,13 @@
   <style>
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    
+    .article-formatted-text p { margin-bottom: 0.5rem; }
+    .article-formatted-text b, .article-formatted-text strong { font-weight: 700; }
+    .article-formatted-text i, .article-formatted-text em { font-style: italic; }
+    .article-formatted-text u { text-decoration: underline; }
+    .article-formatted-text ul { list-style-type: disc; padding-left: 1.25rem; margin-bottom: 0.5rem; }
+    .article-formatted-text ol { list-style-type: decimal; padding-left: 1.25rem; margin-bottom: 0.5rem; }
   </style>
 </head>
 <body class="bg-slate-100 text-slate-800 font-sans antialiased min-h-screen flex flex-col justify-between">
@@ -134,51 +141,54 @@
       </a>
     </div>
 
-    <!-- КАТЕГОРІЇ (14 ФІЛЬТРІВ) -->
-    <div class="flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar">
-      <button onclick="filterCategory('all', this)" class="cat-btn px-4 py-2 bg-blue-600 text-white text-xs font-bold rounded-xl shadow-sm whitespace-nowrap transition-colors">
+    <!-- КАТЕГОРІЇ (14 ФІЛЬТРІВ У БАГАТОРАДЯДНОМУ БЛОЦІ) -->
+    <div class="flex flex-wrap items-center gap-2 pb-2">
+      <button onclick="filterCategory('all', this)" class="cat-btn px-3.5 py-1.5 bg-blue-600 text-white text-xs font-bold rounded-xl shadow-sm transition-colors">
         🔥 Всі
       </button>
-      <button onclick="filterCategory('auto', this)" class="cat-btn px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl whitespace-nowrap transition-colors">
+      <button onclick="filterCategory('auto', this)" class="cat-btn px-3.5 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl transition-colors">
         🚗 Автодіагностика & ECU
       </button>
-      <button onclick="filterCategory('computers', this)" class="cat-btn px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl whitespace-nowrap transition-colors">
+      <button onclick="filterCategory('computers', this)" class="cat-btn px-3.5 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl transition-colors">
         💻 Комп'ютери
       </button>
-      <button onclick="filterCategory('printers', this)" class="cat-btn px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl whitespace-nowrap transition-colors">
+      <button onclick="filterCategory('printers', this)" class="cat-btn px-3.5 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl transition-colors">
         🖨️ Оргтехніка
       </button>
-      <button onclick="filterCategory('engineering', this)" class="cat-btn px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl whitespace-nowrap transition-colors">
+      <button onclick="filterCategory('engineering', this)" class="cat-btn px-3.5 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl transition-colors">
         ⚙️ Інженерія & Схеми
       </button>
-      <button onclick="filterCategory('radio', this)" class="cat-btn px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl whitespace-nowrap transition-colors">
+      <button onclick="filterCategory('radio', this)" class="cat-btn px-3.5 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl transition-colors">
         📻 Радіозв'язок
       </button>
-      <button onclick="filterCategory('ev_battery', this)" class="cat-btn px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl whitespace-nowrap transition-colors">
+      <button onclick="filterCategory('ev_battery', this)" class="cat-btn px-3.5 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl transition-colors">
         🔋 Електротранспорт & АКБ
       </button>
-      <button onclick="filterCategory('law', this)" class="cat-btn px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl whitespace-nowrap transition-colors">
+      <button onclick="filterCategory('law', this)" class="cat-btn px-3.5 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl transition-colors">
         ⚖️ Законодавство & Юриспруденція
       </button>
-      <button onclick="filterCategory('paperwork', this)" class="cat-btn px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl whitespace-nowrap transition-colors">
+      <button onclick="filterCategory('paperwork', this)" class="cat-btn px-3.5 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl transition-colors">
         📑 Діловодство & Документи
       </button>
-      <button onclick="filterCategory('local_biz', this)" class="cat-btn px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl whitespace-nowrap transition-colors">
+      <button onclick="filterCategory('local_biz', this)" class="cat-btn px-3.5 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl transition-colors">
         🏪 Місцевий бізнес & Послуги
       </button>
-      <button onclick="filterCategory('construction', this)" class="cat-btn px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl whitespace-nowrap transition-colors">
+      <button onclick="filterCategory('construction', this)" class="cat-btn px-3.5 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl transition-colors">
         🏗️ Будівництво & Ремонт
       </button>
-      <button onclick="filterCategory('cybersecurity', this)" class="cat-btn px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl whitespace-nowrap transition-colors">
+      <button onclick="filterCategory('cybersecurity', this)" class="cat-btn px-3.5 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl transition-colors">
         🛡️ Цифрова безпека & IT
       </button>
-      <button onclick="filterCategory('education', this)" class="cat-btn px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl whitespace-nowrap transition-colors">
+      <button onclick="filterCategory('education', this)" class="cat-btn px-3.5 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl transition-colors">
         🎓 Навчання & Освіта
       </button>
-      <button onclick="filterCategory('energy', this)" class="cat-btn px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl whitespace-nowrap transition-colors">
+      <button onclick="filterCategory('energy', this)" class="cat-btn px-3.5 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl transition-colors">
         💡 Енергонезалежність & ДБЖ
       </button>
-      <button onclick="filterCategory('sponsored', this)" class="cat-btn px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl whitespace-nowrap transition-colors">
+      <button onclick="filterCategory('youtube', this)" class="cat-btn px-3.5 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl transition-colors">
+        ▶️ YouTube Відео
+      </button>
+      <button onclick="filterCategory('sponsored', this)" class="cat-btn px-3.5 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl transition-colors">
         📢 Спонсоровано
       </button>
     </div>
@@ -191,7 +201,7 @@
   </main>
 
   <!-- ========================================== -->
-  <!-- МОДАЛЬНЕ ВІКНО ПЕРЕГЛЯДУ СТАТТІ            -->
+  <!-- МОДАЛЬНЕ ВІКНО ПЕРЕГЛЯДУ СТАТТІ / YOUTUBE  -->
   <!-- ========================================== -->
   <div id="articleModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
     <div class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm" onclick="closeModal()"></div>
@@ -208,10 +218,19 @@
           <span><i class="fa-regular fa-clock mr-1"></i> <span id="modalDate">Дата</span></span>
           <span><i class="fa-regular fa-user mr-1"></i> <span id="modalAuthor">Автор</span></span>
         </div>
+        
+        <!-- YOUTUBE PLAYER CONTAINER -->
+        <div id="modalYouTubeContainer" class="w-full aspect-video rounded-xl overflow-hidden bg-black hidden">
+          <iframe id="modalYouTubeIframe" class="w-full h-full" src="" frameborder="0" allowfullscreen></iframe>
+        </div>
+
+        <!-- IMAGE CONTAINER -->
         <div id="modalImageContainer" class="w-full h-52 rounded-xl overflow-hidden bg-slate-900 hidden">
           <img id="modalImage" src="" alt="" class="w-full h-full object-cover">
         </div>
-        <div id="modalText" class="text-xs text-slate-700 leading-relaxed space-y-2">
+
+        <!-- FORMATTED TEXT -->
+        <div id="modalText" class="text-xs text-slate-700 leading-relaxed space-y-2 article-formatted-text">
           Текст статті...
         </div>
       </div>
@@ -244,7 +263,6 @@
     }
     const db = firebase.firestore();
 
-    // Базові (статичні) статті вашого шаблону
     const staticArticles = [
       {
         id: 'static-1',
@@ -301,7 +319,6 @@
     let allArticles = [...staticArticles];
     let activeCategory = 'all';
 
-    // Завантаження статей із Firebase та об'єднання зі статичними
     async function fetchArticles() {
       try {
         const snapshot = await db.collection('articles').orderBy('createdAt', 'desc').get();
@@ -318,7 +335,6 @@
       }
     }
 
-    // Відображення карток у сітці
     function renderGrid(data) {
       const grid = document.getElementById('articlesGrid');
       grid.innerHTML = '';
@@ -345,16 +361,18 @@
         else if (art.category === 'cybersecurity') { catName = 'Цифрова безпека'; badgeColor = "bg-rose-700 text-white"; }
         else if (art.category === 'education') { catName = 'Освіта & Курси'; badgeColor = "bg-violet-600 text-white"; }
         else if (art.category === 'energy') { catName = 'Енергонезалежність'; badgeColor = "bg-green-600 text-white"; }
+        else if (art.category === 'youtube') { catName = 'YouTube'; badgeColor = "bg-red-600 text-white"; }
         else if (art.category === 'sponsored') { catName = 'Спонсоровано'; badgeColor = "bg-amber-500 text-slate-950"; }
 
         const card = `
           <article class="bg-white rounded-2xl border border-slate-200 overflow-hidden flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow">
             <div>
               <div class="h-40 w-full overflow-hidden relative bg-slate-900 cursor-pointer" onclick="openModal('${art.id}')">
-                <img src="${art.imageUrl || 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80'}" alt="" class="w-full h-full object-cover">
+                <img src="${art.imageUrl || (art.youtubeId ? `https://img.youtube.com/vi/${art.youtubeId}/hqdefault.jpg` : 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80')}" alt="" class="w-full h-full object-cover">
                 <span class="absolute top-3 left-3 ${badgeColor} text-[10px] font-bold px-2.5 py-0.5 rounded-full shadow">
                   ${catName}
                 </span>
+                ${art.youtubeId ? `<div class="absolute inset-0 flex items-center justify-center bg-black/30"><i class="fa-brands fa-youtube text-red-600 text-4xl shadow-lg"></i></div>` : ''}
               </div>
               <div class="p-4">
                 <span class="text-[10px] text-slate-400 block mb-1"><i class="fa-regular fa-clock mr-1"></i> ${art.date || 'Нещодавно'}</span>
@@ -379,17 +397,15 @@
       });
     }
 
-    // Фільтрація за категоріями
     function filterCategory(cat, btn) {
       activeCategory = cat;
       document.querySelectorAll('.cat-btn').forEach(b => {
-        b.className = "cat-btn px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl whitespace-nowrap transition-colors";
+        b.className = "cat-btn px-3.5 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl transition-colors";
       });
-      btn.className = "cat-btn px-4 py-2 bg-blue-600 text-white text-xs font-bold rounded-xl shadow-sm whitespace-nowrap transition-colors";
+      btn.className = "cat-btn px-3.5 py-1.5 bg-blue-600 text-white text-xs font-bold rounded-xl shadow-sm transition-colors";
       filterArticles();
     }
 
-    // Пошук і фільтрація
     function filterArticles() {
       const query = document.getElementById('searchInput').value.toLowerCase();
       const filtered = allArticles.filter(art => {
@@ -400,7 +416,6 @@
       renderGrid(filtered);
     }
 
-    // Модальне вікно для головного банера
     function openHeroModal() {
       document.getElementById('modalTitle').textContent = "Пошук витоку струму акумулятора: Повний посібник для автовласників (Hantek)";
       document.getElementById('modalDate').textContent = "20 жовтня, 2026 р.";
@@ -408,6 +423,9 @@
       document.getElementById('modalCategory').textContent = "АВТОДІАГНОСТИКА";
       document.getElementById('modalText').innerHTML = "Детальний посібник з використання осцилографа Hantek та мультиметра для виявлення прихованих витоків струму в автомобільній проводці. Покрокова інструкція діагностики запобіжників та блоків управління.";
       
+      document.getElementById('modalYouTubeContainer').classList.add('hidden');
+      document.getElementById('modalYouTubeIframe').src = "";
+
       const imgContainer = document.getElementById('modalImageContainer');
       const modalImg = document.getElementById('modalImage');
       modalImg.src = "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1400&q=80";
@@ -418,7 +436,6 @@
       modal.classList.add('flex');
     }
 
-    // Модальне вікно для карток
     function openModal(id) {
       const art = allArticles.find(a => a.id === id);
       if (!art) return;
@@ -427,15 +444,27 @@
       document.getElementById('modalDate').textContent = art.date || 'Нещодавно';
       document.getElementById('modalAuthor').textContent = art.author || 'Admin';
       document.getElementById('modalCategory').textContent = (art.category || '').toUpperCase();
-      document.getElementById('modalText').innerHTML = art.text ? art.text.replace(/\n/g, '<br>') : art.summary;
+      
+      document.getElementById('modalText').innerHTML = art.text ? art.text : art.summary;
 
+      const ytContainer = document.getElementById('modalYouTubeContainer');
+      const ytIframe = document.getElementById('modalYouTubeIframe');
       const imgContainer = document.getElementById('modalImageContainer');
       const modalImg = document.getElementById('modalImage');
-      if (art.imageUrl) {
-        modalImg.src = art.imageUrl;
-        imgContainer.classList.remove('hidden');
-      } else {
+
+      if (art.youtubeId) {
+        ytIframe.src = `https://www.youtube.com/embed/${art.youtubeId}?autoplay=1`;
+        ytContainer.classList.remove('hidden');
         imgContainer.classList.add('hidden');
+      } else {
+        ytIframe.src = "";
+        ytContainer.classList.add('hidden');
+        if (art.imageUrl) {
+          modalImg.src = art.imageUrl;
+          imgContainer.classList.remove('hidden');
+        } else {
+          imgContainer.classList.add('hidden');
+        }
       }
 
       const modal = document.getElementById('articleModal');
@@ -447,6 +476,7 @@
       const modal = document.getElementById('articleModal');
       modal.classList.remove('flex');
       modal.classList.add('hidden');
+      document.getElementById('modalYouTubeIframe').src = "";
     }
 
     window.addEventListener('DOMContentLoaded', fetchArticles);

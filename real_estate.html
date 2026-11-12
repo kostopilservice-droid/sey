@@ -408,7 +408,7 @@
                 </div>
             </div>
 
-            <!-- САЙДБАР (БЛОК КАТЕГОРІЙ + БАНЕР З НАЛАШТУВАННЯМИ АНАЛОГ AUTO.HTML) -->
+            <!-- САЙДБАР (БЛОК КАТЕГОРІЙ + БАНЕР З АВТОСЛАЙДЕРОМ ТА НАЛАШТУВАННЯМИ) -->
             <div class="space-y-5 text-xs">
                 
                 <!-- БЛОК КАТЕГОРІЙ -->
@@ -422,12 +422,12 @@
                     </ul>
                 </div>
 
-                <!-- БАНЕР САЙДБАРА З ДИНАМІЧНИМИ НАЛАШТУВАННЯМИ -->
+                <!-- БАНЕР САЙДБАРА З АВТОСЛАЙДЕРОМ ТА НАЛАШТУВАННЯМИ -->
                 <div id="sidebarBannerContainer" class="bg-white rounded border border-gray-200 overflow-hidden shadow-sm relative group">
                     <a id="sidebarBannerLink" href="commercial.html" target="_blank" class="block">
-                        <div class="relative h-44 bg-slate-900">
-                            <img id="sidebarBannerImg" src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600" alt="Рекламний банер" class="w-full h-full object-cover opacity-90 group-hover:scale-105 transition-transform duration-300">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                        <div class="relative h-48 bg-slate-900 overflow-hidden">
+                            <img id="sidebarBannerImg" src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600" alt="Рекламний банер" class="w-full h-full object-cover opacity-90 group-hover:scale-105 transition-transform duration-500">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent"></div>
                             
                             <div class="absolute bottom-3 left-3 right-3 text-white">
                                 <span class="bg-red-600 text-[9px] font-black px-2 py-0.5 rounded uppercase tracking-wider mb-1 inline-block">Партнер</span>
@@ -441,6 +441,17 @@
                             </div>
                         </div>
                     </a>
+
+                    <!-- КНОПКИ ПЕРЕМКНЕННЯ СЛАЙДІВ (З'ЯВЛЯЮТЬСЯ ПРИ НАВЕДЕННІ) -->
+                    <button onClick="prevSidebarSlide(event)" class="absolute left-1 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/80 text-white w-6 h-6 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10 font-bold">
+                        ‹
+                    </button>
+                    <button onClick="nextSidebarSlide(event)" class="absolute right-1 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/80 text-white w-6 h-6 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10 font-bold">
+                        ›
+                    </button>
+
+                    <!-- ТОЧКИ-ІНДИКАТОРИ СЛАЙДІВ -->
+                    <div id="sidebarBannerDots" class="absolute top-2 right-2 flex gap-1 z-10"></div>
 
                     <!-- КНОПКА НАЛАШТУВАННЯ БАНЕРА (ТІЛЬКИ ДЛЯ АДМІНІСТРАТОРА) -->
                     <button id="adminBannerSettingsBtn" onClick="openBannerModal()" class="hidden w-full py-1.5 bg-slate-900 hover:bg-slate-800 text-amber-400 font-bold text-[11px] items-center justify-center gap-1 border-t border-slate-700 transition-colors">
@@ -626,6 +637,11 @@
         let currentPhotoIndex = 0;
         let activeCategoryFilter = 'all';
 
+        // ГЛОБАЛЬНІ ЗМІННІ ДЛЯ СЛАЙДЕРА
+        let sidebarBannersList = [];
+        let currentSidebarBannerIndex = 0;
+        let sidebarBannerTimer = null;
+
         onAuthStateChanged(auth, (user) => {
             currentUser = user;
             const badge = document.getElementById('authStatusBadge');
@@ -668,30 +684,99 @@
             }
         });
 
-        // СИНХРОНІЗАЦІЯ БАНЕРА САЙДБАРА З FIREBASE
-        const bannerDocRef = doc(db, "real_estate_sidebar_banner", "config");
-        onSnapshot(bannerDocRef, (docSnap) => {
-            if (docSnap.exists()) {
-                const data = docSnap.data();
-                if (data.title) document.getElementById('sidebarBannerTitle').textContent = data.title;
-                if (data.subtitle) document.getElementById('sidebarBannerSubtitle').textContent = data.subtitle;
-                if (data.imgUrl) document.getElementById('sidebarBannerImg').src = data.imgUrl;
-                if (data.linkUrl) document.getElementById('sidebarBannerLink').href = data.linkUrl;
-                if (data.btnText) document.getElementById('sidebarBannerBtnText').innerHTML = `${data.btnText} <i class="fa-solid fa-arrow-right text-[9px] ml-1"></i>`;
+        // СИНХРОНІЗАЦІЯ БАНЕРІВ САЙДБАРА З FIREBASE (ЗАВАНТАЖЕННЯ ВСІЄЇ КОЛЕКЦІЇ)
+        const bannersCollectionRef = collection(db, "real_estate_sidebar_banner");
+        
+        onSnapshot(bannersCollectionRef, (snapshot) => {
+            sidebarBannersList = [];
+            snapshot.forEach((docSnap) => {
+                sidebarBannersList.push({ id: docSnap.id, ...docSnap.data() });
+            });
+
+            // Якщо у колекції ще немає документів, створюємо стандартний слайд за замовчуванням
+            if (sidebarBannersList.length === 0) {
+                sidebarBannersList = [{
+                    title: "Швидка оцінка та продаж нерухомості",
+                    subtitle: "Консультації та викуп об'єктів у Рівненській області",
+                    imgUrl: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600",
+                    linkUrl: "commercial.html",
+                    btnText: "Дізнатися більше"
+                }];
             }
+
+            currentSidebarBannerIndex = 0;
+            renderCurrentSidebarSlide();
+            startSidebarAutoSlide();
         });
 
-        window.openBannerModal = function() {
-            getDoc(bannerDocRef).then(docSnap => {
-                if (docSnap.exists()) {
-                    const data = docSnap.data();
-                    document.getElementById('cfgBannerTitle').value = data.title || '';
-                    document.getElementById('cfgBannerSubtitle').value = data.subtitle || '';
-                    document.getElementById('cfgBannerImg').value = data.imgUrl || '';
-                    document.getElementById('cfgBannerLink').value = data.linkUrl || '';
-                    document.getElementById('cfgBannerBtnText').value = data.btnText || 'Дізнатися більше';
+        // ВІДОБРАЖЕННЯ ПОТОЧНОГО СЛАЙДА
+        function renderCurrentSidebarSlide() {
+            if (sidebarBannersList.length === 0) return;
+            const data = sidebarBannersList[currentSidebarBannerIndex];
+
+            const titleEl = document.getElementById('sidebarBannerTitle');
+            const subTitleEl = document.getElementById('sidebarBannerSubtitle');
+            const imgEl = document.getElementById('sidebarBannerImg');
+            const linkEl = document.getElementById('sidebarBannerLink');
+            const btnTextEl = document.getElementById('sidebarBannerBtnText');
+            const dotsContainer = document.getElementById('sidebarBannerDots');
+
+            if (titleEl) titleEl.textContent = data.title || '';
+            if (subTitleEl) subTitleEl.textContent = data.subtitle || '';
+            if (imgEl) imgEl.src = data.imgUrl || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600';
+            if (linkEl) linkEl.href = data.linkUrl || '#';
+            if (btnTextEl) btnTextEl.innerHTML = `${data.btnText || 'Дізнатися більше'} <i class="fa-solid fa-arrow-right text-[9px] ml-1"></i>`;
+
+            // Рендер точок-індикаторів
+            if (dotsContainer) {
+                dotsContainer.innerHTML = '';
+                if (sidebarBannersList.length > 1) {
+                    sidebarBannersList.forEach((_, idx) => {
+                        const dot = document.createElement('span');
+                        dot.className = `w-2 h-2 rounded-full transition-all ${idx === currentSidebarBannerIndex ? 'bg-amber-400 w-4' : 'bg-white/60'}`;
+                        dotsContainer.appendChild(dot);
+                    });
                 }
-            });
+            }
+        }
+
+        // АВТОМАТИЧНЕ ПЕРЕМКНЕННЯ (КОЖНІ 5 СЕКУНД)
+        function startSidebarAutoSlide() {
+            if (sidebarBannerTimer) clearInterval(sidebarBannerTimer);
+            if (sidebarBannersList.length > 1) {
+                sidebarBannerTimer = setInterval(() => {
+                    currentSidebarBannerIndex = (currentSidebarBannerIndex + 1) % sidebarBannersList.length;
+                    renderCurrentSidebarSlide();
+                }, 5000);
+            }
+        }
+
+        // КНОПКИ РУЧНОГО ПЕРЕМКНЕННЯ
+        window.nextSidebarSlide = function(e) {
+            if (e) e.preventDefault();
+            if (sidebarBannersList.length <= 1) return;
+            currentSidebarBannerIndex = (currentSidebarBannerIndex + 1) % sidebarBannersList.length;
+            renderCurrentSidebarSlide();
+            startSidebarAutoSlide();
+        };
+
+        window.prevSidebarSlide = function(e) {
+            if (e) e.preventDefault();
+            if (sidebarBannersList.length <= 1) return;
+            currentSidebarBannerIndex = (currentSidebarBannerIndex - 1 + sidebarBannersList.length) % sidebarBannersList.length;
+            renderCurrentSidebarSlide();
+            startSidebarAutoSlide();
+        };
+
+        // ВІДКРИТТЯ МОДАЛЬНОГО ВІКНА ДЛЯ ДОДАВАННЯ / РЕДАГУВАННЯ БАНЕРА (ДЛЯ АДМІНА)
+        window.openBannerModal = function() {
+            const currentData = sidebarBannersList[currentSidebarBannerIndex] || {};
+            document.getElementById('cfgBannerTitle').value = currentData.title || '';
+            document.getElementById('cfgBannerSubtitle').value = currentData.subtitle || '';
+            document.getElementById('cfgBannerImg').value = currentData.imgUrl || '';
+            document.getElementById('cfgBannerLink').value = currentData.linkUrl || '';
+            document.getElementById('cfgBannerBtnText').value = currentData.btnText || 'Дізнатися більше';
+
             document.getElementById('adminBannerModal').classList.remove('hidden');
             document.getElementById('adminBannerModal').classList.add('flex');
         };
@@ -701,6 +786,7 @@
             document.getElementById('adminBannerModal').classList.add('hidden');
         };
 
+        // ЗБЕРЕЖЕННЯ БАНЕРА У FIREBASE
         document.getElementById('bannerConfigForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             if (!currentUser || currentUser.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) return;
@@ -715,9 +801,10 @@
             };
 
             try {
-                await setDoc(bannerDocRef, payload, { merge: true });
+                // Додаємо новий слайд у колекцію
+                await addDoc(collection(db, "real_estate_sidebar_banner"), payload);
                 closeBannerModal();
-                alert("Налаштування банера нерухомості успішно збережено!");
+                alert("Новий банер успішно додано до слайдера!");
             } catch (err) {
                 alert("Помилка збереження: " + err.message);
             }

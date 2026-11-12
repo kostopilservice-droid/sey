@@ -86,22 +86,23 @@
   <!-- ========================================== -->
   <main class="max-w-5xl mx-auto px-4 py-8 flex-grow w-full space-y-8">
     
-    <!-- БЛОК АВТОРИЗАЦІЇ (якщо не увійшли) -->
+    <!-- БЛОК АВТОРИЗАЦІЇ (якщо не увійшли або вхід заборонено) -->
     <div id="loginCard" class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hidden">
       <h2 class="text-sm font-black text-slate-900 mb-3 flex items-center gap-2">
-        <i class="fa-solid fa-lock text-blue-600"></i> Авторизація адміністратора
+        <i class="fa-solid fa-lock text-blue-600"></i> Авторизація головного адміністратора
       </h2>
       <div class="flex flex-col sm:flex-row gap-3">
-        <input type="email" id="loginEmail" placeholder="Email адміністратора" class="px-3 py-2 text-xs border border-slate-300 rounded-xl flex-1 focus:outline-none focus:ring-2 focus:ring-blue-600">
+        <input type="email" id="loginEmail" placeholder="kostopilservice@gmail.com" class="px-3 py-2 text-xs border border-slate-300 rounded-xl flex-1 focus:outline-none focus:ring-2 focus:ring-blue-600">
         <input type="password" id="loginPassword" placeholder="Пароль" class="px-3 py-2 text-xs border border-slate-300 rounded-xl flex-1 focus:outline-none focus:ring-2 focus:ring-blue-600">
         <button onclick="loginWithEmail()" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow transition-colors">
           Увійти
         </button>
       </div>
+      <p id="loginErrorMsg" class="text-[11px] text-rose-600 font-bold mt-2 hidden"></p>
     </div>
 
     <!-- ТАБИ ПЕРЕМИКАННЯ РОЗДІЛІВ -->
-    <div class="flex border-b border-slate-200 gap-2 overflow-x-auto">
+    <div id="adminTabs" class="flex border-b border-slate-200 gap-2 overflow-x-auto">
       <button id="tabRequestsBtn" onclick="switchTab('requests')" class="px-4 py-2 text-xs font-bold rounded-t-xl bg-white border-t border-l border-r border-slate-200 text-blue-600 flex items-center gap-2 whitespace-nowrap">
         <i class="fa-solid fa-clipboard-list"></i> Заявки з сервісу (<span id="requestsCount">0</span>)
       </button>
@@ -220,6 +221,13 @@
               <option value="engineering">⚙️ Інженерія & Схеми</option>
               <option value="radio">📻 Радіозв'язок</option>
               <option value="ev_battery">🔋 Електротранспорт & АКБ</option>
+              <option value="law">⚖️ Законодавство & Юриспруденція</option>
+              <option value="paperwork">📑 Діловодство & Документи</option>
+              <option value="local_biz">🏪 Місцевий бізнес & Послуги</option>
+              <option value="construction">🏗️ Будівництво & Ремонт</option>
+              <option value="cybersecurity">🛡️ Цифрова безпека & IT</option>
+              <option value="education">🎓 Навчання & Освіта</option>
+              <option value="energy">💡 Енергонезалежність & ДБЖ</option>
               <option value="youtube">▶️ YouTube Відео</option>
               <option value="sponsored">📢 Спонсоровано</option>
             </select>
@@ -311,7 +319,7 @@
     </section>
 
     <!-- ЕКСПОРТ ДАНИХ -->
-    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+    <div id="backupSection" class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hidden">
       <h3 class="font-bold text-slate-900 text-sm mb-1 flex items-center gap-2">
         <i class="fa-solid fa-file-export text-slate-600"></i> Експорт даних бази (Backup)
       </h3>
@@ -334,6 +342,9 @@
   <!-- SCRIPTS                                    -->
   <!-- ========================================== -->
   <script>
+    // КОНСТАНТА ЕДИНЕДОПУСТИМОГО АДМІНІСТРАТОРА
+    const ADMIN_EMAIL = "kostopilservice@gmail.com";
+
     const firebaseConfig = {
       apiKey: "AIzaSyBlKoP6-M8tdrKq88bSdnWSnak5Gpddnpk",
       authDomain: "neoservice-ks-ua.firebaseapp.com",
@@ -359,25 +370,58 @@
       document.getElementById('articleEditor').focus();
     }
 
-    // Відстеження стану авторизації
+    // Відстеження стану авторизації (З ПЕРЕВІРКОЮ EMAIL)
     auth.onAuthStateChanged(user => {
       const status = document.getElementById('authStatus');
       const logoutBtn = document.getElementById('logoutBtn');
       const loginCard = document.getElementById('loginCard');
+      const loginErrorMsg = document.getElementById('loginErrorMsg');
+
+      const reqSec = document.getElementById('requestsSection');
+      const cliSec = document.getElementById('clientsSection');
+      const artSec = document.getElementById('articlesSection');
+      const backupSec = document.getElementById('backupSection');
+      const adminTabs = document.getElementById('adminTabs');
       
-      if (user) {
-        status.textContent = '● Авторизовано (' + user.email + ')';
+      // Перевіряємо чи є користувач та чи збігається його email з ADMIN_EMAIL
+      if (user && user.email && user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+        status.textContent = '● Головний Адмін (' + user.email + ')';
         status.className = 'text-[11px] font-bold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200';
+        
         logoutBtn.classList.remove('hidden');
         loginCard.classList.add('hidden');
+        loginErrorMsg.classList.add('hidden');
+
+        reqSec.classList.remove('hidden');
+        adminTabs.classList.remove('hidden');
+        backupSec.classList.remove('hidden');
+
         listenToRequests();
         loadClients();
       } else {
+        // Якщо увійшов інший користувач — негайно виходимо з системи
+        if (user) {
+          auth.signOut();
+          loginErrorMsg.textContent = `Доступ заборонено! Обліковий запис (${user.email}) не має прав адміністратора. Дозволено лише для ${ADMIN_EMAIL}.`;
+          loginErrorMsg.classList.remove('hidden');
+        } else {
+          loginErrorMsg.classList.add('hidden');
+        }
+
         status.textContent = '● Не авторизовано';
         status.className = 'text-[11px] font-bold px-2.5 py-1 rounded-full bg-rose-50 text-rose-600 border border-rose-200';
+        
         logoutBtn.classList.add('hidden');
         loginCard.classList.remove('hidden');
-        if(unsubscribeRequests) unsubscribeRequests();
+
+        // Ховаємо робочі панелі
+        reqSec.classList.add('hidden');
+        cliSec.classList.add('hidden');
+        artSec.classList.add('hidden');
+        backupSec.classList.add('hidden');
+        adminTabs.classList.add('hidden');
+
+        if (unsubscribeRequests) unsubscribeRequests();
       }
     });
 
@@ -552,14 +596,35 @@
       }
     }
 
-    // Вхід / Вихід
+    // Вхід з перевіркою дозволеного Email
     function loginWithEmail() {
-      const email = document.getElementById('loginEmail').value;
-      const pass = document.getElementById('loginPassword').value;
+      const emailInput = document.getElementById('loginEmail');
+      const passInput = document.getElementById('loginPassword');
+      const loginErrorMsg = document.getElementById('loginErrorMsg');
+
+      const email = emailInput.value.trim();
+      const pass = passInput.value;
+
+      if (!email) {
+        alert('Будь ласка, вкажіть Email!');
+        return;
+      }
+
+      if (email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+        loginErrorMsg.textContent = `Доступ заборонено! Дозволено вхід тільки з адреси ${ADMIN_EMAIL}.`;
+        loginErrorMsg.classList.remove('hidden');
+        return;
+      }
       
       auth.signInWithEmailAndPassword(email, pass)
-        .then(() => alert('Успішний вхід!'))
-        .catch(err => alert('Помилка входу: ' + err.message));
+        .then(() => {
+          loginErrorMsg.classList.add('hidden');
+          alert('Успішний вхід!');
+        })
+        .catch(err => {
+          loginErrorMsg.textContent = 'Помилка входу: ' + err.message;
+          loginErrorMsg.classList.remove('hidden');
+        });
     }
 
     function logout() {
@@ -613,8 +678,9 @@
     async function publishArticle(event) {
       event.preventDefault();
       const user = auth.currentUser;
-      if (!user) {
-        alert('Будь ласка, увійдіть у систему вище!');
+      
+      if (!user || user.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+        alert('Помилка доступу! Публікація дозволена лише для головного адміністратора.');
         return;
       }
 
@@ -639,7 +705,7 @@
           youtubeUrl: youtubeUrl,
           youtubeId: youtubeId || '',
           summary: document.getElementById('articleSummary').value,
-          text: editorContent, // Зберігає весь структурований HTML з переносами рядків
+          text: editorContent,
           author: user.email || 'Admin',
           createdAt: firebase.firestore.FieldValue.serverTimestamp(),
           date: new Date().toLocaleDateString('uk-UA', { day: 'numeric', month: 'long', year: 'numeric' })

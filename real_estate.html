@@ -148,7 +148,6 @@
                     </button>
                 </div>
 
-                <!-- НАВІГАЦІЯ КАТЕГОРІЙ ДЛЯ МОБІЛЬНИХ ТА ПК (з посиланням на commercial.html) -->
                 <nav class="flex items-center gap-3 sm:gap-6 text-xs sm:text-sm font-bold text-gray-800 overflow-x-auto w-full sm:w-auto py-1">
                     <a href="auto.html" class="hover:text-red-600 text-red-600 whitespace-nowrap"><i class="fa-solid fa-car"></i> Автобазар</a>
                     <button onClick="setMainCategory('apartment')" class="hover:text-red-600 whitespace-nowrap">🏢 Квартири</button>
@@ -405,8 +404,10 @@
                 </div>
             </div>
 
-            <!-- САЙДБАР -->
+            <!-- САЙДБАР (БЛОК КАТЕГОРІЙ + БАНЕР З НАЛАШТУВАННЯМИ АНАЛОГ AUTO.HTML) -->
             <div class="space-y-5 text-xs">
+                
+                <!-- БЛОК КАТЕГОРІЙ -->
                 <div class="bg-white p-4 rounded border border-gray-200 shadow-sm">
                     <h3 class="font-bold text-gray-900 mb-2 border-b pb-1">Категорії нерухомості</h3>
                     <ul class="space-y-2 font-semibold">
@@ -416,6 +417,33 @@
                         <li><a href="commercial.html" class="hover:underline flex justify-between text-blue-700 font-bold w-full text-left">🏬 Комерція / Ділянки <span>&rsaquo;</span></a></li>
                     </ul>
                 </div>
+
+                <!-- БАНЕР САЙДБАРА З ДИНАМІЧНИМИ НАЛАШТУВАННЯМИ -->
+                <div id="sidebarBannerContainer" class="bg-white rounded border border-gray-200 overflow-hidden shadow-sm relative group">
+                    <a id="sidebarBannerLink" href="commercial.html" target="_blank" class="block">
+                        <div class="relative h-44 bg-slate-900">
+                            <img id="sidebarBannerImg" src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600" alt="Рекламний банер" class="w-full h-full object-cover opacity-90 group-hover:scale-105 transition-transform duration-300">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                            
+                            <div class="absolute bottom-3 left-3 right-3 text-white">
+                                <span class="bg-red-600 text-[9px] font-black px-2 py-0.5 rounded uppercase tracking-wider mb-1 inline-block">Партнер</span>
+                                <h4 id="sidebarBannerTitle" class="font-extrabold text-sm leading-snug line-clamp-2">Швидка оцінка та продаж нерухомості</h4>
+                                <p id="sidebarBannerSubtitle" class="text-[11px] text-gray-200 line-clamp-1 mt-0.5">Консультації та викуп об'єктів у Рівненській області</p>
+                                <div class="mt-2">
+                                    <span id="sidebarBannerBtnText" class="inline-block px-3 py-1 bg-amber-500 text-slate-950 font-bold text-[11px] rounded shadow hover:bg-amber-400 transition-colors">
+                                        Дізнатися більше <i class="fa-solid fa-arrow-right text-[9px] ml-1"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- КНОПКА НАЛАШТУВАННЯ БАНЕРА (ТІЛЬКИ ДЛЯ АДМІНІСТРАТОРА) -->
+                    <button id="adminBannerSettingsBtn" onClick="openBannerModal()" class="hidden w-full py-1.5 bg-slate-900 hover:bg-slate-800 text-amber-400 font-bold text-[11px] items-center justify-center gap-1 border-t border-slate-700 transition-colors">
+                        <i class="fa-solid fa-gear"></i> Налаштувати банер сайдбара
+                    </button>
+                </div>
+
             </div>
 
         </div>
@@ -451,6 +479,52 @@
         </div>
 
         <div id="galleryThumbs" class="flex gap-2 mt-4 overflow-x-auto max-w-[90vw] p-1"></div>
+    </div>
+
+    <!-- МОДАЛЬНЕ ВІКНО НАЛАШТУВАННЯ БАНЕРА (ДЛЯ АДМІНА) -->
+    <div id="adminBannerModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/75 backdrop-blur-sm">
+        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full overflow-hidden text-xs">
+            <div class="bg-slate-900 text-white p-4 flex justify-between items-center">
+                <h3 class="font-extrabold text-sm flex items-center gap-2">
+                    <i class="fa-solid fa-sliders text-amber-400"></i> Редагування банера нерухомості
+                </h3>
+                <button onClick="closeBannerModal()" class="text-slate-400 hover:text-white font-bold text-base">&times;</button>
+            </div>
+            
+            <form id="bannerConfigForm" class="p-5 space-y-3">
+                <div>
+                    <label class="block font-bold text-gray-700 mb-1">Заголовок банера *</label>
+                    <input type="text" id="cfgBannerTitle" required class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-600">
+                </div>
+
+                <div>
+                    <label class="block font-bold text-gray-700 mb-1">Підзаголовок / Опис</label>
+                    <input type="text" id="cfgBannerSubtitle" class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-600">
+                </div>
+
+                <div>
+                    <label class="block font-bold text-gray-700 mb-1">URL зображення (Unsplash або фонове) *</label>
+                    <input type="url" id="cfgBannerImg" required class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-600">
+                </div>
+
+                <div>
+                    <label class="block font-bold text-gray-700 mb-1">URL посилання при кліку *</label>
+                    <input type="url" id="cfgBannerLink" required class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-600">
+                </div>
+
+                <div>
+                    <label class="block font-bold text-gray-700 mb-1">Текст на кнопці</label>
+                    <input type="text" id="cfgBannerBtnText" placeholder="Дізнатися більше" class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-600">
+                </div>
+
+                <div class="pt-3 flex justify-end gap-2 border-t">
+                    <button type="button" onClick="closeBannerModal()" class="px-4 py-2 bg-gray-200 text-gray-700 font-bold rounded">Скасувати</button>
+                    <button type="submit" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded shadow">
+                        <i class="fa-solid fa-floppy-disk mr-1"></i> Зберегти банер
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <!-- FOOTER -->
@@ -553,12 +627,23 @@
             const badge = document.getElementById('authStatusBadge');
             const toggleFormBtn = document.getElementById('toggleFormBtn');
             const toggleFormBtnMobile = document.getElementById('toggleFormBtnMobile');
+            const adminBannerBtn = document.getElementById('adminBannerSettingsBtn');
             
             if (user) {
                 if (badge) badge.textContent = `👤 ${user.email.split('@')[0]}`;
                 if (toggleFormBtn) toggleFormBtn.innerHTML = `<i class="fa-solid fa-plus-circle"></i> Додати об'єкт`;
                 if (toggleFormBtnMobile) toggleFormBtnMobile.innerHTML = `<i class="fa-solid fa-plus-circle"></i> Додати`;
                 
+                // Перевіряємо чи є користувач адміністратором
+                if (user.email && user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+                    if (adminBannerBtn) {
+                        adminBannerBtn.classList.remove('hidden');
+                        adminBannerBtn.classList.add('flex');
+                    }
+                } else {
+                    if (adminBannerBtn) adminBannerBtn.classList.add('hidden');
+                }
+
                 onSnapshot(doc(db, "real_estate_favorites", user.uid), (docSnap) => {
                     if (docSnap.exists()) {
                         userFavoritesList = docSnap.data().favorites || [];
@@ -572,9 +657,65 @@
                 if (badge) badge.textContent = "👤 Особистий кабінет (Гість)";
                 if (toggleFormBtn) toggleFormBtn.innerHTML = `<i class="fa-solid fa-lock"></i> Увійдіть для публікації`;
                 if (toggleFormBtnMobile) toggleFormBtnMobile.innerHTML = `<i class="fa-solid fa-lock"></i> Вхід`;
+                if (adminBannerBtn) adminBannerBtn.classList.add('hidden');
                 userFavoritesList = [];
                 renderListings(allListingsData);
                 renderFavoritesSection();
+            }
+        });
+
+        // СИНХРОНІЗАЦІЯ БАНЕРА САЙДБАРА З FIREBASE
+        const bannerDocRef = doc(db, "real_estate_sidebar_banner", "config");
+        onSnapshot(bannerDocRef, (docSnap) => {
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+                if (data.title) document.getElementById('sidebarBannerTitle').textContent = data.title;
+                if (data.subtitle) document.getElementById('sidebarBannerSubtitle').textContent = data.subtitle;
+                if (data.imgUrl) document.getElementById('sidebarBannerImg').src = data.imgUrl;
+                if (data.linkUrl) document.getElementById('sidebarBannerLink').href = data.linkUrl;
+                if (data.btnText) document.getElementById('sidebarBannerBtnText').innerHTML = `${data.btnText} <i class="fa-solid fa-arrow-right text-[9px] ml-1"></i>`;
+            }
+        });
+
+        window.openBannerModal = function() {
+            getDoc(bannerDocRef).then(docSnap => {
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    document.getElementById('cfgBannerTitle').value = data.title || '';
+                    document.getElementById('cfgBannerSubtitle').value = data.subtitle || '';
+                    document.getElementById('cfgBannerImg').value = data.imgUrl || '';
+                    document.getElementById('cfgBannerLink').value = data.linkUrl || '';
+                    document.getElementById('cfgBannerBtnText').value = data.btnText || 'Дізнатися більше';
+                }
+            });
+            document.getElementById('adminBannerModal').classList.remove('hidden');
+            document.getElementById('adminBannerModal').classList.add('flex');
+        };
+
+        window.closeBannerModal = function() {
+            document.getElementById('adminBannerModal').classList.remove('flex');
+            document.getElementById('adminBannerModal').classList.add('hidden');
+        };
+
+        document.getElementById('bannerConfigForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!currentUser || currentUser.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) return;
+
+            const payload = {
+                title: document.getElementById('cfgBannerTitle').value,
+                subtitle: document.getElementById('cfgBannerSubtitle').value,
+                imgUrl: document.getElementById('cfgBannerImg').value,
+                linkUrl: document.getElementById('cfgBannerLink').value,
+                btnText: document.getElementById('cfgBannerBtnText').value,
+                updatedAt: serverTimestamp()
+            };
+
+            try {
+                await setDoc(bannerDocRef, payload, { merge: true });
+                closeBannerModal();
+                alert("Налаштування банера нерухомості успішно збережено!");
+            } catch (err) {
+                alert("Помилка збереження: " + err.message);
             }
         });
 

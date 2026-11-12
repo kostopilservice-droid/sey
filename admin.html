@@ -31,6 +31,20 @@
       }
     }
   </script>
+  <style>
+    /* Стилі для редактора орфографічного форматування */
+    .editor-content {
+      min-height: 220px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .editor-content p { margin-bottom: 0.5rem; }
+    .editor-content b, .editor-content strong { font-weight: 700; }
+    .editor-content i, .editor-content em { font-style: italic; }
+    .editor-content u { text-decoration: underline; }
+    .editor-content ul { list-style-type: disc; padding-left: 1.25rem; }
+    .editor-content ol { list-style-type: decimal; padding-left: 1.25rem; }
+  </style>
 </head>
 <body class="bg-slate-100 text-slate-800 font-sans antialiased min-h-screen flex flex-col justify-between">
 
@@ -95,7 +109,7 @@
         <i class="fa-solid fa-users"></i> Клієнтська база & CRM (<span id="clientsCount">0</span>)
       </button>
       <button id="tabArticlesBtn" onclick="switchTab('articles')" class="px-4 py-2 text-xs font-bold rounded-t-xl bg-slate-200 text-slate-600 flex items-center gap-2 whitespace-nowrap">
-        <i class="fa-solid fa-pen-to-square"></i> Додати статтю
+        <i class="fa-solid fa-pen-to-square"></i> Додати статтю / YouTube
       </button>
     </div>
 
@@ -154,7 +168,6 @@
         </div>
       </div>
 
-      <!-- Інформаційна картка про розсилку -->
       <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
         <div class="text-xs text-slate-600">
           <span class="font-bold text-slate-900"><i class="fa-solid fa-lightbulb text-amber-500 mr-1"></i> Порада для розсилки:</span>
@@ -162,7 +175,6 @@
         </div>
       </div>
 
-      <!-- Таблиця користувачів -->
       <div class="overflow-x-auto">
         <table class="w-full text-left text-xs border-collapse">
           <thead>
@@ -183,18 +195,18 @@
     </section>
 
     <!-- ========================================== -->
-    <!-- РОЗДІЛ 3: СТВОРЕННЯ СТАТТІ В БАЗУ ЗНАНЬ    -->
+    <!-- РОЗДІЛ 3: СТВОРЕННЯ СТАТТІ ТА YOUTUBE     -->
     <!-- ========================================== -->
     <section id="articlesSection" class="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm hidden">
       <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-100">
         <h1 class="text-xl font-black text-slate-900 flex items-center gap-2">
-          <i class="fa-solid fa-pen-to-square text-blue-600"></i> Створити нову статтю
+          <i class="fa-solid fa-pen-to-square text-blue-600"></i> Створити нову статтю / Опублікувати YouTube
         </h1>
       </div>
 
       <form onsubmit="publishArticle(event)" class="space-y-4">
         <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">Заголовок статті *</label>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Заголовок статті / відео *</label>
           <input type="text" id="articleTitle" required placeholder="Наприклад: Пошук витоку струму за допомогою Hantek..." class="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600">
         </div>
 
@@ -208,6 +220,7 @@
               <option value="engineering">⚙️ Інженерія & Схеми</option>
               <option value="radio">📻 Радіозв'язок</option>
               <option value="ev_battery">🔋 Електротранспорт & АКБ</option>
+              <option value="youtube">▶️ YouTube Відео</option>
               <option value="sponsored">📢 Спонсоровано</option>
             </select>
           </div>
@@ -215,6 +228,17 @@
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">URL обкладинки (зображення)</label>
             <input type="url" id="articleImage" oninput="previewImage(this.value)" placeholder="https://..." class="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600">
+          </div>
+        </div>
+
+        <!-- ІНТЕГРАЦІЯ YOUTUBE -->
+        <div class="bg-red-50 p-4 rounded-xl border border-red-200 space-y-2">
+          <label class="block text-xs font-bold text-red-900 flex items-center gap-1.5">
+            <i class="fa-brands fa-youtube text-red-600 text-base"></i> Посилання на YouTube відео (опціонально)
+          </label>
+          <input type="url" id="youtubeUrl" oninput="previewYouTube(this.value)" placeholder="https://www.youtube.com/watch?v=... або https://youtu.be/..." class="w-full px-3 py-2 text-xs border border-red-300 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-red-500">
+          <div id="youtubePreviewContainer" class="hidden mt-2 rounded-xl overflow-hidden aspect-video bg-black max-w-md mx-auto">
+            <iframe id="youtubeIframe" class="w-full h-full" src="" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -232,13 +256,55 @@
           <textarea id="articleSummary" rows="2" required placeholder="Короткий опис, який зацікавить читача..." class="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600"></textarea>
         </div>
 
+        <!-- РЕДАКТОР ОРФОГРАФІЧНОГО ФОРМАТУВАННЯ ТЕКСТУ -->
         <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">Повний текст статті (HTML або текст) *</label>
-          <textarea id="articleText" rows="6" required placeholder="Основний текст або HTML-структура статті..." class="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600"></textarea>
+          <label class="block text-xs font-bold text-slate-700 mb-1 flex items-center justify-between">
+            <span>Опис та повний текст (з орфографічним форматуванням) *</span>
+            <span class="text-[10px] text-blue-600 font-normal">Зберігає шрифти, абзаци та переноси рядків</span>
+          </label>
+          
+          <!-- Тулбар редактора -->
+          <div class="flex flex-wrap items-center gap-1 p-2 bg-slate-100 border border-slate-300 border-b-0 rounded-t-xl text-xs">
+            <select onchange="execCmd('fontName', this.value)" class="px-2 py-1 border rounded bg-white text-xs">
+              <option value="sans-serif">Sans-Serif</option>
+              <option value="Arial">Arial</option>
+              <option value="Times New Roman">Times New Roman</option>
+              <option value="Courier New">Monospace</option>
+              <option value="Georgia">Georgia</option>
+            </select>
+            
+            <select onchange="execCmd('fontSize', this.value)" class="px-2 py-1 border rounded bg-white text-xs">
+              <option value="3">Звичайний</option>
+              <option value="1">Малий</option>
+              <option value="4">Великий</option>
+              <option value="5">Заголовок</option>
+            </select>
+
+            <div class="h-4 w-[1px] bg-slate-300 mx-1"></div>
+
+            <button type="button" onclick="execCmd('bold')" class="p-1.5 hover:bg-slate-200 rounded text-slate-700 font-bold" title="Жирний (Ctrl+B)"><b>B</b></button>
+            <button type="button" onclick="execCmd('italic')" class="p-1.5 hover:bg-slate-200 rounded text-slate-700 italic" title="Курсив (Ctrl+I)"><i>I</i></button>
+            <button type="button" onclick="execCmd('underline')" class="p-1.5 hover:bg-slate-200 rounded text-slate-700 underline" title="Підкреслений (Ctrl+U)"><u>U</u></button>
+            
+            <div class="h-4 w-[1px] bg-slate-300 mx-1"></div>
+
+            <button type="button" onclick="execCmd('justifyLeft')" class="p-1.5 hover:bg-slate-200 rounded text-slate-700" title="По лівому краю"><i class="fa-solid fa-align-left"></i></button>
+            <button type="button" onclick="execCmd('justifyCenter')" class="p-1.5 hover:bg-slate-200 rounded text-slate-700" title="По центру"><i class="fa-solid fa-align-center"></i></button>
+            <button type="button" onclick="execCmd('justifyRight')" class="p-1.5 hover:bg-slate-200 rounded text-slate-700" title="По правому краю"><i class="fa-solid fa-align-right"></i></button>
+
+            <div class="h-4 w-[1px] bg-slate-300 mx-1"></div>
+
+            <button type="button" onclick="execCmd('insertUnorderedList')" class="p-1.5 hover:bg-slate-200 rounded text-slate-700" title="Маркований список"><i class="fa-solid fa-list-ul"></i></button>
+            <button type="button" onclick="execCmd('insertOrderedList')" class="p-1.5 hover:bg-slate-200 rounded text-slate-700" title="Нумерований список"><i class="fa-solid fa-list-ol"></i></button>
+            <button type="button" onclick="execCmd('insertHTML', '<br><br>')" class="p-1.5 hover:bg-slate-200 rounded text-slate-700 text-[10px] font-bold" title="Перенос на новий рядок">⏎ Рядок</button>
+          </div>
+
+          <!-- Поле редагування з збереженням структури -->
+          <div id="articleEditor" contenteditable="true" class="editor-content w-full p-3 text-xs border border-slate-300 rounded-b-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-600"></div>
         </div>
 
         <button type="submit" id="submitBtn" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow transition-colors flex items-center justify-center gap-2">
-          <i class="fa-solid fa-cloud-arrow-up"></i> Опублікувати статтю в Базу знань
+          <i class="fa-solid fa-cloud-arrow-up"></i> Опублікувати статтю / YouTube у Базу знань
         </button>
 
       </form>
@@ -287,6 +353,12 @@
     let unsubscribeRequests = null;
     let cachedClients = [];
 
+    // Функція форматування в редакторі
+    function execCmd(command, value = null) {
+      document.execCommand(command, false, value);
+      document.getElementById('articleEditor').focus();
+    }
+
     // Відстеження стану авторизації
     auth.onAuthStateChanged(user => {
       const status = document.getElementById('authStatus');
@@ -298,8 +370,8 @@
         status.className = 'text-[11px] font-bold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200';
         logoutBtn.classList.remove('hidden');
         loginCard.classList.add('hidden');
-        listenToRequests(); // Запускаємо прослуховування замовлень
-        loadClients();      // Завантажуємо список клієнтів
+        listenToRequests();
+        loadClients();
       } else {
         status.textContent = '● Не авторизовано';
         status.className = 'text-[11px] font-bold px-2.5 py-1 rounded-full bg-rose-50 text-rose-600 border border-rose-200';
@@ -342,7 +414,7 @@
       }
     }
 
-    // 1. Отримання та оновлення замовлень у реальному часі
+    // 1. Отримання та оновлення замовлень
     function listenToRequests() {
       const tbody = document.getElementById('requestsTableBody');
       const countEl = document.getElementById('requestsCount');
@@ -392,7 +464,7 @@
       });
     }
 
-    // 2. Завантаження клієнтської бази (з колекцій 'users' та 'requests')
+    // 2. Завантаження клієнтської бази
     async function loadClients() {
       const tbody = document.getElementById('clientsTableBody');
       const countEl = document.getElementById('clientsCount');
@@ -439,7 +511,7 @@
       }
     }
 
-    // 3. Експорт списку Email користувачів у файл CSV
+    // 3. Експорт CSV
     function exportEmailCSV() {
       if (!cachedClients.length) {
         alert("Немає даних для експорту!");
@@ -494,6 +566,28 @@
       auth.signOut().then(() => location.reload());
     }
 
+    // Парсинг та прев'ю YouTube
+    function extractYouTubeID(url) {
+      if (!url) return null;
+      const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+      const match = url.match(regExp);
+      return (match && match[2].length === 11) ? match[2] : null;
+    }
+
+    function previewYouTube(url) {
+      const container = document.getElementById('youtubePreviewContainer');
+      const iframe = document.getElementById('youtubeIframe');
+      const videoId = extractYouTubeID(url);
+
+      if (videoId) {
+        iframe.src = `https://www.youtube.com/embed/${videoId}`;
+        container.classList.remove('hidden');
+      } else {
+        iframe.src = '';
+        container.classList.add('hidden');
+      }
+    }
+
     // Прев'ю зображення
     function previewImage(url) {
       const img = document.getElementById('previewImg');
@@ -515,7 +609,7 @@
       }
     }
 
-    // Публікація статті
+    // Публікація статті або YouTube
     async function publishArticle(event) {
       event.preventDefault();
       const user = auth.currentUser;
@@ -524,31 +618,44 @@
         return;
       }
 
+      const editorContent = document.getElementById('articleEditor').innerHTML;
+      if (!editorContent || editorContent.trim() === '') {
+        alert('Будь ласка, введіть текст статті!');
+        return;
+      }
+
       const btn = document.getElementById('submitBtn');
       btn.disabled = true;
       btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Збереження...';
+
+      const youtubeUrl = document.getElementById('youtubeUrl').value.trim();
+      const youtubeId = extractYouTubeID(youtubeUrl);
 
       try {
         await db.collection('articles').add({
           title: document.getElementById('articleTitle').value,
           category: document.getElementById('articleCategory').value,
           imageUrl: document.getElementById('articleImage').value || '',
+          youtubeUrl: youtubeUrl,
+          youtubeId: youtubeId || '',
           summary: document.getElementById('articleSummary').value,
-          text: document.getElementById('articleText').value,
+          text: editorContent, // Зберігає весь структурований HTML з переносами рядків
           author: user.email || 'Admin',
           createdAt: firebase.firestore.FieldValue.serverTimestamp(),
           date: new Date().toLocaleDateString('uk-UA', { day: 'numeric', month: 'long', year: 'numeric' })
         });
 
-        alert('Статтю успішно опубліковано!');
+        alert('Матеріал успішно опубліковано!');
         event.target.reset();
+        document.getElementById('articleEditor').innerHTML = '';
         document.getElementById('previewImg').classList.add('hidden');
         document.getElementById('previewPlaceholder').classList.remove('hidden');
+        document.getElementById('youtubePreviewContainer').classList.add('hidden');
       } catch (err) {
         alert('Помилка збереження: ' + err.message);
       } finally {
         btn.disabled = false;
-        btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Опублікувати статтю в Базу знань';
+        btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Опублікувати статтю / YouTube у Базу знань';
       }
     }
 

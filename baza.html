@@ -41,6 +41,12 @@
     .article-formatted-text u { text-decoration: underline; }
     .article-formatted-text ul { list-style-type: disc; padding-left: 1.25rem; margin-bottom: 0.5rem; }
     .article-formatted-text ol { list-style-type: decimal; padding-left: 1.25rem; margin-bottom: 0.5rem; }
+
+    .editor-content {
+      min-height: 180px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
   </style>
 </head>
 <body class="bg-slate-100 text-slate-800 font-sans antialiased min-h-screen flex flex-col justify-between">
@@ -130,9 +136,14 @@
     <!-- ЗАГОЛОВОК СТРІЧКИ ТА КНОПКА ДОДАВАННЯ -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-2">
       <div>
-        <h2 class="text-lg font-black text-slate-900 flex items-center gap-2">
-          <i class="fa-solid fa-book-open text-blue-600"></i> База знань та технічні мануали
-        </h2>
+        <div class="flex items-center gap-2">
+          <h2 class="text-lg font-black text-slate-900 flex items-center gap-2">
+            <i class="fa-solid fa-book-open text-blue-600"></i> База знань та технічні мануали
+          </h2>
+          <span id="adminBadge" class="hidden text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 border border-emerald-300">
+            <i class="fa-solid fa-shield-halved mr-1"></i> Режим Адміна активний
+          </span>
+        </div>
         <p class="text-xs text-slate-500">Діагностика, закони, діловодство, посібники, інструкції з ремонту та корисні матеріали.</p>
       </div>
 
@@ -141,7 +152,7 @@
       </a>
     </div>
 
-    <!-- КАТЕГОРІЇ (14 ФІЛЬТРІВ У БАГАТОРАДЯДНОМУ БЛОЦІ) -->
+    <!-- КАТЕГОРІЇ -->
     <div class="flex flex-wrap items-center gap-2 pb-2">
       <button onclick="filterCategory('all', this)" class="cat-btn px-3.5 py-1.5 bg-blue-600 text-white text-xs font-bold rounded-xl shadow-sm transition-colors">
         🔥 Всі
@@ -195,7 +206,7 @@
 
     <!-- СІТКА СТАТЕЙ -->
     <div id="articlesGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-      <!-- Картки генеруються автоматично (статичні + Firebase) -->
+      <!-- Картки генеруються автоматично -->
     </div>
 
   </main>
@@ -208,9 +219,18 @@
     <div class="relative bg-white rounded-2xl shadow-2xl max-w-2xl w-full z-10 overflow-hidden max-h-[90vh] flex flex-col">
       <div class="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
         <span id="modalCategory" class="text-[10px] font-bold px-2.5 py-1 rounded-full bg-blue-100 text-blue-700">Категорія</span>
-        <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-slate-200 hover:bg-slate-300 text-slate-700 flex items-center justify-center transition-colors">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
+        <div class="flex items-center gap-2">
+          <!-- Кнопки швидкого керування у вікні перегляду (тільки для Адміна) -->
+          <button id="modalEditBtn" class="hidden px-3 py-1 bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold rounded-lg transition-colors">
+            <i class="fa-solid fa-pen mr-1"></i> Редагувати
+          </button>
+          <button id="modalDeleteBtn" class="hidden px-3 py-1 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-lg transition-colors">
+            <i class="fa-solid fa-trash-can mr-1"></i> Видалити
+          </button>
+          <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-slate-200 hover:bg-slate-300 text-slate-700 flex items-center justify-center transition-colors">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
       </div>
       <div class="p-6 overflow-y-auto space-y-4">
         <h2 id="modalTitle" class="text-xl font-black text-slate-900 leading-tight">Заголовок</h2>
@@ -219,21 +239,103 @@
           <span><i class="fa-regular fa-user mr-1"></i> <span id="modalAuthor">Автор</span></span>
         </div>
         
-        <!-- YOUTUBE PLAYER CONTAINER -->
         <div id="modalYouTubeContainer" class="w-full aspect-video rounded-xl overflow-hidden bg-black hidden">
           <iframe id="modalYouTubeIframe" class="w-full h-full" src="" frameborder="0" allowfullscreen></iframe>
         </div>
 
-        <!-- IMAGE CONTAINER -->
         <div id="modalImageContainer" class="w-full h-52 rounded-xl overflow-hidden bg-slate-900 hidden">
           <img id="modalImage" src="" alt="" class="w-full h-full object-cover">
         </div>
 
-        <!-- FORMATTED TEXT -->
         <div id="modalText" class="text-xs text-slate-700 leading-relaxed space-y-2 article-formatted-text">
           Текст статті...
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- МОДАЛЬНЕ ВІКНО ШВИДКОГО РЕДАГУВАННЯ (АДМІН)-->
+  <!-- ========================================== -->
+  <div id="editModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
+    <div class="fixed inset-0 bg-slate-950/75 backdrop-blur-sm" onclick="closeEditModal()"></div>
+    <div class="relative bg-white rounded-2xl shadow-2xl max-w-2xl w-full z-10 overflow-hidden max-h-[90vh] flex flex-col">
+      <div class="p-4 border-b border-slate-200 flex items-center justify-between bg-slate-900 text-white">
+        <span class="text-xs font-extrabold flex items-center gap-2">
+          <i class="fa-solid fa-pen-to-square text-amber-400"></i> Швидке редагування картки знань
+        </span>
+        <button onclick="closeEditModal()" class="w-7 h-7 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      
+      <form onsubmit="saveEditedArticle(event)" class="p-6 overflow-y-auto space-y-4">
+        <input type="hidden" id="editArticleId">
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Заголовок *</label>
+          <input type="text" id="editTitle" required class="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600">
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Категорія *</label>
+            <select id="editCategory" required class="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-600">
+              <option value="auto">🚗 Автодіагностика & ECU</option>
+              <option value="computers">💻 Комп'ютери</option>
+              <option value="printers">🖨️ Оргтехніка</option>
+              <option value="engineering">⚙️ Інженерія & Схеми</option>
+              <option value="radio">📻 Радіозв'язок</option>
+              <option value="ev_battery">🔋 Електротранспорт & АКБ</option>
+              <option value="law">⚖️ Законодавство & Юриспруденція</option>
+              <option value="paperwork">📑 Діловодство & Документи</option>
+              <option value="local_biz">🏪 Місцевий бізнес & Послуги</option>
+              <option value="construction">🏗️ Будівництво & Ремонт</option>
+              <option value="cybersecurity">🛡️ Цифрова безпека & IT</option>
+              <option value="education">🎓 Навчання & Освіта</option>
+              <option value="energy">💡 Енергонезалежність & ДБЖ</option>
+              <option value="youtube">▶️ YouTube Відео</option>
+              <option value="sponsored">📢 Спонсоровано</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">URL обкладинки</label>
+            <input type="url" id="editImageUrl" class="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">YouTube посилання (опціонально)</label>
+          <input type="url" id="editYoutubeUrl" placeholder="https://www.youtube.com/watch?v=..." class="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Короткий анонс *</label>
+          <textarea id="editSummary" rows="2" required class="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600"></textarea>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Повний текст статті *</label>
+          <div class="flex flex-wrap items-center gap-1 p-1.5 bg-slate-100 border border-slate-300 border-b-0 rounded-t-xl text-xs">
+            <button type="button" onclick="execEditCmd('bold')" class="px-2 py-1 hover:bg-slate-200 rounded font-bold">B</button>
+            <button type="button" onclick="execEditCmd('italic')" class="px-2 py-1 hover:bg-slate-200 rounded italic">I</button>
+            <button type="button" onclick="execEditCmd('underline')" class="px-2 py-1 hover:bg-slate-200 rounded underline">U</button>
+            <button type="button" onclick="execEditCmd('insertUnorderedList')" class="px-2 py-1 hover:bg-slate-200 rounded"><i class="fa-solid fa-list-ul"></i></button>
+            <button type="button" onclick="execEditCmd('insertHTML', '<br><br>')" class="px-2 py-1 hover:bg-slate-200 rounded text-[10px] font-bold">⏎ Рядок</button>
+          </div>
+          <div id="editEditor" contenteditable="true" class="editor-content w-full p-3 text-xs border border-slate-300 rounded-b-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-600"></div>
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+          <button type="button" onclick="closeEditModal()" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-xs rounded-xl">
+            Скасувати
+          </button>
+          <button type="submit" id="saveEditBtn" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow flex items-center gap-1.5">
+            <i class="fa-solid fa-floppy-disk"></i> Зберегти зміни
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 
@@ -248,6 +350,8 @@
   <!-- SCRIPTS                                    -->
   <!-- ========================================== -->
   <script>
+    const ADMIN_EMAIL = "kostopilservice@gmail.com";
+
     const firebaseConfig = {
       apiKey: "AIzaSyBlKoP6-M8tdrKq88bSdnWSnak5Gpddnpk",
       authDomain: "neoservice-ks-ua.firebaseapp.com",
@@ -262,10 +366,14 @@
       firebase.initializeApp(firebaseConfig);
     }
     const db = firebase.firestore();
+    const auth = firebase.auth();
+
+    let isAdmin = false;
 
     const staticArticles = [
       {
         id: 'static-1',
+        isStatic: true,
         category: 'auto',
         title: 'Пошук витоку струму акумулятора: Повний посібник для автовласників (Hantek)',
         summary: 'Детальний покроковий посібник із пошуку прихованих споживачів в електриці автомобіля за допомогою осцилографа Hantek та мультиметра.',
@@ -276,6 +384,7 @@
       },
       {
         id: 'static-2',
+        isStatic: true,
         category: 'sponsored',
         title: 'Надійний хмарний хостинг та сервери для бізнесу',
         summary: 'Швидкі віртуальні сервери для розміщення сайтів і баз даних із захистом від DDoS. Спеціальні умови для наших користувачів.',
@@ -286,6 +395,7 @@
       },
       {
         id: 'static-3',
+        isStatic: true,
         category: 'computers',
         title: 'Чому гріється ноутбук і коли пора його обслуговувати?',
         summary: 'Ознаки забивання системи охолодження та алгоритм повної чистки з заміною термопасти.',
@@ -296,6 +406,7 @@
       },
       {
         id: 'static-4',
+        isStatic: true,
         category: 'printers',
         title: 'Як відновити картридж лазерного принтера',
         summary: 'Покрокові правила заправки тонером при друці на виходах із прасуванням.',
@@ -306,6 +417,7 @@
       },
       {
         id: 'static-5',
+        isStatic: true,
         category: 'ev_battery',
         title: 'Збереження акумулятора електротранспорту взимку',
         summary: 'Правила експлуатації батарей на холодний період року.',
@@ -319,20 +431,44 @@
     let allArticles = [...staticArticles];
     let activeCategory = 'all';
 
-    async function fetchArticles() {
-      try {
-        const snapshot = await db.collection('articles').orderBy('createdAt', 'desc').get();
+    // Перевірка прав адміністратора при вході
+    auth.onAuthStateChanged(user => {
+      const adminBadge = document.getElementById('adminBadge');
+      if (user && user.email && user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+        isAdmin = true;
+        adminBadge.classList.remove('hidden');
+      } else {
+        isAdmin = false;
+        adminBadge.classList.add('hidden');
+      }
+      filterArticles(); // Перемальовуємо картки з кнопками адміна або без них
+    });
+
+    function execEditCmd(command, value = null) {
+      document.execCommand(command, false, value);
+      document.getElementById('editEditor').focus();
+    }
+
+    function extractYouTubeID(url) {
+      if (!url) return null;
+      const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+      const match = url.match(regExp);
+      return (match && match[2].length === 11) ? match[2] : null;
+    }
+
+    // Реальне оновлення з Firebase (onSnapshot автоматично оновлює сторінку після редагування/видалення)
+    function listenToArticles() {
+      db.collection('articles').orderBy('createdAt', 'desc').onSnapshot(snapshot => {
         const firebaseArticles = [];
         snapshot.forEach(doc => {
-          firebaseArticles.push({ id: doc.id, ...doc.data() });
+          firebaseArticles.push({ id: doc.id, isStatic: false, ...doc.data() });
         });
-        
         allArticles = [...firebaseArticles, ...staticArticles];
-        renderGrid(allArticles);
-      } catch (err) {
+        filterArticles();
+      }, err => {
         console.error("Помилка завантаження з Firebase:", err);
         renderGrid(allArticles);
-      }
+      });
     }
 
     function renderGrid(data) {
@@ -364,6 +500,18 @@
         else if (art.category === 'youtube') { catName = 'YouTube'; badgeColor = "bg-red-600 text-white"; }
         else if (art.category === 'sponsored') { catName = 'Спонсоровано'; badgeColor = "bg-amber-500 text-slate-950"; }
 
+        // Кнопки редагування/видалення відображаються ТІЛЬКИ якщо користувач адмін і картка збережена у Firebase (!art.isStatic)
+        const adminControls = (isAdmin && !art.isStatic) ? `
+          <div class="absolute top-3 right-3 flex items-center gap-1.5 z-10">
+            <button onclick="event.stopPropagation(); openEditModal('${art.id}')" class="w-7 h-7 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-lg shadow flex items-center justify-center transition-colors" title="Редагувати картку">
+              <i class="fa-solid fa-pen text-[11px]"></i>
+            </button>
+            <button onclick="event.stopPropagation(); deleteArticle('${art.id}')" class="w-7 h-7 bg-rose-600 hover:bg-rose-500 text-white rounded-lg shadow flex items-center justify-center transition-colors" title="Видалити картку">
+              <i class="fa-solid fa-trash-can text-[11px]"></i>
+            </button>
+          </div>
+        ` : '';
+
         const card = `
           <article class="bg-white rounded-2xl border border-slate-200 overflow-hidden flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow">
             <div>
@@ -372,7 +520,8 @@
                 <span class="absolute top-3 left-3 ${badgeColor} text-[10px] font-bold px-2.5 py-0.5 rounded-full shadow">
                   ${catName}
                 </span>
-                ${art.youtubeId ? `<div class="absolute inset-0 flex items-center justify-center bg-black/30"><i class="fa-brands fa-youtube text-red-600 text-4xl shadow-lg"></i></div>` : ''}
+                ${adminControls}
+                ${art.youtubeId ? `<div class="absolute inset-0 flex items-center justify-center bg-black/30 pointer-events-none"><i class="fa-brands fa-youtube text-red-600 text-4xl shadow-lg"></i></div>` : ''}
               </div>
               <div class="p-4">
                 <span class="text-[10px] text-slate-400 block mb-1"><i class="fa-regular fa-clock mr-1"></i> ${art.date || 'Нещодавно'}</span>
@@ -416,6 +565,78 @@
       renderGrid(filtered);
     }
 
+    // ВИДАЛЕННЯ КАРТКИ З FIREBASE
+    async function deleteArticle(id) {
+      if (!isAdmin) return;
+      if (!confirm("Ви дійсно хочете видалити цю картку назавжди?")) return;
+
+      try {
+        await db.collection('articles').doc(id).delete();
+        closeModal();
+      } catch (err) {
+        alert("Помилка при видаленні: " + err.message);
+      }
+    }
+
+    // ВІДКРИТТЯ МОДАЛЬНОГО ВІКНА РЕДАГУВАННЯ
+    function openEditModal(id) {
+      if (!isAdmin) return;
+      const art = allArticles.find(a => a.id === id);
+      if (!art || art.isStatic) return;
+
+      closeModal();
+
+      document.getElementById('editArticleId').value = art.id;
+      document.getElementById('editTitle').value = art.title || '';
+      document.getElementById('editCategory').value = art.category || 'auto';
+      document.getElementById('editImageUrl').value = art.imageUrl || '';
+      document.getElementById('editYoutubeUrl').value = art.youtubeUrl || '';
+      document.getElementById('editSummary').value = art.summary || '';
+      document.getElementById('editEditor').innerHTML = art.text || '';
+
+      const modal = document.getElementById('editModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeEditModal() {
+      const modal = document.getElementById('editModal');
+      modal.classList.remove('flex');
+      modal.classList.add('hidden');
+    }
+
+    // ЗБЕРЕЖЕННЯ ЗМІН ПІСЛЯ РЕДАГУВАННЯ
+    async function saveEditedArticle(event) {
+      event.preventDefault();
+      if (!isAdmin) return;
+
+      const id = document.getElementById('editArticleId').value;
+      const btn = document.getElementById('saveEditBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Збереження...';
+
+      const youtubeUrl = document.getElementById('editYoutubeUrl').value.trim();
+      const youtubeId = extractYouTubeID(youtubeUrl);
+
+      try {
+        await db.collection('articles').doc(id).update({
+          title: document.getElementById('editTitle').value,
+          category: document.getElementById('editCategory').value,
+          imageUrl: document.getElementById('editImageUrl').value.trim(),
+          youtubeUrl: youtubeUrl,
+          youtubeId: youtubeId || '',
+          summary: document.getElementById('editSummary').value,
+          text: document.getElementById('editEditor').innerHTML
+        });
+        closeEditModal();
+      } catch (err) {
+        alert("Помилка при оновленні: " + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Зберегти зміни';
+      }
+    }
+
     function openHeroModal() {
       document.getElementById('modalTitle').textContent = "Пошук витоку струму акумулятора: Повний посібник для автовласників (Hantek)";
       document.getElementById('modalDate').textContent = "20 жовтня, 2026 р.";
@@ -423,6 +644,8 @@
       document.getElementById('modalCategory').textContent = "АВТОДІАГНОСТИКА";
       document.getElementById('modalText').innerHTML = "Детальний посібник з використання осцилографа Hantek та мультиметра для виявлення прихованих витоків струму в автомобільній проводці. Покрокова інструкція діагностики запобіжників та блоків управління.";
       
+      document.getElementById('modalEditBtn').classList.add('hidden');
+      document.getElementById('modalDeleteBtn').classList.add('hidden');
       document.getElementById('modalYouTubeContainer').classList.add('hidden');
       document.getElementById('modalYouTubeIframe').src = "";
 
@@ -444,8 +667,20 @@
       document.getElementById('modalDate').textContent = art.date || 'Нещодавно';
       document.getElementById('modalAuthor').textContent = art.author || 'Admin';
       document.getElementById('modalCategory').textContent = (art.category || '').toUpperCase();
-      
       document.getElementById('modalText').innerHTML = art.text ? art.text : art.summary;
+
+      const editBtn = document.getElementById('modalEditBtn');
+      const deleteBtn = document.getElementById('modalDeleteBtn');
+
+      if (isAdmin && !art.isStatic) {
+        editBtn.classList.remove('hidden');
+        deleteBtn.classList.remove('hidden');
+        editBtn.onclick = () => openEditModal(art.id);
+        deleteBtn.onclick = () => deleteArticle(art.id);
+      } else {
+        editBtn.classList.add('hidden');
+        deleteBtn.classList.add('hidden');
+      }
 
       const ytContainer = document.getElementById('modalYouTubeContainer');
       const ytIframe = document.getElementById('modalYouTubeIframe');
@@ -479,7 +714,7 @@
       document.getElementById('modalYouTubeIframe').src = "";
     }
 
-    window.addEventListener('DOMContentLoaded', fetchArticles);
+    window.addEventListener('DOMContentLoaded', listenToArticles);
   </script>
 </body>
 </html>

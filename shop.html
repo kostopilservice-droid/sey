@@ -9,7 +9,7 @@
     
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Tailwind CSS (для правильного відображення класів слайдера) -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
     <style>
@@ -545,7 +545,7 @@
                   </button>
 
                   <!-- КНОПКА НАЛАШТУВАННЯ БАНЕРА (ДЛЯ АДМІНІСТРАТОРА) -->
-                  <button id="adminBannerSettingsBtn" onClick="openBannerModal()" class="hidden w-full py-2.5 bg-gray-50 hover:bg-gray-100 text-gray-700 hover:text-[#db4437] font-bold text-xs items-center justify-center gap-1.5 border-t border-gray-200 transition-colors">
+                  <button id="adminBannerSettingsBtn" onClick="openBannerModal()" class="w-full py-2.5 bg-gray-50 hover:bg-gray-100 text-gray-700 hover:text-[#db4437] font-bold text-xs flex items-center justify-center gap-1.5 border-t border-gray-200 transition-colors">
                       <i class="fa-solid fa-sliders"></i> Керувати слайдером
                   </button>
               </div>
@@ -745,7 +745,6 @@
         if (docSnap.exists() && docSnap.data().slides) {
           sidebarSlides = docSnap.data().slides;
         } else {
-          // Записуємо дефолтні
           await setDoc(bannerDocRef, { slides: sidebarSlides });
         }
         currentSlideIdx = 0;
@@ -956,23 +955,16 @@
         currentUser = user;
         const toggleBtn = document.getElementById('toggleFormBtn');
         const adminBadge = document.getElementById('adminStatusBadge');
-        const adminBannerSettingsBtn = document.getElementById('adminBannerSettingsBtn');
         
         if (!user) {
           toggleBtn.innerHTML = `<i class="fa-solid fa-lock"></i> Увійдіть для подачі`;
           adminBadge.style.display = 'none';
-          adminBannerSettingsBtn.classList.add('hidden');
-          adminBannerSettingsBtn.classList.remove('flex');
         } else {
           toggleBtn.innerHTML = `<i class="fa-solid fa-plus"></i> Подати оголошення`;
           if (user.email === ADMIN_EMAIL) {
             adminBadge.style.display = 'inline-block';
-            adminBannerSettingsBtn.classList.remove('hidden');
-            adminBannerSettingsBtn.classList.add('flex');
           } else {
             adminBadge.style.display = 'none';
-            adminBannerSettingsBtn.classList.add('hidden');
-            adminBannerSettingsBtn.classList.remove('flex');
           }
         }
       });

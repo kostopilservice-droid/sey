@@ -562,7 +562,7 @@
               <button id="closeBannerModal" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #64748b;">&times;</button>
             </div>
             <p style="font-size: 0.78rem; color: #64748b; margin-top: 0;">Управління слайдами рекламного банера в реальному часі через Firebase.</p>
-            <div id="bannerAdminList" style="max-height: 250px; overflow-y: auto; margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px;"></div>
+            <div id="bannerAdminList" style="max-height: 300px; overflow-y: auto; margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px;"></div>
             <div style="display: flex; justify-content: flex-end; gap: 8px;">
               <button type="button" id="cancelBannerBtn" style="padding: 6px 12px; border-radius: 6px; border: 1px solid #cbd5e1; background: #f1f5f9; cursor: pointer; font-size: 0.8rem;">Закрити</button>
             </div>
@@ -740,23 +740,33 @@
         }, 5000);
       }
 
-      // Слухаємо слайди з Firebase
+      // Слухаємо слайди з Firebase з обробкою помилок доступу (rules)
       onSnapshot(bannerDocRef, async (docSnap) => {
         if (docSnap.exists() && docSnap.data().slides) {
           sidebarSlides = docSnap.data().slides;
         } else {
-          await setDoc(bannerDocRef, { slides: sidebarSlides });
+          try {
+            await setDoc(bannerDocRef, { slides: sidebarSlides });
+          } catch (err) {
+            console.error("Помилка правил бази даних (Rules) під час ініціалізації банера:", err.message);
+          }
         }
         currentSlideIdx = 0;
         renderSidebarSlide();
         resetTimer();
+      }, (error) => {
+        console.error("Помилка підписки на налаштування банера (перевірте Firebase Rules):", error.message);
       });
 
-      // Адмінка слайдера
+      // Адмінка слайдера з можливістю зміни посилань (URL)
       window.openBannerModal = async function() {
-        const docSnap = await getDoc(bannerDocRef);
-        if (docSnap.exists() && docSnap.data().slides) {
-          sidebarSlides = docSnap.data().slides;
+        try {
+          const docSnap = await getDoc(bannerDocRef);
+          if (docSnap.exists() && docSnap.data().slides) {
+            sidebarSlides = docSnap.data().slides;
+          }
+        } catch (err) {
+          console.error("Помилка зчитування для адмінки:", err.message);
         }
         renderAdminSlideList();
         document.getElementById('bannerModal').style.display = 'flex';
@@ -767,9 +777,10 @@
         listContainer.innerHTML = sidebarSlides.map((slide, idx) => `
           <div style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px; background: #f8fafc; display: flex; flex-direction: column; gap: 6px;">
             <div style="font-weight: bold; font-size: 0.78rem; color: #1e3a8a;">Слайд #${idx + 1}</div>
-            <input type="text" placeholder="URL зображення" value="${slide.image}" id="slideImg_${idx}" style="padding: 5px; font-size: 0.75rem; border: 1px solid #cbd5e1; border-radius: 4px;" />
-            <input type="text" placeholder="Заголовок" value="${slide.title}" id="slideTitle_${idx}" style="padding: 5px; font-size: 0.75rem; border: 1px solid #cbd5e1; border-radius: 4px;" />
-            <input type="text" placeholder="Підзаголовок" value="${slide.subtitle}" id="slideSub_${idx}" style="padding: 5px; font-size: 0.75rem; border: 1px solid #cbd5e1; border-radius: 4px;" />
+            <input type="text" placeholder="URL зображення" value="${slide.image || ''}" id="slideImg_${idx}" style="padding: 5px; font-size: 0.75rem; border: 1px solid #cbd5e1; border-radius: 4px;" />
+            <input type="text" placeholder="Заголовок" value="${slide.title || ''}" id="slideTitle_${idx}" style="padding: 5px; font-size: 0.75rem; border: 1px solid #cbd5e1; border-radius: 4px;" />
+            <input type="text" placeholder="Підзаголовок" value="${slide.subtitle || ''}" id="slideSub_${idx}" style="padding: 5px; font-size: 0.75rem; border: 1px solid #cbd5e1; border-radius: 4px;" />
+            <input type="text" placeholder="Посилання (наприклад: commercial.html)" value="${slide.link || ''}" id="slideLink_${idx}" style="padding: 5px; font-size: 0.75rem; border: 1px solid #cbd5e1; border-radius: 4px;" />
             <div style="display: flex; gap: 5px;">
               <button type="button" onclick="saveSlideItem(${idx})" style="flex: 1; background: var(--accent); color: white; border: none; padding: 5px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; cursor: pointer;">Зберегти</button>
               <button type="button" onclick="deleteSlideItem(${idx})" style="background: var(--danger); color: white; border: none; padding: 5px 10px; border-radius: 4px; font-size: 0.75rem; cursor: pointer;"><i class="fa-solid fa-trash"></i></button>
@@ -786,10 +797,15 @@
         sidebarSlides[idx].image = document.getElementById(`slideImg_${idx}`).value;
         sidebarSlides[idx].title = document.getElementById(`slideTitle_${idx}`).value;
         sidebarSlides[idx].subtitle = document.getElementById(`slideSub_${idx}`).value;
+        sidebarSlides[idx].link = document.getElementById(`slideLink_${idx}`).value;
         
-        await setDoc(bannerDocRef, { slides: sidebarSlides });
-        alert('Слайд оновлено!');
-        renderAdminSlideList();
+        try {
+          await setDoc(bannerDocRef, { slides: sidebarSlides });
+          alert('Слайд та посилання успішно оновлено!');
+          renderAdminSlideList();
+        } catch (err) {
+          alert('Помилка збереження (перевірте Firebase Rules): ' + err.message);
+        }
       }
 
       window.deleteSlideItem = async function(idx) {
@@ -798,14 +814,22 @@
           return;
         }
         sidebarSlides.splice(idx, 1);
-        await setDoc(bannerDocRef, { slides: sidebarSlides });
-        renderAdminSlideList();
+        try {
+          await setDoc(bannerDocRef, { slides: sidebarSlides });
+          renderAdminSlideList();
+        } catch (err) {
+          alert('Помилка видалення: ' + err.message);
+        }
       }
 
       window.addNewSlide = async function() {
-        sidebarSlides.push({ image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800", title: "Новий слайд", subtitle: "Опис слайда", link: "shop.html", btnText: "Переглянути" });
-        await setDoc(bannerDocRef, { slides: sidebarSlides });
-        renderAdminSlideList();
+        sidebarSlides.push({ image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800", title: "Новий слайд", subtitle: "Опис слайда", link: "commercial.html", btnText: "Дізнатися більше" });
+        try {
+          await setDoc(bannerDocRef, { slides: sidebarSlides });
+          renderAdminSlideList();
+        } catch (err) {
+          alert('Помилка додавання: ' + err.message);
+        }
       }
 
       document.getElementById('closeBannerModal').addEventListener('click', () => document.getElementById('bannerModal').style.display = 'none');

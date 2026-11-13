@@ -2,10 +2,10 @@
 <html lang="uk">
 <head>
     <link rel="manifest" href="./manifest.json">
-    <meta name="theme-color" content="#1a365d">
+    <meta name="theme-color" content="#0f172a">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Маркетплейс & Оголошення — Neoservice</title>
+    <title>Інтернет-магазин — Neoservice</title>
     
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -13,7 +13,9 @@
     <style>
         :root {
             --primary: #1e3a8a;
-            --shop-color: #2563eb;
+            --shop-color: #8224e3; /* Фірмовий фіолетовий маркетплейсів */
+            --accent: #10b981;
+            --danger: #ef4444;
             --bg: #f8fafc;
             --card-bg: #ffffff;
             --text: #1e293b;
@@ -46,17 +48,16 @@
         nav a:hover { background-color: var(--shop-color); }
 
         .container {
-            max-width: 1200px;
+            max-width: 1280px;
             margin: 20px auto;
             padding: 0 15px;
         }
 
-        /* ПРОФЕСІЙНИЙ КАТАЛОГ (PROMETHEUS / PROMO STYLE) */
+        /* КАТАЛОГ КАТЕГОРІЙ */
         .catalog-container {
-            position: relative;
             background: white;
             border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.04);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
             border: 1px solid #e2e8f0;
             margin-top: 20px;
             overflow: hidden;
@@ -66,9 +67,11 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 20px;
+            padding: 14px 20px;
             background: #f8fafc;
             border-bottom: 1px solid #e2e8f0;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .catalog-title {
@@ -81,23 +84,19 @@
             margin: 0;
         }
 
-        /* Двопанельний каталог: Зліва категорії, справа випадаюча панель */
         .catalog-layout {
             display: grid;
-            grid-template-columns: 280px 1fr;
-            min-height: 380px;
+            grid-template-columns: 260px 1fr;
         }
 
         @media (max-width: 850px) {
-            .catalog-layout {
-                grid-template-columns: 1fr;
-            }
+            .catalog-layout { grid-template-columns: 1fr; }
         }
 
         .categories-sidebar {
             background: #ffffff;
             border-right: 1px solid #e2e8f0;
-            padding: 10px 0;
+            padding: 8px 0;
             max-height: 420px;
             overflow-y: auto;
         }
@@ -106,9 +105,9 @@
             width: 100%;
             background: transparent;
             border: none;
-            padding: 12px 20px;
+            padding: 10px 16px;
             text-align: left;
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             font-weight: 600;
             color: #334155;
             cursor: pointer;
@@ -118,47 +117,47 @@
             transition: all 0.2s;
         }
         .cat-item-btn:hover, .cat-item-btn.active {
-            background: #eff6ff;
+            background: #f3e8ff;
             color: var(--shop-color);
-            padding-left: 24px;
+            padding-left: 20px;
         }
         .cat-item-btn.active {
             border-left: 4px solid var(--shop-color);
-            background: #eff6ff;
         }
 
-        /* Панель підкатегорій праворуч */
         .subcategories-panel {
             background: #ffffff;
-            padding: 25px;
+            padding: 18px 22px;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 15px;
         }
 
         .subcategories-header {
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: bold;
             color: #1e3a8a;
             border-bottom: 2px solid #e2e8f0;
-            padding-bottom: 10px;
+            padding-bottom: 8px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
         }
 
         .sub-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 12px;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 8px;
         }
 
         .sub-chip {
             background: #f8fafc;
             border: 1px solid #e2e8f0;
             border-radius: 8px;
-            padding: 10px 14px;
-            font-size: 0.82rem;
+            padding: 8px 10px;
+            font-size: 0.78rem;
             font-weight: 600;
             color: #475569;
             cursor: pointer;
@@ -166,236 +165,204 @@
             transition: all 0.2s;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
         }
-        .sub-chip:hover {
-            background: var(--shop-color);
-            color: white;
-            border-color: var(--shop-color);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(37, 99, 235, 0.15);
-        }
-        .sub-chip.active {
+        .sub-chip:hover, .sub-chip.active {
             background: var(--shop-color);
             color: white;
             border-color: var(--shop-color);
         }
 
-        /* Кнопка скидання */
-        .reset-filter-btn {
-            background: #e2e8f0;
-            color: #334155;
-            border: none;
-            padding: 6px 14px;
-            border-radius: 6px;
-            font-size: 0.78rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .reset-filter-btn:hover { background: #cbd5e1; }
-
+        /* КОМПАКТНІ КАРТКИ ТОВАРІВ (СТИЛЬ МАРКЕТПЛЕЙСУ) */
         .market-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+            gap: 15px;
             margin-top: 25px;
         }
 
-        /* ФІКСОВАНИЙ РОЗМІР ВІКНА КАРТКИ */
         .product-card {
             background: var(--card-bg);
-            border-radius: 12px;
-            padding: 15px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.04);
+            border-radius: 10px;
+            padding: 12px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
             border: 1px solid #e2e8f0;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            height: 440px;
+            height: 370px;
             box-sizing: border-box;
             transition: transform 0.2s, box-shadow 0.2s;
-            overflow: hidden;
+            position: relative;
         }
         .product-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 15px rgba(0,0,0,0.08);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+            border-color: #cbd5e1;
         }
 
-        .card-body-content {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
+        .card-img-wrap {
+            height: 140px;
+            border-radius: 6px;
             overflow: hidden;
-        }
-
-        .card-title {
-            font-size: 0.95rem;
-            margin: 0 0 6px 0;
-            color: #1e3a8a;
-            font-weight: bold;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            height: 2.6em;
-        }
-
-        .card-description {
-            font-size: 0.78rem;
-            color: #64748b;
-            margin: 0 0 10px 0;
-            line-height: 1.4;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        /* Стилі колажу фотографій */
-        .photo-collage {
-            display: grid;
-            gap: 3px;
-            margin-bottom: 12px;
-            border-radius: 8px;
-            overflow: hidden;
-            height: 150px;
             background: #f1f5f9;
             cursor: pointer;
             position: relative;
-            flex-shrink: 0;
+            margin-bottom: 8px;
         }
-        .photo-collage-1 { grid-template-columns: 1fr; }
-        .photo-collage-2 { grid-template-columns: 1fr 1fr; }
-        .photo-collage-3 { grid-template-columns: 2fr 1fr; }
-        .photo-collage-3 .sub-grid-img { display: grid; grid-template-rows: 1fr 1fr; gap: 3px; }
-
-        .photo-collage img {
+        .card-img-wrap img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: opacity 0.2s, transform 0.2s;
+            transition: transform 0.2s;
         }
-        .photo-collage img:hover {
-            opacity: 0.92;
-            transform: scale(1.02);
-        }
+        .card-img-wrap img:hover { transform: scale(1.03); }
 
-        .more-photos-badge {
-            position: absolute;
-            bottom: 6px;
-            right: 6px;
-            background: rgba(15, 23, 42, 0.8);
-            color: white;
+        .card-title {
+            font-size: 0.82rem;
+            margin: 0 0 6px 0;
+            color: #1e293b;
+            font-weight: 600;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            height: 2.6em;
+            cursor: pointer;
+        }
+        .card-title:hover { color: var(--shop-color); text-decoration: underline; }
+
+        .rating-stars {
+            color: #f59e0b;
             font-size: 0.72rem;
-            font-weight: bold;
-            padding: 4px 8px;
-            border-radius: 6px;
-            pointer-events: none;
-            backdrop-filter: blur(2px);
+            margin-bottom: 6px;
         }
 
-        .badge {
-            display: inline-block;
-            padding: 3px 8px;
-            border-radius: 6px;
-            font-size: 0.7rem;
-            font-weight: bold;
-            text-transform: uppercase;
+        .card-price {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 8px;
         }
-        .badge-beauty { background: #fce7f3; color: #be185d; }
-        .badge-home { background: #fef3c7; color: #b45309; }
-        .badge-style { background: #e0e7ff; color: #3730a3; }
-        .badge-tech { background: #dbeafe; color: #1e40af; }
-        .badge-kids { background: #fae8ff; color: #86198f; }
-        .badge-auto { background: #ffedd5; color: #c2410c; }
-        .badge-gifts { background: #fee2e2; color: #991b1b; }
-        .badge-accessories { background: #ccfbf1; color: #0f766e; }
-        .badge-build { background: #f1f5f9; color: #475569; }
-        .badge-sport { background: #dcfce7; color: #15803d; }
-        .badge-garden { background: #ecfdf5; color: #047857; }
-        .badge-other { background: #f1f5f9; color: #64748b; }
 
-        .btn-add {
+        .btn-buy-market {
             background: var(--shop-color);
             color: white;
             border: none;
-            padding: 10px 18px;
-            border-radius: 8px;
+            padding: 8px;
+            border-radius: 6px;
             font-weight: bold;
             cursor: pointer;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
+            width: 100%;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            justify-content: center;
+            gap: 6px;
             transition: background 0.2s;
         }
-        .btn-add:hover { background: #1d4ed8; }
+        .btn-buy-market:hover { background: #6d18c9; }
 
-        /* МОДАЛЬНЕ ВІКНО ПЕРЕГЛЯДУ ФОТО (LIGHTBOX) */
-        .lightbox-modal {
+        .admin-actions {
+            display: flex;
+            gap: 4px;
+            margin-top: 6px;
+        }
+        .btn-sm-action {
+            flex: 1;
+            padding: 4px;
+            font-size: 0.7rem;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* ПОВНОЦІННА СТОРІНКА ТОВАРУ (ДЕТАЛЬНИЙ ПЕРЕГЛЯД) */
+        #productDetailView {
+            display: none;
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 20px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+        }
+
+        /* КНОПКИ ТА ІНТЕРФЕЙС */
+        .btn-primary {
+            background: var(--shop-color);
+            color: white;
+            border: none;
+            padding: 9px 16px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 0.82rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-primary:hover { background: #6d18c9; }
+
+        .cart-badge-btn {
+            position: relative;
+            background: rgba(255,255,255,0.15);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 8px 14px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.82rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .cart-count {
+            background: var(--accent);
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 0.7rem;
+        }
+
+        /* МОДАЛЬНІ ВІКНА */
+        .modal-overlay {
             display: none;
             position: fixed;
-            z-index: 9999;
             inset: 0;
-            background: rgba(0, 0, 0, 0.92);
+            background: rgba(15, 23, 42, 0.75);
+            z-index: 9000;
             justify-content: center;
             align-items: center;
-            flex-direction: column;
-            backdrop-filter: blur(5px);
-        }
-        .lightbox-content-wrapper {
-            position: relative;
-            max-width: 90vw;
-            max-height: 80vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .lightbox-content {
-            max-width: 90vw;
-            max-height: 80vh;
-            border-radius: 8px;
-            object-fit: contain;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-        }
-        .lightbox-close {
-            position: absolute;
-            top: 20px;
-            right: 25px;
-            color: white;
-            font-size: 2.2rem;
-            cursor: pointer;
-            z-index: 10000;
-            line-height: 1;
-            transition: color 0.2s;
-        }
-        .lightbox-close:hover { color: #60a5fa; }
-        .lightbox-nav {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            color: white;
-            font-size: 2.5rem;
-            cursor: pointer;
             padding: 15px;
-            user-select: none;
-            transition: color 0.2s, transform 0.2s;
-            z-index: 10000;
+            backdrop-filter: blur(3px);
         }
-        .lightbox-nav:hover { color: #60a5fa; transform: translateY(-50%) scale(1.15); }
-        .lightbox-prev { left: 10px; }
-        .lightbox-next { right: 10px; }
-        .lightbox-counter {
-            color: #f1f5f9;
-            margin-top: 15px;
-            font-size: 0.95rem;
-            font-weight: bold;
-            background: rgba(255, 255, 255, 0.15);
-            padding: 4px 14px;
-            border-radius: 20px;
+        .modal-box {
+            background: white;
+            border-radius: 12px;
+            max-width: 580px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 24px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+        }
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.4rem;
+            cursor: pointer;
+            color: #64748b;
         }
 
         footer {
@@ -410,32 +377,38 @@
 <body>
 
     <!-- ШАПКА -->
-    <header style="background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); color: white; padding: 15px 20px; border-bottom: 3px solid #3b82f6;">
-      <div style="max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 15px;">
+    <header style="background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); color: white; padding: 14px 20px; border-bottom: 3px solid var(--shop-color);">
+      <div style="max-width: 1280px; margin: 0 auto; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 15px;">
         
         <a href="index.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none; color: white;">
-          <div style="background: rgba(255, 255, 255, 0.15); border-radius: 14px; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem;">
+          <div style="background: rgba(255, 255, 255, 0.15); border-radius: 12px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">
             🛒
           </div>
           <div>
-            <div style="font-size: 1.4rem; font-weight: 900; letter-spacing: 0.8px; text-transform: uppercase; line-height: 1.1;">
-              NEO<span style="color: #60a5fa;">MARKET</span>
+            <div style="font-size: 1.3rem; font-weight: 900; letter-spacing: 0.8px; text-transform: uppercase; line-height: 1.1;">
+              NEO<span style="color: #c084fc;">MARKET</span>
             </div>
-            <div style="font-size: 0.78rem; color: #bfdbfe; font-style: italic; margin-top: 2px;">
-              Професійний маркетплейс • Оголошення
+            <div style="font-size: 0.74rem; color: #cbd5e1; margin-top: 2px;">
+              Інтернет-магазин та маркетплейс
             </div>
           </div>
         </a>
 
         <!-- Пошук -->
-        <div style="flex: 1; max-width: 350px; min-width: 240px;">
+        <div style="flex: 1; max-width: 360px; min-width: 220px;">
           <div style="position: relative; width: 100%;">
-            <span style="position: absolute; inset-y: 0; left: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8; pointer-events: none; font-size: 0.85rem;">
+            <span style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8; pointer-events: none; font-size: 0.82rem;">
               <i class="fa-solid fa-magnifying-glass"></i>
             </span>
-            <input type="text" id="shopSearch" placeholder="Пошук товарів за назвою чи описом..." style="width: 100%; box-sizing: border-box; padding: 9px 12px 9px 34px; font-size: 0.82rem; background: rgba(255, 255, 255, 0.15); color: white; border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 10px; outline: none;" />
+            <input type="text" id="shopSearch" placeholder="Пошук товарів за назвою..." style="width: 100%; box-sizing: border-box; padding: 8px 12px 8px 34px; font-size: 0.82rem; background: rgba(255, 255, 255, 0.15); color: white; border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 8px; outline: none;" />
           </div>
         </div>
+
+        <!-- Кошик -->
+        <button class="cart-badge-btn" id="openCartBtn">
+          <i class="fa-solid fa-cart-shopping"></i> Кошик
+          <span class="cart-count" id="cartBadgeCount">0</span>
+        </button>
 
       </div>
     </header>
@@ -445,135 +418,137 @@
         <a href="index.html"><i class="fa-solid fa-house"></i> Головна</a>
         <a href="baza.html"><i class="fa-solid fa-book-open"></i> База знань</a>
         <a href="auto.html"><i class="fa-solid fa-car"></i> Автомаркет</a>
-        <a href="shop.html" style="background-color: var(--shop-color);"><i class="fa-solid fa-store"></i> Маркетплейс</a>
+        <a href="shop.html" style="background-color: var(--shop-color);"><i class="fa-solid fa-store"></i> Магазин</a>
         <a href="sport.html"><i class="fa-solid fa-football"></i> Спорт</a>
         <a href="chat.html"><i class="fa-solid fa-comments"></i> Чат</a>
     </nav>
 
     <div class="container">
       
-      <!-- Заголовок + Кнопка подачі оголошення -->
-      <div style="background: white; border-radius: 12px; padding: 20px; border-left: 5px solid var(--shop-color); box-shadow: 0 4px 6px rgba(0,0,0,0.04); display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 15px;">
+      <!-- Панель управління магазином -->
+      <div style="background: white; border-radius: 12px; padding: 15px 20px; border-left: 5px solid var(--shop-color); box-shadow: 0 4px 6px rgba(0,0,0,0.04); display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 15px;">
         <div>
-          <h1 style="margin: 0 0 6px 0; font-size: 1.3rem; color: #1e3a8a;">🛍️ Центральний Маркетплейс Оголошень</h1>
-          <p style="margin: 0; font-size: 0.85rem; color: #64748b;">
-            Обирайте серед тисяч пропозицій у професійному каталозі.
+          <h1 style="margin: 0 0 3px 0; font-size: 1.15rem; color: #1e3a8a;">Вітрина інтернет-магазину</h1>
+          <p style="margin: 0; font-size: 0.8rem; color: #64748b;">
+            Обирайте товари або додавайте власні позиції через панель адміністратора.
           </p>
         </div>
 
-        <div id="addBtnContainer">
-          <button id="toggleFormBtn" class="btn-add">
-            <i class="fa-solid fa-plus"></i> Подати оголошення
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <span id="adminStatusBadge" style="display: none; background: #fef3c7; color: #b45309; padding: 5px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: bold;">
+            <i class="fa-solid fa-shield-halved"></i> Адмін
+          </span>
+          <button id="toggleFormBtn" class="btn-primary">
+            <i class="fa-solid fa-plus"></i> Додати товар
           </button>
         </div>
       </div>
 
-      <!-- ПРОФЕСІЙНИЙ КАТАЛОГ (ДВОПАНЕЛЬНЕ МЕГА-МЕНЮ) -->
-      <div class="catalog-container">
-        <div class="catalog-top-bar">
-          <h3 class="catalog-title">
-            <i class="fa-solid fa-bars-staggered" style="color: var(--shop-color);"></i> Інтерактивний каталог категорій
-          </h3>
-          <button class="reset-filter-btn" id="resetFilterBtn">
-            <i class="fa-solid fa-rotate-left"></i> Показати всі товари
-          </button>
-        </div>
-
-        <div class="catalog-layout">
-          <!-- Ліва колонка: Головні категорії -->
-          <div class="categories-sidebar" id="categoriesSidebar">
-            <!-- Заповнюється скриптом -->
+      <!-- ГОЛОВНИЙ КАТАЛОГ (ПРИХОДИТЬ НА ЗМІНУ ПРИ ВІДКРИТТІ СТОРІНКИ ТОВАРУ) -->
+      <div id="mainCatalogWrapper">
+        <!-- КАТЕГОРІЇ ТА ПОДІЛ -->
+        <div class="catalog-container">
+          <div class="catalog-top-bar">
+            <h3 class="catalog-title">
+              <i class="fa-solid fa-layer-group" style="color: var(--shop-color);"></i> Категорії та підрозділи
+            </h3>
+            <button id="resetFilterBtn" style="background: #e2e8f0; color: #334155; border: none; padding: 5px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; cursor: pointer;">
+              <i class="fa-solid fa-rotate-left"></i> Всі товари
+            </button>
           </div>
 
-          <!-- Права колонка: Детальні підкатегорії -->
-          <div class="subcategories-panel" id="subcategoriesPanel">
-            <!-- Заповнюється динамічно при виборі категорії -->
+          <div class="catalog-layout">
+            <div class="categories-sidebar" id="categoriesSidebar"></div>
+            <div class="subcategories-panel" id="subcategoriesContent"></div>
           </div>
         </div>
-      </div>
 
-      <!-- ФОРМА ДОДАВАННЯ ОГОЛОШЕННЯ -->
-      <div id="newAdFormCard" style="display: none; background: white; border-radius: 12px; padding: 20px; margin-top: 20px; border: 2px dashed var(--shop-color); box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
-        <h3 style="margin-top: 0; color: #1e3a8a; font-size: 1.05rem;"><i class="fa-solid fa-pen-to-square"></i> Нове оголошення</h3>
-        
-        <form id="addListingForm" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
-          <div>
-            <label style="font-size: 0.78rem; font-weight: bold; color: #475569;">Назва товару / послуги:</label>
-            <input type="text" id="adTitle" maxlength="60" placeholder="напр. Набір інструментів" required style="width: 100%; box-sizing: border-box; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.85rem; margin-top: 4px;" />
-          </div>
-
-          <div>
-            <label style="font-size: 0.78rem; font-weight: bold; color: #475569;">Категорія:</label>
-            <select id="adCategory" style="width: 100%; box-sizing: border-box; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.85rem; margin-top: 4px; background: white;">
-              <!-- Заповнюється динамічно -->
-            </select>
-          </div>
-
-          <div>
-            <label style="font-size: 0.78rem; font-weight: bold; color: #475569;">Стан:</label>
-            <select id="adCondition" style="width: 100%; box-sizing: border-box; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.85rem; margin-top: 4px; background: white;">
-              <option value="Б/В">Б/В (Вживане)</option>
-              <option value="Нове">Нове</option>
-              <option value="Відновлене">Відновлене</option>
-            </select>
-          </div>
-
-          <div>
-            <label style="font-size: 0.78rem; font-weight: bold; color: #475569;">Ціна (грн):</label>
-            <input type="number" id="adPrice" placeholder="напр. 1500" required style="width: 100%; box-sizing: border-box; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.85rem; margin-top: 4px;" />
-          </div>
-
-          <div>
-            <label style="font-size: 0.78rem; font-weight: bold; color: #475569;">Номер телефону:</label>
-            <input type="tel" id="adContact" placeholder="напр. +380971234567" required style="width: 100%; box-sizing: border-box; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.85rem; margin-top: 4px;" />
-          </div>
-
-          <!-- Посилання на фотографії -->
-          <div style="grid-column: 1 / -1; background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0;">
-            <label style="font-size: 0.8rem; font-weight: bold; color: #1e3a8a; display: block; margin-bottom: 8px;"><i class="fa-solid fa-images"></i> Посилання на фотографії (до 4 шт.):</label>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 8px;">
-              <input type="url" id="adPhoto1" placeholder="Фото 1 (Головне) https://..." style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; background: white;" />
-              <input type="url" id="adPhoto2" placeholder="Фото 2 https://..." style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; background: white;" />
-              <input type="url" id="adPhoto3" placeholder="Фото 3 https://..." style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; background: white;" />
-              <input type="url" id="adPhoto4" placeholder="Фото 4 https://..." style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; background: white;" />
+        <!-- ФОРМА ДОДАВАННЯ ТОВАРУ -->
+        <div id="newAdFormCard" style="display: none; background: white; border-radius: 12px; padding: 18px; margin-top: 15px; border: 2px dashed var(--shop-color); box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+          <h3 style="margin-top: 0; color: #1e3a8a; font-size: 1rem;"><i class="fa-solid fa-circle-plus"></i> Додати новий товар</h3>
+          
+          <form id="addListingForm" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
+            <div>
+              <label style="font-size: 0.75rem; font-weight: bold; color: #475569;">Назва товару:</label>
+              <input type="text" id="adTitle" maxlength="70" placeholder="Наприклад: Ліхтар акумуляторний" required style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; margin-top: 3px;" />
             </div>
-          </div>
 
-          <div style="grid-column: 1 / -1;">
-            <label style="font-size: 0.78rem; font-weight: bold; color: #475569;">Опис товару (до 500 символів):</label>
-            <textarea id="adDescription" rows="3" maxlength="500" placeholder="Опишіть стан товару, характеристики..." required style="width: 100%; box-sizing: border-box; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.85rem; margin-top: 4px; font-family: inherit;"></textarea>
-          </div>
+            <div>
+              <label style="font-size: 0.75rem; font-weight: bold; color: #475569;">Категорія:</label>
+              <select id="adCategory" style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; margin-top: 3px; background: white;"></select>
+            </div>
 
-          <div style="grid-column: 1 / -1; display: flex; justify-content: flex-end; gap: 10px;">
-            <button type="button" id="cancelFormBtn" style="padding: 8px 16px; border-radius: 6px; border: 1px solid #cbd5e1; background: #f1f5f9; cursor: pointer; font-size: 0.85rem;">Скасувати</button>
-            <button type="submit" class="btn-add" style="padding: 8px 20px;">Опублікувати</button>
-          </div>
-        </form>
+            <div>
+              <label style="font-size: 0.75rem; font-weight: bold; color: #475569;">Підкатегорія:</label>
+              <select id="adSubcategory" style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; margin-top: 3px; background: white;"></select>
+            </div>
+
+            <div>
+              <label style="font-size: 0.75rem; font-weight: bold; color: #475569;">Ціна (грн):</label>
+              <input type="number" id="adPrice" placeholder="749" required style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; margin-top: 3px;" />
+            </div>
+
+            <div>
+              <label style="font-size: 0.75rem; font-weight: bold; color: #475569;">Телефон:</label>
+              <input type="tel" id="adContact" placeholder="+380971234567" required style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; margin-top: 3px;" />
+            </div>
+
+            <div>
+              <label style="font-size: 0.75rem; font-weight: bold; color: #475569;">Фото (посилання через кому):</label>
+              <input type="text" id="adPhotos" placeholder="https://image1.jpg, https://image2.jpg" required style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; margin-top: 3px;" />
+            </div>
+
+            <div style="grid-column: 1 / -1;">
+              <label style="font-size: 0.75rem; font-weight: bold; color: #475569;">Опис товару:</label>
+              <textarea id="adDescription" rows="2" maxlength="500" placeholder="Опишіть характеристики товару..." required style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; margin-top: 3px; font-family: inherit;"></textarea>
+            </div>
+
+            <div style="grid-column: 1 / -1; display: flex; justify-content: flex-end; gap: 8px;">
+              <button type="button" id="cancelFormBtn" style="padding: 6px 12px; border-radius: 6px; border: 1px solid #cbd5e1; background: #f1f5f9; cursor: pointer; font-size: 0.8rem;">Скасувати</button>
+              <button type="submit" class="btn-primary" style="padding: 6px 16px; font-size: 0.8rem;">Опублікувати</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- СІТКА ТОВАРІВ -->
+        <div class="market-grid" id="shopProductsContainer">
+          <p style="grid-column: 1 / -1; text-align: center; color: #64748b; padding: 30px;">Завантаження товарів...</p>
+        </div>
       </div>
 
-      <!-- Сітка оголошень -->
-      <div class="market-grid" id="shopProductsContainer">
-        <p style="grid-column: 1 / -1; text-align: center; color: #64748b; padding: 30px;">Завантаження оголошень...</p>
+      <!-- ДЕТАЛЬНА СТОРІНКА ТОВАРУ (ВІДКРИВАЄТЬСЯ ПРИ КЛІКУ) -->
+      <div id="productDetailView">
+        <button id="backToCatalogBtn" style="background: #f1f5f9; border: 1px solid #cbd5e1; padding: 6px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-bottom: 20px; font-size: 0.8rem;">
+          <i class="fa-solid fa-arrow-left"></i> Назад до каталогу
+        </button>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; align-items: start;" id="productDetailContent">
+          <!-- Заповнюється скриптом -->
+        </div>
       </div>
 
     </div>
 
-    <!-- МОДАЛЬНЕ ВІКНО ПЕРЕГЛЯДУ ФОТО (LIGHTBOX) -->
-    <div id="lightboxModal" class="lightbox-modal">
-      <span class="lightbox-close" id="lightboxClose">&times;</span>
-      <span class="lightbox-nav lightbox-prev" id="lightboxPrev">&#10094;</span>
-      <div class="lightbox-content-wrapper">
-        <img id="lightboxImg" class="lightbox-content" src="" alt="Перегляд фото">
+    <!-- МОДАЛЬНЕ ВІКНО КОШИКА -->
+    <div id="cartModal" class="modal-overlay">
+      <div class="modal-box">
+        <div class="modal-header">
+          <h3 style="margin: 0; color: #1e3a8a;"><i class="fa-solid fa-cart-shopping"></i> Кошик покупця</h3>
+          <button class="modal-close" id="closeCartModal">&times;</button>
+        </div>
+        <div id="cartItemsContainer" style="display: flex; flex-direction: column; gap: 10px; max-height: 280px; overflow-y: auto;"></div>
+        <div style="border-top: 2px solid #e2e8f0; margin-top: 15px; padding-top: 15px; display: flex; justify-content: space-between; align-items: center;">
+          <div style="font-size: 1rem; font-weight: bold;">Разом: <span id="cartTotalSum" style="color: var(--shop-color);">0 грн</span></div>
+          <button id="checkoutBtn" class="btn-primary" style="padding: 8px 16px;">Оформити замовлення</button>
+        </div>
       </div>
-      <span class="lightbox-nav lightbox-next" id="lightboxNext">&#10095;</span>
-      <div class="lightbox-counter" id="lightboxCounter">1 / 1</div>
     </div>
 
     <footer>
-        <p>&copy; 2026 Neoservice.ks.ua — Професійний маркетплейс.</p>
+        <p>&copy; 2026 Neoservice.ks.ua — Інтернет-магазин.</p>
     </footer>
 
-    <!-- Firebase модуль -->
+    <!-- Firebase та Логіка Магазину -->
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
       import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -595,123 +570,76 @@
       const auth = getAuth(app);
       const db = getFirestore(app);
 
-      // Структура категорій та підпунктів
       const categoriesData = [
-        {
-          name: "Краса та здоров'я",
-          icon: "fa-heart-pulse",
-          sub: ["Догляд за волоссям", "Догляд за обличчям", "Догляд за тілом", "Парфумерія", "Манікюр та педикюр", "Все для епіляції"]
-        },
-        {
-          name: "Товари для дому",
-          icon: "fa-house",
-          sub: ["Кухонне приладдя", "Посуд", "Освітлення для дому", "Розумний дім", "Сантехніка", "Декор та аксесуари"]
-        },
-        {
-          name: "Одяг та взуття",
-          icon: "fa-shirt",
-          sub: ["Чоловічий одяг", "Жіночий одяг", "Дитячий одяг та взуття", "Взуття", "Спортивний одяг", "Аксесуари та сумки"]
-        },
-        {
-          name: "Техніка та електроніка",
-          icon: "fa-laptop",
-          sub: ["Смартфони та телефони", "Комп'ютерна техніка", "Автономна енергетика (Інвертори, акумулятори)", "ТБ та медіа", "Аудіотехніка", "Роутери та зв'язок"]
-        },
-        {
-          name: "Товари для дітей",
-          icon: "fa-child-reaching",
-          sub: ["Іграшки та конструктори", "Дитячий транспорт та візки", "Дитяче харчування", "Гігієна та догляд", "Дитячі меблі"]
-        },
-        {
-          name: "Авто-, мото",
-          icon: "fa-car-rear",
-          sub: ["Автозапчастини", "Автоелектроніка", "Автоінструмент", "Диски і шини", "Мотоекіпірування та скутери", "Автоаксесуари"]
-        },
-        {
-          name: "Подарунки, хобі, книги",
-          icon: "fa-gift",
-          sub: ["Подарунки і сувеніри", "Книги та література", "Настільні ігри", "Музичні інструменти", "Рукоділля та творчість"]
-        },
-        {
-          name: "Аксесуари та прикраси",
-          icon: "fa-gem",
-          sub: ["Ювелірні вироби", "Біжутерія", "Годинники", "Сумки, вази, портфелі", "Головні убори та шарфи"]
-        },
-        {
-          name: "Матеріали для ремонту",
-          icon: "fa-hammer",
-          sub: ["Електроінструмент", "Сантехніка та водопостачання", "Вікна та двері", "Підлогові покриття", "Будівельні матеріали"]
-        },
-        {
-          name: "Спорт і відпочинок",
-          icon: "fa-person-biking",
-          sub: ["Велосипеди та аксесуари", "Туристичне спорядження", "Екстремальні види спорту", "Товари для командних ігор", "Фітнес та тренування"]
-        },
-        {
-          name: "Дача, сад і город",
-          icon: "fa-seedling",
-          sub: ["Садовий інструмент", "Рослини та насіння", "Системи поливу", "Техніка для саду", "Товари для барбекю"]
-        }
+        { name: "Краса та здоров'я", icon: "fa-heart-pulse", sub: ["Догляд за волоссям", "Догляд за обличчям", "Парфумерія", "Манікюр"] },
+        { name: "Товари для дому", icon: "fa-house", sub: ["Кухонне приладдя", "Посуд", "Освітлення", "Сантехніка"] },
+        { name: "Одяг та взуття", icon: "fa-shirt", sub: ["Чоловічий одяг", "Жіночий одяг", "Взуття", "Аксесуари"] },
+        { name: "Техніка та електроніка", icon: "fa-laptop", sub: ["Смартфони", "Комп'ютери", "Автономна енергетика", "Роутери"] },
+        { name: "Товари для дітей", icon: "fa-child-reaching", sub: ["Іграшки", "Дитячий транспорт", "Харчування"] },
+        { name: "Авто-, мото", icon: "fa-car-rear", sub: ["Автозапчастини", "Автоелектроніка", "Автоінструмент", "Диски та шини"] },
+        { name: "Подарунки, хобі, книги", icon: "fa-gift", sub: ["Подарунки", "Книги", "Настільні ігри"] },
+        { name: "Аксесуари та прикраси", icon: "fa-gem", sub: ["Ювелірні вироби", "Біжутерія", "Годинники"] },
+        { name: "Матеріали для ремонту", icon: "fa-hammer", sub: ["Електроінструмент", "Сантехніка", "Будматеріали"] },
+        { name: "Спорт і відпочинок", icon: "fa-person-biking", sub: ["Велосипеди", "Туризм", "Фітнес"] },
+        { name: "Дача, сад і город", icon: "fa-seedling", sub: ["Садовий інструмент", "Рослини", "Барбекю"] }
       ];
 
-      const toggleFormBtn = document.getElementById('toggleFormBtn');
-      const newAdFormCard = document.getElementById('newAdFormCard');
-      const cancelFormBtn = document.getElementById('cancelFormBtn');
-      const addListingForm = document.getElementById('addListingForm');
-      const shopProductsContainer = document.getElementById('shopProductsContainer');
       const categoriesSidebar = document.getElementById('categoriesSidebar');
-      const subcategoriesPanel = document.getElementById('subcategoriesPanel');
-      const resetFilterBtn = document.getElementById('resetFilterBtn');
+      const subcategoriesContent = document.getElementById('subcategoriesContent');
+      const shopProductsContainer = document.getElementById('shopProductsContainer');
       const adCategorySelect = document.getElementById('adCategory');
+      const adSubcategorySelect = document.getElementById('adSubcategory');
 
       let currentUser = null;
-      let currentGallery = [];
-      let currentImgIndex = 0;
-      let activeFilter = 'all'; 
-      let currentSelectedCategory = categoriesData[0].name; // За замовчуванням перша категорія
+      let allProducts = [];
+      let cart = JSON.parse(localStorage.getItem('neoshop_cart') || '[]');
+      let activeFilter = 'all';
 
-      // Рендеринг інтерфейсу каталогу
-      function renderCatalog() {
+      function populateSubSelect(catName, targetSelect) {
+        const catObj = categoriesData.find(c => c.name === catName);
+        targetSelect.innerHTML = '';
+        if (catObj) {
+          catObj.sub.forEach(s => {
+            const opt = document.createElement('option');
+            opt.value = s;
+            opt.textContent = s;
+            targetSelect.appendChild(opt);
+          });
+        }
+      }
+
+      function initCatalog() {
         categoriesSidebar.innerHTML = '';
         adCategorySelect.innerHTML = '';
 
         categoriesData.forEach((cat, index) => {
-          // Оновлюємо селект форми
           const opt = document.createElement('option');
           opt.value = cat.name;
           opt.textContent = cat.name;
           adCategorySelect.appendChild(opt);
 
-          // Кнопка в сайдбарі
           const btn = document.createElement('button');
           btn.className = `cat-item-btn ${index === 0 ? 'active' : ''}`;
-          btn.innerHTML = `<span><i class="fa-solid ${cat.icon}" style="color: var(--shop-color); margin-right: 8px;"></i> ${cat.name}</span> <i class="fa-solid fa-chevron-right" style="font-size: 0.75rem; color: #94a3b8;"></i>`;
+          btn.innerHTML = `<span><i class="fa-solid ${cat.icon}" style="color: var(--shop-color); margin-right: 6px;"></i> ${cat.name}</span> <i class="fa-solid fa-chevron-right" style="font-size: 0.7rem; color: #94a3b8;"></i>`;
           
-          btn.addEventListener('mouseenter', () => {
-            selectCategory(cat.name);
-          });
+          btn.addEventListener('mouseenter', () => selectCategory(cat.name));
           btn.addEventListener('click', () => {
             selectCategory(cat.name);
-            // Клік по головній категорії також фільтрує товар
             activeFilter = cat.name;
-            highlightActiveChips();
             filterCards();
           });
 
           categoriesSidebar.appendChild(btn);
         });
 
-        renderSubcategories(currentSelectedCategory);
+        populateSubSelect(categoriesData[0].name, adSubcategorySelect);
+        adCategorySelect.addEventListener('change', (e) => populateSubSelect(e.target.value, adSubcategorySelect));
+        renderSubcategories(categoriesData[0].name);
       }
 
       function selectCategory(catName) {
-        currentSelectedCategory = catName;
         document.querySelectorAll('.cat-item-btn').forEach(b => {
-          if (b.innerText.includes(catName)) {
-            b.classList.add('active');
-          } else {
-            b.classList.remove('active');
-          }
+          b.classList.toggle('active', b.innerText.includes(catName));
         });
         renderSubcategories(catName);
       }
@@ -720,101 +648,82 @@
         const catObj = categoriesData.find(c => c.name === catName);
         if (!catObj) return;
 
-        let chipsHtml = catObj.sub.map(s => `
+        const chipsHtml = catObj.sub.map(s => `
           <button class="sub-chip ${activeFilter === s ? 'active' : ''}" data-sub="${s}">
-            <i class="fa-solid fa-angle-right" style="color: var(--shop-color); font-size: 0.75rem;"></i> ${s}
+            <i class="fa-solid fa-angle-right" style="font-size: 0.7rem;"></i> ${s}
           </button>
         `).join('');
 
-        subcategoriesPanel.innerHTML = `
+        subcategoriesContent.innerHTML = `
           <div class="subcategories-header">
             <span>${catObj.name}</span>
-            <button class="sub-chip" style="background: var(--shop-color); color: white; border: none; padding: 6px 12px; font-size: 0.75rem;" data-cat-filter="${catObj.name}">
-              Всі у категорії "${catObj.name}"
+            <button class="sub-chip" style="background: var(--shop-color); color: white; border: none; padding: 4px 10px; font-size: 0.72rem;" data-cat-filter="${catObj.name}">
+              Усі товари розділу
             </button>
           </div>
-          <div class="sub-grid">
-            ${chipsHtml}
-          </div>
+          <div class="sub-grid">${chipsHtml}</div>
         `;
 
-        // Обробники кліків на чіпси підкатегорій
-        subcategoriesPanel.querySelectorAll('.sub-chip[data-sub]').forEach(chip => {
+        subcategoriesContent.querySelectorAll('.sub-chip[data-sub]').forEach(chip => {
           chip.addEventListener('click', () => {
             activeFilter = chip.getAttribute('data-sub');
-            highlightActiveChips();
             filterCards();
           });
         });
 
-        // Кнопка фільтрації по всій головній категорії
-        const mainCatFilterBtn = subcategoriesPanel.querySelector('[data-cat-filter]');
-        if (mainCatFilterBtn) {
-          mainCatFilterBtn.addEventListener('click', () => {
+        const allCatBtn = subcategoriesContent.querySelector('[data-cat-filter]');
+        if (allCatBtn) {
+          allCatBtn.addEventListener('click', () => {
             activeFilter = catObj.name;
-            highlightActiveChips();
             filterCards();
           });
         }
       }
 
-      function highlightActiveChips() {
-        document.querySelectorAll('.sub-chip').forEach(c => {
-          if (c.getAttribute('data-sub') === activeFilter || c.getAttribute('data-cat-filter') === activeFilter) {
-            c.classList.add('active');
-          } else {
-            c.classList.remove('active');
-          }
-        });
-      }
+      initCatalog();
 
-      renderCatalog();
-
-      resetFilterBtn.addEventListener('click', () => {
+      document.getElementById('resetFilterBtn').addEventListener('click', () => {
         activeFilter = 'all';
-        highlightActiveChips();
         filterCards();
       });
 
       onAuthStateChanged(auth, (user) => {
         currentUser = user;
+        const toggleBtn = document.getElementById('toggleFormBtn');
+        const adminBadge = document.getElementById('adminStatusBadge');
+        
         if (!user) {
-          toggleFormBtn.innerHTML = `<i class="fa-solid fa-lock"></i> Увійдіть, щоб подати оголошення`;
+          toggleBtn.innerHTML = `<i class="fa-solid fa-lock"></i> Увійдіть`;
+          adminBadge.style.display = 'none';
         } else {
-          toggleFormBtn.innerHTML = `<i class="fa-solid fa-plus"></i> Подати оголошення`;
+          toggleBtn.innerHTML = `<i class="fa-solid fa-plus"></i> Додати товар`;
+          if (user.email === ADMIN_EMAIL) adminBadge.style.display = 'inline-block';
         }
       });
 
-      toggleFormBtn.addEventListener('click', () => {
+      const newAdFormCard = document.getElementById('newAdFormCard');
+      document.getElementById('toggleFormBtn').addEventListener('click', () => {
         if (!currentUser) {
-          alert('Будь ласка, авторизуйтесь на головній сторінці, щоб подавати оголошення!');
+          alert('Будь ласка, увійдіть в акаунт на головній сторінці!');
           window.location.href = 'index.html#auth-section';
           return;
         }
         newAdFormCard.style.display = newAdFormCard.style.display === 'none' ? 'block' : 'none';
       });
+      document.getElementById('cancelFormBtn').addEventListener('click', () => newAdFormCard.style.display = 'none');
 
-      cancelFormBtn.addEventListener('click', () => {
-        newAdFormCard.style.display = 'none';
-      });
-
-      // Збереження нового оголошення в колекцію shop_listings
-      addListingForm.addEventListener('submit', async (e) => {
+      document.getElementById('addListingForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         if (!currentUser) return;
 
-        const p1 = document.getElementById('adPhoto1').value.trim();
-        const p2 = document.getElementById('adPhoto2').value.trim();
-        const p3 = document.getElementById('adPhoto3').value.trim();
-        const p4 = document.getElementById('adPhoto4').value.trim();
-        
-        const photosArray = [p1, p2, p3, p4].filter(url => url.startsWith('http'));
+        const photosRaw = document.getElementById('adPhotos').value;
+        const photosArray = photosRaw.split(',').map(s => s.trim()).filter(s => s.startsWith('http'));
 
         try {
           await addDoc(collection(db, "shop_listings"), {
             title: document.getElementById('adTitle').value,
             category: document.getElementById('adCategory').value,
-            condition: document.getElementById('adCondition').value,
+            subcategory: document.getElementById('adSubcategory').value,
             price: Number(document.getElementById('adPrice').value),
             contact: document.getElementById('adContact').value,
             photosArray: photosArray,
@@ -823,222 +732,207 @@
             createdAt: serverTimestamp()
           });
 
-          addListingForm.reset();
+          document.getElementById('addListingForm').reset();
           newAdFormCard.style.display = 'none';
-          alert('Ваше оголошення успішно опубліковано!');
+          alert('Товар успішно додано!');
         } catch (err) {
-          alert('Помилка при публікації: ' + err.message);
+          alert('Помилка: ' + err.message);
         }
       });
 
-      // Генерація HTML-колажу
-      function buildCollageHtml(photosArray) {
-        let urls = [];
-        if (photosArray && Array.isArray(photosArray) && photosArray.length > 0) {
-          urls = photosArray;
+      window.deleteProduct = async function(docId) {
+        if (confirm('Видалити цей товар?')) {
+          try {
+            await deleteDoc(doc(db, "shop_listings", docId));
+          } catch (err) {
+            alert('Помилка: ' + err.message);
+          }
         }
-
-        if (urls.length === 0) {
-          urls = ["https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=600&q=80"]; 
-        }
-
-        const photosJson = JSON.stringify(urls).replace(/"/g, '&quot;');
-        let countBadge = urls.length > 3 ? `<div class="more-photos-badge"><i class="fa-solid fa-images"></i> +${urls.length - 3} фото</div>` : '';
-
-        if (urls.length === 1) {
-          return `
-            <div class="photo-collage photo-collage-1" onclick="openLightbox(${photosJson}, 0)">
-              <img src="${urls[0]}" alt="Фото товару">
-            </div>
-          `;
-        } else if (urls.length === 2) {
-          return `
-            <div class="photo-collage photo-collage-2">
-              <img src="${urls[0]}" alt="Фото 1" onclick="openLightbox(${photosJson}, 0)">
-              <img src="${urls[1]}" alt="Фото 2" onclick="openLightbox(${photosJson}, 1)">
-            </div>
-          `;
-        } else {
-          return `
-            <div class="photo-collage photo-collage-3">
-              <img src="${urls[0]}" alt="Головне фото" onclick="openLightbox(${photosJson}, 0)">
-              <div class="sub-grid-img">
-                <img src="${urls[1]}" alt="Фото 2" onclick="openLightbox(${photosJson}, 1)">
-                <img src="${urls[2]}" alt="Фото 3" onclick="openLightbox(${photosJson}, 2)">
-              </div>
-              <div onclick="openLightbox(${photosJson}, 0)" style="position: absolute; inset: 0; z-index: 1; opacity: 0; cursor: pointer;"></div>
-              ${countBadge}
-            </div>
-          `;
-        }
-      }
-
-      // Галерея (Lightbox)
-      window.openLightbox = function(urlsArray, startIndex) {
-        currentGallery = urlsArray;
-        currentImgIndex = startIndex;
-        updateLightbox();
-        lightboxModal.style.display = 'flex';
       };
 
-      function updateLightbox() {
-        if (!currentGallery || currentGallery.length === 0) return;
-        lightboxImg.src = currentGallery[currentImgIndex];
-        lightboxCounter.textContent = `${currentImgIndex + 1} / ${currentGallery.length}`;
-        
-        if (currentGallery.length <= 1) {
-          lightboxPrev.style.display = 'none';
-          lightboxNext.style.display = 'none';
-        } else {
-          lightboxPrev.style.display = 'block';
-          lightboxNext.style.display = 'block';
-        }
-      }
+      // ВІДКРИТТЯ ПОВНОЦІННОЇ СТОРІНКИ ТОВАРУ
+      window.openProductDetail = function(id) {
+        const item = allProducts.find(p => p.id === id);
+        if (!item) return;
 
-      const lightboxModal = document.getElementById('lightboxModal');
-      const lightboxImg = document.getElementById('lightboxImg');
-      const lightboxClose = document.getElementById('lightboxClose');
-      const lightboxPrev = document.getElementById('lightboxPrev');
-      const lightboxNext = document.getElementById('lightboxNext');
-      const lightboxCounter = document.getElementById('lightboxCounter');
+        document.getElementById('mainCatalogWrapper').style.display = 'none';
+        const detailView = document.getElementById('productDetailView');
+        detailView.style.display = 'block';
 
-      lightboxClose.addEventListener('click', () => lightboxModal.style.display = 'none');
-      
-      lightboxNext.addEventListener('click', (e) => {
-        e.stopPropagation();
-        currentImgIndex = (currentImgIndex + 1) % currentGallery.length;
-        updateLightbox();
-      });
+        const mainPhoto = (item.photosArray && item.photosArray[0]) ? item.photosArray[0] : 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=600&q=80';
+        const isOwnerOrAdmin = currentUser && (currentUser.email === ADMIN_EMAIL || currentUser.email === item.userEmail);
 
-      lightboxPrev.addEventListener('click', (e) => {
-        e.stopPropagation();
-        currentImgIndex = (currentImgIndex - 1 + currentGallery.length) % currentGallery.length;
-        updateLightbox();
-      });
-
-      document.addEventListener('keydown', (e) => {
-        if (lightboxModal.style.display === 'flex') {
-          if (e.key === 'ArrowRight') lightboxNext.click();
-          if (e.key === 'ArrowLeft') lightboxPrev.click();
-          if (e.key === 'Escape') lightboxClose.click();
-        }
-      });
-
-      lightboxModal.addEventListener('click', (e) => {
-        if (e.target === lightboxModal || e.target.classList.contains('lightbox-content-wrapper')) {
-          lightboxModal.style.display = 'none';
-        }
-      });
-
-      // Рендеринг оголошень у реальному часі
-      const q = query(collection(db, "shop_listings"), orderBy("createdAt", "desc"));
-      onSnapshot(q, (snapshot) => {
-        shopProductsContainer.innerHTML = '';
-
-        if (snapshot.empty) {
-          shopProductsContainer.innerHTML = `
-            <div style="grid-column: 1 / -1; text-align: center; padding: 40px; background: white; border-radius: 12px; border: 1px dashed #cbd5e1;">
-              <p style="color: #64748b; margin: 0;">Оголошень поки немає. Будьте першим, хто додасть товар!</p>
+        document.getElementById('productDetailContent').innerHTML = `
+          <div>
+            <div style="border-radius: 8px; overflow: hidden; background: #f1f5f9; height: 320px; margin-bottom: 10px;">
+              <img src="${mainPhoto}" style="width: 100%; height: 100%; object-fit: cover;" alt="${item.title}">
             </div>
-          `;
+          </div>
+          <div>
+            <span style="font-size: 0.72rem; background: #e0e7ff; color: #3730a3; padding: 3px 8px; border-radius: 4px; font-weight: bold;">${item.category} / ${item.subcategory || ''}</span>
+            <h2 style="margin: 10px 0; color: #1e3a8a; font-size: 1.3rem;">${item.title}</h2>
+            <div class="rating-stars" style="margin-bottom: 10px;">
+              <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i> (5.0)
+            </div>
+            <div style="font-size: 1.5rem; font-weight: 800; color: #0f172a; margin-bottom: 15px;">${item.price.toLocaleString('uk-UA')} грн</div>
+            
+            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+              <button class="btn-primary" onclick="addToCart('${item.id}')" style="flex: 1; justify-content: center; padding: 10px;">
+                <i class="fa-solid fa-cart-shopping"></i> Купити
+              </button>
+              <a href="tel:${item.contact}" style="background: #10b981; color: white; padding: 10px 16px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 0.82rem; display: inline-flex; align-items: center; gap: 6px;">
+                <i class="fa-solid fa-phone"></i> ${item.contact}
+              </a>
+            </div>
+
+            <h4 style="margin-bottom: 5px; color: #1e293b;">Характеристики та опис:</h4>
+            <p style="font-size: 0.85rem; color: #475569; line-height: 1.5; margin: 0;">${item.description}</p>
+            
+            ${isOwnerOrAdmin ? `
+              <div style="margin-top: 20px; border-top: 1px solid #e2e8f0; padding-top: 15px;">
+                <button class="btn-sm-action" onclick="deleteProduct('${item.id}'); backToCatalog.click();" style="background: var(--danger); color: white; padding: 6px 12px; font-size: 0.78rem;">
+                  <i class="fa-solid fa-trash"></i> Видалити цей товар
+                </button>
+              </div>
+            ` : ''}
+          </div>
+        `;
+        window.scrollTo(0, 0);
+      };
+
+      const backToCatalogBtn = document.getElementById('backToCatalogBtn');
+      backToCatalogBtn.addEventListener('click', () => {
+        document.getElementById('productDetailView').style.display = 'none';
+        document.getElementById('mainCatalogWrapper').style.display = 'block';
+      });
+
+      // Кошик
+      function updateCartUI() {
+        localStorage.setItem('neoshop_cart', JSON.stringify(cart));
+        document.getElementById('cartBadgeCount').textContent = cart.reduce((sum, i) => sum + i.qty, 0);
+        
+        const container = document.getElementById('cartItemsContainer');
+        if (cart.length === 0) {
+          container.innerHTML = `<p style="text-align: center; color: #64748b; padding: 20px;">Кошик порожній</p>`;
+          document.getElementById('cartTotalSum').textContent = '0 грн';
           return;
         }
 
-        snapshot.forEach((documentSnap) => {
-          const item = documentSnap.data();
-          const docId = documentSnap.id;
+        let total = 0;
+        container.innerHTML = cart.map((item, idx) => {
+          total += item.price * item.qty;
+          return `
+            <div style="display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 8px; border-radius: 6px; border: 1px solid #e2e8f0;">
+              <div>
+                <div style="font-weight: bold; font-size: 0.8rem;">${item.title}</div>
+                <div style="font-size: 0.75rem; color: var(--shop-color);">${item.price.toLocaleString('uk-UA')} грн × ${item.qty}</div>
+              </div>
+              <button onclick="removeFromCart(${idx})" style="background: var(--danger); color: white; border: none; border-radius: 4px; padding: 4px 8px; cursor: pointer;"><i class="fa-solid fa-trash"></i></button>
+            </div>
+          `;
+        }).join('');
+
+        document.getElementById('cartTotalSum').textContent = `${total.toLocaleString('uk-UA')} грн`;
+      }
+
+      window.addToCart = function(docId) {
+        const prod = allProducts.find(p => p.id === docId);
+        if (!prod) return;
+        const existing = cart.find(c => c.id === docId);
+        if (existing) existing.qty += 1;
+        else cart.push({ id: prod.id, title: prod.title, price: prod.price, qty: 1 });
+        updateCartUI();
+        alert('Товар додано до кошика!');
+      };
+
+      window.removeFromCart = function(idx) {
+        cart.splice(idx, 1);
+        updateCartUI();
+      };
+
+      const cartModal = document.getElementById('cartModal');
+      document.getElementById('openCartBtn').addEventListener('click', () => { updateCartUI(); cartModal.style.display = 'flex'; });
+      document.getElementById('closeCartModal').addEventListener('click', () => cartModal.style.display = 'none');
+      document.getElementById('checkoutBtn').addEventListener('click', () => {
+        if (cart.length === 0) return alert('Кошик порожній!');
+        const phone = prompt('Введіть номер телефону для замовлення:');
+        if (phone) {
+          alert('Замовлення оформлено! Менеджер зв’яжеться з вами.');
+          cart = [];
+          updateCartUI();
+          cartModal.style.display = 'none';
+        }
+      });
+      updateCartUI();
+
+      // Отримання товарів з Firebase
+      const q = query(collection(db, "shop_listings"), orderBy("createdAt", "desc"));
+      onSnapshot(q, (snapshot) => {
+        allProducts = [];
+        shopProductsContainer.innerHTML = '';
+
+        snapshot.forEach(docSnap => {
+          allProducts.push({ id: docSnap.id, ...docSnap.data() });
+        });
+
+        if (allProducts.length === 0) {
+          shopProductsContainer.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; padding: 30px; color: #64748b;">Товарів поки немає.</div>`;
+          return;
+        }
+
+        allProducts.forEach(item => {
           const card = document.createElement('div');
           card.className = 'product-card';
           card.setAttribute('data-category', item.category);
-          card.setAttribute('data-description', (item.title + ' ' + item.description).toLowerCase());
+          card.setAttribute('data-subcategory', item.subcategory || '');
+          card.setAttribute('data-search', `${item.title} ${item.description}`.toLowerCase());
 
-          let badgeClass = 'badge-other';
-          if (item.category === "Краса та здоров'я") badgeClass = 'badge-beauty';
-          else if (item.category === 'Товари для дому') badgeClass = 'badge-home';
-          else if (item.category === 'Одяг та взуття') badgeClass = 'badge-style';
-          else if (item.category === 'Техніка та електроніка') badgeClass = 'badge-tech';
-          else if (item.category === 'Товари для дітей') badgeClass = 'badge-kids';
-          else if (item.category === 'Авто-, мото') badgeClass = 'badge-auto';
-          else if (item.category === 'Подарунки, хобі, книги') badgeClass = 'badge-gifts';
-          else if (item.category === 'Аксесуари та прикраси') badgeClass = 'badge-accessories';
-          else if (item.category === 'Матеріали для ремонту') badgeClass = 'badge-build';
-          else if (item.category === 'Спорт і відпочинок') badgeClass = 'badge-sport';
-          else if (item.category === 'Дача, сад і город') badgeClass = 'badge-garden';
-
+          const thumb = (item.photosArray && item.photosArray[0]) ? item.photosArray[0] : 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=300&q=80';
           const isOwnerOrAdmin = currentUser && (currentUser.email === ADMIN_EMAIL || currentUser.email === item.userEmail);
-          const collageHtml = buildCollageHtml(item.photosArray);
 
           card.innerHTML = `
-            <div class="card-body-content">
-              ${collageHtml}
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                <span class="badge ${badgeClass}">${item.category}</span>
-                <span style="font-size: 0.72rem; color: #94a3b8; font-weight: bold;">${item.condition}</span>
+            <div>
+              <div class="card-img-wrap" onclick="openProductDetail('${item.id}')">
+                <img src="${thumb}" alt="${item.title}">
               </div>
-              <h3 class="card-title" title="${item.title}">${item.title}</h3>
-              <p class="card-description" title="${item.description}">${item.description}</p>
+              <div class="card-title" onclick="openProductDetail('${item.id}')" title="${item.title}">${item.title}</div>
+              <div class="rating-stars">
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+              </div>
             </div>
-            <div style="margin-top: auto;">
-              <div style="font-size: 1.15rem; font-weight: bold; color: #2563eb; margin-bottom: 8px;">${item.price.toLocaleString('uk-UA')} грн</div>
-              <div style="font-size: 0.72rem; color: #64748b; margin-bottom: 8px;"><i class="fa-solid fa-phone"></i> ${item.contact}</div>
-              
-              <div style="display: flex; gap: 6px;">
-                <a href="tel:${item.contact}" style="flex: 1; text-align: center; padding: 8px; background: #1e3a8a; color: white; border-radius: 6px; text-decoration: none; font-size: 0.8rem; font-weight: bold;">
-                  <i class="fa-solid fa-phone"></i> Зателефонувати
-                </a>
-                ${isOwnerOrAdmin ? `
-                  <button class="delete-btn" data-id="${docId}" style="background: #ef4444; color: white; border: none; border-radius: 6px; padding: 0 10px; cursor: pointer; font-size: 0.8rem;" title="Видалити оголошення">
-                    <i class="fa-solid fa-trash"></i>
-                  </button>
-                ` : ''}
-              </div>
+            <div>
+              <div class="card-price">${item.price.toLocaleString('uk-UA')} ₴</div>
+              <button class="btn-buy-market" onclick="addToCart('${item.id}')">
+                <i class="fa-solid fa-cart-shopping"></i> Купити
+              </button>
+              ${isOwnerOrAdmin ? `
+                <div class="admin-actions">
+                  <button class="btn-sm-action" onclick="deleteProduct('${item.id}')" style="background: var(--danger); color: white;"><i class="fa-solid fa-trash"></i> Видалити</button>
+                </div>
+              ` : ''}
             </div>
           `;
           shopProductsContainer.appendChild(card);
         });
 
         filterCards();
-
-        // Видалення оголошення
-        document.querySelectorAll('.delete-btn').forEach(btn => {
-          btn.addEventListener('click', async (e) => {
-            const id = e.currentTarget.getAttribute('data-id');
-            if (confirm('Ви дійсно бажаєте видалити це оголошення?')) {
-              try {
-                await deleteDoc(doc(db, "shop_listings", id));
-                alert('Оголошення успішно видалено!');
-              } catch (err) {
-                alert('Помилка видалення: ' + err.message);
-              }
-            }
-          });
-        });
       });
 
       function filterCards() {
         const searchQuery = document.getElementById('shopSearch').value.toLowerCase();
-        const cards = document.querySelectorAll('.product-card');
+        document.querySelectorAll('.product-card').forEach(card => {
+          const cat = card.getAttribute('data-category');
+          const sub = card.getAttribute('data-subcategory');
+          const text = card.getAttribute('data-search');
 
-        cards.forEach(card => {
-          const cardCategory = card.getAttribute('data-category');
-          const cardText = card.getAttribute('data-description');
-          
-          let matchesCategory = true;
-          if (activeFilter !== 'all') {
-            matchesCategory = (cardCategory === activeFilter || cardText.includes(activeFilter.toLowerCase()));
-          }
+          const matchesFilter = (activeFilter === 'all' || cat === activeFilter || sub === activeFilter);
+          const matchesSearch = text.includes(searchQuery);
 
-          const matchesSearch = cardText.includes(searchQuery);
-
-          if (matchesCategory && matchesSearch) {
-            card.style.display = 'flex';
-          } else {
-            card.style.display = 'none';
-          }
+          card.style.display = (matchesFilter && matchesSearch) ? 'flex' : 'none';
         });
       }
 
-      document.getElementById('shopSearch')?.addEventListener('input', filterCards);
+      document.getElementById('shopSearch').addEventListener('input', filterCards);
     </script>
 </body>
 </html>

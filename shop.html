@@ -660,15 +660,16 @@
         <p>&copy; 2026 Neoservice.ks.ua — Дошка оголошень.</p>
     </footer>
 
-    <!-- Firebase та Логіка Дошки Оголошень і Слайдера -->
+    <!-- Firebase та Логіка Дошки Оголошень і Слайдера з пагінацією -->
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
       import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-      import { getFirestore, collection, addDoc, query, where, getDocs, orderBy, onSnapshot, doc, deleteDoc, updateDoc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+      import { getFirestore, collection, addDoc, query, where, getDocs, orderBy, limit, startAfter, onSnapshot, doc, deleteDoc, updateDoc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
       const ADMIN_EMAIL = "admin@neoservice.ks.ua"; 
       const ADMIN_ALT_EMAIL = "kostopilservice@gmail.com";
       const FREE_ADS_LIMIT = 5;
+      const PAGE_SIZE = 20;
 
       const firebaseConfig = {
         apiKey: "AIzaSyBlKoP6-M8tdrKq88bSdnWSnak5Gpddnpk",
@@ -708,7 +709,6 @@
         document.getElementById('sidebarBannerLink').href = slide.link || '#';
         document.getElementById('sidebarBannerBtnText').innerHTML = `${slide.btnText || 'Дізнатися більше'} <i class="fa-solid fa-arrow-right text-[11px] ml-1.5"></i>`;
 
-        // Рендер крапок
         const dotsContainer = document.getElementById('sidebarBannerDots');
         if (dotsContainer) {
           dotsContainer.innerHTML = sidebarSlides.map((_, i) => `
@@ -746,7 +746,6 @@
         }, 5000);
       }
 
-      // Слухаємо слайди з Firebase
       onSnapshot(bannerDocRef, async (docSnap) => {
         if (docSnap.exists() && docSnap.data().slides) {
           sidebarSlides = docSnap.data().slides;
@@ -754,17 +753,14 @@
           try {
             await setDoc(bannerDocRef, { slides: sidebarSlides });
           } catch (err) {
-            console.error("Помилка правил бази даних (Rules):", err.message);
+            console.error("Помилка налаштувань банера:", err.message);
           }
         }
         currentSlideIdx = 0;
         renderSidebarSlide();
         resetTimer();
-      }, (error) => {
-        console.error("Помилка підписки на налаштування банера:", error.message);
       });
 
-      // Адмінка слайдера з можливістю зміни посилань (URL)
       window.openBannerModal = async function() {
         try {
           const docSnap = await getDoc(bannerDocRef);
@@ -772,7 +768,7 @@
             sidebarSlides = docSnap.data().slides;
           }
         } catch (err) {
-          console.error("Помилка зчитування для адмінки:", err.message);
+          console.error("Помилка зчитування банерів:", err.message);
         }
         renderAdminSlideList();
         document.getElementById('bannerModal').style.display = 'flex';
@@ -842,7 +838,7 @@
       document.getElementById('cancelBannerBtn').addEventListener('click', () => document.getElementById('bannerModal').style.display = 'none');
 
 
-      // Категорії та товари
+      // Категорії та каталог
       const categoriesData = [
         { name: "Краса та здоров'я", icon: "fa-heart-pulse", sub: ["Догляд за волоссям", "Догляд за обличчям", "Парфумерія", "Манікюр"] },
         { name: "Товари для дому", icon: "fa-house", sub: ["Кухонне приладдя", "Посуд", "Освітлення", "Сантехніка"] },
@@ -867,6 +863,8 @@
       let currentUser = null;
       let allProducts = [];
       let activeFilter = 'all';
+      let lastVisibleDoc = null;
+      let isLoadingMore = false;
 
       function populateSubSelect(catName, targetSelect) {
         const catObj = categoriesData.find(c => c.name === catName);
@@ -1002,7 +1000,6 @@
       const newAdFormCard = document.getElementById('newAdFormCard');
       const addListingForm = document.getElementById('addListingForm');
 
-      // Перевірка ліміту 5 оголошень перед відкриттям форми
       document.getElementById('toggleFormBtn').addEventListener('click', async () => {
         if (!currentUser) {
           alert('Будь ласка, увійдіть в акаунт на головній сторінці!');
@@ -1010,7 +1007,6 @@
           return;
         }
 
-        // Якщо це редагування або адмін — пропускаємо ліміт
         const editingId = document.getElementById('editingDocId').value;
         if (!editingId && !isAdminUser(currentUser.email)) {
           try {
@@ -1041,7 +1037,6 @@
 
         const editingId = document.getElementById('editingDocId').value;
 
-        // Повторна перевірка ліміту перед створенням на випадок обходу
         if (!editingId && !isAdminUser(currentUser.email)) {
           try {
             const userAdsQuery = query(collection(db, "shop_listings"), where("userEmail", "==", currentUser.email));
@@ -1083,6 +1078,7 @@
           addListingForm.reset();
           document.getElementById('editingDocId').value = '';
           newAdFormCard.style.display = 'none';
+          loadInitialListings(); // Перезавантажуємо першу порцію
         } catch (err) {
           alert('Помилка: ' + err.message);
         }
@@ -1095,6 +1091,7 @@
             document.getElementById('productDetailView').style.display = 'none';
             document.getElementById('mainCatalogWrapper').style.display = 'block';
             alert('Оголошення видалено!');
+            loadInitialListings();
           } catch (err) {
             alert('Помилка: ' + err.message);
           }
@@ -1179,23 +1176,98 @@
         document.getElementById('mainCatalogWrapper').style.display = 'block';
       });
 
-      const q = query(collection(db, "shop_listings"), orderBy("createdAt", "desc"));
-      onSnapshot(q, (snapshot) => {
-        allProducts = [];
-        shopProductsContainer.innerHTML = '';
+      // ОПТИМІЗОВАНЕ ПОРЦІЙНЕ ЗАВАНТАЖЕННЯ (ПАГІНАЦІЯ)
+      async function loadInitialListings() {
+        shopProductsContainer.innerHTML = `<p style="grid-column: 1 / -1; text-align: center; color: #64748b; padding: 30px;">Завантаження оголошень...</p>`;
 
-        snapshot.forEach(docSnap => {
-          allProducts.push({ id: docSnap.id, ...docSnap.data() });
-        });
+        try {
+          const firstQuery = query(
+            collection(db, "shop_listings"),
+            orderBy("createdAt", "desc"),
+            limit(PAGE_SIZE)
+          );
 
-        renderSyncNewGrid(allProducts);
-
-        if (allProducts.length === 0) {
-          shopProductsContainer.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; padding: 30px; color: #64748b;">Оголошень поки немає. Будьте першим, хто розмістить пропозицію!</div>`;
-          return;
+          const snapshot = await getDocs(firstQuery);
+          allProducts = [];
+          
+          if (!snapshot.empty) {
+            lastVisibleDoc = snapshot.docs[snapshot.docs.length - 1];
+            snapshot.forEach(docSnap => {
+              allProducts.push({ id: docSnap.id, ...docSnap.data() });
+            });
+            renderProductsGrid(allProducts);
+            renderSyncNewGrid(allProducts);
+            
+            if (snapshot.docs.length === PAGE_SIZE) {
+              renderLoadMoreButton();
+            }
+          } else {
+            shopProductsContainer.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; padding: 30px; color: #64748b;">Оголошень поки немає. Будьте першим!</div>`;
+            renderSyncNewGrid([]);
+          }
+        } catch (err) {
+          console.error("Помилка завантаження:", err);
+          shopProductsContainer.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; padding: 30px; color: var(--danger);">Помилка завантаження даних.</div>`;
         }
+      }
 
-        allProducts.forEach(item => {
+      window.loadMoreListings = async function() {
+        if (isLoadingMore || !lastVisibleDoc) return;
+        isLoadingMore = true;
+
+        const loadMoreBtn = document.getElementById('loadMoreBtn');
+        if (loadMoreBtn) loadMoreBtn.textContent = 'Завантаження...';
+
+        try {
+          const nextQuery = query(
+            collection(db, "shop_listings"),
+            orderBy("createdAt", "desc"),
+            startAfter(lastVisibleDoc),
+            limit(PAGE_SIZE)
+          );
+
+          const snapshot = await getDocs(nextQuery);
+          
+          if (!snapshot.empty) {
+            lastVisibleDoc = snapshot.docs[snapshot.docs.length - 1];
+            snapshot.forEach(docSnap => {
+              allProducts.push({ id: docSnap.id, ...docSnap.data() });
+            });
+            renderProductsGrid(allProducts);
+
+            if (snapshot.docs.length < PAGE_SIZE) {
+              if (loadMoreBtn) loadMoreBtn.remove();
+            } else {
+              renderLoadMoreButton();
+            }
+          } else {
+            if (loadMoreBtn) loadMoreBtn.remove();
+          }
+        } catch (err) {
+          console.error("Помилка довантаження:", err);
+        } finally {
+          isLoadingMore = false;
+        }
+      };
+
+      function renderLoadMoreButton() {
+        let loadMoreContainer = document.getElementById('loadMoreContainer');
+        if (!loadMoreContainer) {
+          loadMoreContainer = document.createElement('div');
+          loadMoreContainer.id = 'loadMoreContainer';
+          loadMoreContainer.style.cssText = "grid-column: 1 / -1; text-align: center; margin-top: 30px; margin-bottom: 20px;";
+          shopProductsContainer.after(loadMoreContainer);
+        }
+        loadMoreContainer.innerHTML = `
+          <button id="loadMoreBtn" onclick="loadMoreListings()" class="btn-primary" style="padding: 10px 25px; font-size: 0.9rem; cursor: pointer;">
+            <i class="fa-solid fa-rotate"></i> Завантажити ще 20 оголошень
+          </button>
+        `;
+      }
+
+      function renderProductsGrid(products) {
+        shopProductsContainer.innerHTML = '';
+        products.forEach(item => {
           const card = document.createElement('div');
           card.className = 'product-card';
           card.setAttribute('data-category', item.category);
@@ -1230,9 +1302,8 @@
           `;
           shopProductsContainer.appendChild(card);
         });
-
         filterCards();
-      });
+      }
 
       function filterCards() {
         const searchQuery = document.getElementById('shopSearch').value.toLowerCase();
@@ -1249,6 +1320,9 @@
       }
 
       document.getElementById('shopSearch').addEventListener('input', filterCards);
+
+      // Запуск початкового завантаження при відкритті сторінки
+      loadInitialListings();
     </script>
 </body>
 </html>

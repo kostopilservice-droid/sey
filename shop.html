@@ -13,7 +13,7 @@
     <style>
         :root {
             --primary: #1e3a8a;
-            --shop-color: #8224e3; /* Фірмовий фіолетовий маркетплейсів */
+            --shop-color: #8224e3;
             --accent: #10b981;
             --danger: #ef4444;
             --bg: #f8fafc;
@@ -97,8 +97,6 @@
             background: #ffffff;
             border-right: 1px solid #e2e8f0;
             padding: 8px 0;
-            max-height: 420px;
-            overflow-y: auto;
         }
 
         .cat-item-btn {
@@ -125,12 +123,14 @@
             border-left: 4px solid var(--shop-color);
         }
 
+        /* Права зона: Підкатегорії + Сітка новинок знизу */
         .subcategories-panel {
             background: #ffffff;
             padding: 18px 22px;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            justify-content: space-between;
+            gap: 18px;
         }
 
         .subcategories-header {
@@ -139,6 +139,7 @@
             color: #1e3a8a;
             border-bottom: 2px solid #e2e8f0;
             padding-bottom: 8px;
+            margin-bottom: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -148,7 +149,7 @@
 
         .sub-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
             gap: 8px;
         }
 
@@ -173,7 +174,86 @@
             border-color: var(--shop-color);
         }
 
-        /* КОМПАКТНІ КАРТКИ ТОВАРІВ (СТИЛЬ МАРКЕТПЛЕЙСУ) */
+        /* БЛОК НОВИХ НАДХОДЖЕНЬ У СІТЦІ ПІД ПІДПУНКТАМИ */
+        .sync-new-section {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 14px;
+            margin-top: auto;
+        }
+        .sync-new-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .sync-new-title {
+            font-size: 0.82rem;
+            font-weight: 800;
+            color: #1e3a8a;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .sync-live-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+        }
+        .sync-new-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+        }
+        .sync-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 8px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .sync-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(130, 36, 227, 0.12);
+            border-color: var(--shop-color);
+        }
+        .sync-card img {
+            width: 100%;
+            height: 85px;
+            object-fit: cover;
+            border-radius: 6px;
+            background: #f1f5f9;
+            margin-bottom: 6px;
+        }
+        .sync-card-title {
+            font-size: 0.74rem;
+            font-weight: 600;
+            color: #1e293b;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            line-height: 1.25;
+            height: 2.5em;
+            margin-bottom: 4px;
+        }
+        .sync-card-price {
+            font-size: 0.82rem;
+            font-weight: 800;
+            color: var(--shop-color);
+        }
+
+        /* КОМПАКТНІ КАРТКИ ТОВАРІВ ОСНОВНОЇ СІТКИ */
         .market-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
@@ -278,7 +358,7 @@
             font-weight: bold;
         }
 
-        /* ПОВНОЦІННА СТОРІНКА ТОВАРУ (ДЕТАЛЬНИЙ ПЕРЕГЛЯД) */
+        /* ПОВНОЦІННА СТОРІНКА ТОВАРУ */
         #productDetailView {
             display: none;
             background: white;
@@ -289,7 +369,6 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.04);
         }
 
-        /* КНОПКИ ТА ІНТЕРФЕЙС */
         .btn-primary {
             background: var(--shop-color);
             color: white;
@@ -444,9 +523,9 @@
         </div>
       </div>
 
-      <!-- ГОЛОВНИЙ КАТАЛОГ (ПРИХОДИТЬ НА ЗМІНУ ПРИ ВІДКРИТТІ СТОРІНКИ ТОВАРУ) -->
+      <!-- ГОЛОВНИЙ КАТАЛОГ -->
       <div id="mainCatalogWrapper">
-        <!-- КАТЕГОРІЇ ТА ПОДІЛ -->
+        <!-- КАТЕГОРІЇ ТА ПІДРОЗДІЛИ + СІТКА НОВИНОК -->
         <div class="catalog-container">
           <div class="catalog-top-bar">
             <h3 class="catalog-title">
@@ -458,8 +537,26 @@
           </div>
 
           <div class="catalog-layout">
+            <!-- Ліва колонка: Категорії -->
             <div class="categories-sidebar" id="categoriesSidebar"></div>
-            <div class="subcategories-panel" id="subcategoriesContent"></div>
+            
+            <!-- Права колонка: Підкатегорії + Сітка новинок -->
+            <div class="subcategories-panel">
+              <div id="subcategoriesContent"></div>
+
+              <!-- БЛОК СИНХРОНІЗАЦІЇ НОВИХ ДОДАНИХ ТОВАРІВ В СІТЦІ -->
+              <div class="sync-new-section">
+                <div class="sync-new-header">
+                  <span class="sync-new-title">
+                    <span class="sync-live-dot"></span> New
+                  </span>
+                  <span style="font-size: 0.72rem; color: #64748b;">Останні додані товари</span>
+                </div>
+                <div class="sync-new-grid" id="syncNewGrid">
+                  <div style="font-size: 0.75rem; color: #64748b; grid-column: 1 / -1;">Очікування синхронізації з базою...</div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -470,7 +567,7 @@
           <form id="addListingForm" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
             <div>
               <label style="font-size: 0.75rem; font-weight: bold; color: #475569;">Назва товару:</label>
-              <input type="text" id="adTitle" maxlength="70" placeholder="Наприклад: Ліхтар акумуляторний" required style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; margin-top: 3px;" />
+              <input type="text" id="adTitle" maxlength="70" placeholder="Наприклад: Годинник наручний" required style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; margin-top: 3px;" />
             </div>
 
             <div>
@@ -485,7 +582,7 @@
 
             <div>
               <label style="font-size: 0.75rem; font-weight: bold; color: #475569;">Ціна (грн):</label>
-              <input type="number" id="adPrice" placeholder="749" required style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; margin-top: 3px;" />
+              <input type="number" id="adPrice" placeholder="1450" required style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; margin-top: 3px;" />
             </div>
 
             <div>
@@ -510,7 +607,7 @@
           </form>
         </div>
 
-        <!-- СІТКА ТОВАРІВ -->
+        <!-- ОСНОВНА СІТКА ТОВАРІВ -->
         <div class="market-grid" id="shopProductsContainer">
           <p style="grid-column: 1 / -1; text-align: center; color: #64748b; padding: 30px;">Завантаження товарів...</p>
         </div>
@@ -522,9 +619,7 @@
           <i class="fa-solid fa-arrow-left"></i> Назад до каталогу
         </button>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; align-items: start;" id="productDetailContent">
-          <!-- Заповнюється скриптом -->
-        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; align-items: start;" id="productDetailContent"></div>
       </div>
 
     </div>
@@ -586,6 +681,7 @@
 
       const categoriesSidebar = document.getElementById('categoriesSidebar');
       const subcategoriesContent = document.getElementById('subcategoriesContent');
+      const syncNewGrid = document.getElementById('syncNewGrid');
       const shopProductsContainer = document.getElementById('shopProductsContainer');
       const adCategorySelect = document.getElementById('adCategory');
       const adSubcategorySelect = document.getElementById('adSubcategory');
@@ -687,6 +783,28 @@
         filterCards();
       });
 
+      // Рендеринг синхронізованої сітки нових товарів під підкатегоріями
+      function renderSyncNewGrid(products) {
+        const latest = products.slice(0, 6); // Показуємо останні 6 доданих товарів у сітці
+        if (latest.length === 0) {
+          syncNewGrid.innerHTML = `<div style="font-size: 0.76rem; color: #64748b; grid-column: 1 / -1;">Нових товарів поки немає. Додайте перший товар через кнопку зверху!</div>`;
+          return;
+        }
+
+        syncNewGrid.innerHTML = latest.map(item => {
+          const thumb = (item.photosArray && item.photosArray[0]) ? item.photosArray[0] : 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=300&q=80';
+          return `
+            <div class="sync-card" onclick="openProductDetail('${item.id}')">
+              <div>
+                <img src="${thumb}" alt="${item.title}">
+                <div class="sync-card-title" title="${item.title}">${item.title}</div>
+              </div>
+              <div class="sync-card-price">${item.price.toLocaleString('uk-UA')} ₴</div>
+            </div>
+          `;
+        }).join('');
+      }
+
       onAuthStateChanged(auth, (user) => {
         currentUser = user;
         const toggleBtn = document.getElementById('toggleFormBtn');
@@ -734,7 +852,7 @@
 
           document.getElementById('addListingForm').reset();
           newAdFormCard.style.display = 'none';
-          alert('Товар успішно додано!');
+          alert('Товар успішно додано та синхронізовано!');
         } catch (err) {
           alert('Помилка: ' + err.message);
         }
@@ -790,7 +908,7 @@
             
             ${isOwnerOrAdmin ? `
               <div style="margin-top: 20px; border-top: 1px solid #e2e8f0; padding-top: 15px;">
-                <button class="btn-sm-action" onclick="deleteProduct('${item.id}'); backToCatalog.click();" style="background: var(--danger); color: white; padding: 6px 12px; font-size: 0.78rem;">
+                <button class="btn-sm-action" onclick="deleteProduct('${item.id}'); backToCatalogBtn.click();" style="background: var(--danger); color: white; padding: 6px 12px; font-size: 0.78rem;">
                   <i class="fa-solid fa-trash"></i> Видалити цей товар
                 </button>
               </div>
@@ -865,7 +983,7 @@
       });
       updateCartUI();
 
-      // Отримання товарів з Firebase
+      // Синхронізація товарів з Firebase в реальному часі
       const q = query(collection(db, "shop_listings"), orderBy("createdAt", "desc"));
       onSnapshot(q, (snapshot) => {
         allProducts = [];
@@ -874,6 +992,9 @@
         snapshot.forEach(docSnap => {
           allProducts.push({ id: docSnap.id, ...docSnap.data() });
         });
+
+        // Оновлюємо сітку новинок під підкатегоріями
+        renderSyncNewGrid(allProducts);
 
         if (allProducts.length === 0) {
           shopProductsContainer.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; padding: 30px; color: #64748b;">Товарів поки немає.</div>`;

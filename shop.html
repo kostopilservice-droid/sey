@@ -51,104 +51,149 @@
             padding: 0 15px;
         }
 
-        /* КАТАЛОГ З ВИПАДАЮЧИМИ ПІДКАТЕГОРІЯМИ */
-        .catalog-section {
+        /* ПРОФЕСІЙНИЙ КАТАЛОГ (PROMETHEUS / PROMO STYLE) */
+        .catalog-container {
+            position: relative;
             background: white;
             border-radius: 12px;
-            padding: 20px;
-            margin-top: 20px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.04);
             border: 1px solid #e2e8f0;
+            margin-top: 20px;
+            overflow: hidden;
         }
-        .catalog-header {
-            font-size: 1.05rem;
+
+        .catalog-top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .catalog-title {
+            font-size: 1rem;
             font-weight: bold;
             color: #1e3a8a;
-            margin-bottom: 15px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            margin: 0;
         }
 
-        .categories-grid {
+        /* Двопанельний каталог: Зліва категорії, справа випадаюча панель */
+        .catalog-layout {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 12px;
+            grid-template-columns: 280px 1fr;
+            min-height: 380px;
         }
 
-        .category-card {
-            border: 1px solid #e2e8f0;
-            border-radius: 10px;
-            background: #f8fafc;
-            overflow: hidden;
-            transition: all 0.2s;
-        }
-        .category-card:hover {
-            border-color: var(--shop-color);
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.08);
+        @media (max-width: 850px) {
+            .catalog-layout {
+                grid-template-columns: 1fr;
+            }
         }
 
-        .category-main-btn {
+        .categories-sidebar {
+            background: #ffffff;
+            border-right: 1px solid #e2e8f0;
+            padding: 10px 0;
+            max-height: 420px;
+            overflow-y: auto;
+        }
+
+        .cat-item-btn {
             width: 100%;
-            background: white;
+            background: transparent;
             border: none;
-            padding: 12px 15px;
+            padding: 12px 20px;
             text-align: left;
             font-size: 0.85rem;
-            font-weight: bold;
-            color: #1e293b;
+            font-weight: 600;
+            color: #334155;
             cursor: pointer;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            transition: background 0.2s, color 0.2s;
+            transition: all 0.2s;
         }
-        .category-main-btn:hover, .category-main-btn.active {
-            background: var(--shop-color);
-            color: white;
-        }
-        .category-main-btn i.arrow {
-            transition: transform 0.3s;
-        }
-        .category-card.open .category-main-btn i.arrow {
-            transform: rotate(90deg);
-        }
-
-        /* Випадаючий список підпунктів */
-        .subcategories-list {
-            display: none;
-            padding: 10px 15px;
-            background: white;
-            border-top: 1px solid #e2e8f0;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-        .category-card:not(.open) .subcategories-list {
-            display: none !important;
-        }
-
-        .sub-btn {
-            background: transparent;
-            border: none;
-            text-align: left;
-            font-size: 0.78rem;
-            color: #475569;
-            padding: 5px 8px;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.15s;
-        }
-        .sub-btn:hover {
+        .cat-item-btn:hover, .cat-item-btn.active {
             background: #eff6ff;
             color: var(--shop-color);
-            padding-left: 12px;
+            padding-left: 24px;
         }
-        .sub-btn.active {
+        .cat-item-btn.active {
+            border-left: 4px solid var(--shop-color);
+            background: #eff6ff;
+        }
+
+        /* Панель підкатегорій праворуч */
+        .subcategories-panel {
+            background: #ffffff;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .subcategories-header {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #1e3a8a;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .sub-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 12px;
+        }
+
+        .sub-chip {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #475569;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .sub-chip:hover {
             background: var(--shop-color);
             color: white;
-            font-weight: bold;
+            border-color: var(--shop-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(37, 99, 235, 0.15);
         }
+        .sub-chip.active {
+            background: var(--shop-color);
+            color: white;
+            border-color: var(--shop-color);
+        }
+
+        /* Кнопка скидання */
+        .reset-filter-btn {
+            background: #e2e8f0;
+            color: #334155;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .reset-filter-btn:hover { background: #cbd5e1; }
 
         .market-grid {
             display: grid;
@@ -167,7 +212,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            height: 440px; /* Суворо фіксована висота вікна */
+            height: 440px;
             box-sizing: border-box;
             transition: transform 0.2s, box-shadow 0.2s;
             overflow: hidden;
@@ -225,7 +270,7 @@
         .photo-collage-1 { grid-template-columns: 1fr; }
         .photo-collage-2 { grid-template-columns: 1fr 1fr; }
         .photo-collage-3 { grid-template-columns: 2fr 1fr; }
-        .photo-collage-3 .sub-grid { display: grid; grid-template-rows: 1fr 1fr; gap: 3px; }
+        .photo-collage-3 .sub-grid-img { display: grid; grid-template-rows: 1fr 1fr; gap: 3px; }
 
         .photo-collage img {
             width: 100%;
@@ -288,21 +333,6 @@
             transition: background 0.2s;
         }
         .btn-add:hover { background: #1d4ed8; }
-
-        /* Кнопка скидання фільтрів */
-        .reset-filter-btn {
-            background: #e2e8f0;
-            color: #334155;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            cursor: pointer;
-            margin-bottom: 15px;
-            transition: background 0.2s;
-        }
-        .reset-filter-btn:hover { background: #cbd5e1; }
 
         /* МОДАЛЬНЕ ВІКНО ПЕРЕГЛЯДУ ФОТО (LIGHTBOX) */
         .lightbox-modal {
@@ -427,7 +457,7 @@
         <div>
           <h1 style="margin: 0 0 6px 0; font-size: 1.3rem; color: #1e3a8a;">🛍️ Центральний Маркетплейс Оголошень</h1>
           <p style="margin: 0; font-size: 0.85rem; color: #64748b;">
-            Обирайте серед тисяч пропозицій у зручних структурованих категоріях з випадаючими підпунктами.
+            Обирайте серед тисяч пропозицій у професійному каталозі.
           </p>
         </div>
 
@@ -438,19 +468,27 @@
         </div>
       </div>
 
-      <!-- ПРОФЕСІЙНИЙ БЛОК КАТЕГОРІЙ З ВИПАДАЮЧИМ МЕНЮ -->
-      <div class="catalog-section">
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 12px;">
-          <div class="catalog-header" style="margin-bottom: 0;">
+      <!-- ПРОФЕСІЙНИЙ КАТАЛОГ (ДВОПАНЕЛЬНЕ МЕГА-МЕНЮ) -->
+      <div class="catalog-container">
+        <div class="catalog-top-bar">
+          <h3 class="catalog-title">
             <i class="fa-solid fa-bars-staggered" style="color: var(--shop-color);"></i> Інтерактивний каталог категорій
-          </div>
-          <button class="reset-filter-btn" id="resetFilterBtn" style="display: none;">
+          </h3>
+          <button class="reset-filter-btn" id="resetFilterBtn">
             <i class="fa-solid fa-rotate-left"></i> Показати всі товари
           </button>
         </div>
 
-        <div class="categories-grid" id="categoriesGrid">
-          <!-- Генерація категорій скриптом -->
+        <div class="catalog-layout">
+          <!-- Ліва колонка: Головні категорії -->
+          <div class="categories-sidebar" id="categoriesSidebar">
+            <!-- Заповнюється скриптом -->
+          </div>
+
+          <!-- Права колонка: Детальні підкатегорії -->
+          <div class="subcategories-panel" id="subcategoriesPanel">
+            <!-- Заповнюється динамічно при виборі категорії -->
+          </div>
         </div>
       </div>
 
@@ -498,10 +536,6 @@
               <input type="url" id="adPhoto2" placeholder="Фото 2 https://..." style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; background: white;" />
               <input type="url" id="adPhoto3" placeholder="Фото 3 https://..." style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; background: white;" />
               <input type="url" id="adPhoto4" placeholder="Фото 4 https://..." style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; background: white;" />
-            </div>
-            <div style="font-size: 0.74rem; color: #64748b; margin-top: 8px; line-height: 1.4;">
-              <i class="fa-solid fa-circle-info" style="color: var(--shop-color);"></i> 
-              Використовуйте прямі посилання на зображення (наприклад, ImgBB або Postimages).
             </div>
           </div>
 
@@ -566,67 +600,56 @@
         {
           name: "Краса та здоров'я",
           icon: "fa-heart-pulse",
-          badgeClass: "badge-beauty",
           sub: ["Догляд за волоссям", "Догляд за обличчям", "Догляд за тілом", "Парфумерія", "Манікюр та педикюр", "Все для епіляції"]
         },
         {
           name: "Товари для дому",
           icon: "fa-house",
-          badgeClass: "badge-home",
           sub: ["Кухонне приладдя", "Посуд", "Освітлення для дому", "Розумний дім", "Сантехніка", "Декор та аксесуари"]
         },
         {
           name: "Одяг та взуття",
           icon: "fa-shirt",
-          badgeClass: "badge-style",
           sub: ["Чоловічий одяг", "Жіночий одяг", "Дитячий одяг та взуття", "Взуття", "Спортивний одяг", "Аксесуари та сумки"]
         },
         {
           name: "Техніка та електроніка",
           icon: "fa-laptop",
-          badgeClass: "badge-tech",
           sub: ["Смартфони та телефони", "Комп'ютерна техніка", "Автономна енергетика (Інвертори, акумулятори)", "ТБ та медіа", "Аудіотехніка", "Роутери та зв'язок"]
         },
         {
           name: "Товари для дітей",
           icon: "fa-child-reaching",
-          badgeClass: "badge-kids",
           sub: ["Іграшки та конструктори", "Дитячий транспорт та візки", "Дитяче харчування", "Гігієна та догляд", "Дитячі меблі"]
         },
         {
           name: "Авто-, мото",
           icon: "fa-car-rear",
-          badgeClass: "badge-auto",
           sub: ["Автозапчастини", "Автоелектроніка", "Автоінструмент", "Диски і шини", "Мотоекіпірування та скутери", "Автоаксесуари"]
         },
         {
           name: "Подарунки, хобі, книги",
           icon: "fa-gift",
-          badgeClass: "badge-gifts",
           sub: ["Подарунки і сувеніри", "Книги та література", "Настільні ігри", "Музичні інструменти", "Рукоділля та творчість"]
         },
         {
           name: "Аксесуари та прикраси",
           icon: "fa-gem",
-          badgeClass: "badge-accessories",
           sub: ["Ювелірні вироби", "Біжутерія", "Годинники", "Сумки, вази, портфелі", "Головні убори та шарфи"]
         },
         {
           name: "Матеріали для ремонту",
           icon: "fa-hammer",
-          badgeClass: "badge-build",
           sub: ["Електроінструмент", "Сантехніка та водопостачання", "Вікна та двері", "Підлогові покриття", "Будівельні матеріали"]
         },
         {
           name: "Спорт і відпочинок",
           icon: "fa-person-biking",
-          badgeClass: "badge-sport",
           sub: ["Велосипеди та аксесуари", "Туристичне спорядження", "Екстремальні види спорту", "Товари для командних ігор", "Фітнес та тренування"]
         },
         {
           name: "Дача, сад і город",
           icon: "fa-seedling",
-          badgeClass: "badge-garden",
           sub: ["Садовий інструмент", "Рослини та насіння", "Системи поливу", "Техніка для саду", "Товари для барбекю"]
         }
       ];
@@ -636,108 +659,122 @@
       const cancelFormBtn = document.getElementById('cancelFormBtn');
       const addListingForm = document.getElementById('addListingForm');
       const shopProductsContainer = document.getElementById('shopProductsContainer');
-      const categoriesGrid = document.getElementById('categoriesGrid');
+      const categoriesSidebar = document.getElementById('categoriesSidebar');
+      const subcategoriesPanel = document.getElementById('subcategoriesPanel');
       const resetFilterBtn = document.getElementById('resetFilterBtn');
       const adCategorySelect = document.getElementById('adCategory');
 
       let currentUser = null;
       let currentGallery = [];
       let currentImgIndex = 0;
-      let activeFilter = 'all'; // Може бути назвою категорії або конкретним підпунктом
+      let activeFilter = 'all'; 
+      let currentSelectedCategory = categoriesData[0].name; // За замовчуванням перша категорія
 
-      // Рендеринг випадаючого меню категорій
-      function renderCategoriesMenu() {
-        categoriesGrid.innerHTML = '';
+      // Рендеринг інтерфейсу каталогу
+      function renderCatalog() {
+        categoriesSidebar.innerHTML = '';
         adCategorySelect.innerHTML = '';
 
-        categoriesData.forEach(cat => {
-          // Додаємо в селект форми подачі оголошення
+        categoriesData.forEach((cat, index) => {
+          // Оновлюємо селект форми
           const opt = document.createElement('option');
           opt.value = cat.name;
           opt.textContent = cat.name;
           adCategorySelect.appendChild(opt);
 
-          // Створюємо картку каталогу
-          const card = document.createElement('div');
-          card.className = 'category-card';
+          // Кнопка в сайдбарі
+          const btn = document.createElement('button');
+          btn.className = `cat-item-btn ${index === 0 ? 'active' : ''}`;
+          btn.innerHTML = `<span><i class="fa-solid ${cat.icon}" style="color: var(--shop-color); margin-right: 8px;"></i> ${cat.name}</span> <i class="fa-solid fa-chevron-right" style="font-size: 0.75rem; color: #94a3b8;"></i>`;
+          
+          btn.addEventListener('mouseenter', () => {
+            selectCategory(cat.name);
+          });
+          btn.addEventListener('click', () => {
+            selectCategory(cat.name);
+            // Клік по головній категорії також фільтрує товар
+            activeFilter = cat.name;
+            highlightActiveChips();
+            filterCards();
+          });
 
-          let subButtonsHtml = cat.sub.map(s => `<button class="sub-btn" data-sub="${s}">${s}</button>`).join('');
+          categoriesSidebar.appendChild(btn);
+        });
 
-          card.innerHTML = `
-            <button class="category-main-btn" data-cat="${cat.name}">
-              <span><i class="fa-solid ${cat.icon}" style="color: var(--shop-color); margin-right: 8px;"></i> ${cat.name}</span>
-              <i class="fa-solid fa-chevron-right arrow"></i>
+        renderSubcategories(currentSelectedCategory);
+      }
+
+      function selectCategory(catName) {
+        currentSelectedCategory = catName;
+        document.querySelectorAll('.cat-item-btn').forEach(b => {
+          if (b.innerText.includes(catName)) {
+            b.classList.add('active');
+          } else {
+            b.classList.remove('active');
+          }
+        });
+        renderSubcategories(catName);
+      }
+
+      function renderSubcategories(catName) {
+        const catObj = categoriesData.find(c => c.name === catName);
+        if (!catObj) return;
+
+        let chipsHtml = catObj.sub.map(s => `
+          <button class="sub-chip ${activeFilter === s ? 'active' : ''}" data-sub="${s}">
+            <i class="fa-solid fa-angle-right" style="color: var(--shop-color); font-size: 0.75rem;"></i> ${s}
+          </button>
+        `).join('');
+
+        subcategoriesPanel.innerHTML = `
+          <div class="subcategories-header">
+            <span>${catObj.name}</span>
+            <button class="sub-chip" style="background: var(--shop-color); color: white; border: none; padding: 6px 12px; font-size: 0.75rem;" data-cat-filter="${catObj.name}">
+              Всі у категорії "${catObj.name}"
             </button>
-            <div class="subcategories-list">
-              ${subButtonsHtml}
-            </div>
-          `;
-          categoriesGrid.appendChild(card);
-        });
+          </div>
+          <div class="sub-grid">
+            ${chipsHtml}
+          </div>
+        `;
 
-        // Обробники кліків для розгортання та фільтрації
-        document.querySelectorAll('.category-main-btn').forEach(btn => {
-          btn.addEventListener('click', (e) => {
-            const card = btn.closest('.category-card');
-            const catName = btn.getAttribute('data-cat');
-
-            // Якщо клікнули повторно по активній головній категорії - фільтруємо по ній
-            if (activeFilter === catName) {
-              // Згортаємо інші і відкриваємо цю
-            }
-
-            // Перемикаємо відкриття меню
-            const isOpen = card.classList.contains('open');
-            document.querySelectorAll('.category-card').forEach(c => c.classList.remove('open'));
-            if (!isOpen) {
-              card.classList.add('open');
-            }
-
-            activeFilter = catName;
-            highlightActiveButtons();
+        // Обробники кліків на чіпси підкатегорій
+        subcategoriesPanel.querySelectorAll('.sub-chip[data-sub]').forEach(chip => {
+          chip.addEventListener('click', () => {
+            activeFilter = chip.getAttribute('data-sub');
+            highlightActiveChips();
             filterCards();
-            resetFilterBtn.style.display = 'block';
           });
         });
 
-        // Обробники для підпунктів
-        document.querySelectorAll('.sub-btn').forEach(sBtn => {
-          sBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            activeFilter = sBtn.getAttribute('data-sub');
-            highlightActiveButtons();
+        // Кнопка фільтрації по всій головній категорії
+        const mainCatFilterBtn = subcategoriesPanel.querySelector('[data-cat-filter]');
+        if (mainCatFilterBtn) {
+          mainCatFilterBtn.addEventListener('click', () => {
+            activeFilter = catObj.name;
+            highlightActiveChips();
             filterCards();
-            resetFilterBtn.style.display = 'block';
           });
+        }
+      }
+
+      function highlightActiveChips() {
+        document.querySelectorAll('.sub-chip').forEach(c => {
+          if (c.getAttribute('data-sub') === activeFilter || c.getAttribute('data-cat-filter') === activeFilter) {
+            c.classList.add('active');
+          } else {
+            c.classList.remove('active');
+          }
         });
       }
 
-      renderCategoriesMenu();
+      renderCatalog();
 
       resetFilterBtn.addEventListener('click', () => {
         activeFilter = 'all';
-        document.querySelectorAll('.category-card').forEach(c => c.classList.remove('open'));
-        highlightActiveButtons();
+        highlightActiveChips();
         filterCards();
-        resetFilterBtn.style.display = 'none';
       });
-
-      function highlightActiveButtons() {
-        document.querySelectorAll('.category-main-btn').forEach(b => {
-          if (b.getAttribute('data-cat') === activeFilter) {
-            b.classList.add('active');
-          } else {
-            b.classList.remove('active');
-          }
-        });
-        document.querySelectorAll('.sub-btn').forEach(b => {
-          if (b.getAttribute('data-sub') === activeFilter) {
-            b.classList.add('active');
-          } else {
-            b.classList.remove('active');
-          }
-        });
-      }
 
       onAuthStateChanged(auth, (user) => {
         currentUser = user;
@@ -802,7 +839,7 @@
         }
 
         if (urls.length === 0) {
-          urls = ["https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=600&q=80"]; // Заглушка
+          urls = ["https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=600&q=80"]; 
         }
 
         const photosJson = JSON.stringify(urls).replace(/"/g, '&quot;');
@@ -825,7 +862,7 @@
           return `
             <div class="photo-collage photo-collage-3">
               <img src="${urls[0]}" alt="Головне фото" onclick="openLightbox(${photosJson}, 0)">
-              <div class="sub-grid">
+              <div class="sub-grid-img">
                 <img src="${urls[1]}" alt="Фото 2" onclick="openLightbox(${photosJson}, 1)">
                 <img src="${urls[2]}" alt="Фото 3" onclick="openLightbox(${photosJson}, 2)">
               </div>
@@ -988,7 +1025,6 @@
           
           let matchesCategory = true;
           if (activeFilter !== 'all') {
-            // Перевіряємо, чи збігається категорія або підкатегорія (шукається в тексті картки)
             matchesCategory = (cardCategory === activeFilter || cardText.includes(activeFilter.toLowerCase()));
           }
 

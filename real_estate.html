@@ -30,14 +30,6 @@
             border-bottom: 2px solid #db4437;
         }
 
-        .real-estate-hero {
-            position: relative;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.94) 0%, rgba(248, 250, 252, 0.82) 100%), 
-                        url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1600') center/cover no-repeat;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
-        }
-
         .search-box-red {
             background-color: #db4437;
             border-radius: 6px;
@@ -169,14 +161,20 @@
             <a href="index.html" class="hover:underline">NEOSERVICE</a> &gt; <span id="breadcrumbCategory">Нерухомість</span>
         </div>
         
-        <!-- ЕСТЕТИЧНА ОБКЛАДИНКА З ЗМ’ЯКШЕНИМ СІРИМ ТЕКСТОМ -->
-        <div class="real-estate-hero p-6 sm:p-10 flex flex-col justify-center rounded-2xl border border-slate-200/60 shadow-sm relative overflow-hidden">
-            <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-800 tracking-tight mb-2 drop-shadow-sm" id="mainHeaderTitle">
-                Продаж та оренда нерухомості в Україні
-            </h1>
-            <p class="text-xs sm:text-sm text-slate-600 max-w-2xl font-medium leading-relaxed">
-                Сучасний портал оголошень житлової та комерційної нерухомості. Надійні пропозиції у місті Костопіль, Рівненській області та по всій Україні.
-            </p>
+        <!-- ОНОВЛЕНИЙ БАНЕР НА БІЛОМУ ФОНІ З ЯСКРАВИМ АКЦЕНТОМ -->
+        <div class="bg-white border border-gray-200 rounded-lg p-5 sm:p-8 shadow-sm flex flex-col justify-center relative overflow-hidden">
+            <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-[#db4437]"></div>
+            <div class="pl-2 sm:pl-3">
+                <span class="inline-flex items-center gap-1.5 bg-red-50 text-[#db4437] font-extrabold text-[11px] px-2.5 py-0.5 rounded uppercase tracking-wider mb-2">
+                    <i class="fa-solid fa-building-check"></i> Нерухомість України
+                </span>
+                <h1 class="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight mb-1.5" id="mainHeaderTitle">
+                    Продаж та оренда нерухомості в Україні
+                </h1>
+                <p class="text-xs sm:text-sm text-gray-700 max-w-2xl font-medium leading-relaxed">
+                    Актуальний каталог житлової та комерційної нерухомості. Перевірені оголошення у місті <span class="text-gray-900 font-bold">Костопіль</span>, Рівненській області та по всій Україні.
+                </p>
+            </div>
         </div>
 
         <!-- ЧЕРВОНИЙ БЛОК ФІЛЬТРІВ -->
@@ -1255,7 +1253,7 @@
         window.prevGalleryImage = function(e) {
             if (e) e.stopPropagation();
             if (currentGalleryPhotos.length <= 1) return;
-            currentPhotoIndex = (currentGalleryPhotos.length - 1 + currentGalleryPhotos.length) % currentGalleryPhotos.length;
+            currentPhotoIndex = (currentPhotoIndex - 1 + currentGalleryPhotos.length) % currentGalleryPhotos.length;
             updateGalleryUI();
         };
 

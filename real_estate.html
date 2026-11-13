@@ -406,7 +406,7 @@
                 </div>
             </div>
 
-            <!-- САЙДБАР (БЛОК КАТЕГОРІЙ + БАНЕР З АВТОСЛАЙДЕРОМ ТА НАЛАШТУВАННЯМИ) -->
+            <!-- САЙДБАР (БЛОК КАТЕГОРІЙ + СВІТЛИЙ БАНЕР З АВТОСЛАЙДЕРОМ ТА НАЛАШТУВАННЯМИ) -->
             <div class="space-y-5 text-xs">
                 
                 <!-- БЛОК КАТЕГОРІЙ -->
@@ -420,54 +420,51 @@
                     </ul>
                 </div>
 
-                <!-- ПРЕМІУМ ДІЛОВИЙ БАНЕР САЙДБАРА З АВТОСЛАЙДЕРОМ -->
-                <div id="sidebarBannerContainer" class="bg-slate-900 rounded-2xl border border-slate-200/80 overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 relative group">
+                <!-- СВІТЛИЙ БАНЕР САЙДБАРА В СТИЛІ САЙТУ З АВТОСЛАЙДЕРОМ -->
+                <div id="sidebarBannerContainer" class="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 relative group">
                     <a id="sidebarBannerLink" href="commercial.html" target="_blank" class="block">
-                        <div class="relative h-60 bg-slate-950 overflow-hidden">
-                            <!-- Фонове зображення з плавним масштабуванням -->
-                            <img id="sidebarBannerImg" src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600" alt="Рекламний банер" class="w-full h-full object-cover opacity-85 group-hover:scale-105 transition-transform duration-700 ease-out">
+                        <!-- Верхнє фото без темного перекриття -->
+                        <div class="relative h-40 bg-gray-100 overflow-hidden border-b border-gray-100">
+                            <img id="sidebarBannerImg" src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600" alt="Рекламний банер" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out">
                             
-                            <!-- Глибокий корпоративний градієнт для ідеальної читабельності тексту -->
-                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/55 to-slate-900/10"></div>
-                            
-                            <!-- Верхній скляний бейдж "ПАРТНЕР" -->
-                            <div class="absolute top-3.5 left-3.5 flex items-center gap-1.5 bg-slate-900/65 backdrop-blur-md border border-white/15 px-2.5 py-1 rounded-full shadow-sm">
-                                <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
-                                <span class="text-[9px] font-bold text-white/95 uppercase tracking-widest">Партнер</span>
+                            <!-- Світлий акуратний бейдж "ПАРТНЕР" -->
+                            <div class="absolute top-2.5 left-2.5 flex items-center gap-1.5 bg-white/95 backdrop-blur-sm border border-gray-200 px-2.5 py-0.5 rounded-full shadow-sm">
+                                <span class="w-1.5 h-1.5 rounded-full bg-[#db4437]"></span>
+                                <span class="text-[9px] font-extrabold text-gray-800 uppercase tracking-wider">Партнер</span>
                             </div>
 
-                            <!-- Контентна частина внизу -->
-                            <div class="absolute bottom-4 left-4 right-4 text-white">
-                                <h4 id="sidebarBannerTitle" class="font-extrabold text-base leading-snug line-clamp-2 tracking-tight drop-shadow-sm">
-                                    Оцінка Нерухомості
-                                </h4>
-                                <p id="sidebarBannerSubtitle" class="text-xs text-slate-300 line-clamp-2 mt-1 font-normal leading-relaxed">
-                                    Твоє місто
-                                </p>
-                                
-                                <!-- Ділова кнопка з плавною анімацією стрілки -->
-                                <div class="mt-3.5">
-                                    <span id="sidebarBannerBtnText" class="inline-flex items-center justify-center w-full py-2 px-4 bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-slate-950 font-extrabold text-xs rounded-xl shadow-md transition-all duration-200 group-hover:shadow-amber-500/25">
-                                        Дізнатися більше <i class="fa-solid fa-arrow-right text-[10px] ml-1.5 transition-transform duration-200 group-hover:translate-x-1"></i>
-                                    </span>
-                                </div>
+                            <!-- Індикатори слайдів -->
+                            <div id="sidebarBannerDots" class="absolute top-2.5 right-2.5 flex items-center gap-1 bg-black/50 backdrop-blur-sm px-2 py-1 rounded-full z-10"></div>
+                        </div>
+
+                        <!-- Біла нижня частина з яскравим контрастним текстом -->
+                        <div class="p-4 bg-white">
+                            <h4 id="sidebarBannerTitle" class="font-extrabold text-base text-gray-900 leading-snug line-clamp-2 group-hover:text-[#db4437] transition-colors">
+                                Оцінка Нерухомості
+                            </h4>
+                            <p id="sidebarBannerSubtitle" class="text-xs text-gray-600 line-clamp-2 mt-1 font-medium leading-relaxed">
+                                Твоє місто
+                            </p>
+                            
+                            <!-- Яскрава червона кнопка у фірмовому стилі NEOSERVICE -->
+                            <div class="mt-3.5">
+                                <span id="sidebarBannerBtnText" class="inline-flex items-center justify-center w-full py-2 px-4 bg-[#db4437] hover:bg-red-700 text-white font-bold text-xs rounded-lg shadow-sm transition-all duration-200">
+                                    Дізнатися більше <i class="fa-solid fa-arrow-right text-[10px] ml-1.5 transition-transform duration-200 group-hover:translate-x-1"></i>
+                                </span>
                             </div>
                         </div>
                     </a>
 
-                    <!-- СКЛЯНІ КНОПКИ ПЕРЕМКНЕННЯ СЛАЙДІВ -->
-                    <button onClick="prevSidebarSlide(event)" class="absolute left-2.5 top-1/2 -translate-y-1/2 bg-slate-900/50 hover:bg-slate-900/85 backdrop-blur-md border border-white/15 text-white w-7 h-7 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200 z-10 shadow-md">
+                    <!-- КНОПКИ ПЕРЕМИКАННЯ СЛАЙДІВ (ПО ЦЕНТРУ ФОТО) -->
+                    <button onClick="prevSidebarSlide(event)" class="absolute left-2 top-20 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 border border-gray-200 w-7 h-7 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200 z-10 shadow">
                         <i class="fa-solid fa-chevron-left text-[10px]"></i>
                     </button>
-                    <button onClick="nextSidebarSlide(event)" class="absolute right-2.5 top-1/2 -translate-y-1/2 bg-slate-900/50 hover:bg-slate-900/85 backdrop-blur-md border border-white/15 text-white w-7 h-7 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200 z-10 shadow-md">
+                    <button onClick="nextSidebarSlide(event)" class="absolute right-2 top-20 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 border border-gray-200 w-7 h-7 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200 z-10 shadow">
                         <i class="fa-solid fa-chevron-right text-[10px]"></i>
                     </button>
 
-                    <!-- ІНДИКАТОРИ СЛАЙДІВ У СКЛЯНІЙ КАПСУЛІ -->
-                    <div id="sidebarBannerDots" class="absolute top-3.5 right-3.5 flex items-center gap-1.5 bg-slate-950/45 backdrop-blur-md px-2 py-1.5 rounded-full border border-white/10 z-10"></div>
-
                     <!-- КНОПКА НАЛАШТУВАННЯ БАНЕРА (ДЛЯ АДМІНІСТРАТОРА) -->
-                    <button id="adminBannerSettingsBtn" onClick="openBannerModal()" class="hidden w-full py-2 bg-slate-950 hover:bg-slate-900 text-amber-400/90 hover:text-amber-300 font-semibold text-[11px] items-center justify-center gap-1.5 border-t border-slate-800 transition-colors">
+                    <button id="adminBannerSettingsBtn" onClick="openBannerModal()" class="hidden w-full py-2 bg-gray-50 hover:bg-gray-100 text-gray-700 hover:text-[#db4437] font-bold text-[11px] items-center justify-center gap-1.5 border-t border-gray-200 transition-colors">
                         <i class="fa-solid fa-sliders"></i> Керувати слайдером
                     </button>
                 </div>
@@ -770,14 +767,14 @@
             if (linkEl) linkEl.href = data.linkUrl || '#';
             if (btnTextEl) btnTextEl.innerHTML = `${data.btnText || 'Дізнатися більше'} <i class="fa-solid fa-arrow-right text-[10px] ml-1.5 transition-transform duration-200 group-hover:translate-x-1"></i>`;
 
-            // Рендер точок-індикаторів у скляній капсулі
+            // Рендер точок-індикаторів
             if (dotsContainer) {
                 dotsContainer.innerHTML = '';
                 if (sidebarBannersList.length > 1) {
                     dotsContainer.classList.remove('hidden');
                     sidebarBannersList.forEach((_, idx) => {
                         const dot = document.createElement('span');
-                        dot.className = `h-1.5 rounded-full transition-all duration-300 ${idx === currentSidebarBannerIndex ? 'bg-amber-400 w-4' : 'bg-white/50 w-1.5'}`;
+                        dot.className = `h-1.5 rounded-full transition-all duration-300 ${idx === currentSidebarBannerIndex ? 'bg-[#db4437] w-4' : 'bg-white/70 w-1.5'}`;
                         dotsContainer.appendChild(dot);
                     });
                 } else {

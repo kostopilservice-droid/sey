@@ -13,7 +13,7 @@
     <style>
         :root {
             --primary: #1e3a8a;
-            --olx-color: #23527c; /* Стиль OLX-синій */
+            --olx-color: #23527c;
             --accent: #10b981;
             --danger: #ef4444;
             --bg: #f8fafc;
@@ -128,7 +128,6 @@
             padding: 18px 22px;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
             gap: 18px;
         }
 
@@ -150,6 +149,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
             gap: 8px;
+            margin-bottom: 10px;
         }
 
         .sub-chip {
@@ -173,86 +173,73 @@
             border-color: var(--olx-color);
         }
 
-        /* БЛОК СИНХРОНІЗАЦІЇ НОВИХ ОГОЛОШЕНЬ */
-        .sync-new-section {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 10px;
-            padding: 14px;
-            margin-top: auto;
+        /* ПРОФЕСІЙНИЙ РЕКЛАМНИЙ БАНЕР У ПРАВІЙ ЧАСТИНІ ПІД ПІДПУНКТАМИ (ЗГІДНО З МАКЕТОМ) */
+        .promo-banner-right {
+            background: #ffffff;
+            border: 2px solid #cbd5e1;
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+            margin-top: 10px;
+            position: relative;
+            overflow: hidden;
         }
-        .sync-new-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .promo-banner-right::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ef4444, #f59e0b, #10b981, #23527c);
+        }
+        .promo-badge {
+            background: #fef2f2;
+            color: #dc2626;
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            padding: 3px 10px;
+            border-radius: 20px;
+            display: inline-block;
             margin-bottom: 10px;
+            letter-spacing: 0.6px;
+            border: 1px solid #fecaca;
         }
-        .sync-new-title {
+        .promo-heading {
+            font-size: 1.35rem;
+            font-weight: 900;
+            color: #1e3a8a;
+            margin: 0 0 6px 0;
+        }
+        .promo-text {
+            font-size: 0.85rem;
+            color: #64748b;
+            max-width: 600px;
+            margin: 0 auto 15px auto;
+            line-height: 1.4;
+        }
+        .promo-btn {
+            background: #dc2626;
+            color: white;
+            border: none;
+            padding: 8px 20px;
             font-size: 0.82rem;
             font-weight: 800;
-            color: #1e3a8a;
-            text-transform: uppercase;
-            letter-spacing: 0.4px;
-            display: flex;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+            box-shadow: 0 4px 10px rgba(220, 38, 38, 0.2);
+            display: inline-flex;
             align-items: center;
             gap: 6px;
+            text-decoration: none;
         }
-        .sync-live-dot {
-            width: 8px;
-            height: 8px;
-            background: var(--accent);
-            border-radius: 50%;
-            display: inline-block;
-            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
-        }
-        .sync-new-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 10px;
-        }
-        .sync-card {
-            background: white;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            padding: 8px;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-        .sync-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(35, 82, 124, 0.12);
-            border-color: var(--olx-color);
-        }
-        .sync-card img {
-            width: 100%;
-            height: 85px;
-            object-fit: cover;
-            border-radius: 6px;
-            background: #f1f5f9;
-            margin-bottom: 6px;
-        }
-        .sync-card-title {
-            font-size: 0.74rem;
-            font-weight: 600;
-            color: #1e293b;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            line-height: 1.25;
-            height: 2.5em;
-            margin-bottom: 4px;
-        }
-        .sync-card-price {
-            font-size: 0.82rem;
-            font-weight: 800;
-            color: var(--olx-color);
+        .promo-btn:hover {
+            background: #b91c1c;
+            transform: translateY(-1px);
         }
 
-        /* КОМПАКТНІ КАРТКИ ОГОЛОШЕНЬ ОСНОВНОЇ СІТКИ */
+        /* ОСНОВНА СІТКА ОГОЛОШЕНЬ */
         .market-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -269,7 +256,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            height: 380px;
+            min-height: 410px;
             box-sizing: border-box;
             transition: transform 0.2s, box-shadow 0.2s;
             position: relative;
@@ -299,17 +286,28 @@
 
         .card-title {
             font-size: 0.84rem;
-            margin: 0 0 6px 0;
+            margin: 0 0 4px 0;
             color: #1e293b;
-            font-weight: 600;
+            font-weight: 700;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
-            height: 2.6em;
             cursor: pointer;
         }
         .card-title:hover { color: var(--olx-color); text-decoration: underline; }
+
+        .card-desc-short {
+            font-size: 0.75rem;
+            color: #64748b;
+            margin: 0 0 8px 0;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            line-height: 1.3;
+            height: 2.6em;
+        }
 
         .condition-badge {
             font-size: 0.68rem;
@@ -363,6 +361,88 @@
             font-weight: bold;
         }
 
+        /* БЛОК "НОВІ ОГОЛОШЕННЯ" ПІД ФУТЕРОМ */
+        .sync-new-section-bottom {
+            background: white;
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+            padding: 24px;
+            margin-top: 40px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+        }
+        .sync-new-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 10px;
+        }
+        .sync-new-title {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: #1e3a8a;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .sync-live-dot {
+            width: 10px;
+            height: 10px;
+            background: var(--accent);
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.2);
+        }
+        .sync-new-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 12px;
+        }
+        .sync-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 10px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .sync-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(35, 82, 124, 0.12);
+            border-color: var(--olx-color);
+        }
+        .sync-card img {
+            width: 100%;
+            height: 105px;
+            object-fit: cover;
+            border-radius: 6px;
+            background: #f1f5f9;
+            margin-bottom: 8px;
+        }
+        .sync-card-title {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #1e293b;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            line-height: 1.3;
+            height: 2.6em;
+            margin-bottom: 6px;
+        }
+        .sync-card-price {
+            font-size: 0.88rem;
+            font-weight: 800;
+            color: var(--olx-color);
+        }
+
         /* ПОВНОЦІННА СТОРІНКА ОГОЛОШЕННЯ */
         #productDetailView {
             display: none;
@@ -388,44 +468,6 @@
             gap: 6px;
         }
         .btn-primary:hover { background: #1a3c5a; }
-
-        /* МОДАЛЬНІ ВІКНА */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(15, 23, 42, 0.75);
-            z-index: 9000;
-            justify-content: center;
-            align-items: center;
-            padding: 15px;
-            backdrop-filter: blur(3px);
-        }
-        .modal-box {
-            background: white;
-            border-radius: 12px;
-            max-width: 600px;
-            width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-            padding: 24px;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
-        }
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #e2e8f0;
-            padding-bottom: 12px;
-            margin-bottom: 16px;
-        }
-        .modal-close {
-            background: none;
-            border: none;
-            font-size: 1.4rem;
-            cursor: pointer;
-            color: #64748b;
-        }
 
         footer {
             text-align: center;
@@ -502,7 +544,7 @@
 
       <!-- ГОЛОВНИЙ КАТАЛОГ -->
       <div id="mainCatalogWrapper">
-        <!-- КАТЕГОРІЇ ТА ПІДРОЗДІЛИ + СІТКА НОВИХ ОГОЛОШЕНЬ -->
+        <!-- КАТЕГОРІЇ ТА ПІДРОЗДІЛИ + БАНЕР СПРАВА ПІД КНОПКАМИ -->
         <div class="catalog-container">
           <div class="catalog-top-bar">
             <h3 class="catalog-title">
@@ -517,21 +559,22 @@
             <!-- Ліва колонка: Категорії -->
             <div class="categories-sidebar" id="categoriesSidebar"></div>
             
-            <!-- Права колонка: Підкатегорії + Сітка нових надходжень -->
+            <!-- Права колонка: Підкатегорії + Новорічний рекламний банер під кнопками -->
             <div class="subcategories-panel">
-              <div id="subcategoriesContent"></div>
+              <div>
+                <div id="subcategoriesContent"></div>
+              </div>
 
-              <!-- БЛОК СИНХРОНІЗАЦІЇ НОВИХ ОГОЛОШЕНЬ В СІТЦІ -->
-              <div class="sync-new-section">
-                <div class="sync-new-header">
-                  <span class="sync-new-title">
-                    <span class="sync-live-dot"></span> Свіжі оголошення
-                  </span>
-                  <span style="font-size: 0.72rem; color: #64748b;">Щойно додані</span>
-                </div>
-                <div class="sync-new-grid" id="syncNewGrid">
-                  <div style="font-size: 0.75rem; color: #64748b; grid-column: 1 / -1;">Очікування синхронізації...</div>
-                </div>
+              <!-- ПРОФЕСІЙНИЙ НОВОРІЧНИЙ РЕКЛАМНИЙ БАНЕР У ПРАВІЙ ЗОНІ ПІД КНОПКАМИ ПІДПУНКТІВ -->
+              <div class="promo-banner-right">
+                <span class="promo-badge"><i class="fa-solid fa-gift"></i> Новорічна пропозиція</span>
+                <h2 class="promo-heading">З Новим Роком та Різдвом! 🎄</h2>
+                <p class="promo-text">
+                  Зустрічайте свята з вигодою! Розміщуйте святкові пропозиції, товари для дому та гаджети на нашій дошці без комісій. Святкові знижки та акції діють увесь місяць!
+                </p>
+                <button id="promoAddBtn" class="promo-btn">
+                  <i class="fa-solid fa-star"></i> Розмістити святкову пропозицію
+                </button>
               </div>
             </div>
           </div>
@@ -545,7 +588,7 @@
             <input type="hidden" id="editingDocId" />
             <div>
               <label style="font-size: 0.75rem; font-weight: bold; color: #475569;">Заголовок оголошення:</label>
-              <input type="text" id="adTitle" maxlength="70" placeholder="Наприклад: Продам перфоратор Bosch" required style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; margin-top: 3px;" />
+              <input type="text" id="adTitle" maxlength="70" placeholder="Наприклад: Продам ноутбук Lenovo T14s" required style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; margin-top: 3px;" />
             </div>
 
             <div>
@@ -561,7 +604,7 @@
             <div>
               <label style="font-size: 0.75rem; font-weight: bold; color: #475569;">Стан:</label>
               <select id="adCondition" style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; margin-top: 3px; background: white;">
-                <option value="Б/В (Вживане)">Б/В (Вживане)</option>
+                <option value="Б/В">Б/В</option>
                 <option value="Нове">Нове</option>
                 <option value="Відновлене">Відновлене</option>
               </select>
@@ -569,7 +612,7 @@
 
             <div>
               <label style="font-size: 0.75rem; font-weight: bold; color: #475569;">Ціна (грн):</label>
-              <input type="number" id="adPrice" placeholder="1500" required style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; margin-top: 3px;" />
+              <input type="number" id="adPrice" placeholder="9999" required style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; margin-top: 3px;" />
             </div>
 
             <div>
@@ -584,7 +627,7 @@
 
             <div style="grid-column: 1 / -1;">
               <label style="font-size: 0.75rem; font-weight: bold; color: #475569;">Детальний опис:</label>
-              <textarea id="adDescription" rows="3" maxlength="800" placeholder="Опишіть стан товару, комплектацію, умови доставки..." required style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; margin-top: 3px; font-family: inherit;"></textarea>
+              <textarea id="adDescription" rows="3" maxlength="800" placeholder="Опишіть стан товару, характеристики..." required style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; margin-top: 3px; font-family: inherit;"></textarea>
             </div>
 
             <div style="grid-column: 1 / -1; display: flex; justify-content: flex-end; gap: 8px;">
@@ -607,6 +650,19 @@
         </button>
 
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; align-items: start;" id="productDetailContent"></div>
+      </div>
+
+      <!-- БЛОК "НОВІ ОГОЛОШЕННЯ" ПІД ФУТЕРОМ -->
+      <div class="sync-new-section-bottom" id="bottomNewAdsSection">
+        <div class="sync-new-header">
+          <span class="sync-new-title">
+            <span class="sync-live-dot"></span> Нові оголошення
+          </span>
+          <span style="font-size: 0.75rem; color: #64748b; font-weight: 600;">Останні публікації користувачів у реальному часі</span>
+        </div>
+        <div class="sync-new-grid" id="syncNewGrid">
+          <div style="font-size: 0.8rem; color: #64748b; grid-column: 1 / -1;">Завантаження нових оголошень...</div>
+        </div>
       </div>
 
     </div>
@@ -778,13 +834,16 @@
       onAuthStateChanged(auth, (user) => {
         currentUser = user;
         const toggleBtn = document.getElementById('toggleFormBtn');
+        const promoAddBtn = document.getElementById('promoAddBtn');
         const adminBadge = document.getElementById('adminStatusBadge');
         
         if (!user) {
           toggleBtn.innerHTML = `<i class="fa-solid fa-lock"></i> Увійдіть для подачі`;
+          promoAddBtn.innerHTML = `<i class="fa-solid fa-lock"></i> Увійдіть, щоб розмістити`;
           adminBadge.style.display = 'none';
         } else {
           toggleBtn.innerHTML = `<i class="fa-solid fa-plus"></i> Подати оголошення`;
+          promoAddBtn.innerHTML = `<i class="fa-solid fa-star"></i> Розмістити святкову пропозицію`;
           if (user.email === ADMIN_EMAIL) adminBadge.style.display = 'inline-block';
         }
       });
@@ -792,22 +851,24 @@
       const newAdFormCard = document.getElementById('newAdFormCard');
       const addListingForm = document.getElementById('addListingForm');
 
-      document.getElementById('toggleFormBtn').addEventListener('click', () => {
+      function openAdForm() {
         if (!currentUser) {
           alert('Будь ласка, увійдіть в акаунт на головній сторінці!');
           window.location.href = 'index.html#auth-section';
           return;
         }
         document.getElementById('editingDocId').value = '';
-        document.getElementById('formHeading.innerHTML') = '<i class="fa-solid fa-rectangle-ad"></i> Створити нове оголошення';
+        document.getElementById('formHeading').innerHTML = '<i class="fa-solid fa-rectangle-ad"></i> Створити нове оголошення';
         document.getElementById('submitFormBtn').textContent = 'Опублікувати';
         addListingForm.reset();
-        newAdFormCard.style.display = newAdFormCard.style.display === 'none' ? 'block' : 'none';
-      });
+        newAdFormCard.style.display = 'block';
+        window.scrollTo(0, newAdFormCard.offsetTop - 50);
+      }
 
+      document.getElementById('toggleFormBtn').addEventListener('click', openAdForm);
+      document.getElementById('promoAddBtn').addEventListener('click', openAdForm);
       document.getElementById('cancelFormBtn').addEventListener('click', () => newAdFormCard.style.display = 'none');
 
-      // Створення або редагування оголошення
       addListingForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         if (!currentUser) return;
@@ -846,7 +907,6 @@
         }
       });
 
-      // Видалення оголошення
       window.deleteProduct = async function(docId) {
         if (confirm('Видалити це оголошення?')) {
           try {
@@ -860,7 +920,6 @@
         }
       };
 
-      // Редагування оголошення
       window.editProduct = function(docId) {
         const item = allProducts.find(p => p.id === docId);
         if (!item) return;
@@ -873,7 +932,7 @@
         document.getElementById('adCategory').value = item.category;
         populateSubSelect(item.category, adSubcategorySelect);
         if (item.subcategory) document.getElementById('adSubcategory').value = item.subcategory;
-        document.getElementById('adCondition').value = item.condition || 'Б/В (Вживане)';
+        document.getElementById('adCondition').value = item.condition || 'Б/В';
         document.getElementById('adPrice').value = item.price;
         document.getElementById('adContact').value = item.contact;
         document.getElementById('adPhotos').value = (item.photosArray || []).join(', ');
@@ -885,7 +944,6 @@
         window.scrollTo(0, newAdFormCard.offsetTop - 50);
       };
 
-      // ВІДКРИТТЯ ПОВНОЦІННОЇ СТОРІНКИ ОГОЛОШЕННЯ
       window.openProductDetail = function(id) {
         const item = allProducts.find(p => p.id === id);
         if (!item) return;
@@ -912,7 +970,7 @@
             
             <div style="display: flex; gap: 10px; margin-bottom: 20px;">
               <a href="tel:${item.contact}" class="btn-primary" style="flex: 1; justify-content: center; text-decoration: none; padding: 10px;">
-                <i class="fa-solid fa-phone"><b>${item.contact}</b></i>
+                <i class="fa-solid fa-phone"></i> <b>${item.contact}</b>
               </a>
             </div>
 
@@ -940,7 +998,6 @@
         document.getElementById('mainCatalogWrapper').style.display = 'block';
       });
 
-      // Синхронізація оголошень з Firebase в реальному часі
       const q = query(collection(db, "shop_listings"), orderBy("createdAt", "desc"));
       onSnapshot(q, (snapshot) => {
         allProducts = [];
@@ -965,6 +1022,7 @@
           card.setAttribute('data-search', `${item.title} ${item.description}`.toLowerCase());
 
           const thumb = (item.photosArray && item.photosArray[0]) ? item.photosArray[0] : 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=300&q=80';
+          const shortDesc = item.description ? item.description : 'Без опису';
           const isOwnerOrAdmin = currentUser && (currentUser.email === ADMIN_EMAIL || currentUser.email === item.userEmail);
 
           card.innerHTML = `
@@ -974,6 +1032,7 @@
               </div>
               <span class="condition-badge">${item.condition || 'Б/В'}</span>
               <div class="card-title" onclick="openProductDetail('${item.id}')" title="${item.title}">${item.title}</div>
+              <div class="card-desc-short" title="${shortDesc}">${shortDesc}</div>
             </div>
             <div>
               <div class="card-price">${item.price.toLocaleString('uk-UA')} ₴</div>

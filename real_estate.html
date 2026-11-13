@@ -30,7 +30,7 @@
             border-bottom: 2px solid #db4437;
         }
 
-        /* ВИПРАВЛЕНИЙ СВІТЛИЙ/АКУРАТНИЙ БАНЕР (БЕЗ ТЕМНОГО КАРБОНУ) */
+        /* ВІДПОВІДНИЙ СВІТЛИЙ/АКУРАТНИЙ БАНЕР */
         .real-estate-hero {
             position: relative;
             background: linear-gradient(rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.88)), 
@@ -413,7 +413,7 @@
                 </div>
             </div>
 
-            <!-- САЙДБАР (БЛОК КАТЕГОРІЙ + СВІТЛИЙ БАНЕР З АВТОСЛАЙДЕРОМ ТА НАЛАШТУВАННЯМИ) -->
+            <!-- САЙДБАР -->
             <div class="space-y-5 text-xs">
                 
                 <!-- БЛОК КАТЕГОРІЙ -->
@@ -462,7 +462,7 @@
                         </div>
                     </a>
 
-                    <!-- КНОПКИ ПЕРЕМИКАННЯ СЛАЙДІВ (ПО ЦЕНТРУ ФОТО) -->
+                    <!-- КНОПКИ ПЕРЕМИКАННЯ СЛАЙДІВ -->
                     <button onClick="prevSidebarSlide(event)" class="absolute left-2 top-20 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 border border-gray-200 w-7 h-7 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200 z-10 shadow">
                         <i class="fa-solid fa-chevron-left text-[10px]"></i>
                     </button>
@@ -556,15 +556,14 @@
                         <input type="url" id="cfgBannerImg" required class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-600">
                     </div>
 
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                        <div>
-                            <label class="block font-bold text-gray-700 mb-1">URL посилання *</label>
-                            <input type="url" id="cfgBannerLink" required class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-600">
-                        </div>
-                        <div>
-                            <label class="block font-bold text-gray-700 mb-1">Текст кнопки</label>
-                            <input type="text" id="cfgBannerBtnText" placeholder="Дізнатися більше" class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-600">
-                        </div>
+                    <div>
+                        <label class="block font-bold text-gray-700 mb-1">Посилання (URL) для слайда *</label>
+                        <input type="url" id="cfgBannerLink" required placeholder="https://..." class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-600">
+                    </div>
+
+                    <div>
+                        <label class="block font-bold text-gray-700 mb-1">Текст кнопки</label>
+                        <input type="text" id="cfgBannerBtnText" placeholder="Дізнатися більше" class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-600">
                     </div>
 
                     <div class="pt-3 flex justify-end gap-2 border-t">
@@ -826,7 +825,7 @@
                         <img src="${banner.imgUrl}" class="w-10 h-8 object-cover rounded flex-shrink-0 bg-gray-100">
                         <div class="truncate">
                             <div class="font-bold text-gray-800 truncate">${idx + 1}. ${banner.title || 'Без назви'}</div>
-                            <div class="text-[10px] text-gray-500 truncate">${banner.subtitle || ''}</div>
+                            <div class="text-[10px] text-gray-500 truncate">${banner.linkUrl || '#'}</div>
                         </div>
                     </div>
                     <div class="flex items-center gap-1 flex-shrink-0">

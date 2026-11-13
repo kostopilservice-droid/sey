@@ -464,7 +464,7 @@
         <div>
           <h1 style="margin: 0 0 3px 0; font-size: 1.15rem; color: #1e3a8a;">Дошка оголошень користувачів</h1>
           <p style="margin: 0; font-size: 0.8rem; color: #64748b;">
-            Шукайте потрібні пропозиції або розміщуйте власні оголошення безкоштовно.
+            Шукайте потрібні пропозиції або розміщуйте власні оголошення безкоштовно (ліміт: 5).
           </p>
         </div>
 
@@ -664,9 +664,11 @@
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
       import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-      import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, doc, deleteDoc, updateDoc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+      import { getFirestore, collection, addDoc, query, where, getDocs, orderBy, onSnapshot, doc, deleteDoc, updateDoc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
       const ADMIN_EMAIL = "admin@neoservice.ks.ua"; 
+      const ADMIN_ALT_EMAIL = "kostopilservice@gmail.com";
+      const FREE_ADS_LIMIT = 5;
 
       const firebaseConfig = {
         apiKey: "AIzaSyBlKoP6-M8tdrKq88bSdnWSnak5Gpddnpk",
@@ -681,6 +683,10 @@
       const app = initializeApp(firebaseConfig);
       const auth = getAuth(app);
       const db = getFirestore(app);
+
+      function isAdminUser(email) {
+        return email === ADMIN_EMAIL || email === ADMIN_ALT_EMAIL;
+      }
 
       // Логіка слайдера банера
       let sidebarSlides = [
@@ -740,7 +746,7 @@
         }, 5000);
       }
 
-      // Слухаємо слайди з Firebase з обробкою помилок доступу (rules)
+      // Слухаємо слайди з Firebase
       onSnapshot(bannerDocRef, async (docSnap) => {
         if (docSnap.exists() && docSnap.data().slides) {
           sidebarSlides = docSnap.data().slides;
@@ -748,14 +754,14 @@
           try {
             await setDoc(bannerDocRef, { slides: sidebarSlides });
           } catch (err) {
-            console.error("Помилка правил бази даних (Rules) під час ініціалізації банера:", err.message);
+            console.error("Помилка правил бази даних (Rules):", err.message);
           }
         }
         currentSlideIdx = 0;
         renderSidebarSlide();
         resetTimer();
       }, (error) => {
-        console.error("Помилка підписки на налаштування банера (перевірте Firebase Rules):", error.message);
+        console.error("Помилка підписки на налаштування банера:", error.message);
       });
 
       // Адмінка слайдера з можливістю зміни посилань (URL)
@@ -804,7 +810,7 @@
           alert('Слайд та посилання успішно оновлено!');
           renderAdminSlideList();
         } catch (err) {
-          alert('Помилка збереження (перевірте Firebase Rules): ' + err.message);
+          alert('Помилка збереження: ' + err.message);
         }
       }
 
@@ -985,7 +991,7 @@
           adminBadge.style.display = 'none';
         } else {
           toggleBtn.innerHTML = `<i class="fa-solid fa-plus"></i> Подати оголошення`;
-          if (user.email === ADMIN_EMAIL) {
+          if (isAdminUser(user.email)) {
             adminBadge.style.display = 'inline-block';
           } else {
             adminBadge.style.display = 'none';
@@ -996,12 +1002,29 @@
       const newAdFormCard = document.getElementById('newAdFormCard');
       const addListingForm = document.getElementById('addListingForm');
 
-      document.getElementById('toggleFormBtn').addEventListener('click', () => {
+      // Перевірка ліміту 5 оголошень перед відкриттям форми
+      document.getElementById('toggleFormBtn').addEventListener('click', async () => {
         if (!currentUser) {
           alert('Будь ласка, увійдіть в акаунт на головній сторінці!');
           window.location.href = 'index.html#auth-section';
           return;
         }
+
+        // Якщо це редагування або адмін — пропускаємо ліміт
+        const editingId = document.getElementById('editingDocId').value;
+        if (!editingId && !isAdminUser(currentUser.email)) {
+          try {
+            const userAdsQuery = query(collection(db, "shop_listings"), where("userEmail", "==", currentUser.email));
+            const snapshot = await getDocs(userAdsQuery);
+            if (snapshot.size >= FREE_ADS_LIMIT) {
+              alert(`Ви досягли безкоштовного ліміту у ${FREE_ADS_LIMIT} оголошень. Зверніться до адміністратора або сплатіть додатковий пакет для розміщення нових пропозицій!`);
+              return;
+            }
+          } catch (err) {
+            console.error("Помилка перевірки ліміту:", err);
+          }
+        }
+
         document.getElementById('editingDocId').value = '';
         document.getElementById('formHeading').innerHTML = '<i class="fa-solid fa-rectangle-ad"></i> Створити нове оголошення';
         document.getElementById('submitFormBtn').textContent = 'Опублікувати';
@@ -1017,6 +1040,21 @@
         if (!currentUser) return;
 
         const editingId = document.getElementById('editingDocId').value;
+
+        // Повторна перевірка ліміту перед створенням на випадок обходу
+        if (!editingId && !isAdminUser(currentUser.email)) {
+          try {
+            const userAdsQuery = query(collection(db, "shop_listings"), where("userEmail", "==", currentUser.email));
+            const snapshot = await getDocs(userAdsQuery);
+            if (snapshot.size >= FREE_ADS_LIMIT) {
+              alert(`Вичерпано ліміт (${FREE_ADS_LIMIT} безкоштовних оголошень).`);
+              return;
+            }
+          } catch (err) {
+            console.error(err);
+          }
+        }
+
         const photosRaw = document.getElementById('adPhotos').value;
         const photosArray = photosRaw.split(',').map(s => s.trim()).filter(s => s.startsWith('http'));
 
@@ -1097,7 +1135,7 @@
         detailView.style.display = 'block';
 
         const mainPhoto = (item.photosArray && item.photosArray[0]) ? item.photosArray[0] : 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=600&q=80';
-        const isOwnerOrAdmin = currentUser && (currentUser.email === ADMIN_EMAIL || currentUser.email === item.userEmail);
+        const isOwnerOrAdmin = currentUser && (isAdminUser(currentUser.email) || currentUser.email === item.userEmail);
 
         document.getElementById('productDetailContent').innerHTML = `
           <div>
@@ -1166,7 +1204,7 @@
 
           const thumb = (item.photosArray && item.photosArray[0]) ? item.photosArray[0] : 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=300&q=80';
           const shortDesc = item.description ? item.description : 'Без опису';
-          const isOwnerOrAdmin = currentUser && (currentUser.email === ADMIN_EMAIL || currentUser.email === item.userEmail);
+          const isOwnerOrAdmin = currentUser && (isAdminUser(currentUser.email) || currentUser.email === item.userEmail);
 
           card.innerHTML = `
             <div>

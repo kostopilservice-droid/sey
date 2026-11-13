@@ -32,9 +32,11 @@
 
         .real-estate-hero {
             position: relative;
-            background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
+            background: linear-gradient(rgba(15, 23, 42, 0.82), rgba(15, 23, 42, 0.78)), 
+                        url('https://images.unsplash.com/photo-1541888946425-d0fbb18f8f2e?w=1600') center/cover no-repeat;
             border-radius: 8px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
         }
 
         .search-box-red {
@@ -168,7 +170,7 @@
             <a href="index.html" class="hover:underline">NEOSERVICE</a> &gt; <span id="breadcrumbCategory">Нерухомість</span>
         </div>
         
-        <!-- ПОВЕРНУТИЙ ТЕМНИЙ ГОЛОВНИЙ БАНЕР -->
+        <!-- БАНЕР З ВІЗУАЛІЗАЦІЄЮ (БУДІВНИЦТВО ТА КРАН) ТА НАПІВПРОЗРАЧНІСТЮ -->
         <div class="real-estate-hero p-6 sm:p-8 flex flex-col justify-center text-white">
             <div class="mb-2">
                 <span class="inline-block bg-[#db4437] text-white font-bold text-[10px] px-2.5 py-0.5 rounded uppercase tracking-wider">
@@ -177,7 +179,7 @@
             </div>
             <h1 class="text-2xl sm:text-3xl font-black mb-2 text-white" id="mainHeaderTitle">Продаж та оренда нерухомості в Україні</h1>
             <p class="text-xs sm:text-sm text-gray-300 max-w-2xl font-medium leading-relaxed">
-                Актуальний каталог житлової та комерційної нерухомості. Перевірені оголошення у місті <span class="text-white font-bold">Костопіль</span>, Рівненській області та по всій Україні.
+                Актуальний каталог житлової та комерційної нерухомості.
             </p>
         </div>
 
@@ -691,7 +693,6 @@
                 if (toggleFormBtn) toggleFormBtn.innerHTML = `<i class="fa-solid fa-plus-circle"></i> Додати об'єкт`;
                 if (toggleFormBtnMobile) toggleFormBtnMobile.innerHTML = `<i class="fa-solid fa-plus-circle"></i> Додати`;
                 
-                // Перевіряємо чи є користувач адміністратором
                 if (user.email && user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
                     if (adminBannerBtn) {
                         adminBannerBtn.classList.remove('hidden');

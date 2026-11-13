@@ -30,13 +30,16 @@
             border-bottom: 2px solid #db4437;
         }
 
+        /* КАРБОНОВИЙ СТИЛЬ БАНЕРА */
         .real-estate-hero {
             position: relative;
-            background: linear-gradient(rgba(15, 23, 42, 0.82), rgba(15, 23, 42, 0.78)), 
-                        url('https://images.unsplash.com/photo-1541888946425-d0fbb18f8f2e?w=1600') center/cover no-repeat;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.92), rgba(30, 41, 59, 0.88)),
+                        radial-gradient(circle at 50% 50%, rgba(51, 65, 85, 0.6) 0%, rgba(15, 23, 42, 0.95) 100%),
+                        url('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=1600') center/cover no-repeat;
             border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
             overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         .search-box-red {
@@ -170,17 +173,14 @@
             <a href="index.html" class="hover:underline">NEOSERVICE</a> &gt; <span id="breadcrumbCategory">Нерухомість</span>
         </div>
         
-        <!-- БАНЕР З ВІЗУАЛІЗАЦІЄЮ (БУДІВНИЦТВО ТА КРАН) ТА НАПІВПРОЗРАЧНІСТЮ -->
+        <!-- КАРБОНОВИЙ БАНЕР -->
         <div class="real-estate-hero p-6 sm:p-8 flex flex-col justify-center text-white">
             <div class="mb-2">
                 <span class="inline-block bg-[#db4437] text-white font-bold text-[10px] px-2.5 py-0.5 rounded uppercase tracking-wider">
                     Нерухомість України
                 </span>
             </div>
-            <h1 class="text-2xl sm:text-3xl font-black mb-2 text-white" id="mainHeaderTitle">Продаж та оренда нерухомості в Україні</h1>
-            <p class="text-xs sm:text-sm text-gray-300 max-w-2xl font-medium leading-relaxed">
-                Актуальний каталог житлової та комерційної нерухомості.
-            </p>
+            <h1 class="text-2xl sm:text-3xl font-black text-white" id="mainHeaderTitle">Продаж та оренда нерухомості в Україні</h1>
         </div>
 
         <!-- ЧЕРВОНИЙ БЛОК ФІЛЬТРІВ -->

@@ -30,16 +30,14 @@
             border-bottom: 2px solid #db4437;
         }
 
-        /* КАРБОНОВИЙ СТИЛЬ БАНЕРА */
+        /* ВИПРАВЛЕНИЙ СВІТЛИЙ/АКУРАТНИЙ БАНЕР (БЕЗ ТЕМНОГО КАРБОНУ) */
         .real-estate-hero {
             position: relative;
-            background: linear-gradient(135deg, rgba(15, 23, 42, 0.92), rgba(30, 41, 59, 0.88)),
-                        radial-gradient(circle at 50% 50%, rgba(51, 65, 85, 0.6) 0%, rgba(15, 23, 42, 0.95) 100%),
-                        url('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=1600') center/cover no-repeat;
+            background: linear-gradient(rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.88)), 
+                        url('https://images.unsplash.com/photo-1541888946425-d0fbb18f8f2e?w=1600') center/cover no-repeat;
             border-radius: 8px;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+            border: 1px solid #e2e8f0;
         }
 
         .search-box-red {
@@ -173,15 +171,15 @@
             <a href="index.html" class="hover:underline">NEOSERVICE</a> &gt; <span id="breadcrumbCategory">Нерухомість</span>
         </div>
         
-<!-- БАНЕР З ВІЗУАЛІЗАЦІЄЮ (БУДІВНИЦТВО ТА КРАН) ТА НАПІВПРОЗРАЧНІСТЮ -->
-        <div class="real-estate-hero p-6 sm:p-8 flex flex-col justify-center text-white">
+        <!-- СВІТЛИЙ БАНЕР -->
+        <div class="real-estate-hero p-6 sm:p-8 flex flex-col justify-center">
             <div class="mb-2">
                 <span class="inline-block bg-[#db4437] text-white font-bold text-[10px] px-2.5 py-0.5 rounded uppercase tracking-wider">
                     Нерухомість України
                 </span>
             </div>
-            <h1 class="text-2xl sm:text-3xl font-black mb-2 text-white" id="mainHeaderTitle">Продаж та оренда нерухомості в Україні</h1>
-            <p class="text-xs sm:text-sm text-gray-300 max-w-2xl font-medium leading-relaxed">
+            <h1 class="text-2xl sm:text-3xl font-black mb-2 text-gray-900" id="mainHeaderTitle">Продаж та оренда нерухомості в Україні</h1>
+            <p class="text-xs sm:text-sm text-gray-600 max-w-2xl font-medium leading-relaxed">
                 Актуальний каталог житлової та комерційної нерухомості.
             </p>
         </div>
@@ -374,9 +372,9 @@
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <input type="url" id="adPhoto2" placeholder="Фото 2 https://..." class="w-full p-2 border rounded">
-                    <input type="url" id="adPhoto3" placeholder="Фото 3 https://..." class="w-full p-2 border rounded">
-                    <input type="url" id="adPhoto4" placeholder="Фото 4 https://..." class="w-full p-2 border rounded">
+                    <input type="url" id="adPhoto2" placeholder="Фото 2 https://..." class="p-2 border rounded">
+                    <input type="url" id="adPhoto3" placeholder="Фото 3 https://..." class="p-2 border rounded">
+                    <input type="url" id="adPhoto4" placeholder="Фото 4 https://..." class="p-2 border rounded">
                 </div>
 
                 <div>
@@ -526,7 +524,6 @@
             </div>
             
             <div class="p-5 space-y-4 overflow-y-auto">
-                <!-- СПИСОК ІСНУЮЧИХ СЛАЙДІВ ДЛЯ ШВИДКОГО ВИБОРУ АБО ВИДАЛЕННЯ -->
                 <div>
                     <div class="flex justify-between items-center mb-2">
                         <span class="font-bold text-gray-800 uppercase text-[11px]">Активні слайди (<span id="adminSlidesCount">0</span>):</span>
@@ -534,12 +531,9 @@
                             <i class="fa-solid fa-plus"></i> Новий слайд
                         </button>
                     </div>
-                    <div id="adminBannerList" class="space-y-2 max-h-40 overflow-y-auto border border-gray-200 rounded p-2 bg-gray-50">
-                        <!-- Сюди рендеряться картки активних банерів -->
-                    </div>
+                    <div id="adminBannerList" class="space-y-2 max-h-40 overflow-y-auto border border-gray-200 rounded p-2 bg-gray-50"></div>
                 </div>
 
-                <!-- ФОРМА РЕДАГУВАННЯ / ДОДАВАННЯ -->
                 <form id="bannerConfigForm" class="space-y-3 border-t pt-3">
                     <input type="hidden" id="cfgBannerId" value="">
                     
@@ -601,7 +595,6 @@
         const ITEMS_PER_PAGE = 12;
         let currentPage = 1;
 
-        // БАЗА ОБЛАСТЕЙ ТА МІСТ УКРАЇНИ
         const ukraineRegions = {
             "Рівненська область": ["Костопіль", "Рівне", "Березне", "Дубно", "Сарни", "Вараш", "Здолбунів", "Острог"],
             "Київська область": ["Київ", "Бровари", "Бориспіль", "Ірпінь", "Буча", "Біла Церква", "Вишневе", "Вишгород"],
@@ -679,7 +672,6 @@
         let currentPhotoIndex = 0;
         let activeCategoryFilter = 'all';
 
-        // ГЛОБАЛЬНІ ЗМІННІ ДЛЯ СЛАЙДЕРА
         let sidebarBannersList = [];
         let currentSidebarBannerIndex = 0;
         let sidebarBannerTimer = null;
@@ -725,7 +717,6 @@
             }
         });
 
-        // СИНХРОНІЗАЦІЯ БАНЕРІВ САЙДБАРА З FIREBASE
         const bannersCollectionRef = collection(db, "real_estate_sidebar_banner");
         
         onSnapshot(bannersCollectionRef, (snapshot) => {

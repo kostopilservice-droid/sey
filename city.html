@@ -296,7 +296,7 @@
                     <h3 class="text-xl font-bold text-amber-300 flex items-center gap-2">
                         <i class="fa-solid fa-newspaper text-amber-400"></i> Новини та події громади
                     </h3>
-                    <p class="text-xs text-slate-400 mt-0.5">Клацніть на картку новини, щоб відкрити її у повноекранному форматі з відео та медіа</p>
+                    <p class="text-xs text-slate-400 mt-0.5">Клацніть на картку новини, щоб відкрити її у повноекранному форматі з відео, 3D-панорамою та медіа</p>
                 </div>
                 <!-- Кнопка додавання новини (Для всіх зареєстрованих користувачів) -->
                 <button id="userAddNewsBtn" onclick="openAddNewsModal()" style="display: none;" class="btn-divine px-4 py-2 rounded-xl text-xs flex items-center gap-2 shadow-md cursor-pointer">
@@ -503,6 +503,7 @@
                     <div id="galleryCounter" class="absolute bottom-3 right-3 px-3 py-1 bg-slate-950/80 rounded-full border border-amber-500/30 text-[10px] text-amber-300 font-bold hidden"></div>
                 </div>
 
+                <!-- БЛОК ВБУДОВАНОГО ВІДЕО АБО 3D ПАНОРАМИ (ФРЕЙМУ) -->
                 <div id="detailVideoContainer" class="hidden w-full aspect-video rounded-2xl overflow-hidden border-2 border-amber-500/30 shadow-2xl bg-black"></div>
 
                 <!-- Форматований HTML-контент новини -->
@@ -520,7 +521,6 @@
                 </div>
 
                 <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-amber-500/30">
-                    <!-- Кнопки редагування/видалення відображаються лише автору новини або адміністратору -->
                     <div id="ownerActionsBlock" class="hidden items-center gap-2 w-full sm:w-auto">
                         <button onclick="triggerEditNews()" class="px-4 py-2 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400 text-amber-300 text-xs font-bold rounded-xl transition-all flex items-center gap-1.5 cursor-pointer"><i class="fa-solid fa-pen-to-square"></i> Редагувати</button>
                         <button onclick="triggerDeleteNews()" class="px-4 py-2 bg-rose-500/20 hover:bg-rose-500/30 border border-rose-400 text-rose-400 text-xs font-bold rounded-xl transition-all flex items-center gap-1.5 cursor-pointer"><i class="fa-solid fa-trash"></i> Видалити</button>
@@ -532,7 +532,7 @@
         </div>
     </div>
 
-    <!-- 4. МОДАЛЬНЕ ВІКНО СТВОРЕННЯ / РЕДАГУВАННЯ НОВИНИ З ФОРМАТУВАННЯМ ТЕКСТУ -->
+    <!-- 4. МОДАЛЬНЕ ВІКНО СТВОРЕННЯ / РЕДАГУВАННЯ НОВИНИ З ФОРМАТУВАННЯМ ТА 3D ПАНОРАМОЮ -->
     <div id="addNewsModal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md hidden items-center justify-center p-4 z-50">
         <div class="bg-slate-900 border border-amber-500/40 rounded-2xl p-6 max-w-2xl w-full shadow-2xl space-y-4 max-h-[92vh] overflow-y-auto">
             <div class="flex items-center justify-between border-b border-slate-800 pb-3">
@@ -555,8 +555,8 @@
                         <input type="text" id="inputNewsPhotos" placeholder="https://photo1.jpg, https://photo2.jpg..." class="w-full px-3.5 py-2 text-xs bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-amber-400">
                     </div>
                     <div>
-                        <label class="block text-[11px] font-bold text-slate-300 mb-1">YouTube посилання на відео</label>
-                        <input type="text" id="inputNewsVideo" placeholder="https://www.youtube.com/watch?v=..." class="w-full px-3.5 py-2 text-xs bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-amber-400">
+                        <label class="block text-[11px] font-bold text-slate-300 mb-1">YouTube / 3D Панорама / HTML Iframe фрейм</label>
+                        <input type="text" id="inputNewsVideo" placeholder="YouTube, посилання на панораму чи повний <iframe ...></iframe>" class="w-full px-3.5 py-2 text-xs bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-amber-400">
                     </div>
                 </div>
 
@@ -664,7 +664,7 @@
         let currentNewsPage = 1;
         const ITEMS_PER_PAGE = 6;
         let activeCityData = null;
-        let communityNewsList = []; // Новини з колекції city_news
+        let communityNewsList = [];
         let unsubscribeCity = null;
         let unsubscribeNews = null;
 
@@ -682,11 +682,9 @@
                     badge.textContent = `👤 ${user.email.split('@')[0]}`;
                     badge.className = "text-[10px] px-2 py-0.5 rounded-md bg-amber-500/20 border border-amber-500/40 text-amber-300 font-bold";
 
-                    // Кнопка додавання новини доступна ВСІМ зареєстрованим користувачам
                     if (userAddNewsBtn) userAddNewsBtn.style.display = 'flex';
                     if (guestLoginNewsHint) guestLoginNewsHint.style.display = 'none';
 
-                    // Кнопки адміністратора
                     if (user.email === ADMIN_EMAIL) {
                         if (adminPanoramaBtn) adminPanoramaBtn.style.display = 'flex';
                         if (adminAddBusinessBtn) adminAddBusinessBtn.style.display = 'flex';
@@ -775,7 +773,6 @@
                         news: [],
                         businesses: []
                     };
-                    // Створюємо документ міста в базі лише якщо зайшов адмін
                     if (currentUser && currentUser.email === ADMIN_EMAIL) {
                         docRef.set(activeCityData).catch(() => {});
                     }
@@ -786,7 +783,6 @@
                 renderCurrentCity();
             });
 
-            // Підписка на колекцію новин громади (city_news) для обраного міста
             unsubscribeNews = db.collection('city_news')
                 .where('cityKey', '==', storageKey)
                 .onSnapshot(snapshot => {
@@ -797,7 +793,6 @@
                             ...docSnap.data()
                         });
                     });
-                    // Сортуємо за датою створення (новіші зверху)
                     communityNewsList.sort((a, b) => (b.createdAtMs || 0) - (a.createdAtMs || 0));
                     renderNewsGrid();
                 }, err => {
@@ -928,7 +923,6 @@
             }
         }
 
-        // --- ЕКСПОРТ ТА ІМПОРТ БАЗИ ДАНИХ (FIREBASE JSON) ---
         async function exportDatabaseJson() {
             const user = window.getCurrentUser ? window.getCurrentUser() : null;
             if (!user || user.email !== ADMIN_EMAIL) {
@@ -1008,7 +1002,6 @@
             reader.readAsText(file);
         }
 
-        // --- БІЗНЕС КАТАЛОГ З ПОШУКОМ ТА ПАГІНАЦІЄЮ ---
         function openAddBusinessModal() {
             const user = window.getCurrentUser ? window.getCurrentUser() : null;
             if (!user || user.email !== ADMIN_EMAIL) {
@@ -1333,7 +1326,6 @@
             }
         }
 
-        // --- ФУНКЦІЇ ВІЗУАЛЬНОГО РЕДАКТОРА ТЕКСТУ ---
         function formatEditor(command) {
             document.execCommand(command, false, null);
             document.getElementById('newsRichEditor').focus();
@@ -1361,7 +1353,7 @@
         function sanitizeHtml(htmlStr) {
             const temp = document.createElement('div');
             temp.innerHTML = htmlStr || '';
-            temp.querySelectorAll('script, style, iframe, object, embed').forEach(el => el.remove());
+            temp.querySelectorAll('script, style, object, embed').forEach(el => el.remove());
             temp.querySelectorAll('*').forEach(el => {
                 for (let i = el.attributes.length - 1; i >= 0; i--) {
                     const attrName = el.attributes[i].name.toLowerCase();
@@ -1373,7 +1365,6 @@
             return temp.innerHTML;
         }
 
-        // --- НОВИНИ МІСТА (ДЛЯ ВСІХ ЗАРЕЄСТРОВАНИХ КОРИСТУВАЧІВ) ---
         function openAddNewsModal() {
             const user = window.getCurrentUser ? window.getCurrentUser() : null;
             if (!user) {
@@ -1383,7 +1374,7 @@
 
             document.getElementById('editNewsDocId').value = '';
             document.getElementById('editLegacyIndex').value = '-1';
-            document.getElementById('addModalTitle').textContent = '📰 Додати новину з медіа та форматуванням';
+            document.getElementById('addModalTitle').textContent = '📰 Додати новину з медіа та 3D панорамою';
             document.getElementById('inputNewsTitle').value = '';
             document.getElementById('inputNewsPhotos').value = '';
             document.getElementById('inputNewsVideo').value = '';
@@ -1431,7 +1422,6 @@
             const storageKey = `${currentRegionKey}_${currentCityKey}`;
 
             try {
-                // Якщо редагується стара новина зі списку city_portals (доступно адміну)
                 if (editLegacyIdx >= 0 && user.email === ADMIN_EMAIL) {
                     const data = getActiveCityData();
                     data.news[editLegacyIdx] = {
@@ -1443,7 +1433,6 @@
                     };
                     await saveActiveCityDataToFirebase();
                 } else if (editDocId) {
-                    // Оновлення існуючої новини в колекції city_news
                     await db.collection('city_news').doc(editDocId).update({
                         title,
                         photos,
@@ -1455,7 +1444,6 @@
                         updatedAtMs: Date.now()
                     });
                 } else {
-                    // Створення нової новини в колекції city_news
                     await db.collection('city_news').add({
                         cityKey: storageKey,
                         regionKey: currentRegionKey,
@@ -1539,7 +1527,7 @@
                         <div class="w-full h-44 overflow-hidden bg-slate-950 relative">
                             <img src="${coverPhoto}" alt="Фото новини" class="w-full h-full object-cover">
                             ${item.photos && item.photos.length > 1 ? `<span class="absolute bottom-2 right-2 px-2 py-0.5 bg-slate-950/80 rounded-lg text-[10px] text-amber-300 font-bold">📷 ${item.photos.length} фото</span>` : ''}
-                            ${item.video ? `<span class="absolute bottom-2 left-2 px-2 py-0.5 bg-rose-600/90 rounded-lg text-[10px] text-white font-bold">▶ Відео</span>` : ''}
+                            ${item.video ? `<span class="absolute bottom-2 left-2 px-2 py-0.5 bg-indigo-600/90 rounded-lg text-[10px] text-white font-bold">🌐 3D Панорама / Відео</span>` : ''}
                         </div>
                         <div class="p-4 space-y-2">
                             <div class="flex justify-between items-center text-[10px] text-amber-400 font-semibold">
@@ -1587,7 +1575,6 @@
             document.getElementById('detailNewsDate').textContent = item.date || '';
             document.getElementById('detailNewsAuthor').textContent = authorEmail ? `• Автор: ${authorEmail.split('@')[0]}` : '';
 
-            // Відображаємо форматований HTML або безпечний текст
             const textEl = document.getElementById('detailNewsText');
             if (item.htmlContent) {
                 textEl.innerHTML = sanitizeHtml(item.htmlContent);
@@ -1597,7 +1584,6 @@
                 textEl.classList.add('whitespace-pre-wrap');
             }
 
-            // Перевіряємо права на редагування/видалення (Автор або Адмін)
             const user = window.getCurrentUser ? window.getCurrentUser() : null;
             const ownerBlock = document.getElementById('ownerActionsBlock');
             const canEdit = user && (user.email === ADMIN_EMAIL || (authorEmail && user.email === authorEmail));
@@ -1634,16 +1620,32 @@
                 galleryContainer.classList.add('hidden');
             }
 
+            // --- ОБРОБКА ВБУДОВАНОГО КОНТЕНТУ (YouTube / 3D Панорама / iframe фрейм) ---
             const videoContainer = document.getElementById('detailVideoContainer');
             if (item.video) {
                 videoContainer.classList.remove('hidden');
-                let embedUrl = item.video;
-                if (embedUrl.includes('watch?v=')) {
-                    embedUrl = embedUrl.replace('watch?v=', 'embed/');
-                } else if (embedUrl.includes('youtu.be/')) {
-                    embedUrl = embedUrl.replace('youtu.be/', 'www.youtube.com/embed/');
+                let rawVideoInput = item.video.trim();
+                
+                // Якщо користувач вставив готовий iframe
+                if (rawVideoInput.toLowerCase().startsWith('<iframe')) {
+                    videoContainer.innerHTML = rawVideoInput;
+                    // Робимо адаптивним всередині контейнера
+                    const innerIframe = videoContainer.querySelector('iframe');
+                    if (innerIframe) {
+                        innerIframe.className = "w-full h-full";
+                        innerIframe.setAttribute("width", "100%");
+                        innerIframe.setAttribute("height", "100%");
+                    }
+                } else {
+                    // Перевіряємо YouTube чи інше посилання на 3D панораму/тур
+                    let embedUrl = rawVideoInput;
+                    if (embedUrl.includes('watch?v=')) {
+                        embedUrl = embedUrl.replace('watch?v=', 'embed/');
+                    } else if (embedUrl.includes('youtu.be/')) {
+                        embedUrl = embedUrl.replace('youtu.be/', 'www.youtube.com/embed/');
+                    }
+                    videoContainer.innerHTML = `<iframe src="${embedUrl}" class="w-full h-full" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
                 }
-                videoContainer.innerHTML = `<iframe src="${embedUrl}" class="w-full h-full" frameborder="0" allowfullscreen></iframe>`;
             } else {
                 videoContainer.classList.add('hidden');
                 videoContainer.innerHTML = '';

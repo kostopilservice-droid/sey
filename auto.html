@@ -197,7 +197,7 @@
             </div>
         </div>
 
-        <!-- ВИДАТНЕ МОБІЛЬНЕ МЕНЮ (Випадає при кліку на гамбургер) -->
+        <!-- ВИДАТНЕ МОБІЛЬНЕ МЕНЮ -->
         <div id="mobileMenuDropdown" class="hidden md:hidden bg-white border-b border-gray-200 px-4 py-3 space-y-2 text-xs font-bold text-gray-800 shadow-lg">
             <a href="#auto" onClick="switchCategoryFilter('auto'); toggleMobileMenu();" class="block py-1.5 border-b border-gray-100"><i class="fa-solid fa-car text-blue-600 mr-2"></i> Легкові авто</a>
             <a href="#parts" onClick="switchCategoryFilter('parts'); toggleMobileMenu();" class="block py-1.5 border-b border-gray-100"><i class="fa-solid fa-gears text-orange-600 mr-2"></i> Автозапчастини</a>
@@ -254,7 +254,6 @@
                 </div>
 
                 <div class="space-y-3 pt-6 md:pt-7">
-                    <!-- ВИБІР ОБЛАСТІ ТА МІСТА -->
                     <select id="filterRegion" onChange="updateFilterCities(); filterCards();" class="w-full px-3 py-2 text-xs bg-white text-gray-800 rounded border-none outline-none font-semibold">
                         <option value="">Регіон: Всі області України</option>
                         <option value="Рівненська область">Рівненська область</option>
@@ -310,16 +309,17 @@
             </div>
         </div>
 
-        <!-- УНІВЕРСАЛЬНА ФОРМА ДОДАВАННЯ ОГОЛОШЕННЯ -->
+        <!-- УНІВЕРСАЛЬНА ФОРМА ДОДАВАННЯ / РЕДАГУВАННЯ ОГОЛОШЕННЯ -->
         <div id="newAdFormCard" class="hidden bg-white rounded-lg p-6 border-2 border-dashed border-red-500 shadow-lg space-y-4">
             <div class="flex justify-between items-center border-b pb-3">
-                <h3 class="font-bold text-base text-gray-900 flex items-center gap-2">
+                <h3 id="formTitleText" class="font-bold text-base text-gray-900 flex items-center gap-2">
                     <i class="fa-solid fa-plus-circle text-red-600"></i> Подача нового оголошення
                 </h3>
                 <button onClick="toggleAddForm()" class="text-gray-400 font-bold hover:text-black text-lg">✕</button>
             </div>
 
             <form id="addListingForm" class="space-y-4 text-xs">
+                <input type="hidden" id="editingDocId" value="">
                 
                 <div class="bg-blue-50 p-3 rounded border border-blue-200 flex items-center gap-6">
                     <span class="font-bold text-blue-900">Тип пропозиції:</span>
@@ -517,7 +517,7 @@
 
                 <div class="flex justify-end gap-3 pt-2">
                     <button type="button" onClick="toggleAddForm()" class="px-5 py-2 bg-gray-200 text-gray-700 font-bold rounded">Скасувати</button>
-                    <button type="submit" class="btn-green-add text-white font-bold px-6 py-2 rounded shadow">
+                    <button type="submit" id="submitFormBtn" class="btn-green-add text-white font-bold px-6 py-2 rounded shadow">
                         <i class="fa-solid fa-check"></i> Опублікувати оголошення
                     </button>
                 </div>
@@ -564,7 +564,7 @@
                     </ul>
                 </div>
 
-                <!-- РЕКЛАМНИЙ БЛОК-БАННЕР ДЛЯ МОНЕТИЗАЦІЇ (СЛАЙДЕР ПІД МАРКАМИ АВТО) -->
+                <!-- РЕКЛАМНИЙ БЛОК-БАННЕР -->
                 <div class="bg-white p-3 rounded border border-gray-200 shadow-sm space-y-2">
                     <div class="flex items-center justify-between border-b pb-1">
                         <span class="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Реклама / Партнери</span>
@@ -573,7 +573,6 @@
                         </button>
                     </div>
 
-                    <!-- Форма додавання баннеру (для адміна) -->
                     <div id="adminBannerForm" class="hidden bg-red-50 p-2.5 border border-red-200 rounded space-y-2 text-xs">
                         <div class="font-bold text-red-900 text-[11px]">Новий рекламний баннер</div>
                         <input type="text" id="bannerTitle" placeholder="Заголовок баннеру" class="w-full p-1.5 border rounded text-xs">
@@ -585,7 +584,6 @@
                         </div>
                     </div>
 
-                    <!-- Контейнер для відображення рекламних баннерів (Слайдер) -->
                     <div id="sidebarBannersContainer" class="relative overflow-hidden rounded">
                         <p class="text-gray-400 text-[11px] italic text-center py-2">Завантаження реклами...</p>
                     </div>
@@ -724,7 +722,6 @@
         let currentGalleryPhotos = [];
         let currentPhotoIndex = 0;
         
-        // Встановлюємо за замовчуванням "auto" (Легкові авто)
         let activeCategoryFilter = 'auto';
         if (window.location.hash === '#parts') {
             activeCategoryFilter = 'parts';
@@ -784,7 +781,7 @@
             }
         };
 
-        window.updateFormModels = function() {
+        window.updateFormModels = function(selectedModel = "") {
             const brandSel = document.getElementById('formBrand').value;
             const modelSel = document.getElementById('formModel');
             modelSel.innerHTML = '<option value="">Оберіть модель *</option>';
@@ -793,6 +790,7 @@
                     const opt = document.createElement('option');
                     opt.value = model;
                     opt.textContent = model;
+                    if (model === selectedModel) opt.selected = true;
                     modelSel.appendChild(opt);
                 });
             }
@@ -1036,7 +1034,67 @@
                 return;
             }
             const form = document.getElementById('newAdFormCard');
-            form.classList.toggle('hidden');
+            if (form.classList.contains('hidden')) {
+                // Відкриваємо чисту форму для нового оголошення
+                document.getElementById('addListingForm').reset();
+                document.getElementById('editingDocId').value = '';
+                document.getElementById('formTitleText').innerHTML = '<i class="fa-solid fa-plus-circle text-red-600"></i> Подача нового оголошення';
+                document.getElementById('submitFormBtn').innerHTML = '<i class="fa-solid fa-check"></i> Опублікувати оголошення';
+                toggleFormType('auto');
+                form.classList.remove('hidden');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                form.classList.add('hidden');
+            }
+        };
+
+        // Функція відкриття форми для РЕДАГУВАННЯ
+        window.editProduct = function(docId) {
+            if (!currentUser) return;
+            const item = allListingsData.find(p => p.id === docId);
+            if (!item) return;
+
+            document.getElementById('editingDocId').value = item.id;
+            document.getElementById('formTitleText').innerHTML = '<i class="fa-solid fa-pen-to-square text-blue-600"></i> Редагування оголошення';
+            document.getElementById('submitFormBtn').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Зберегти зміни';
+
+            const cardType = (item.type === 'parts' || item.type === 'part' || item.category === 'Автозапчастини') ? 'part' : 'auto';
+            document.querySelector(`input[name="listingType"][value="${cardType}"]`).checked = true;
+            toggleFormType(cardType);
+
+            document.getElementById('formBrand').value = item.brand || '';
+            updateFormModels(item.model || '');
+
+            document.getElementById('formYear').value = item.year || '';
+            document.getElementById('formRegion').value = item.region || 'Рівненська область';
+            updateFormCities();
+            document.getElementById('formCity').value = (item.city || '').replace(/^м\.\s*/, '');
+
+            document.getElementById('adPrice').value = item.priceUSD || '';
+            document.getElementById('adContact').value = item.contact || '';
+            document.getElementById('adDescription').value = item.description || '';
+
+            if (cardType === 'part') {
+                document.getElementById('partName').value = item.partName || '';
+                document.getElementById('partNumber').value = item.partNumber || '';
+                document.getElementById('partCondition').value = item.partCondition || 'Вживана (б/в)';
+            } else {
+                document.getElementById('formGeneration').value = item.generation || '';
+                document.getElementById('adMileage').value = item.mileage || '';
+                document.getElementById('adGearbox').value = item.gearbox || 'Механіка';
+                document.getElementById('adDrive').value = item.drive || 'Передній';
+                document.getElementById('adVin').value = item.vin || '';
+                document.getElementById('adStateNum').value = item.stateNum || '';
+            }
+
+            const photos = item.photosArray || [];
+            document.getElementById('adPhoto1').value = photos[0] || '';
+            document.getElementById('adPhoto2').value = photos[1] || '';
+            document.getElementById('adPhoto3').value = photos[2] || '';
+            document.getElementById('adPhoto4').value = photos[3] || '';
+
+            document.getElementById('newAdFormCard').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
         window.toggleFavorite = async function(docId) {
@@ -1069,6 +1127,7 @@
             e.preventDefault();
             if (!currentUser) return;
 
+            const editingId = document.getElementById('editingDocId').value;
             const listingType = document.querySelector('input[name="listingType"]:checked').value;
             const brand = document.getElementById('formBrand').value;
             const model = document.getElementById('formModel').value;
@@ -1103,10 +1162,7 @@
                 region: region || "Рівненська область",
                 contact: document.getElementById('adContact').value,
                 description: document.getElementById('adDescription').value,
-                photosArray: photosArray,
-                userEmail: currentUser.email,
-                dateStr: new Date().toLocaleDateString('uk-UA'),
-                createdAt: serverTimestamp()
+                photosArray: photosArray
             };
 
             if (listingType === 'part') {
@@ -1133,10 +1189,22 @@
             }
 
             try {
-                await addDoc(collection(db, "auto_listings"), payload);
+                if (editingId) {
+                    // Оновлення існуючого оголошення
+                    await updateDoc(doc(db, "auto_listings", editingId), payload);
+                    alert("Оголошення успішно оновлено!");
+                } else {
+                    // Створення нового
+                    payload.userEmail = currentUser.email;
+                    payload.dateStr = new Date().toLocaleDateString('uk-UA');
+                    payload.createdAt = serverTimestamp();
+                    await addDoc(collection(db, "auto_listings"), payload);
+                    alert("Оголошення успішно збережено та додано у базу!");
+                }
+
                 document.getElementById('addListingForm').reset();
+                document.getElementById('editingDocId').value = '';
                 document.getElementById('newAdFormCard').classList.add('hidden');
-                alert("Оголошення успішно збережено та додано у базу!");
             } catch (err) {
                 alert("Помилка при збереженні: " + err.message);
             }
@@ -1153,7 +1221,6 @@
             renderFavoritesSection();
             initSidebarBrands();
             
-            // Якщо є хеш у URL — використовуємо його, інакше за замовчуванням відкриваємо 'auto' (Легкові авто)
             if (window.location.hash === '#parts') setMainCategory('parts');
             else if (window.location.hash === '#auto') setMainCategory('auto');
             else if (window.location.hash === '#all') setMainCategory('all');
@@ -1264,7 +1331,10 @@
                                     <i class="${isFav ? 'fa-solid' : 'fa-regular'} fa-heart"></i>
                                 </button>
 
-                                ${isOwnerOrAdmin ? `<button class="delete-btn text-red-500 font-bold hover:underline" data-id="${docId}">Видалити</button>` : ''}
+                                ${isOwnerOrAdmin ? `
+                                    <button onclick="editProduct('${docId}')" class="text-blue-600 font-bold hover:underline">Редагувати</button>
+                                    <button class="delete-btn text-red-500 font-bold hover:underline" data-id="${docId}">Видалити</button>
+                                ` : ''}
                             </div>
                         </div>
                     </div>

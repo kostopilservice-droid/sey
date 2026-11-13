@@ -107,7 +107,6 @@
             box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
         }
 
-        /* Стилі візуального редактора тексту новин */
         #newsRichEditor:empty:before {
             content: attr(data-placeholder);
             color: #64748b;
@@ -296,7 +295,7 @@
                     <h3 class="text-xl font-bold text-amber-300 flex items-center gap-2">
                         <i class="fa-solid fa-newspaper text-amber-400"></i> Новини та події громади
                     </h3>
-                    <p class="text-xs text-slate-400 mt-0.5">Клацніть на картку новини, щоб відкрити її у повноекранному форматі з відео, 3D-панорамою та медіа</p>
+                    <p class="text-xs text-slate-400 mt-0.5">Клацніть на картку новини, щоб відкрити її у повноекранному форматі з YouTube, 3D-панорамою та медіа</p>
                 </div>
                 <!-- Кнопка додавання новини (Для всіх зареєстрованих користувачів) -->
                 <button id="userAddNewsBtn" onclick="openAddNewsModal()" style="display: none;" class="btn-divine px-4 py-2 rounded-xl text-xs flex items-center gap-2 shadow-md cursor-pointer">
@@ -503,8 +502,9 @@
                     <div id="galleryCounter" class="absolute bottom-3 right-3 px-3 py-1 bg-slate-950/80 rounded-full border border-amber-500/30 text-[10px] text-amber-300 font-bold hidden"></div>
                 </div>
 
-                <!-- БЛОК ВБУДОВАНОГО ВІДЕО АБО 3D ПАНОРАМИ (ФРЕЙМУ) -->
-                <div id="detailVideoContainer" class="hidden w-full aspect-video rounded-2xl overflow-hidden border-2 border-amber-500/30 shadow-2xl bg-black"></div>
+                <!-- БЛОКИ ДЛЯ YouTube ТА 3D ПАНОРАМИ (ФРЕЙМУ) -->
+                <div id="detailYoutubeContainer" class="hidden w-full aspect-video rounded-2xl overflow-hidden border-2 border-amber-500/30 shadow-2xl bg-black"></div>
+                <div id="detailPanoramaContainer" class="hidden w-full aspect-video rounded-2xl overflow-hidden border-2 border-amber-500/30 shadow-2xl bg-black"></div>
 
                 <!-- Форматований HTML-контент новини -->
                 <div id="detailNewsText" class="rich-news-content font-serif-sacred text-base sm:text-xl leading-relaxed text-slate-200 p-6 rounded-2xl border border-slate-800 bg-slate-900/60 shadow-inner"></div>
@@ -532,11 +532,11 @@
         </div>
     </div>
 
-    <!-- 4. МОДАЛЬНЕ ВІКНО СТВОРЕННЯ / РЕДАГУВАННЯ НОВИНИ З ФОРМАТУВАННЯМ ТА 3D ПАНОРАМОЮ -->
+    <!-- 4. МОДАЛЬНЕ ВІКНО СТВОРЕННЯ / РЕДАГУВАННЯ НОВИНИ (ОКРЕМІ ПОЛЯ ДЛЯ YOUTUBE ТА 3D ПАНОРАМИ) -->
     <div id="addNewsModal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md hidden items-center justify-center p-4 z-50">
         <div class="bg-slate-900 border border-amber-500/40 rounded-2xl p-6 max-w-2xl w-full shadow-2xl space-y-4 max-h-[92vh] overflow-y-auto">
             <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-                <h3 id="addModalTitle" class="text-lg font-bold text-amber-300 flex items-center gap-2">📰 Додати новину з медіа та форматуванням</h3>
+                <h3 id="addModalTitle" class="text-lg font-bold text-amber-300 flex items-center gap-2">📰 Додати новину з медіа та 3D панорамою</h3>
                 <button onclick="closeAddNewsModal()" class="text-slate-400 hover:text-white text-sm font-bold cursor-pointer">✕</button>
             </div>
 
@@ -549,14 +549,19 @@
                     <input type="text" id="inputNewsTitle" required placeholder="Заголовок події громади..." class="w-full px-3.5 py-2 text-xs bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-amber-400">
                 </div>
 
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-300 mb-1">Посилання на фотографії (через кому)</label>
+                    <input type="text" id="inputNewsPhotos" placeholder="https://photo1.jpg, https://photo2.jpg..." class="w-full px-3.5 py-2 text-xs bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-amber-400">
+                </div>
+
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-[11px] font-bold text-slate-300 mb-1">Посилання на фотографії (через кому)</label>
-                        <input type="text" id="inputNewsPhotos" placeholder="https://photo1.jpg, https://photo2.jpg..." class="w-full px-3.5 py-2 text-xs bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-amber-400">
+                        <label class="block text-[11px] font-bold text-amber-400 mb-1"><i class="fa-brands fa-youtube"></i> YouTube посилання</label>
+                        <input type="text" id="inputNewsYoutube" placeholder="https://www.youtube.com/watch?v=..." class="w-full px-3.5 py-2 text-xs bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-amber-400">
                     </div>
                     <div>
-                        <label class="block text-[11px] font-bold text-slate-300 mb-1">YouTube / 3D Панорама / HTML Iframe фрейм</label>
-                        <input type="text" id="inputNewsVideo" placeholder="YouTube, посилання на панораму чи повний <iframe ...></iframe>" class="w-full px-3.5 py-2 text-xs bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-amber-400">
+                        <label class="block text-[11px] font-bold text-amber-400 mb-1"><i class="fa-solid fa-cube"></i> 3D Панорама / Iframe фрейм</label>
+                        <input type="text" id="inputNewsPanorama" placeholder="Посилання або повний <iframe ...></iframe>" class="w-full px-3.5 py-2 text-xs bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-amber-400">
                     </div>
                 </div>
 
@@ -1377,7 +1382,8 @@
             document.getElementById('addModalTitle').textContent = '📰 Додати новину з медіа та 3D панорамою';
             document.getElementById('inputNewsTitle').value = '';
             document.getElementById('inputNewsPhotos').value = '';
-            document.getElementById('inputNewsVideo').value = '';
+            document.getElementById('inputNewsYoutube').value = '';
+            document.getElementById('inputNewsPanorama').value = '';
             document.getElementById('newsRichEditor').innerHTML = '';
             document.getElementById('inputAdText').value = '';
             document.getElementById('inputAdLink').value = '';
@@ -1406,7 +1412,8 @@
             const title = document.getElementById('inputNewsTitle').value.trim();
             const photosRaw = document.getElementById('inputNewsPhotos').value;
             const photos = photosRaw ? photosRaw.split(',').map(s => s.trim()).filter(Boolean) : [];
-            const video = document.getElementById('inputNewsVideo').value.trim();
+            const youtube = document.getElementById('inputNewsYoutube').value.trim();
+            const panorama = document.getElementById('inputNewsPanorama').value.trim();
             
             const editorEl = document.getElementById('newsRichEditor');
             const richHtml = sanitizeHtml(editorEl.innerHTML).trim();
@@ -1426,7 +1433,7 @@
                     const data = getActiveCityData();
                     data.news[editLegacyIdx] = {
                         ...data.news[editLegacyIdx],
-                        title, photos, video,
+                        title, photos, youtube, panorama,
                         text: plainText,
                         htmlContent: richHtml,
                         adText, adLink
@@ -1436,7 +1443,8 @@
                     await db.collection('city_news').doc(editDocId).update({
                         title,
                         photos,
-                        video,
+                        youtube,
+                        panorama,
                         text: plainText,
                         htmlContent: richHtml,
                         adText,
@@ -1450,7 +1458,8 @@
                         cityName: getActiveCityData().name,
                         title,
                         photos,
-                        video,
+                        youtube,
+                        panorama,
                         text: plainText,
                         htmlContent: richHtml,
                         adText,
@@ -1527,7 +1536,8 @@
                         <div class="w-full h-44 overflow-hidden bg-slate-950 relative">
                             <img src="${coverPhoto}" alt="Фото новини" class="w-full h-full object-cover">
                             ${item.photos && item.photos.length > 1 ? `<span class="absolute bottom-2 right-2 px-2 py-0.5 bg-slate-950/80 rounded-lg text-[10px] text-amber-300 font-bold">📷 ${item.photos.length} фото</span>` : ''}
-                            ${item.video ? `<span class="absolute bottom-2 left-2 px-2 py-0.5 bg-indigo-600/90 rounded-lg text-[10px] text-white font-bold">🌐 3D Панорама / Відео</span>` : ''}
+                            ${item.youtube ? `<span class="absolute bottom-2 left-2 px-2 py-0.5 bg-rose-600/90 rounded-lg text-[10px] text-white font-bold">▶ YouTube</span>` : ''}
+                            ${item.panorama ? `<span class="absolute bottom-2 right-16 px-2 py-0.5 bg-indigo-600/90 rounded-lg text-[10px] text-white font-bold">🌐 3D Панорама</span>` : ''}
                         </div>
                         <div class="p-4 space-y-2">
                             <div class="flex justify-between items-center text-[10px] text-amber-400 font-semibold">
@@ -1620,35 +1630,42 @@
                 galleryContainer.classList.add('hidden');
             }
 
-            // --- ОБРОБКА ВБУДОВАНОГО КОНТЕНТУ (YouTube / 3D Панорама / iframe фрейм) ---
-            const videoContainer = document.getElementById('detailVideoContainer');
-            if (item.video) {
-                videoContainer.classList.remove('hidden');
-                let rawVideoInput = item.video.trim();
-                
-                // Якщо користувач вставив готовий iframe
-                if (rawVideoInput.toLowerCase().startsWith('<iframe')) {
-                    videoContainer.innerHTML = rawVideoInput;
-                    // Робимо адаптивним всередині контейнера
-                    const innerIframe = videoContainer.querySelector('iframe');
+            // --- ОБРОБКА YOUTUBE ---
+            const youtubeContainer = document.getElementById('detailYoutubeContainer');
+            const ytSource = item.youtube || item.video; // сумісність зі старим полем video
+            if (ytSource) {
+                youtubeContainer.classList.remove('hidden');
+                let embedUrl = ytSource.trim();
+                if (embedUrl.includes('watch?v=')) {
+                    embedUrl = embedUrl.replace('watch?v=', 'embed/');
+                } else if (embedUrl.includes('youtu.be/')) {
+                    embedUrl = embedUrl.replace('youtu.be/', 'www.youtube.com/embed/');
+                }
+                youtubeContainer.innerHTML = `<iframe src="${embedUrl}" class="w-full h-full" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
+            } else {
+                youtubeContainer.classList.add('hidden');
+                youtubeContainer.innerHTML = '';
+            }
+
+            // --- ОБРОБКА 3D ПАНОРАМИ / ІФРЕЙМУ ---
+            const panoramaContainer = document.getElementById('detailPanoramaContainer');
+            if (item.panorama) {
+                panoramaContainer.classList.remove('hidden');
+                let rawPano = item.panorama.trim();
+                if (rawPano.toLowerCase().startsWith('<iframe')) {
+                    panoramaContainer.innerHTML = rawPano;
+                    const innerIframe = panoramaContainer.querySelector('iframe');
                     if (innerIframe) {
                         innerIframe.className = "w-full h-full";
                         innerIframe.setAttribute("width", "100%");
                         innerIframe.setAttribute("height", "100%");
                     }
                 } else {
-                    // Перевіряємо YouTube чи інше посилання на 3D панораму/тур
-                    let embedUrl = rawVideoInput;
-                    if (embedUrl.includes('watch?v=')) {
-                        embedUrl = embedUrl.replace('watch?v=', 'embed/');
-                    } else if (embedUrl.includes('youtu.be/')) {
-                        embedUrl = embedUrl.replace('youtu.be/', 'www.youtube.com/embed/');
-                    }
-                    videoContainer.innerHTML = `<iframe src="${embedUrl}" class="w-full h-full" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
+                    panoramaContainer.innerHTML = `<iframe src="${rawPano}" class="w-full h-full" frameborder="0" allowfullscreen></iframe>`;
                 }
             } else {
-                videoContainer.classList.add('hidden');
-                videoContainer.innerHTML = '';
+                panoramaContainer.classList.add('hidden');
+                panoramaContainer.innerHTML = '';
             }
 
             const adBanner = document.getElementById('detailAdBannerContainer');
@@ -1669,7 +1686,8 @@
             const modal = document.getElementById('newsDetailModal');
             modal.classList.remove('flex');
             modal.classList.add('hidden');
-            document.getElementById('detailVideoContainer').innerHTML = '';
+            document.getElementById('detailYoutubeContainer').innerHTML = '';
+            document.getElementById('detailPanoramaContainer').innerHTML = '';
         }
 
         function nextGalleryPhoto() {
@@ -1706,7 +1724,8 @@
             document.getElementById('addModalTitle').textContent = '✏️ Редагувати новину громади';
             document.getElementById('inputNewsTitle').value = itemToEdit.title || '';
             document.getElementById('inputNewsPhotos').value = itemToEdit.photos ? itemToEdit.photos.join(', ') : '';
-            document.getElementById('inputNewsVideo').value = itemToEdit.video || '';
+            document.getElementById('inputNewsYoutube').value = itemToEdit.youtube || itemToEdit.video || '';
+            document.getElementById('inputNewsPanorama').value = itemToEdit.panorama || '';
             
             const editorEl = document.getElementById('newsRichEditor');
             if (itemToEdit.htmlContent) {

@@ -32,10 +32,11 @@
 
         .real-estate-hero {
             position: relative;
-            background: linear-gradient(rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.78)), 
-                        url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1600') center/cover no-repeat;
+            background: linear-gradient(rgba(15, 23, 42, 0.82), rgba(15, 23, 42, 0.78)), 
+                        url('https://images.unsplash.com/photo-1541888946425-d0fbb18f8f2e?w=1600') center/cover no-repeat;
             border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
         }
 
         .search-box-red {
@@ -149,8 +150,8 @@
 
                 <nav class="hidden md:flex items-center gap-6 text-sm font-bold text-gray-800">
                     <a href="auto.html" class="hover:text-red-600 pb-1 text-red-600"><i class="fa-solid fa-car"></i> Автобазар</a>
-                    <a href="#apartments" onClick="setMainCategory('apartment')" class="hover:text-red-600 pb-1">Квартири</a>
-                    <a href="#houses" onClick="setMainCategory('house')" class="hover:text-red-600 pb-1">Будинки та дачі</a>
+                    <button onClick="setMainCategory('apartment')" class="hover:text-red-600 pb-1 cursor-pointer">Квартири</button>
+                    <button onClick="setMainCategory('house')" class="hover:text-red-600 pb-1 cursor-pointer">Будинки та дачі</button>
                     <a href="commercial.html" class="hover:text-red-600 pb-1">Комерція</a>
                 </nav>
 
@@ -168,10 +169,14 @@
             <a href="index.html" class="hover:underline">NEOSERVICE</a> &gt; <span id="breadcrumbCategory">Нерухомість</span>
         </div>
         
-        <!-- ЕСТЕТИЧНА ОБКЛАДИНКА -->
-        <div class="real-estate-hero p-6 sm:p-8 flex flex-col justify-center">
-            <h1 class="text-2xl sm:text-3xl font-black text-gray-900 mb-2" id="mainHeaderTitle">Продаж та оренда нерухомості в Україні</h1>
-            <p class="text-xs sm:text-sm text-gray-700 max-w-2xl font-medium">Сучасний портал оголошень житлової та комерційної нерухомості. Надійні пропозиції у місті Костопіль, Рівненській області та по всій Україні.</p>
+        <!-- ЕСТЕТИЧНИЙ БАНЕР З ВІЗУАЛІЗАЦІЄЮ ТА ВИДАЛЕНИМ ТЕКСТОМ -->
+        <div class="real-estate-hero p-6 sm:p-8 flex flex-col justify-center text-white">
+            <div class="mb-2">
+                <span class="inline-block bg-[#db4437] text-white font-bold text-[10px] px-2.5 py-0.5 rounded uppercase tracking-wider">
+                    Нерухомість України
+                </span>
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-black text-white" id="mainHeaderTitle">Продаж та оренда нерухомості в Україні</h1>
         </div>
 
         <!-- ЧЕРВОНИЙ БЛОК ФІЛЬТРІВ -->
@@ -403,16 +408,49 @@
                 </div>
             </div>
 
-            <!-- САЙДБАР -->
+            <!-- САЙДБАР З КІЛЬКІСНИМИ КАТЕГОРІЯМИ ТА КОЛАЖ-БАНЕРОМ В ПРАВУ СТОРІНКУ -->
             <div class="space-y-5 text-xs">
                 <div class="bg-white p-4 rounded border border-gray-200 shadow-sm">
                     <h3 class="font-bold text-gray-900 mb-2 border-b pb-1">Категорії нерухомості</h3>
                     <ul class="space-y-2 font-semibold">
                         <li><a href="auto.html" class="hover:underline flex justify-between text-red-600 font-bold"><i class="fa-solid fa-car mr-1"></i> Автобазар <span>&rsaquo;</span></a></li>
-                        <li><a href="#apartments" onClick="setMainCategory('apartment')" class="hover:underline flex justify-between text-blue-700">Квартири <span>&rsaquo;</span></a></li>
-                        <li><a href="#houses" onClick="setMainCategory('house')" class="hover:underline flex justify-between text-blue-700">Будинки та дачі <span>&rsaquo;</span></a></li>
+                        <li><button onClick="setMainCategory('apartment')" class="hover:underline flex justify-between text-blue-700 w-full text-left">Квартири <span>&rsaquo;</span></button></li>
+                        <li><button onClick="setMainCategory('house')" class="hover:underline flex justify-between text-blue-700 w-full text-left">Будинки та дачі <span>&rsaquo;</span></button></li>
                         <li><a href="commercial.html" class="hover:underline flex justify-between text-blue-700">Комерція / Ділянки <span>&rsaquo;</span></a></li>
                     </ul>
+                </div>
+
+                <!-- ГОТОВЕ РІШЕННЯ: КОЛАЖНИЙ БАНЕР У ПРАВУ СТОРІНКУ (САЙДБАР) -->
+                <div class="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden p-3 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[10px] font-extrabold uppercase text-gray-400 tracking-wider">Ексклюзив</span>
+                        <span class="bg-red-100 text-red-600 text-[10px] font-bold px-2 py-0.5 rounded-full">TOP</span>
+                    </div>
+                    
+                    <!-- Сітка-колаж із 4 зображень нерухомості та будівництва -->
+                    <div class="grid grid-cols-2 gap-1.5 rounded overflow-hidden">
+                        <div class="h-20 bg-gray-100 overflow-hidden relative group">
+                            <img src="https://images.unsplash.com/photo-1541888946425-d0fbb18f8f2e?w=400" alt="Будівництво" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                        </div>
+                        <div class="h-20 bg-gray-100 overflow-hidden relative group">
+                            <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400" alt="Квартира" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                        </div>
+                        <div class="h-20 bg-gray-100 overflow-hidden relative group">
+                            <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400" alt="Будинок" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                        </div>
+                        <div class="h-20 bg-gray-100 overflow-hidden relative group">
+                            <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400" alt="Комерція" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 class="font-bold text-gray-900 text-sm">Сучасні проекти</h4>
+                        <p class="text-[11px] text-gray-500 mt-0.5">Інвестуйте в надійну нерухомість України.</p>
+                    </div>
+
+                    <a href="commercial.html" class="block w-full py-2 bg-[#db4437] hover:bg-red-700 text-white text-center font-bold rounded shadow-sm transition-colors text-xs">
+                        Переглянути каталог
+                    </a>
                 </div>
             </div>
 

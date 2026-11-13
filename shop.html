@@ -5,7 +5,7 @@
     <meta name="theme-color" content="#0f172a">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Інтернет-магазин — Neoservice</title>
+    <title>Дошка оголошень — Neoservice</title>
     
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -13,7 +13,7 @@
     <style>
         :root {
             --primary: #1e3a8a;
-            --shop-color: #8224e3;
+            --olx-color: #23527c; /* Стиль OLX-синій */
             --accent: #10b981;
             --danger: #ef4444;
             --bg: #f8fafc;
@@ -34,7 +34,7 @@
             justify-content: center;
             background: #0f172a;
             overflow-x: auto;
-            border-bottom: 2px solid var(--shop-color);
+            border-bottom: 2px solid var(--olx-color);
         }
         nav a {
             color: white;
@@ -45,7 +45,7 @@
             font-weight: 600;
             transition: background 0.2s;
         }
-        nav a:hover { background-color: var(--shop-color); }
+        nav a:hover { background-color: var(--olx-color); }
 
         .container {
             max-width: 1280px;
@@ -115,15 +115,14 @@
             transition: all 0.2s;
         }
         .cat-item-btn:hover, .cat-item-btn.active {
-            background: #f3e8ff;
-            color: var(--shop-color);
+            background: #e0f2fe;
+            color: var(--olx-color);
             padding-left: 20px;
         }
         .cat-item-btn.active {
-            border-left: 4px solid var(--shop-color);
+            border-left: 4px solid var(--olx-color);
         }
 
-        /* Права зона: Підкатегорії + Сітка новинок знизу */
         .subcategories-panel {
             background: #ffffff;
             padding: 18px 22px;
@@ -169,12 +168,12 @@
             gap: 6px;
         }
         .sub-chip:hover, .sub-chip.active {
-            background: var(--shop-color);
+            background: var(--olx-color);
             color: white;
-            border-color: var(--shop-color);
+            border-color: var(--olx-color);
         }
 
-        /* БЛОК НОВИХ НАДХОДЖЕНЬ У СІТЦІ ПІД ПІДПУНКТАМИ */
+        /* БЛОК СИНХРОНІЗАЦІЇ НОВИХ ОГОЛОШЕНЬ */
         .sync-new-section {
             background: #f8fafc;
             border: 1px solid #e2e8f0;
@@ -224,8 +223,8 @@
         }
         .sync-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(130, 36, 227, 0.12);
-            border-color: var(--shop-color);
+            box-shadow: 0 4px 10px rgba(35, 82, 124, 0.12);
+            border-color: var(--olx-color);
         }
         .sync-card img {
             width: 100%;
@@ -250,13 +249,13 @@
         .sync-card-price {
             font-size: 0.82rem;
             font-weight: 800;
-            color: var(--shop-color);
+            color: var(--olx-color);
         }
 
-        /* КОМПАКТНІ КАРТКИ ТОВАРІВ ОСНОВНОЇ СІТКИ */
+        /* КОМПАКТНІ КАРТКИ ОГОЛОШЕНЬ ОСНОВНОЇ СІТКИ */
         .market-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
             gap: 15px;
             margin-top: 25px;
         }
@@ -270,7 +269,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            height: 370px;
+            height: 380px;
             box-sizing: border-box;
             transition: transform 0.2s, box-shadow 0.2s;
             position: relative;
@@ -299,7 +298,7 @@
         .card-img-wrap img:hover { transform: scale(1.03); }
 
         .card-title {
-            font-size: 0.82rem;
+            font-size: 0.84rem;
             margin: 0 0 6px 0;
             color: #1e293b;
             font-weight: 600;
@@ -310,23 +309,28 @@
             height: 2.6em;
             cursor: pointer;
         }
-        .card-title:hover { color: var(--shop-color); text-decoration: underline; }
+        .card-title:hover { color: var(--olx-color); text-decoration: underline; }
 
-        .rating-stars {
-            color: #f59e0b;
-            font-size: 0.72rem;
+        .condition-badge {
+            font-size: 0.68rem;
+            background: #f1f5f9;
+            color: #475569;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+            display: inline-block;
             margin-bottom: 6px;
         }
 
         .card-price {
-            font-size: 1.05rem;
+            font-size: 1.1rem;
             font-weight: 800;
             color: #0f172a;
             margin-bottom: 8px;
         }
 
-        .btn-buy-market {
-            background: var(--shop-color);
+        .btn-view-ad {
+            background: var(--olx-color);
             color: white;
             border: none;
             padding: 8px;
@@ -340,8 +344,9 @@
             justify-content: center;
             gap: 6px;
             transition: background 0.2s;
+            text-decoration: none;
         }
-        .btn-buy-market:hover { background: #6d18c9; }
+        .btn-view-ad:hover { background: #1a3c5a; }
 
         .admin-actions {
             display: flex;
@@ -358,7 +363,7 @@
             font-weight: bold;
         }
 
-        /* ПОВНОЦІННА СТОРІНКА ТОВАРУ */
+        /* ПОВНОЦІННА СТОРІНКА ОГОЛОШЕННЯ */
         #productDetailView {
             display: none;
             background: white;
@@ -370,7 +375,7 @@
         }
 
         .btn-primary {
-            background: var(--shop-color);
+            background: var(--olx-color);
             color: white;
             border: none;
             padding: 9px 16px;
@@ -382,29 +387,7 @@
             align-items: center;
             gap: 6px;
         }
-        .btn-primary:hover { background: #6d18c9; }
-
-        .cart-badge-btn {
-            position: relative;
-            background: rgba(255,255,255,0.15);
-            color: white;
-            border: 1px solid rgba(255,255,255,0.3);
-            padding: 8px 14px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 0.82rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .cart-count {
-            background: var(--accent);
-            color: white;
-            border-radius: 50%;
-            padding: 2px 6px;
-            font-size: 0.7rem;
-        }
+        .btn-primary:hover { background: #1a3c5a; }
 
         /* МОДАЛЬНІ ВІКНА */
         .modal-overlay {
@@ -421,7 +404,7 @@
         .modal-box {
             background: white;
             border-radius: 12px;
-            max-width: 580px;
+            max-width: 600px;
             width: 100%;
             max-height: 90vh;
             overflow-y: auto;
@@ -456,38 +439,32 @@
 <body>
 
     <!-- ШАПКА -->
-    <header style="background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); color: white; padding: 14px 20px; border-bottom: 3px solid var(--shop-color);">
+    <header style="background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); color: white; padding: 14px 20px; border-bottom: 3px solid var(--olx-color);">
       <div style="max-width: 1280px; margin: 0 auto; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 15px;">
         
         <a href="index.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none; color: white;">
           <div style="background: rgba(255, 255, 255, 0.15); border-radius: 12px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">
-            🛒
+            📋
           </div>
           <div>
             <div style="font-size: 1.3rem; font-weight: 900; letter-spacing: 0.8px; text-transform: uppercase; line-height: 1.1;">
-              NEO<span style="color: #c084fc;">MARKET</span>
+              NEO<span style="color: #60a5fa;">BOARD</span>
             </div>
             <div style="font-size: 0.74rem; color: #cbd5e1; margin-top: 2px;">
-              Інтернет-магазин та маркетплейс
+              Дошка приватних оголошень
             </div>
           </div>
         </a>
 
         <!-- Пошук -->
-        <div style="flex: 1; max-width: 360px; min-width: 220px;">
+        <div style="flex: 1; max-width: 380px; min-width: 220px;">
           <div style="position: relative; width: 100%;">
             <span style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8; pointer-events: none; font-size: 0.82rem;">
               <i class="fa-solid fa-magnifying-glass"></i>
             </span>
-            <input type="text" id="shopSearch" placeholder="Пошук товарів за назвою..." style="width: 100%; box-sizing: border-box; padding: 8px 12px 8px 34px; font-size: 0.82rem; background: rgba(255, 255, 255, 0.15); color: white; border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 8px; outline: none;" />
+            <input type="text" id="shopSearch" placeholder="Пошук оголошень за назвою або описом..." style="width: 100%; box-sizing: border-box; padding: 8px 12px 8px 34px; font-size: 0.82rem; background: rgba(255, 255, 255, 0.15); color: white; border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 8px; outline: none;" />
           </div>
         </div>
-
-        <!-- Кошик -->
-        <button class="cart-badge-btn" id="openCartBtn">
-          <i class="fa-solid fa-cart-shopping"></i> Кошик
-          <span class="cart-count" id="cartBadgeCount">0</span>
-        </button>
 
       </div>
     </header>
@@ -497,42 +474,42 @@
         <a href="index.html"><i class="fa-solid fa-house"></i> Головна</a>
         <a href="baza.html"><i class="fa-solid fa-book-open"></i> База знань</a>
         <a href="auto.html"><i class="fa-solid fa-car"></i> Автомаркет</a>
-        <a href="shop.html" style="background-color: var(--shop-color);"><i class="fa-solid fa-store"></i> Магазин</a>
+        <a href="shop.html" style="background-color: var(--olx-color);"><i class="fa-solid fa-rectangle-ad"></i> Дошка оголошень</a>
         <a href="sport.html"><i class="fa-solid fa-football"></i> Спорт</a>
         <a href="chat.html"><i class="fa-solid fa-comments"></i> Чат</a>
     </nav>
 
     <div class="container">
       
-      <!-- Панель управління магазином -->
-      <div style="background: white; border-radius: 12px; padding: 15px 20px; border-left: 5px solid var(--shop-color); box-shadow: 0 4px 6px rgba(0,0,0,0.04); display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 15px;">
+      <!-- Панель управління оголошеннями -->
+      <div style="background: white; border-radius: 12px; padding: 15px 20px; border-left: 5px solid var(--olx-color); box-shadow: 0 4px 6px rgba(0,0,0,0.04); display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 15px;">
         <div>
-          <h1 style="margin: 0 0 3px 0; font-size: 1.15rem; color: #1e3a8a;">Вітрина інтернет-магазину</h1>
+          <h1 style="margin: 0 0 3px 0; font-size: 1.15rem; color: #1e3a8a;">Дошка оголошень користувачів</h1>
           <p style="margin: 0; font-size: 0.8rem; color: #64748b;">
-            Обирайте товари або додавайте власні позиції через панель адміністратора.
+            Шукайте потрібні пропозиції або розміщуйте власні оголошення безкоштовно.
           </p>
         </div>
 
         <div style="display: flex; gap: 10px; align-items: center;">
           <span id="adminStatusBadge" style="display: none; background: #fef3c7; color: #b45309; padding: 5px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: bold;">
-            <i class="fa-solid fa-shield-halved"></i> Адмін
+            <i class="fa-solid fa-shield-halved"></i> Модератор
           </span>
           <button id="toggleFormBtn" class="btn-primary">
-            <i class="fa-solid fa-plus"></i> Додати товар
+            <i class="fa-solid fa-plus"></i> Подати оголошення
           </button>
         </div>
       </div>
 
       <!-- ГОЛОВНИЙ КАТАЛОГ -->
       <div id="mainCatalogWrapper">
-        <!-- КАТЕГОРІЇ ТА ПІДРОЗДІЛИ + СІТКА НОВИНОК -->
+        <!-- КАТЕГОРІЇ ТА ПІДРОЗДІЛИ + СІТКА НОВИХ ОГОЛОШЕНЬ -->
         <div class="catalog-container">
           <div class="catalog-top-bar">
             <h3 class="catalog-title">
-              <i class="fa-solid fa-layer-group" style="color: var(--shop-color);"></i> Категорії та підрозділи
+              <i class="fa-solid fa-layer-group" style="color: var(--olx-color);"></i> Категорії оголошень
             </h3>
             <button id="resetFilterBtn" style="background: #e2e8f0; color: #334155; border: none; padding: 5px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; cursor: pointer;">
-              <i class="fa-solid fa-rotate-left"></i> Всі товари
+              <i class="fa-solid fa-rotate-left"></i> Усі оголошення
             </button>
           </div>
 
@@ -540,34 +517,35 @@
             <!-- Ліва колонка: Категорії -->
             <div class="categories-sidebar" id="categoriesSidebar"></div>
             
-            <!-- Права колонка: Підкатегорії + Сітка новинок -->
+            <!-- Права колонка: Підкатегорії + Сітка нових надходжень -->
             <div class="subcategories-panel">
               <div id="subcategoriesContent"></div>
 
-              <!-- БЛОК СИНХРОНІЗАЦІЇ НОВИХ ДОДАНИХ ТОВАРІВ В СІТЦІ -->
+              <!-- БЛОК СИНХРОНІЗАЦІЇ НОВИХ ОГОЛОШЕНЬ В СІТЦІ -->
               <div class="sync-new-section">
                 <div class="sync-new-header">
                   <span class="sync-new-title">
-                    <span class="sync-live-dot"></span> New
+                    <span class="sync-live-dot"></span> Свіжі оголошення
                   </span>
-                  <span style="font-size: 0.72rem; color: #64748b;">Останні додані товари</span>
+                  <span style="font-size: 0.72rem; color: #64748b;">Щойно додані</span>
                 </div>
                 <div class="sync-new-grid" id="syncNewGrid">
-                  <div style="font-size: 0.75rem; color: #64748b; grid-column: 1 / -1;">Очікування синхронізації з базою...</div>
+                  <div style="font-size: 0.75rem; color: #64748b; grid-column: 1 / -1;">Очікування синхронізації...</div>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- ФОРМА ДОДАВАННЯ ТОВАРУ -->
-        <div id="newAdFormCard" style="display: none; background: white; border-radius: 12px; padding: 18px; margin-top: 15px; border: 2px dashed var(--shop-color); box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
-          <h3 style="margin-top: 0; color: #1e3a8a; font-size: 1rem;"><i class="fa-solid fa-circle-plus"></i> Додати новий товар</h3>
+        <!-- ФОРМА ПОДАЧІ / РЕДАГУВАННЯ ОГОЛОШЕННЯ -->
+        <div id="newAdFormCard" style="display: none; background: white; border-radius: 12px; padding: 18px; margin-top: 15px; border: 2px dashed var(--olx-color); box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+          <h3 id="formHeading" style="margin-top: 0; color: #1e3a8a; font-size: 1rem;"><i class="fa-solid fa-rectangle-ad"></i> Створити нове оголошення</h3>
           
           <form id="addListingForm" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
+            <input type="hidden" id="editingDocId" />
             <div>
-              <label style="font-size: 0.75rem; font-weight: bold; color: #475569;">Назва товару:</label>
-              <input type="text" id="adTitle" maxlength="70" placeholder="Наприклад: Годинник наручний" required style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; margin-top: 3px;" />
+              <label style="font-size: 0.75rem; font-weight: bold; color: #475569;">Заголовок оголошення:</label>
+              <input type="text" id="adTitle" maxlength="70" placeholder="Наприклад: Продам перфоратор Bosch" required style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; margin-top: 3px;" />
             </div>
 
             <div>
@@ -581,42 +559,51 @@
             </div>
 
             <div>
-              <label style="font-size: 0.75rem; font-weight: bold; color: #475569;">Ціна (грн):</label>
-              <input type="number" id="adPrice" placeholder="1450" required style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; margin-top: 3px;" />
+              <label style="font-size: 0.75rem; font-weight: bold; color: #475569;">Стан:</label>
+              <select id="adCondition" style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; margin-top: 3px; background: white;">
+                <option value="Б/В (Вживане)">Б/В (Вживане)</option>
+                <option value="Нове">Нове</option>
+                <option value="Відновлене">Відновлене</option>
+              </select>
             </div>
 
             <div>
-              <label style="font-size: 0.75rem; font-weight: bold; color: #475569;">Телефон:</label>
+              <label style="font-size: 0.75rem; font-weight: bold; color: #475569;">Ціна (грн):</label>
+              <input type="number" id="adPrice" placeholder="1500" required style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; margin-top: 3px;" />
+            </div>
+
+            <div>
+              <label style="font-size: 0.75rem; font-weight: bold; color: #475569;">Телефон для зв'язку:</label>
               <input type="tel" id="adContact" placeholder="+380971234567" required style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; margin-top: 3px;" />
             </div>
 
-            <div>
-              <label style="font-size: 0.75rem; font-weight: bold; color: #475569;">Фото (посилання через кому):</label>
+            <div style="grid-column: 1 / -1;">
+              <label style="font-size: 0.75rem; font-weight: bold; color: #475569;">Фотографії (посилання через кому):</label>
               <input type="text" id="adPhotos" placeholder="https://image1.jpg, https://image2.jpg" required style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; margin-top: 3px;" />
             </div>
 
             <div style="grid-column: 1 / -1;">
-              <label style="font-size: 0.75rem; font-weight: bold; color: #475569;">Опис товару:</label>
-              <textarea id="adDescription" rows="2" maxlength="500" placeholder="Опишіть характеристики товару..." required style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; margin-top: 3px; font-family: inherit;"></textarea>
+              <label style="font-size: 0.75rem; font-weight: bold; color: #475569;">Детальний опис:</label>
+              <textarea id="adDescription" rows="3" maxlength="800" placeholder="Опишіть стан товару, комплектацію, умови доставки..." required style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; margin-top: 3px; font-family: inherit;"></textarea>
             </div>
 
             <div style="grid-column: 1 / -1; display: flex; justify-content: flex-end; gap: 8px;">
               <button type="button" id="cancelFormBtn" style="padding: 6px 12px; border-radius: 6px; border: 1px solid #cbd5e1; background: #f1f5f9; cursor: pointer; font-size: 0.8rem;">Скасувати</button>
-              <button type="submit" class="btn-primary" style="padding: 6px 16px; font-size: 0.8rem;">Опублікувати</button>
+              <button type="submit" class="btn-primary" style="padding: 6px 16px; font-size: 0.8rem;" id="submitFormBtn">Зберегти оголошення</button>
             </div>
           </form>
         </div>
 
-        <!-- ОСНОВНА СІТКА ТОВАРІВ -->
+        <!-- ОСНОВНА СІТКА ОГОЛОШЕНЬ -->
         <div class="market-grid" id="shopProductsContainer">
-          <p style="grid-column: 1 / -1; text-align: center; color: #64748b; padding: 30px;">Завантаження товарів...</p>
+          <p style="grid-column: 1 / -1; text-align: center; color: #64748b; padding: 30px;">Завантаження оголошень...</p>
         </div>
       </div>
 
-      <!-- ДЕТАЛЬНА СТОРІНКА ТОВАРУ (ВІДКРИВАЄТЬСЯ ПРИ КЛІКУ) -->
+      <!-- ДЕТАЛЬНА СТОРІНКА ОГОЛОШЕННЯ -->
       <div id="productDetailView">
         <button id="backToCatalogBtn" style="background: #f1f5f9; border: 1px solid #cbd5e1; padding: 6px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-bottom: 20px; font-size: 0.8rem;">
-          <i class="fa-solid fa-arrow-left"></i> Назад до каталогу
+          <i class="fa-solid fa-arrow-left"></i> Назад до дошки
         </button>
 
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; align-items: start;" id="productDetailContent"></div>
@@ -624,30 +611,15 @@
 
     </div>
 
-    <!-- МОДАЛЬНЕ ВІКНО КОШИКА -->
-    <div id="cartModal" class="modal-overlay">
-      <div class="modal-box">
-        <div class="modal-header">
-          <h3 style="margin: 0; color: #1e3a8a;"><i class="fa-solid fa-cart-shopping"></i> Кошик покупця</h3>
-          <button class="modal-close" id="closeCartModal">&times;</button>
-        </div>
-        <div id="cartItemsContainer" style="display: flex; flex-direction: column; gap: 10px; max-height: 280px; overflow-y: auto;"></div>
-        <div style="border-top: 2px solid #e2e8f0; margin-top: 15px; padding-top: 15px; display: flex; justify-content: space-between; align-items: center;">
-          <div style="font-size: 1rem; font-weight: bold;">Разом: <span id="cartTotalSum" style="color: var(--shop-color);">0 грн</span></div>
-          <button id="checkoutBtn" class="btn-primary" style="padding: 8px 16px;">Оформити замовлення</button>
-        </div>
-      </div>
-    </div>
-
     <footer>
-        <p>&copy; 2026 Neoservice.ks.ua — Інтернет-магазин.</p>
+        <p>&copy; 2026 Neoservice.ks.ua — Дошка оголошень.</p>
     </footer>
 
-    <!-- Firebase та Логіка Магазину -->
+    <!-- Firebase та Логіка Дошки Оголошень -->
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
       import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-      import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, doc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+      import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, doc, deleteDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
       const ADMIN_EMAIL = "admin@neoservice.ks.ua"; 
 
@@ -688,7 +660,6 @@
 
       let currentUser = null;
       let allProducts = [];
-      let cart = JSON.parse(localStorage.getItem('neoshop_cart') || '[]');
       let activeFilter = 'all';
 
       function populateSubSelect(catName, targetSelect) {
@@ -716,7 +687,7 @@
 
           const btn = document.createElement('button');
           btn.className = `cat-item-btn ${index === 0 ? 'active' : ''}`;
-          btn.innerHTML = `<span><i class="fa-solid ${cat.icon}" style="color: var(--shop-color); margin-right: 6px;"></i> ${cat.name}</span> <i class="fa-solid fa-chevron-right" style="font-size: 0.7rem; color: #94a3b8;"></i>`;
+          btn.innerHTML = `<span><i class="fa-solid ${cat.icon}" style="color: var(--olx-color); margin-right: 6px;"></i> ${cat.name}</span> <i class="fa-solid fa-chevron-right" style="font-size: 0.7rem; color: #94a3b8;"></i>`;
           
           btn.addEventListener('mouseenter', () => selectCategory(cat.name));
           btn.addEventListener('click', () => {
@@ -753,8 +724,8 @@
         subcategoriesContent.innerHTML = `
           <div class="subcategories-header">
             <span>${catObj.name}</span>
-            <button class="sub-chip" style="background: var(--shop-color); color: white; border: none; padding: 4px 10px; font-size: 0.72rem;" data-cat-filter="${catObj.name}">
-              Усі товари розділу
+            <button class="sub-chip" style="background: var(--olx-color); color: white; border: none; padding: 4px 10px; font-size: 0.72rem;" data-cat-filter="${catObj.name}">
+              Усі оголошення розділу
             </button>
           </div>
           <div class="sub-grid">${chipsHtml}</div>
@@ -783,11 +754,10 @@
         filterCards();
       });
 
-      // Рендеринг синхронізованої сітки нових товарів під підкатегоріями
       function renderSyncNewGrid(products) {
-        const latest = products.slice(0, 6); // Показуємо останні 6 доданих товарів у сітці
+        const latest = products.slice(0, 6);
         if (latest.length === 0) {
-          syncNewGrid.innerHTML = `<div style="font-size: 0.76rem; color: #64748b; grid-column: 1 / -1;">Нових товарів поки немає. Додайте перший товар через кнопку зверху!</div>`;
+          syncNewGrid.innerHTML = `<div style="font-size: 0.76rem; color: #64748b; grid-column: 1 / -1;">Оголошень поки немає.</div>`;
           return;
         }
 
@@ -811,69 +781,117 @@
         const adminBadge = document.getElementById('adminStatusBadge');
         
         if (!user) {
-          toggleBtn.innerHTML = `<i class="fa-solid fa-lock"></i> Увійдіть`;
+          toggleBtn.innerHTML = `<i class="fa-solid fa-lock"></i> Увійдіть для подачі`;
           adminBadge.style.display = 'none';
         } else {
-          toggleBtn.innerHTML = `<i class="fa-solid fa-plus"></i> Додати товар`;
+          toggleBtn.innerHTML = `<i class="fa-solid fa-plus"></i> Подати оголошення`;
           if (user.email === ADMIN_EMAIL) adminBadge.style.display = 'inline-block';
         }
       });
 
       const newAdFormCard = document.getElementById('newAdFormCard');
+      const addListingForm = document.getElementById('addListingForm');
+
       document.getElementById('toggleFormBtn').addEventListener('click', () => {
         if (!currentUser) {
           alert('Будь ласка, увійдіть в акаунт на головній сторінці!');
           window.location.href = 'index.html#auth-section';
           return;
         }
+        document.getElementById('editingDocId').value = '';
+        document.getElementById('formHeading.innerHTML') = '<i class="fa-solid fa-rectangle-ad"></i> Створити нове оголошення';
+        document.getElementById('submitFormBtn').textContent = 'Опублікувати';
+        addListingForm.reset();
         newAdFormCard.style.display = newAdFormCard.style.display === 'none' ? 'block' : 'none';
       });
+
       document.getElementById('cancelFormBtn').addEventListener('click', () => newAdFormCard.style.display = 'none');
 
-      document.getElementById('addListingForm').addEventListener('submit', async (e) => {
+      // Створення або редагування оголошення
+      addListingForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         if (!currentUser) return;
 
+        const editingId = document.getElementById('editingDocId').value;
         const photosRaw = document.getElementById('adPhotos').value;
         const photosArray = photosRaw.split(',').map(s => s.trim()).filter(s => s.startsWith('http'));
 
-        try {
-          await addDoc(collection(db, "shop_listings"), {
-            title: document.getElementById('adTitle').value,
-            category: document.getElementById('adCategory').value,
-            subcategory: document.getElementById('adSubcategory').value,
-            price: Number(document.getElementById('adPrice').value),
-            contact: document.getElementById('adContact').value,
-            photosArray: photosArray,
-            description: document.getElementById('adDescription').value,
-            userEmail: currentUser.email,
-            createdAt: serverTimestamp()
-          });
+        const adData = {
+          title: document.getElementById('adTitle').value,
+          category: document.getElementById('adCategory').value,
+          subcategory: document.getElementById('adSubcategory').value,
+          condition: document.getElementById('adCondition').value,
+          price: Number(document.getElementById('adPrice').value),
+          contact: document.getElementById('adContact').value,
+          photosArray: photosArray,
+          description: document.getElementById('adDescription').value,
+          userEmail: currentUser.email
+        };
 
-          document.getElementById('addListingForm').reset();
+        try {
+          if (editingId) {
+            await updateDoc(doc(db, "shop_listings", editingId), adData);
+            alert('Оголошення успішно оновлено!');
+          } else {
+            adData.createdAt = serverTimestamp();
+            await addDoc(collection(db, "shop_listings"), adData);
+            alert('Оголошення успішно опубліковано на дошці!');
+          }
+
+          addListingForm.reset();
+          document.getElementById('editingDocId').value = '';
           newAdFormCard.style.display = 'none';
-          alert('Товар успішно додано та синхронізовано!');
         } catch (err) {
           alert('Помилка: ' + err.message);
         }
       });
 
+      // Видалення оголошення
       window.deleteProduct = async function(docId) {
-        if (confirm('Видалити цей товар?')) {
+        if (confirm('Видалити це оголошення?')) {
           try {
             await deleteDoc(doc(db, "shop_listings", docId));
+            document.getElementById('productDetailView').style.display = 'none';
+            document.getElementById('mainCatalogWrapper').style.display = 'block';
+            alert('Оголошення видалено!');
           } catch (err) {
             alert('Помилка: ' + err.message);
           }
         }
       };
 
-      // ВІДКРИТТЯ ПОВНОЦІННОЇ СТОРІНКИ ТОВАРУ
+      // Редагування оголошення
+      window.editProduct = function(docId) {
+        const item = allProducts.find(p => p.id === docId);
+        if (!item) return;
+
+        document.getElementById('editingDocId').value = item.id;
+        document.getElementById('formHeading').innerHTML = '<i class="fa-solid fa-pen-to-square"></i> Редагувати оголошення';
+        document.getElementById('submitFormBtn').textContent = 'Зберегти зміни';
+
+        document.getElementById('adTitle').value = item.title;
+        document.getElementById('adCategory').value = item.category;
+        populateSubSelect(item.category, adSubcategorySelect);
+        if (item.subcategory) document.getElementById('adSubcategory').value = item.subcategory;
+        document.getElementById('adCondition').value = item.condition || 'Б/В (Вживане)';
+        document.getElementById('adPrice').value = item.price;
+        document.getElementById('adContact').value = item.contact;
+        document.getElementById('adPhotos').value = (item.photosArray || []).join(', ');
+        document.getElementById('adDescription').value = item.description;
+
+        document.getElementById('productDetailView').style.display = 'none';
+        document.getElementById('mainCatalogWrapper').style.display = 'block';
+        newAdFormCard.style.display = 'block';
+        window.scrollTo(0, newAdFormCard.offsetTop - 50);
+      };
+
+      // ВІДКРИТТЯ ПОВНОЦІННОЇ СТОРІНКИ ОГОЛОШЕННЯ
       window.openProductDetail = function(id) {
         const item = allProducts.find(p => p.id === id);
         if (!item) return;
 
         document.getElementById('mainCatalogWrapper').style.display = 'none';
+        newAdFormCard.style.display = 'none';
         const detailView = document.getElementById('productDetailView');
         detailView.style.display = 'block';
 
@@ -887,29 +905,27 @@
             </div>
           </div>
           <div>
-            <span style="font-size: 0.72rem; background: #e0e7ff; color: #3730a3; padding: 3px 8px; border-radius: 4px; font-weight: bold;">${item.category} / ${item.subcategory || ''}</span>
+            <span style="font-size: 0.72rem; background: #e0f2fe; color: #0369a1; padding: 3px 8px; border-radius: 4px; font-weight: bold;">${item.category} / ${item.subcategory || ''}</span>
             <h2 style="margin: 10px 0; color: #1e3a8a; font-size: 1.3rem;">${item.title}</h2>
-            <div class="rating-stars" style="margin-bottom: 10px;">
-              <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i> (5.0)
-            </div>
+            <div style="font-size: 0.78rem; font-weight: bold; color: #475569; margin-bottom: 10px;">Стан: ${item.condition || 'Б/В'}</div>
             <div style="font-size: 1.5rem; font-weight: 800; color: #0f172a; margin-bottom: 15px;">${item.price.toLocaleString('uk-UA')} грн</div>
             
             <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-              <button class="btn-primary" onclick="addToCart('${item.id}')" style="flex: 1; justify-content: center; padding: 10px;">
-                <i class="fa-solid fa-cart-shopping"></i> Купити
-              </button>
-              <a href="tel:${item.contact}" style="background: #10b981; color: white; padding: 10px 16px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 0.82rem; display: inline-flex; align-items: center; gap: 6px;">
-                <i class="fa-solid fa-phone"></i> ${item.contact}
+              <a href="tel:${item.contact}" class="btn-primary" style="flex: 1; justify-content: center; text-decoration: none; padding: 10px;">
+                <i class="fa-solid fa-phone"><b>${item.contact}</b></i>
               </a>
             </div>
 
-            <h4 style="margin-bottom: 5px; color: #1e293b;">Характеристики та опис:</h4>
-            <p style="font-size: 0.85rem; color: #475569; line-height: 1.5; margin: 0;">${item.description}</p>
+            <h4 style="margin-bottom: 5px; color: #1e293b;">Опис оголошення:</h4>
+            <p style="font-size: 0.85rem; color: #475569; line-height: 1.6; margin: 0; white-space: pre-line;">${item.description}</p>
             
             ${isOwnerOrAdmin ? `
-              <div style="margin-top: 20px; border-top: 1px solid #e2e8f0; padding-top: 15px;">
-                <button class="btn-sm-action" onclick="deleteProduct('${item.id}'); backToCatalogBtn.click();" style="background: var(--danger); color: white; padding: 6px 12px; font-size: 0.78rem;">
-                  <i class="fa-solid fa-trash"></i> Видалити цей товар
+              <div style="margin-top: 25px; border-top: 1px solid #e2e8f0; padding-top: 15px; display: flex; gap: 10px;">
+                <button class="btn-primary" onclick="editProduct('${item.id}')" style="background: #f59e0b; padding: 6px 14px; font-size: 0.78rem;">
+                  <i class="fa-solid fa-pen"></i> Редагувати
+                </button>
+                <button class="btn-primary" onclick="deleteProduct('${item.id}')" style="background: var(--danger); padding: 6px 14px; font-size: 0.78rem;">
+                  <i class="fa-solid fa-trash"></i> Видалити
                 </button>
               </div>
             ` : ''}
@@ -924,66 +940,7 @@
         document.getElementById('mainCatalogWrapper').style.display = 'block';
       });
 
-      // Кошик
-      function updateCartUI() {
-        localStorage.setItem('neoshop_cart', JSON.stringify(cart));
-        document.getElementById('cartBadgeCount').textContent = cart.reduce((sum, i) => sum + i.qty, 0);
-        
-        const container = document.getElementById('cartItemsContainer');
-        if (cart.length === 0) {
-          container.innerHTML = `<p style="text-align: center; color: #64748b; padding: 20px;">Кошик порожній</p>`;
-          document.getElementById('cartTotalSum').textContent = '0 грн';
-          return;
-        }
-
-        let total = 0;
-        container.innerHTML = cart.map((item, idx) => {
-          total += item.price * item.qty;
-          return `
-            <div style="display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 8px; border-radius: 6px; border: 1px solid #e2e8f0;">
-              <div>
-                <div style="font-weight: bold; font-size: 0.8rem;">${item.title}</div>
-                <div style="font-size: 0.75rem; color: var(--shop-color);">${item.price.toLocaleString('uk-UA')} грн × ${item.qty}</div>
-              </div>
-              <button onclick="removeFromCart(${idx})" style="background: var(--danger); color: white; border: none; border-radius: 4px; padding: 4px 8px; cursor: pointer;"><i class="fa-solid fa-trash"></i></button>
-            </div>
-          `;
-        }).join('');
-
-        document.getElementById('cartTotalSum').textContent = `${total.toLocaleString('uk-UA')} грн`;
-      }
-
-      window.addToCart = function(docId) {
-        const prod = allProducts.find(p => p.id === docId);
-        if (!prod) return;
-        const existing = cart.find(c => c.id === docId);
-        if (existing) existing.qty += 1;
-        else cart.push({ id: prod.id, title: prod.title, price: prod.price, qty: 1 });
-        updateCartUI();
-        alert('Товар додано до кошика!');
-      };
-
-      window.removeFromCart = function(idx) {
-        cart.splice(idx, 1);
-        updateCartUI();
-      };
-
-      const cartModal = document.getElementById('cartModal');
-      document.getElementById('openCartBtn').addEventListener('click', () => { updateCartUI(); cartModal.style.display = 'flex'; });
-      document.getElementById('closeCartModal').addEventListener('click', () => cartModal.style.display = 'none');
-      document.getElementById('checkoutBtn').addEventListener('click', () => {
-        if (cart.length === 0) return alert('Кошик порожній!');
-        const phone = prompt('Введіть номер телефону для замовлення:');
-        if (phone) {
-          alert('Замовлення оформлено! Менеджер зв’яжеться з вами.');
-          cart = [];
-          updateCartUI();
-          cartModal.style.display = 'none';
-        }
-      });
-      updateCartUI();
-
-      // Синхронізація товарів з Firebase в реальному часі
+      // Синхронізація оголошень з Firebase в реальному часі
       const q = query(collection(db, "shop_listings"), orderBy("createdAt", "desc"));
       onSnapshot(q, (snapshot) => {
         allProducts = [];
@@ -993,11 +950,10 @@
           allProducts.push({ id: docSnap.id, ...docSnap.data() });
         });
 
-        // Оновлюємо сітку новинок під підкатегоріями
         renderSyncNewGrid(allProducts);
 
         if (allProducts.length === 0) {
-          shopProductsContainer.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; padding: 30px; color: #64748b;">Товарів поки немає.</div>`;
+          shopProductsContainer.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; padding: 30px; color: #64748b;">Оголошень поки немає. Будьте першим, хто розмістить пропозицію!</div>`;
           return;
         }
 
@@ -1016,18 +972,17 @@
               <div class="card-img-wrap" onclick="openProductDetail('${item.id}')">
                 <img src="${thumb}" alt="${item.title}">
               </div>
+              <span class="condition-badge">${item.condition || 'Б/В'}</span>
               <div class="card-title" onclick="openProductDetail('${item.id}')" title="${item.title}">${item.title}</div>
-              <div class="rating-stars">
-                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-              </div>
             </div>
             <div>
               <div class="card-price">${item.price.toLocaleString('uk-UA')} ₴</div>
-              <button class="btn-buy-market" onclick="addToCart('${item.id}')">
-                <i class="fa-solid fa-cart-shopping"></i> Купити
+              <button class="btn-view-ad" onclick="openProductDetail('${item.id}')">
+                <i class="fa-solid fa-eye"></i> Переглянути
               </button>
               ${isOwnerOrAdmin ? `
                 <div class="admin-actions">
+                  <button class="btn-sm-action" onclick="editProduct('${item.id}')" style="background: #f59e0b; color: white;"><i class="fa-solid fa-pen"></i> Редагувати</button>
                   <button class="btn-sm-action" onclick="deleteProduct('${item.id}')" style="background: var(--danger); color: white;"><i class="fa-solid fa-trash"></i> Видалити</button>
                 </div>
               ` : ''}

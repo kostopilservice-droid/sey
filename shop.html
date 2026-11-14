@@ -666,8 +666,12 @@
       import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
       import { getFirestore, collection, addDoc, query, where, getDocs, orderBy, limit, startAfter, onSnapshot, doc, deleteDoc, updateDoc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-      const ADMIN_EMAIL = "admin@neoservice.ks.ua"; 
-      const ADMIN_ALT_EMAIL = "kostopilservice@gmail.com";
+      const ALLOWED_ADMINS = [
+        "admin@neoservice.ks.ua",
+        "kostopilservice@gmail.com",
+        "olegdriganec@gmail.com"
+      ];
+      
       const FREE_ADS_LIMIT = 5;
       const PAGE_SIZE = 20;
 
@@ -686,7 +690,8 @@
       const db = getFirestore(app);
 
       function isAdminUser(email) {
-        return email === ADMIN_EMAIL || email === ADMIN_ALT_EMAIL;
+        if (!email) return false;
+        return ALLOWED_ADMINS.some(admin => admin.toLowerCase() === email.trim().toLowerCase());
       }
 
       // Логіка слайдера банера

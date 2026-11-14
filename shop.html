@@ -544,8 +544,8 @@
                       <i class="fa-solid fa-chevron-right text-xs"></i>
                   </button>
 
-                  <!-- КНОПКА НАЛАШТУВАННЯ БАНЕРА (ДЛЯ АДМІНІСТРАТОРА) -->
-                  <button id="adminBannerSettingsBtn" onClick="openBannerModal()" class="w-full py-2.5 bg-gray-50 hover:bg-gray-100 text-gray-700 hover:text-[#db4437] font-bold text-xs flex items-center justify-center gap-1.5 border-t border-gray-200 transition-colors">
+                  <!-- КНОПКА НАЛАШТУВАННЯ БАНЕРА (ТІЛЬКИ ДЛЯ АДМІНІСТРАТОРІВ) -->
+                  <button id="adminBannerSettingsBtn" style="display: none;" onClick="openBannerModal()" class="w-full py-2.5 bg-gray-50 hover:bg-gray-100 text-gray-700 hover:text-[#db4437] font-bold text-xs flex items-center justify-center gap-1.5 border-t border-gray-200 transition-colors">
                       <i class="fa-solid fa-sliders"></i> Керувати слайдером
                   </button>
               </div>
@@ -983,16 +983,20 @@
         currentUser = user;
         const toggleBtn = document.getElementById('toggleFormBtn');
         const adminBadge = document.getElementById('adminStatusBadge');
+        const adminBannerSettingsBtn = document.getElementById('adminBannerSettingsBtn');
         
         if (!user) {
           toggleBtn.innerHTML = `<i class="fa-solid fa-lock"></i> Увійдіть для подачі`;
           adminBadge.style.display = 'none';
+          if (adminBannerSettingsBtn) adminBannerSettingsBtn.style.display = 'none';
         } else {
           toggleBtn.innerHTML = `<i class="fa-solid fa-plus"></i> Подати оголошення`;
           if (isAdminUser(user.email)) {
             adminBadge.style.display = 'inline-block';
+            if (adminBannerSettingsBtn) adminBannerSettingsBtn.style.display = 'flex';
           } else {
             adminBadge.style.display = 'none';
+            if (adminBannerSettingsBtn) adminBannerSettingsBtn.style.display = 'none';
           }
         }
       });

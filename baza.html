@@ -243,8 +243,12 @@
           <iframe id="modalYouTubeIframe" class="w-full h-full" src="" frameborder="0" allowfullscreen></iframe>
         </div>
 
-        <div id="modalImageContainer" class="w-full h-52 rounded-xl overflow-hidden bg-slate-900 hidden">
-          <img id="modalImage" src="" alt="" class="w-full h-full object-cover">
+        <!-- Галерея або зображення у модалці -->
+        <div id="modalImageContainer" class="w-full rounded-xl overflow-hidden bg-slate-900 hidden space-y-2">
+          <div class="w-full h-64 bg-slate-950 flex items-center justify-center">
+            <img id="modalImage" src="" alt="" class="w-full h-full object-contain">
+          </div>
+          <div id="modalThumbnails" class="flex gap-2 p-2 overflow-x-auto bg-slate-900"></div>
         </div>
 
         <div id="modalText" class="text-xs text-slate-700 leading-relaxed space-y-2 article-formatted-text">
@@ -441,7 +445,7 @@
         isAdmin = false;
         adminBadge.classList.add('hidden');
       }
-      filterArticles(); // Перемальовуємо картки з кнопками адміна або без них
+      filterArticles();
     });
 
     function execEditCmd(command, value = null) {
@@ -456,7 +460,7 @@
       return (match && match[2].length === 11) ? match[2] : null;
     }
 
-    // Реальне оновлення з Firebase (onSnapshot автоматично оновлює сторінку після редагування/видалення)
+    // Реальне оновлення з Firebase
     function listenToArticles() {
       db.collection('articles').orderBy('createdAt', 'desc').onSnapshot(snapshot => {
         const firebaseArticles = [];
@@ -500,7 +504,9 @@
         else if (art.category === 'youtube') { catName = 'YouTube'; badgeColor = "bg-red-600 text-white"; }
         else if (art.category === 'sponsored') { catName = 'Спонсоровано'; badgeColor = "bg-amber-500 text-slate-950"; }
 
-        // Кнопки редагування/видалення відображаються ТІЛЬКИ якщо користувач адмін і картка збережена у Firebase (!art.isStatic)
+        // Перевірка наявності YouTube (якщо є youtubeId або youtubeUrl)
+        const hasYoutube = (art.youtubeId && art.youtubeId.trim() !== '') || (art.youtubeUrl && art.youtubeUrl.trim() !== '');
+
         const adminControls = (isAdmin && !art.isStatic) ? `
           <div class="absolute top-3 right-3 flex items-center gap-1.5 z-10">
             <button onclick="event.stopPropagation(); openEditModal('${art.id}')" class="w-7 h-7 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-lg shadow flex items-center justify-center transition-colors" title="Редагувати картку">
@@ -512,16 +518,20 @@
           </div>
         ` : '';
 
+        // Зображення картки (пріоритет imageUrl, потім images[0], потім прев'ю YouTube, потім дефолтне)
+        const coverImg = art.imageUrl || (art.images && art.images.length > 0 ? art.images[0] : (art.youtubeId ? `https://img.youtube.com/vi/${art.youtubeId}/hqdefault.jpg` : 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80'));
+
         const card = `
           <article class="bg-white rounded-2xl border border-slate-200 overflow-hidden flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow">
             <div>
               <div class="h-40 w-full overflow-hidden relative bg-slate-900 cursor-pointer" onclick="openModal('${art.id}')">
-                <img src="${art.imageUrl || (art.youtubeId ? `https://img.youtube.com/vi/${art.youtubeId}/hqdefault.jpg` : 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80')}" alt="" class="w-full h-full object-cover">
+                <img src="${coverImg}" alt="" class="w-full h-full object-cover">
                 <span class="absolute top-3 left-3 ${badgeColor} text-[10px] font-bold px-2.5 py-0.5 rounded-full shadow">
                   ${catName}
                 </span>
                 ${adminControls}
-                ${art.youtubeId ? `<div class="absolute inset-0 flex items-center justify-center bg-black/30 pointer-events-none"><i class="fa-brands fa-youtube text-red-600 text-4xl shadow-lg"></i></div>` : ''}
+                <!-- Відображаємо кнопку YouTube ТІЛЬКИ якщо це реальний YouTube пост -->
+                ${hasYoutube ? `<div class="absolute inset-0 flex items-center justify-center bg-black/30 pointer-events-none"><div class="w-12 h-12 bg-red-600 text-white rounded-xl flex items-center justify-center shadow-lg"><i class="fa-solid fa-play text-base pl-0.5"></i></div></div>` : ''}
               </div>
               <div class="p-4">
                 <span class="text-[10px] text-slate-400 block mb-1"><i class="fa-regular fa-clock mr-1"></i> ${art.date || 'Нещодавно'}</span>
@@ -652,6 +662,7 @@
       const imgContainer = document.getElementById('modalImageContainer');
       const modalImg = document.getElementById('modalImage');
       modalImg.src = "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1400&q=80";
+      document.getElementById('modalThumbnails').innerHTML = '';
       imgContainer.classList.remove('hidden');
 
       const modal = document.getElementById('articleModal');
@@ -686,17 +697,40 @@
       const ytIframe = document.getElementById('modalYouTubeIframe');
       const imgContainer = document.getElementById('modalImageContainer');
       const modalImg = document.getElementById('modalImage');
+      const thumbsContainer = document.getElementById('modalThumbnails');
 
-      if (art.youtubeId) {
-        ytIframe.src = `https://www.youtube.com/embed/${art.youtubeId}?autoplay=1`;
+      const ytId = art.youtubeId || (art.youtubeUrl ? extractYouTubeID(art.youtubeUrl) : null);
+
+      if (ytId) {
+        ytIframe.src = `https://www.youtube.com/embed/${ytId}?autoplay=1`;
         ytContainer.classList.remove('hidden');
         imgContainer.classList.add('hidden');
       } else {
         ytIframe.src = "";
         ytContainer.classList.add('hidden');
-        if (art.imageUrl) {
-          modalImg.src = art.imageUrl;
+        
+        // Перевіряємо наявність галереї images або одиночного imageUrl
+        const imagesList = art.images && art.images.length > 0 ? art.images : (art.imageUrl ? [art.imageUrl] : []);
+
+        if (imagesList.length > 0) {
+          modalImg.src = imagesList[0];
           imgContainer.classList.remove('hidden');
+          thumbsContainer.innerHTML = '';
+
+          if (imagesList.length > 1) {
+            imagesList.forEach((imgUrl, idx) => {
+              const thumb = document.createElement('button');
+              thumb.className = `w-14 h-14 rounded-lg overflow-hidden border-2 flex-shrink-0 transition-all ${idx === 0 ? 'border-blue-600 opacity-100' : 'border-transparent opacity-60 hover:opacity-100'}`;
+              thumb.innerHTML = `<img src="${imgUrl}" alt="" class="w-full h-full object-cover">`;
+              thumb.onclick = () => {
+                modalImg.src = imgUrl;
+                Array.from(thumbsContainer.children).forEach((t, i) => {
+                  t.className = `w-14 h-14 rounded-lg overflow-hidden border-2 flex-shrink-0 transition-all ${i === idx ? 'border-blue-600 opacity-100' : 'border-transparent opacity-60 hover:opacity-100'}`;
+                });
+              };
+              thumbsContainer.appendChild(thumb);
+            });
+          }
         } else {
           imgContainer.classList.add('hidden');
         }

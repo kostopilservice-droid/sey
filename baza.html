@@ -354,7 +354,16 @@
   <!-- SCRIPTS                                    -->
   <!-- ========================================== -->
   <script>
-    const ADMIN_EMAIL = "kostopilservice@gmail.com";
+    // СПИСОК ДОЗВОЛЕНИХ АДМІНІСТРАТОРІВ
+    const ALLOWED_ADMINS = [
+      "kostopilservice@gmail.com",
+      "olegdriganec@gmail.com"
+    ];
+
+    function isAdminEmail(email) {
+      if (!email) return false;
+      return ALLOWED_ADMINS.some(adminEmail => adminEmail.toLowerCase() === email.trim().toLowerCase());
+    }
 
     const firebaseConfig = {
       apiKey: "AIzaSyBlKoP6-M8tdrKq88bSdnWSnak5Gpddnpk",
@@ -438,7 +447,7 @@
     // Перевірка прав адміністратора при вході
     auth.onAuthStateChanged(user => {
       const adminBadge = document.getElementById('adminBadge');
-      if (user && user.email && user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+      if (user && user.email && isAdminEmail(user.email)) {
         isAdmin = true;
         adminBadge.classList.remove('hidden');
       } else {

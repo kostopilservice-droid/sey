@@ -89,10 +89,10 @@
     <!-- БЛОК АВТОРИЗАЦІЇ (якщо не увійшли або вхід заборонено) -->
     <div id="loginCard" class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hidden">
       <h2 class="text-sm font-black text-slate-900 mb-3 flex items-center gap-2">
-        <i class="fa-solid fa-lock text-blue-600"></i> Авторизація головного адміністратора
+        <i class="fa-solid fa-lock text-blue-600"></i> Авторизація адміністратора
       </h2>
       <div class="flex flex-col sm:flex-row gap-3">
-        <input type="email" id="loginEmail" placeholder="kostopilservice@gmail.com" class="px-3 py-2 text-xs border border-slate-300 rounded-xl flex-1 focus:outline-none focus:ring-2 focus:ring-blue-600">
+        <input type="email" id="loginEmail" placeholder="Email адміністратора" class="px-3 py-2 text-xs border border-slate-300 rounded-xl flex-1 focus:outline-none focus:ring-2 focus:ring-blue-600">
         <input type="password" id="loginPassword" placeholder="Пароль" class="px-3 py-2 text-xs border border-slate-300 rounded-xl flex-1 focus:outline-none focus:ring-2 focus:ring-blue-600">
         <button onclick="loginWithEmail()" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow transition-colors">
           Увійти
@@ -350,8 +350,16 @@
   <!-- SCRIPTS                                    -->
   <!-- ========================================== -->
   <script>
-    // КОНСТАНТА ЄДИНОГО ДОПУСТИМОГО АДМІНІСТРАТОРА
-    const ADMIN_EMAIL = "kostopilservice@gmail.com";
+    // СПИСОК ДОЗВОЛЕНИХ АДМІНІСТРАТОРІВ
+    const ALLOWED_ADMINS = [
+      "kostopilservice@gmail.com",
+      "olegdriganec@gmail.com"
+    ];
+
+    function isAdminEmail(email) {
+      if (!email) return false;
+      return ALLOWED_ADMINS.some(adminEmail => adminEmail.toLowerCase() === email.trim().toLowerCase());
+    }
 
     const firebaseConfig = {
       apiKey: "AIzaSyBlKoP6-M8tdrKq88bSdnWSnak5Gpddnpk",
@@ -378,7 +386,7 @@
       document.getElementById('articleEditor').focus();
     }
 
-    // Відстеження стану авторизації (З ПЕРЕВІРКОЮ EMAIL)
+    // Відстеження стану авторизації (З ПЕРЕВІРКОЮ СПИСКУ EMAIL)
     auth.onAuthStateChanged(user => {
       const status = document.getElementById('authStatus');
       const logoutBtn = document.getElementById('logoutBtn');
@@ -391,8 +399,8 @@
       const backupSec = document.getElementById('backupSection');
       const adminTabs = document.getElementById('adminTabs');
       
-      if (user && user.email && user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
-        status.textContent = '● Головний Адмін (' + user.email + ')';
+      if (user && user.email && isAdminEmail(user.email)) {
+        status.textContent = '● Адмін (' + user.email + ')';
         status.className = 'text-[11px] font-bold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200';
         
         logoutBtn.classList.remove('hidden');
@@ -408,7 +416,7 @@
       } else {
         if (user) {
           auth.signOut();
-          loginErrorMsg.textContent = `Доступ заборонено! Обліковий запис (${user.email}) не має прав адміністратора. Дозволено лише для ${ADMIN_EMAIL}.`;
+          loginErrorMsg.textContent = `Доступ заборонено! Обліковий запис (${user.email}) не має прав адміністратора.`;
           loginErrorMsg.classList.remove('hidden');
         } else {
           loginErrorMsg.classList.add('hidden');
@@ -601,7 +609,7 @@
       }
     }
 
-    // Вхід з перевіркою дозволеного Email
+    // Вхід з перевіркою дозволених Email
     function loginWithEmail() {
       const emailInput = document.getElementById('loginEmail');
       const passInput = document.getElementById('loginPassword');
@@ -615,8 +623,8 @@
         return;
       }
 
-      if (email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
-        loginErrorMsg.textContent = `Доступ заборонено! Дозволено вхід тільки з адреси ${ADMIN_EMAIL}.`;
+      if (!isAdminEmail(email)) {
+        loginErrorMsg.textContent = `Доступ заборонено! Ця адреса не має прав адміністратора.`;
         loginErrorMsg.classList.remove('hidden');
         return;
       }
@@ -712,8 +720,8 @@
       event.preventDefault();
       const user = auth.currentUser;
       
-      if (!user || user.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
-        alert('Помилка доступу! Публікація дозволена лише для головного адміністратора.');
+      if (!user || !isAdminEmail(user.email)) {
+        alert('Помилка доступу! Публікація дозволена лише для адміністраторів.');
         return;
       }
 

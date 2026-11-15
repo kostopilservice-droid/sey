@@ -89,6 +89,7 @@
         .catalog-layout {
             display: grid;
             grid-template-columns: 260px 1fr;
+            align-items: start;
         }
 
         @media (max-width: 850px) {
@@ -461,7 +462,6 @@
       
       <!-- ГОЛОВНИЙ КАТАЛОГ -->
       <div id="mainCatalogWrapper">
-        <!-- КАТЕГОРІЇ ТА ПІДРОЗДІЛИ -->
         <div class="catalog-container">
           <div class="catalog-top-bar">
             <h3 class="catalog-title">
@@ -484,14 +484,14 @@
             <!-- Ліва колонка: Категорії -->
             <div class="categories-sidebar" id="categoriesSidebar"></div>
             
-            <!-- Права колонка: Підкатегорії + Слайдер -->
+            <!-- Права колонка: Підкатегорії + Слайдер + Бігучі банери -->
             <div class="subcategories-panel">
               <div>
                 <div id="subcategoriesContent"></div>
               </div>
 
               <!-- РЕКЛАМНИЙ БАНЕР САЙДБАРА -->
-              <div id="sidebarBannerContainer" class="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 relative group w-full mt-4">
+              <div id="sidebarBannerContainer" class="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 relative group w-full mt-2">
                   <a id="sidebarBannerLink" href="commercial.html" target="_blank" class="block">
                       <div class="relative h-72 bg-gray-100 overflow-hidden border-b border-gray-100">
                           <img id="sidebarBannerImg" src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800" alt="Рекламний банер" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out">
@@ -528,25 +528,58 @@
                   </button>
 
                   <button id="adminBannerSettingsBtn" style="display: none;" onClick="openBannerModal()" class="w-full py-2.5 bg-gray-50 hover:bg-gray-100 text-gray-700 hover:text-[#db4437] font-bold text-xs flex items-center justify-center gap-1.5 border-t border-gray-200 transition-colors">
-                      <i class="fa-solid fa-sliders"></i> Керувати слайдером
+                      <i class="fa-solid fa-sliders"></i> Керувати головним слайдером
                   </button>
+              </div>
+
+              <!-- БІГУЧІ / ПРОМО БАНЕРИ (ПІД СЛАЙДЕРОМ) З АДМІНКОЮ -->
+              <div class="bg-white rounded-xl border border-gray-200 p-4 shadow-sm mt-3">
+                  <div class="flex items-center justify-between mb-3 border-b border-gray-100 pb-2">
+                      <h4 class="font-extrabold text-xs text-gray-800 uppercase tracking-wider flex items-center gap-1.5">
+                          <i class="fa-solid fa-bullhorn text-[#db4437]"></i> Промо та партнери
+                      </h4>
+                      <button id="adminRunningBannerBtn" style="display: none;" onclick="openRunningBannerModal()" class="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold px-2.5 py-1 rounded-md transition-colors flex items-center gap-1">
+                          <i class="fa-solid fa-gear"></i> Налаштувати бігучі банери
+                      </button>
+                  </div>
+                  
+                  <!-- Прокручуваний / бігучий контейнер банерів -->
+                  <div class="overflow-hidden relative w-full rounded-lg bg-slate-50 border border-slate-100 p-2">
+                      <div id="runningBannersTrack" class="flex gap-3 overflow-x-auto scrollbar-none py-1 px-1 items-center" style="scroll-behavior: smooth;">
+                          <!-- Динамічно заповнюється з Firebase -->
+                      </div>
+                  </div>
               </div>
 
             </div>
           </div>
         </div>
 
-        <!-- МОДАЛЬНЕ ВІКНО РЕДАГУВАННЯ БАНЕРА -->
+        <!-- МОДАЛЬНЕ ВІКНО РЕДАГУВАННЯ ГОЛОВНОГО БАНЕРА -->
         <div id="bannerModal" style="display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.7); z-index: 9999; justify-content: center; align-items: center; padding: 15px;">
           <div style="background: white; border-radius: 12px; max-width: 500px; width: 100%; padding: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">
               <h3 style="margin: 0; color: #1e3a8a; font-size: 1.1rem;"><i class="fa-solid fa-pen-to-square"></i> Керування слайдером</h3>
               <button id="closeBannerModal" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #64748b;">&times;</button>
             </div>
-            <p style="font-size: 0.78rem; color: #64748b; margin-top: 0;">Управління слайдами рекламного банера в реальному часі через Firebase.</p>
             <div id="bannerAdminList" style="max-height: 300px; overflow-y: auto; margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px;"></div>
             <div style="display: flex; justify-content: flex-end; gap: 8px;">
               <button type="button" id="cancelBannerBtn" style="padding: 6px 12px; border-radius: 6px; border: 1px solid #cbd5e1; background: #f1f5f9; cursor: pointer; font-size: 0.8rem;">Закрити</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- МОДАЛЬНЕ ВІКНО РЕДАГУВАННЯ БІГУЧИХ БАНЕРІВ (ДЛЯ АДМІНА) -->
+        <div id="runningBannerModal" style="display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.7); z-index: 9999; justify-content: center; align-items: center; padding: 15px;">
+          <div style="background: white; border-radius: 12px; max-width: 500px; width: 100%; padding: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">
+              <h3 style="margin: 0; color: #1e3a8a; font-size: 1.1rem;"><i class="fa-solid fa-bullhorn"></i> Керування бігучими банерами</h3>
+              <button onclick="document.getElementById('runningBannerModal').style.display='none'" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #64748b;">&times;</button>
+            </div>
+            <p style="font-size: 0.78rem; color: #64748b; margin-top: 0;">Додавайте посилання, картинки та текст для бігучої стрічки партнерів у реальному часі.</p>
+            <div id="runningBannerAdminList" style="max-height: 300px; overflow-y: auto; margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px;"></div>
+            <div style="display: flex; justify-content: flex-end; gap: 8px;">
+              <button type="button" onclick="document.getElementById('runningBannerModal').style.display='none'" style="padding: 6px 12px; border-radius: 6px; border: 1px solid #cbd5e1; background: #f1f5f9; cursor: pointer; font-size: 0.8rem;">Закрити</button>
             </div>
           </div>
         </div>
@@ -676,6 +709,7 @@
         return ALLOWED_ADMINS.some(admin => admin.toLowerCase() === email.trim().toLowerCase());
       }
 
+      // Головний слайдер
       let sidebarSlides = [
         { image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800", title: "Оцінка Нерухомості", subtitle: "Твоє місто", link: "commercial.html", btnText: "Дізнатися більше" },
         { image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800", title: "Продаж квартир та будинків", subtitle: "Найкращі пропозиції на ринку", link: "shop.html", btnText: "Переглянути" }
@@ -739,7 +773,7 @@
           try {
             await setDoc(bannerDocRef, { slides: sidebarSlides });
           } catch (err) {
-            console.error("Помилка налаштувань банера:", err.message);
+            console.error(err);
           }
         }
         currentSlideIdx = 0;
@@ -753,9 +787,7 @@
           if (docSnap.exists() && docSnap.data().slides) {
             sidebarSlides = docSnap.data().slides;
           }
-        } catch (err) {
-          console.error("Помилка зчитування банерів:", err.message);
-        }
+        } catch (err) {}
         renderAdminSlideList();
         document.getElementById('bannerModal').style.display = 'flex';
       }
@@ -768,11 +800,8 @@
             <input type="text" placeholder="URL зображення" value="${slide.image || ''}" id="slideImg_${idx}" style="padding: 5px; font-size: 0.75rem; border: 1px solid #cbd5e1; border-radius: 4px;" />
             <input type="text" placeholder="Заголовок" value="${slide.title || ''}" id="slideTitle_${idx}" style="padding: 5px; font-size: 0.75rem; border: 1px solid #cbd5e1; border-radius: 4px;" />
             <input type="text" placeholder="Підзаголовок" value="${slide.subtitle || ''}" id="slideSub_${idx}" style="padding: 5px; font-size: 0.75rem; border: 1px solid #cbd5e1; border-radius: 4px;" />
-            <input type="text" placeholder="Посилання (наприклад: commercial.html)" value="${slide.link || ''}" id="slideLink_${idx}" style="padding: 5px; font-size: 0.75rem; border: 1px solid #cbd5e1; border-radius: 4px;" />
-            <div style="display: flex; gap: 5px;">
-              <button type="button" onclick="saveSlideItem(${idx})" style="flex: 1; background: var(--accent); color: white; border: none; padding: 5px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; cursor: pointer;">Зберегти</button>
-              <button type="button" onclick="deleteSlideItem(${idx})" style="background: var(--danger); color: white; border: none; padding: 5px 10px; border-radius: 4px; font-size: 0.75rem; cursor: pointer;"><i class="fa-solid fa-trash"></i></button>
-            </div>
+            <input type="text" placeholder="Посилання" value="${slide.link || ''}" id="slideLink_${idx}" style="padding: 5px; font-size: 0.75rem; border: 1px solid #cbd5e1; border-radius: 4px;" />
+            <button type="button" onclick="saveSlideItem(${idx})" style="background: var(--accent); color: white; border: none; padding: 5px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; cursor: pointer;">Зберегти</button>
           </div>
         `).join('') + `
           <button type="button" onclick="addNewSlide()" style="background: var(--olx-color); color: white; border: none; padding: 8px; border-radius: 6px; font-size: 0.78rem; font-weight: bold; cursor: pointer; margin-top: 5px;">
@@ -786,44 +815,117 @@
         sidebarSlides[idx].title = document.getElementById(`slideTitle_${idx}`).value;
         sidebarSlides[idx].subtitle = document.getElementById(`slideSub_${idx}`).value;
         sidebarSlides[idx].link = document.getElementById(`slideLink_${idx}`).value;
-        
         try {
           await setDoc(bannerDocRef, { slides: sidebarSlides });
-          alert('Слайд та посилання успішно оновлено!');
+          alert('Збережено!');
           renderAdminSlideList();
-        } catch (err) {
-          alert('Помилка збереження: ' + err.message);
-        }
-      }
-
-      window.deleteSlideItem = async function(idx) {
-        if (sidebarSlides.length <= 1) {
-          alert('Має залишитися хоча б один слайд!');
-          return;
-        }
-        sidebarSlides.splice(idx, 1);
-        try {
-          await setDoc(bannerDocRef, { slides: sidebarSlides });
-          renderAdminSlideList();
-        } catch (err) {
-          alert('Помилка видалення: ' + err.message);
-        }
+        } catch (err) { alert('Помилка: ' + err.message); }
       }
 
       window.addNewSlide = async function() {
-        sidebarSlides.push({ image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800", title: "Новий слайд", subtitle: "Опис слайда", link: "commercial.html", btnText: "Дізнатися більше" });
+        sidebarSlides.push({ image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800", title: "Новий слайд", subtitle: "Опис", link: "#", btnText: "Переглянути" });
         try {
           await setDoc(bannerDocRef, { slides: sidebarSlides });
           renderAdminSlideList();
-        } catch (err) {
-          alert('Помилка додавання: ' + err.message);
-        }
+        } catch (err) {}
       }
 
       document.getElementById('closeBannerModal').addEventListener('click', () => document.getElementById('bannerModal').style.display = 'none');
       document.getElementById('cancelBannerBtn').addEventListener('click', () => document.getElementById('bannerModal').style.display = 'none');
 
-      // Усі категорії (включно з новими)
+
+      // БІГУЧІ БАНЕРИ (ПАРТНЕРИ / ПРОМО) З ФІРЕБЕЙЗ
+      let runningBanners = [
+        { text: "Автозапчастини оптом", image: "https://images.unsplash.com/photo-1486006920555-c77dce18193b?w=200", link: "auto.html" },
+        { text: "Ремонт електроніки", image: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=200", link: "baza.html" },
+        { text: "Нерухомість Костопіль", image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=200", link: "commercial.html" }
+      ];
+
+      const runningBannerDocRef = doc(db, "settings", "shop_running_banners");
+
+      onSnapshot(runningBannerDocRef, async (docSnap) => {
+        if (docSnap.exists() && docSnap.data().items) {
+          runningBanners = docSnap.data().items;
+        } else {
+          try {
+            await setDoc(runningBannerDocRef, { items: runningBanners });
+          } catch (e) {}
+        }
+        renderRunningBanners();
+      });
+
+      function renderRunningBanners() {
+        const track = document.getElementById('runningBannersTrack');
+        if (!track) return;
+        track.innerHTML = runningBanners.map((item, i) => `
+          <a href="${item.link || '#'}" target="_blank" class="flex items-center gap-2.5 bg-white border border-gray-200 rounded-lg p-2 hover:border-[#23527c] transition-all shrink-0 shadow-xs group min-w-[180px]">
+            <img src="${item.image || 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=100'}" class="w-9 h-9 object-cover rounded-md bg-gray-100 group-hover:scale-105 transition-transform" alt="">
+            <div class="overflow-hidden">
+              <div class="text-[11px] font-bold text-gray-900 truncate group-hover:text-[#23527c]">${item.text}</div>
+              <div class="text-[9px] text-gray-500 font-medium">Партнер проєкту</div>
+            </div>
+          </a>
+        `).join('');
+      }
+
+      window.openRunningBannerModal = function() {
+        renderRunningBannerAdminList();
+        document.getElementById('runningBannerModal').style.display = 'flex';
+      }
+
+      function renderRunningBannerAdminList() {
+        const container = document.getElementById('runningBannerAdminList');
+        container.innerHTML = runningBanners.map((item, idx) => `
+          <div style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px; background: #f8fafc; display: flex; flex-direction: column; gap: 6px;">
+            <div style="font-weight: bold; font-size: 0.78rem; color: #1e3a8a;">Банер #${idx + 1}</div>
+            <input type="text" placeholder="Текст банера" value="${item.text || ''}" id="rbText_${idx}" style="padding: 5px; font-size: 0.75rem; border: 1px solid #cbd5e1; border-radius: 4px;" />
+            <input type="text" placeholder="URL зображення" value="${item.image || ''}" id="rbImg_${idx}" style="padding: 5px; font-size: 0.75rem; border: 1px solid #cbd5e1; border-radius: 4px;" />
+            <input type="text" placeholder="Посилання" value="${item.link || ''}" id="rbLink_${idx}" style="padding: 5px; font-size: 0.75rem; border: 1px solid #cbd5e1; border-radius: 4px;" />
+            <div style="display: flex; gap: 5px;">
+              <button type="button" onclick="saveRunningBannerItem(${idx})" style="flex: 1; background: var(--accent); color: white; border: none; padding: 5px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; cursor: pointer;">Зберегти</button>
+              <button type="button" onclick="deleteRunningBannerItem(${idx})" style="background: var(--danger); color: white; border: none; padding: 5px 8px; border-radius: 4px; font-size: 0.75rem; cursor: pointer;"><i class="fa-solid fa-trash"></i></button>
+            </div>
+          </div>
+        `).join('') + `
+          <button type="button" onclick="addRunningBannerItem()" style="background: var(--olx-color); color: white; border: none; padding: 8px; border-radius: 6px; font-size: 0.78rem; font-weight: bold; cursor: pointer; margin-top: 5px;">
+            <i class="fa-solid fa-plus"></i> Додати новий бігучий банер
+          </button>
+        `;
+      }
+
+      window.saveRunningBannerItem = async function(idx) {
+        runningBanners[idx].text = document.getElementById(`rbText_${idx}`).value;
+        runningBanners[idx].image = document.getElementById(`rbImg_${idx}`).value;
+        runningBanners[idx].link = document.getElementById(`rbLink_${idx}`).value;
+        try {
+          await setDoc(runningBannerDocRef, { items: runningBanners });
+          alert('Збережено!');
+          renderRunningBannerAdminList();
+        } catch (err) { alert('Помилка: ' + err.message); }
+      }
+
+      window.deleteRunningBannerItem = async function(idx) {
+        if (runningBanners.length <= 1) {
+          alert('Потрібен хоча б один елемент!');
+          return;
+        }
+        runningBanners.splice(idx, 1);
+        try {
+          await setDoc(runningBannerDocRef, { items: runningBanners });
+          renderRunningBannerAdminList();
+        } catch (err) {}
+      }
+
+      window.addRunningBannerItem = async function() {
+        runningBanners.push({ text: "Новий партнер", image: "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=200", link: "#" });
+        try {
+          await setDoc(runningBannerDocRef, { items: runningBanners });
+          renderRunningBannerAdminList();
+        } catch (err) {}
+      }
+
+
+      // Категорії та каталог
       const categoriesData = [
         { name: "Краса та здоров'я", icon: "fa-heart-pulse", sub: ["Догляд за волоссям", "Догляд за обличчям", "Парфумерія", "Манікюр"] },
         { name: "Товари для дому", icon: "fa-house", sub: ["Кухонне приладдя", "Посуд", "Освітлення", "Сантехніка"] },
@@ -977,19 +1079,23 @@
         const toggleBtn = document.getElementById('toggleFormBtn');
         const adminBadge = document.getElementById('adminStatusBadge');
         const adminBannerSettingsBtn = document.getElementById('adminBannerSettingsBtn');
+        const adminRunningBannerBtn = document.getElementById('adminRunningBannerBtn');
         
         if (!user) {
           toggleBtn.innerHTML = `<i class="fa-solid fa-lock"></i> Увійдіть для подачі`;
           adminBadge.style.display = 'none';
           if (adminBannerSettingsBtn) adminBannerSettingsBtn.style.display = 'none';
+          if (adminRunningBannerBtn) adminRunningBannerBtn.style.display = 'none';
         } else {
           toggleBtn.innerHTML = `<i class="fa-solid fa-plus"></i> Подати оголошення`;
           if (isAdminUser(user.email)) {
             adminBadge.style.display = 'inline-block';
             if (adminBannerSettingsBtn) adminBannerSettingsBtn.style.display = 'flex';
+            if (adminRunningBannerBtn) adminRunningBannerBtn.style.display = 'flex';
           } else {
             adminBadge.style.display = 'none';
             if (adminBannerSettingsBtn) adminBannerSettingsBtn.style.display = 'none';
+            if (adminRunningBannerBtn) adminRunningBannerBtn.style.display = 'none';
           }
         }
       });
@@ -1010,12 +1116,10 @@
             const userAdsQuery = query(collection(db, "shop_listings"), where("userEmail", "==", currentUser.email));
             const snapshot = await getDocs(userAdsQuery);
             if (snapshot.size >= FREE_ADS_LIMIT) {
-              alert(`Ви досягли безкоштовного ліміту у ${FREE_ADS_LIMIT} оголошень. Зверніться до адміністратора або сплатіть додатковий пакет для розміщення нових пропозицій!`);
+              alert(`Ви досягли безкоштовного ліміту у ${FREE_ADS_LIMIT} оголошень.`);
               return;
             }
-          } catch (err) {
-            console.error("Помилка перевірки ліміту:", err);
-          }
+          } catch (err) {}
         }
 
         document.getElementById('editingDocId').value = '';
@@ -1033,20 +1137,6 @@
         if (!currentUser) return;
 
         const editingId = document.getElementById('editingDocId').value;
-
-        if (!editingId && !isAdminUser(currentUser.email)) {
-          try {
-            const userAdsQuery = query(collection(db, "shop_listings"), where("userEmail", "==", currentUser.email));
-            const snapshot = await getDocs(userAdsQuery);
-            if (snapshot.size >= FREE_ADS_LIMIT) {
-              alert(`Вичерпано ліміт (${FREE_ADS_LIMIT} безкоштовних оголошень).`);
-              return;
-            }
-          } catch (err) {
-            console.error(err);
-          }
-        }
-
         const photosRaw = document.getElementById('adPhotos').value;
         const photosArray = photosRaw.split(',').map(s => s.trim()).filter(s => s.startsWith('http'));
 
@@ -1076,9 +1166,7 @@
           document.getElementById('editingDocId').value = '';
           newAdFormCard.style.display = 'none';
           loadInitialListings();
-        } catch (err) {
-          alert('Помилка: ' + err.message);
-        }
+        } catch (err) { alert('Помилка: ' + err.message); }
       });
 
       window.deleteProduct = async function(docId) {
@@ -1089,9 +1177,7 @@
             document.getElementById('mainCatalogWrapper').style.display = 'block';
             alert('Оголошення видалено!');
             loadInitialListings();
-          } catch (err) {
-            alert('Помилка: ' + err.message);
-          }
+          } catch (err) {}
         }
       };
 
@@ -1167,8 +1253,7 @@
         window.scrollTo(0, 0);
       };
 
-      const backToCatalogBtn = document.getElementById('backToCatalogBtn');
-      backToCatalogBtn.addEventListener('click', () => {
+      document.getElementById('backToCatalogBtn').addEventListener('click', () => {
         document.getElementById('productDetailView').style.display = 'none';
         document.getElementById('mainCatalogWrapper').style.display = 'block';
       });
@@ -1177,12 +1262,7 @@
         shopProductsContainer.innerHTML = `<p style="grid-column: 1 / -1; text-align: center; color: #64748b; padding: 30px;">Завантаження оголошень...</p>`;
 
         try {
-          const firstQuery = query(
-            collection(db, "shop_listings"),
-            orderBy("createdAt", "desc"),
-            limit(PAGE_SIZE)
-          );
-
+          const firstQuery = query(collection(db, "shop_listings"), orderBy("createdAt", "desc"), limit(PAGE_SIZE));
           const snapshot = await getDocs(firstQuery);
           allProducts = [];
           
@@ -1194,15 +1274,12 @@
             renderProductsGrid(allProducts);
             renderSyncNewGrid(allProducts);
             
-            if (snapshot.docs.length === PAGE_SIZE) {
-              renderLoadMoreButton();
-            }
+            if (snapshot.docs.length === PAGE_SIZE) renderLoadMoreButton();
           } else {
             shopProductsContainer.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; padding: 30px; color: #64748b;">Оголошень поки немає. Будьте першим!</div>`;
             renderSyncNewGrid([]);
           }
         } catch (err) {
-          console.error("Помилка завантаження:", err);
           shopProductsContainer.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; padding: 30px; color: var(--danger);">Помилка завантаження даних.</div>`;
         }
       }
@@ -1210,18 +1287,11 @@
       window.loadMoreListings = async function() {
         if (isLoadingMore || !lastVisibleDoc) return;
         isLoadingMore = true;
-
         const loadMoreBtn = document.getElementById('loadMoreBtn');
         if (loadMoreBtn) loadMoreBtn.textContent = 'Завантаження...';
 
         try {
-          const nextQuery = query(
-            collection(db, "shop_listings"),
-            orderBy("createdAt", "desc"),
-            startAfter(lastVisibleDoc),
-            limit(PAGE_SIZE)
-          );
-
+          const nextQuery = query(collection(db, "shop_listings"), orderBy("createdAt", "desc"), startAfter(lastVisibleDoc), limit(PAGE_SIZE));
           const snapshot = await getDocs(nextQuery);
           
           if (!snapshot.empty) {
@@ -1230,7 +1300,6 @@
               allProducts.push({ id: docSnap.id, ...docSnap.data() });
             });
             renderProductsGrid(allProducts);
-
             if (snapshot.docs.length < PAGE_SIZE) {
               if (loadMoreBtn) loadMoreBtn.remove();
             } else {
@@ -1239,11 +1308,7 @@
           } else {
             if (loadMoreBtn) loadMoreBtn.remove();
           }
-        } catch (err) {
-          console.error("Помилка довантаження:", err);
-        } finally {
-          isLoadingMore = false;
-        }
+        } catch (err) {} finally { isLoadingMore = false; }
       };
 
       function renderLoadMoreButton() {

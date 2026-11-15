@@ -426,11 +426,6 @@
             color: white;
             margin-top: 40px;
         }
-
-        /* Класи для приховування адмін-кнопок до перевірки прав */
-        .admin-only {
-            display: none !important;
-        }
     </style>
 </head>
 <body>
@@ -486,7 +481,7 @@
               <i class="fa-solid fa-layer-group" style="color: var(--olx-color);"></i> Категорії оголошень
             </h3>
             <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-              <span id="adminStatusBadge" class="admin-only" style="background: #fef3c7; color: #b45309; padding: 5px 10px; border-radius: 6px; font-size: 0.72rem; font-weight: bold;">
+              <span id="adminStatusBadge" style="display: none; background: #fef3c7; color: #b45309; padding: 5px 10px; border-radius: 6px; font-size: 0.72rem; font-weight: bold;">
                 <i class="fa-solid fa-shield-halved"></i> Модератор
               </span>
               <button id="toggleFormBtn" class="btn-primary">
@@ -508,7 +503,7 @@
                 <div id="subcategoriesContent"></div>
               </div>
 
-              <!-- РЕКЛАМНИЙ БАНЕР САЙДБАРА (ФІКСОВАНА ВИСОТА h-48 ДЛЯ ЗОБРАЖЕННЯ) -->
+              <!-- РЕКЛАМНИЙ БАНЕР САЙДБАРА (ФІКСОВАНА ВИСОТА h-48) -->
               <div id="sidebarBannerContainer" class="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 relative group w-full mt-2">
                   <a id="sidebarBannerLink" href="commercial.html" target="_blank" class="block">
                       <div class="relative h-48 bg-gray-100 overflow-hidden border-b border-gray-100">
@@ -545,7 +540,7 @@
                       <i class="fa-solid fa-chevron-right text-xs"></i>
                   </button>
 
-                  <button id="adminBannerSettingsBtn" class="admin-only w-full py-2.5 bg-gray-50 hover:bg-gray-100 text-gray-700 hover:text-[#db4437] font-bold text-xs items-center justify-center gap-1.5 border-t border-gray-200 transition-colors" onClick="openBannerModal()">
+                  <button id="adminBannerSettingsBtn" style="display: none;" class="w-full py-2.5 bg-gray-50 hover:bg-gray-100 text-gray-700 hover:text-[#db4437] font-bold text-xs items-center justify-center gap-1.5 border-t border-gray-200 transition-colors" onClick="openBannerModal()">
                       <i class="fa-solid fa-sliders"></i> Керувати головним слайдером
                   </button>
               </div>
@@ -556,7 +551,7 @@
                       <h4 class="font-extrabold text-xs text-gray-800 uppercase tracking-wider flex items-center gap-1.5">
                           <i class="fa-solid fa-bullhorn text-[#db4437]"></i> Промо та партнери (Бігуча стрічка)
                       </h4>
-                      <button id="adminRunningBannerBtn" class="admin-only text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold px-2.5 py-1 rounded-md transition-colors items-center gap-1" onclick="openRunningBannerModal()">
+                      <button id="adminRunningBannerBtn" style="display: none;" class="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold px-2.5 py-1 rounded-md transition-colors items-center gap-1" onclick="openRunningBannerModal()">
                           <i class="fa-solid fa-gear"></i> Налаштувати банери
                       </button>
                   </div>
@@ -850,9 +845,9 @@
       document.getElementById('cancelBannerBtn').addEventListener('click', () => document.getElementById('bannerModal').style.display = 'none');
 
 
-      // БІГУЧІ БАНЕРИ (ПАРТНЕРИ / ПРОМО)
+      // БІГУЧІ БАНЕРИ (ПАРТНЕРИ / ПРОМО) З РОБОЧИМИ URL
       let runningBanners = [
-        { text: "Банер 1: Автозапчастини", image: "https://images.unsplash.com/photo-1486006920555-c77dce18193b?w=400", link: "auto.html" },
+        { text: "Банер 1: Автозапчастини", image: "https://images.unsplash.com/photo-1511919884226-fd3cad34687c?w=400", link: "auto.html" },
         { text: "Банер 2: Ремонт електроніки", image: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=400", link: "baza.html" },
         { text: "Банер 3: Нерухомість", image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400", link: "commercial.html" }
       ];
@@ -943,7 +938,7 @@
         } catch (err) {}
       }
 
-      // Перевірка авторизації та показ адмін-кнопок без миготіння
+      // Перевірка авторизації та показ адмін-кнопок
       onAuthStateChanged(auth, (user) => {
         currentUser = user;
         const toggleBtn = document.getElementById('toggleFormBtn');

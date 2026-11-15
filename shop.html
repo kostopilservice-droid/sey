@@ -184,7 +184,7 @@
         .animate-ticker {
             display: flex;
             width: max-content;
-            animation: tickerScroll 20s linear infinite;
+            animation: tickerScroll 25s linear infinite;
         }
         .animate-ticker:hover {
             animation-play-state: paused;
@@ -589,7 +589,7 @@
               <h3 style="margin: 0; color: #1e3a8a; font-size: 1.1rem;"><i class="fa-solid fa-bullhorn"></i> Керування бігучими банерами</h3>
               <button onclick="document.getElementById('runningBannerModal').style.display='none'" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #64748b;">&times;</button>
             </div>
-            <p style="font-size: 0.78rem; color: #64748b; margin-top: 0;">Додавайте посилання, великі картинки та текст для бігучої стрічки партнерів.</p>
+            <p style="font-size: 0.78rem; color: #64748b; margin-top: 0;">Додавайте посилання, картинки та текст для банерів стрічки.</p>
             <div id="runningBannerAdminList" style="max-height: 300px; overflow-y: auto; margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px;"></div>
             <div style="display: flex; justify-content: flex-end; gap: 8px;">
               <button type="button" onclick="document.getElementById('runningBannerModal').style.display='none'" style="padding: 6px 12px; border-radius: 6px; border: 1px solid #cbd5e1; background: #f1f5f9; cursor: pointer; font-size: 0.8rem;">Закрити</button>
@@ -845,11 +845,11 @@
       document.getElementById('cancelBannerBtn').addEventListener('click', () => document.getElementById('bannerModal').style.display = 'none');
 
 
-      // БІГУЧІ БАНЕРИ (ВЕЛИКІ КАРТКИ З АВТОМАТИЧНОЮ ПРОКРУТКОЮ ТА ДУБЛЮВАННЯМ)
+      // БІГУЧІ БАНЕРИ (ПАРТНЕРИ / ПРОМО) З АВТОМАТИЧНОЮ ПРОКРУТКОЮ ТА АДМІНКОЮ
       let runningBanners = [
-        { text: "Автозапчастини оптом", image: "https://images.unsplash.com/photo-1486006920555-c77dce18193b?w=400", link: "auto.html" },
-        { text: "Ремонт електроніки", image: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=400", link: "baza.html" },
-        { text: "Нерухомість Костопіль", image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400", link: "commercial.html" }
+        { text: "Банер 1: Автозапчастини", image: "https://images.unsplash.com/photo-1486006920555-c77dce18193b?w=400", link: "auto.html" },
+        { text: "Банер 2: Ремонт електроніки", image: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=400", link: "baza.html" },
+        { text: "Банер 3: Нерухомість", image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400", link: "commercial.html" }
       ];
 
       const runningBannerDocRef = doc(db, "settings", "shop_running_banners");
@@ -869,7 +869,6 @@
         const track = document.getElementById('runningBannersTrack');
         if (!track) return;
         
-        // Генеруємо HTML карток (збільшені розміри ширина min-w-[220px], фото h-20)
         const itemsHtml = runningBanners.map((item) => `
           <a href="${item.link || '#'}" target="_blank" class="flex items-center gap-3 bg-white border border-gray-200 rounded-xl p-3 hover:border-[#23527c] transition-all shrink-0 shadow-sm group min-w-[220px]">
             <img src="${item.image || 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=200'}" class="w-16 h-16 object-cover rounded-lg bg-gray-100 group-hover:scale-105 transition-transform" alt="">
@@ -880,7 +879,6 @@
           </a>
         `).join('');
 
-        // Дублюємо елементи для створення ефекту нескінченної петлі (marquee)
         track.innerHTML = itemsHtml + itemsHtml;
       }
 
@@ -933,13 +931,39 @@
       }
 
       window.addRunningBannerItem = async function() {
-        runningBanners.push({ text: "Новий партнер", image: "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=400", link: "#" });
+        runningBanners.push({ text: "Новий банер", image: "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=400", link: "#" });
         try {
           await setDoc(runningBannerDocRef, { items: runningBanners });
           renderRunningBannerAdminList();
         } catch (err) {}
       }
 
+      // Перевірка авторизації та показ кнопок адміна
+      onAuthStateChanged(auth, (user) => {
+        currentUser = user;
+        const toggleBtn = document.getElementById('toggleFormBtn');
+        const adminBadge = document.getElementById('adminStatusBadge');
+        const adminBannerSettingsBtn = document.getElementById('adminBannerSettingsBtn');
+        const adminRunningBannerBtn = document.getElementById('adminRunningBannerBtn');
+        
+        if (!user) {
+          toggleBtn.innerHTML = `<i class="fa-solid fa-lock"></i> Увійдіть для подачі`;
+          adminBadge.style.display = 'none';
+          if (adminBannerSettingsBtn) adminBannerSettingsBtn.style.display = 'none';
+          if (adminRunningBannerBtn) adminRunningBannerBtn.style.display = 'none';
+        } else {
+          toggleBtn.innerHTML = `<i class="fa-solid fa-plus"></i> Подати оголошення`;
+          if (isAdminUser(user.email)) {
+            adminBadge.style.display = 'inline-block';
+            if (adminBannerSettingsBtn) adminBannerSettingsBtn.style.display = 'flex';
+            if (adminRunningBannerBtn) adminRunningBannerBtn.style.display = 'flex';
+          } else {
+            adminBadge.style.display = 'none';
+            if (adminBannerSettingsBtn) adminBannerSettingsBtn.style.display = 'none';
+            if (adminRunningBannerBtn) adminRunningBannerBtn.style.display = 'none';
+          }
+        }
+      });
 
       // Категорії та каталог
       const categoriesData = [
@@ -1089,32 +1113,6 @@
           `;
         }).join('');
       }
-
-      onAuthStateChanged(auth, (user) => {
-        currentUser = user;
-        const toggleBtn = document.getElementById('toggleFormBtn');
-        const adminBadge = document.getElementById('adminStatusBadge');
-        const adminBannerSettingsBtn = document.getElementById('adminBannerSettingsBtn');
-        const adminRunningBannerBtn = document.getElementById('adminRunningBannerBtn');
-        
-        if (!user) {
-          toggleBtn.innerHTML = `<i class="fa-solid fa-lock"></i> Увійдіть для подачі`;
-          adminBadge.style.display = 'none';
-          if (adminBannerSettingsBtn) adminBannerSettingsBtn.style.display = 'none';
-          if (adminRunningBannerBtn) adminRunningBannerBtn.style.display = 'none';
-        } else {
-          toggleBtn.innerHTML = `<i class="fa-solid fa-plus"></i> Подати оголошення`;
-          if (isAdminUser(user.email)) {
-            adminBadge.style.display = 'inline-block';
-            if (adminBannerSettingsBtn) adminBannerSettingsBtn.style.display = 'flex';
-            if (adminRunningBannerBtn) adminRunningBannerBtn.style.display = 'flex';
-          } else {
-            adminBadge.style.display = 'none';
-            if (adminBannerSettingsBtn) adminBannerSettingsBtn.style.display = 'none';
-            if (adminRunningBannerBtn) adminRunningBannerBtn.style.display = 'none';
-          }
-        }
-      });
 
       const newAdFormCard = document.getElementById('newAdFormCard');
       const addListingForm = document.getElementById('addListingForm');

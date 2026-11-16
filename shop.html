@@ -179,6 +179,55 @@
             border-color: var(--olx-color);
         }
 
+        /* СТИЛІ БІГУЧОЇ СТРІЧКИ ЗІ ЗАОКРУГЛЕНИМИ КАРТКАМИ */
+        .ticker-wrapper {
+            overflow: hidden;
+            width: 100%;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 10px 0;
+            position: relative;
+        }
+        @keyframes tickerMove {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .ticker-track {
+            display: flex;
+            flex-wrap: nowrap;
+            width: max-content;
+            animation: tickerMove 25s linear infinite;
+            gap: 12px;
+            padding: 0 6px;
+        }
+        .ticker-track:hover {
+            animation-play-state: paused;
+        }
+        .ticker-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: white;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            padding: 8px 12px;
+            min-width: 220px;
+            text-decoration: none;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+            transition: border-color 0.2s;
+        }
+        .ticker-item:hover {
+            border-color: var(--olx-color);
+        }
+        .ticker-item img {
+            width: 44px;
+            height: 44px;
+            object-fit: cover;
+            border-radius: 8px;
+            background: #f1f5f9;
+        }
+
         /* ІДЕАЛЬНИЙ СЛАЙДЕР БЕЗ ОБРІЗАННЯ ТА ЗМІЩЕНЬ */
         .custom-slider-box {
             background: white;
@@ -512,7 +561,7 @@
       
       <!-- ГОЛОВНИЙ КАТАЛОГ -->
       <div id="mainCatalogWrapper">
-        <!-- КАТЕГОРІЇ ТА ПІДРОЗДІЛИ (КНОПКИ КЕРУВАННЯ ПЕРЕНЕСЕННІ В ШАПКУ КАТАЛОГУ) -->
+        <!-- КАТЕГОРІЇ ТА ПІДРОЗДІЛИ -->
         <div class="catalog-container">
           <div class="catalog-top-bar">
             <h3 class="catalog-title">
@@ -536,7 +585,7 @@
             <!-- Ліва колонка: Категорії -->
             <div class="categories-sidebar" id="categoriesSidebar"></div>
             
-            <!-- Права колонка: Підкатегорії + Слайдер -->
+            <!-- Права колонка: Підкатегорії + Слайдер + Бігуча стрічка банерів -->
             <div class="subcategories-panel">
               <div>
                 <div id="subcategoriesContent"></div>
@@ -584,11 +633,29 @@
                   </button>
               </div>
 
+              <!-- БІГУЧА СТРІЧКА БАНЕРІВ ЗІ ЗАОКРУГЛЕНИМИ КАРТКАМИ ПІД КНОПКОЮ КЕРУВАННЯ -->
+              <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px; box-shadow: 0 2px 6px rgba(0,0,0,0.03);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid #f1f5f9; padding-bottom: 6px;">
+                  <h4 style="margin: 0; font-size: 0.8rem; font-weight: bold; color: #1e293b; text-transform: uppercase;">
+                    <i class="fa-solid fa-bullhorn" style="color: #db4437; margin-right: 5px;"></i> Промо та партнери
+                  </h4>
+                  <button id="adminRunningBannerBtn" style="display: none; font-size: 0.72rem; background: #f1f5f9; border: 1px solid #cbd5e1; padding: 3px 8px; border-radius: 4px; cursor: pointer; font-weight: bold;" onclick="openRunningBannerModal()">
+                    <i class="fa-solid fa-gear"></i> Налаштувати
+                  </button>
+                </div>
+                
+                <div class="ticker-wrapper">
+                  <div id="runningBannersTrack" class="ticker-track">
+                    <!-- Заповнюється динамічно -->
+                  </div>
+                </div>
+              </div>
+
             </div>
           </div>
         </div>
 
-        <!-- МОДАЛЬНЕ ВІКНО РЕДАГУВАННЯ БАНЕРА (ДЛЯ АДМІНА) -->
+        <!-- МОДАЛЬНЕ ВІКНО РЕДАГУВАННЯ ГОЛОВНОГО СЛАЙДЕРА -->
         <div id="bannerModal" style="display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.7); z-index: 9999; justify-content: center; align-items: center; padding: 15px;">
           <div style="background: white; border-radius: 12px; max-width: 500px; width: 100%; padding: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">
@@ -599,6 +666,21 @@
             <div id="bannerAdminList" style="max-height: 300px; overflow-y: auto; margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px;"></div>
             <div style="display: flex; justify-content: flex-end; gap: 8px;">
               <button type="button" id="cancelBannerBtn" style="padding: 6px 12px; border-radius: 6px; border: 1px solid #cbd5e1; background: #f1f5f9; cursor: pointer; font-size: 0.8rem;">Закрити</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- МОДАЛЬНЕ ВІКНО РЕДАГУВАННЯ БІГУЧИХ БАНЕРІВ -->
+        <div id="runningBannerModal" style="display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.7); z-index: 9999; justify-content: center; align-items: center; padding: 15px;">
+          <div style="background: white; border-radius: 12px; max-width: 500px; width: 100%; padding: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">
+              <h3 style="margin: 0; color: #1e3a8a; font-size: 1.1rem;"><i class="fa-solid fa-bullhorn"></i> Керування бігучими банерами</h3>
+              <button onclick="document.getElementById('runningBannerModal').style.display='none'" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #64748b;">&times;</button>
+            </div>
+            <p style="font-size: 0.78rem; color: #64748b; margin-top: 0;">Налаштування партнерських банерів у бігучій стрічці.</p>
+            <div id="runningBannerAdminList" style="max-height: 300px; overflow-y: auto; margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px;"></div>
+            <div style="display: flex; justify-content: flex-end; gap: 8px;">
+              <button type="button" onclick="document.getElementById('runningBannerModal').style.display='none'" style="padding: 6px 12px; border-radius: 6px; border: 1px solid #cbd5e1; background: #f1f5f9; cursor: pointer; font-size: 0.8rem;">Закрити</button>
             </div>
           </div>
         </div>
@@ -728,7 +810,7 @@
         return ALLOWED_ADMINS.some(admin => admin.toLowerCase() === email.trim().toLowerCase());
       }
 
-      // Логіка слайдера банера
+      // Логіка головного слайдера банера
       let sidebarSlides = [
         { image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800", title: "Оцінка Нерухомості", subtitle: "Твоє місто", link: "commercial.html", btnText: "Дізнатися більше" },
         { image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800", title: "Продаж квартир та будинків", subtitle: "Найкращі пропозиції на ринку", link: "shop.html", btnText: "Переглянути" }
@@ -789,9 +871,7 @@
         if (docSnap.exists() && docSnap.data().slides) {
           sidebarSlides = docSnap.data().slides;
         } else {
-          try {
-            await setDoc(bannerDocRef, { slides: sidebarSlides });
-          } catch (err) {}
+          try { await setDoc(bannerDocRef, { slides: sidebarSlides }); } catch (err) {}
         }
         currentSlideIdx = 0;
         renderSidebarSlide();
@@ -801,9 +881,7 @@
       window.openBannerModal = async function() {
         try {
           const docSnap = await getDoc(bannerDocRef);
-          if (docSnap.exists() && docSnap.data().slides) {
-            sidebarSlides = docSnap.data().slides;
-          }
+          if (docSnap.exists() && docSnap.data().slides) sidebarSlides = docSnap.data().slides;
         } catch (err) {}
         renderAdminSlideList();
         document.getElementById('bannerModal').style.display = 'flex';
@@ -835,7 +913,6 @@
         sidebarSlides[idx].title = document.getElementById(`slideTitle_${idx}`).value;
         sidebarSlides[idx].subtitle = document.getElementById(`slideSub_${idx}`).value;
         sidebarSlides[idx].link = document.getElementById(`slideLink_${idx}`).value;
-        
         try {
           await setDoc(bannerDocRef, { slides: sidebarSlides });
           alert('Збережено!');
@@ -865,6 +942,94 @@
 
       document.getElementById('closeBannerModal').addEventListener('click', () => document.getElementById('bannerModal').style.display = 'none');
       document.getElementById('cancelBannerBtn').addEventListener('click', () => document.getElementById('bannerModal').style.display = 'none');
+
+
+      // ЛОГІКА БІГУЧИХ БАНЕРІВ (ПАРТНЕРИ / ПРОМО)
+      let runningBanners = [
+        { text: "Автозапчастини", image: "https://images.unsplash.com/photo-1511919884226-fd3cad34687c?w=400", link: "auto.html" },
+        { text: "Ремонт електроніки", image: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=400", link: "baza.html" },
+        { text: "Нерухомість", image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400", link: "commercial.html" }
+      ];
+
+      const runningBannerDocRef = doc(db, "settings", "shop_running_banners");
+
+      onSnapshot(runningBannerDocRef, async (docSnap) => {
+        if (docSnap.exists() && docSnap.data().items) {
+          runningBanners = docSnap.data().items;
+        } else {
+          try { await setDoc(runningBannerDocRef, { items: runningBanners }); } catch (e) {}
+        }
+        renderRunningBanners();
+      });
+
+      function renderRunningBanners() {
+        const track = document.getElementById('runningBannersTrack');
+        if (!track) return;
+        
+        const html = runningBanners.map(item => `
+          <a href="${item.link || '#'}" target="_blank" class="ticker-item">
+            <img src="${item.image || 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=200'}" alt="">
+            <div style="overflow: hidden;">
+              <div style="font-size: 0.78rem; font-weight: bold; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.text}</div>
+              <div style="font-size: 0.65rem; color: #64748b; font-weight: bold; text-transform: uppercase;">Партнер проєкту</div>
+            </div>
+          </a>
+        `).join('');
+
+        track.innerHTML = html + html;
+      }
+
+      window.openRunningBannerModal = function() {
+        const container = document.getElementById('runningBannerAdminList');
+        container.innerHTML = runningBanners.map((item, idx) => `
+          <div style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px; background: #f8fafc; display: flex; flex-direction: column; gap: 6px;">
+            <div style="font-weight: bold; font-size: 0.78rem; color: #1e3a8a;">Банер #${idx + 1}</div>
+            <input type="text" placeholder="Текст" value="${item.text || ''}" id="rbText_${idx}" style="padding: 5px; font-size: 0.75rem; border: 1px solid #cbd5e1; border-radius: 4px;" />
+            <input type="text" placeholder="URL зображення" value="${item.image || ''}" id="rbImg_${idx}" style="padding: 5px; font-size: 0.75rem; border: 1px solid #cbd5e1; border-radius: 4px;" />
+            <input type="text" placeholder="Посилання" value="${item.link || ''}" id="rbLink_${idx}" style="padding: 5px; font-size: 0.75rem; border: 1px solid #cbd5e1; border-radius: 4px;" />
+            <div style="display: flex; gap: 5px;">
+              <button type="button" onclick="saveRunningBannerItem(${idx})" style="flex: 1; background: var(--accent); color: white; border: none; padding: 5px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; cursor: pointer;">Зберегти</button>
+              <button type="button" onclick="deleteRunningBannerItem(${idx})" style="background: var(--danger); color: white; border: none; padding: 5px 8px; border-radius: 4px; font-size: 0.75rem; cursor: pointer;"><i class="fa-solid fa-trash"></i></button>
+            </div>
+          </div>
+        `).join('') + `
+          <button type="button" onclick="addRunningBannerItem()" style="background: var(--olx-color); color: white; border: none; padding: 8px; border-radius: 6px; font-size: 0.78rem; font-weight: bold; cursor: pointer; margin-top: 5px;">
+            <i class="fa-solid fa-plus"></i> Додати банер
+          </button>
+        `;
+        document.getElementById('runningBannerModal').style.display = 'flex';
+      }
+
+      window.saveRunningBannerItem = async function(idx) {
+        runningBanners[idx].text = document.getElementById(`rbText_${idx}`).value;
+        runningBanners[idx].image = document.getElementById(`rbImg_${idx}`).value;
+        runningBanners[idx].link = document.getElementById(`rbLink_${idx}`).value;
+        try {
+          await setDoc(runningBannerDocRef, { items: runningBanners });
+          alert('Збережено!');
+          openRunningBannerModal();
+        } catch (e) { alert('Помилка: ' + e.message); }
+      }
+
+      window.deleteRunningBannerItem = async function(idx) {
+        if (runningBanners.length <= 1) {
+          alert('Потрібен хоча б один банер!');
+          return;
+        }
+        runningBanners.splice(idx, 1);
+        try {
+          await setDoc(runningBannerDocRef, { items: runningBanners });
+          openRunningBannerModal();
+        } catch (e) {}
+      }
+
+      window.addRunningBannerItem = async function() {
+        runningBanners.push({ text: "Новий банер", image: "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=400", link: "#" });
+        try {
+          await setDoc(runningBannerDocRef, { items: runningBanners });
+          openRunningBannerModal();
+        } catch (e) {}
+      }
 
 
       // Категорії та каталог
@@ -1000,19 +1165,23 @@
         const toggleBtn = document.getElementById('toggleFormBtn');
         const adminBadge = document.getElementById('adminStatusBadge');
         const adminBannerSettingsBtn = document.getElementById('adminBannerSettingsBtn');
+        const adminRunningBannerBtn = document.getElementById('adminRunningBannerBtn');
         
         if (!user) {
           toggleBtn.innerHTML = `<i class="fa-solid fa-lock"></i> Увійдіть для подачі`;
           adminBadge.style.display = 'none';
           if (adminBannerSettingsBtn) adminBannerSettingsBtn.style.display = 'none';
+          if (adminRunningBannerBtn) adminRunningBannerBtn.style.display = 'none';
         } else {
           toggleBtn.innerHTML = `<i class="fa-solid fa-plus"></i> Подати оголошення`;
           if (isAdminUser(user.email)) {
             adminBadge.style.display = 'inline-block';
             if (adminBannerSettingsBtn) adminBannerSettingsBtn.style.display = 'flex';
+            if (adminRunningBannerBtn) adminRunningBannerBtn.style.display = 'block';
           } else {
             adminBadge.style.display = 'none';
             if (adminBannerSettingsBtn) adminBannerSettingsBtn.style.display = 'none';
+            if (adminRunningBannerBtn) adminRunningBannerBtn.style.display = 'none';
           }
         }
       });

@@ -1618,7 +1618,7 @@
         }
       };
 
-      // ДЕТАЛЬНА СТОРІНКА ТОВАРУ (З БЛОКОМ ВІДГУКІВ ПІД ГАЛЕРЕЄЮ)
+      // ДЕТАЛЬНА СТОРІНКА ТОВАРУ (УСІ БЛОКИ БЕЗПЕКИ ТА ВІДГУКІВ ПІД ГАЛЕРЕЄЮ)
       window.openProductDetail = async function(id, pushHistory = true) {
         let item = allProducts.find(p => p.id === id);
 
@@ -1691,7 +1691,7 @@
 
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; align-items: start;">
             
-            <!-- ЛІВА КОЛОНКА: Галерея + Блок завершення угоди та відгуків -->
+            <!-- ЛІВА КОЛОНКА: Галерея, Контакт, Стандарти безпеки та Відгуки -->
             <div>
               ${galleryHtml}
               <div id="detailContactBox" style="margin-top: 15px; display: flex; gap: 10px;">
@@ -1700,8 +1700,19 @@
                 </button>
               </div>
 
-              <!-- БЛОК ЗАВЕРШЕННЯ УГОДИ ТА ЗАЛИШЕННЯ ВІДГУКУ ПІД ГАЛЕРЕЄЮ -->
-              <div style="margin-top: 20px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 10px; padding: 15px;">
+              <!-- Стандарти безпеки сервісу -->
+              <div style="margin-top: 15px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px;">
+                <div style="font-size: 0.78rem; font-weight: 800; color: #1e3a8a; text-transform: uppercase; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                  <i class="fa-solid fa-shield-halved"></i> Стандарти безпеки сервісу
+                </div>
+                <div style="font-size: 0.75rem; color: #475569; display: flex; flex-direction: column; gap: 6px;">
+                  <div style="display: flex; align-items: center; gap: 8px;"><i class="fa-solid fa-check" style="color: #059669;"></i> Прямий контакт із власником без посередників</div>
+                  <div style="display: flex; align-items: center; gap: 8px;"><i class="fa-solid fa-check" style="color: #059669;"></i> Перевірені дані та актуальний статус позиції</div>
+                </div>
+              </div>
+
+              <!-- Блок завершення угоди та залишення відгуку -->
+              <div style="margin-top: 15px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 10px; padding: 15px;">
                 <h4 style="margin: 0 0 10px 0; color: #1e3a8a; font-size: 0.9rem;"><i class="fa-solid fa-handshake"></i> Угода пройшла успішно? Оцініть продавця:</h4>
                 <div style="display: flex; gap: 15px; margin-bottom: 10px; flex-wrap: wrap; font-size: 0.8rem; font-weight: bold;">
                   <label style="color: #059669; cursor: pointer;"><input type="radio" name="dealRating" value="satisfactory"> Задовільно</label>
@@ -1714,7 +1725,7 @@
                 </button>
               </div>
 
-              <!-- СПИСОК ВІДГУКІВ ПІД ФОРМОЮ -->
+              <!-- Список відгуків під формою -->
               <h4 style="margin: 20px 0 10px 0; color: #1e3a8a; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px;">Відгуки та рейтинг угоди</h4>
               <div id="reviewsListContainer" style="display: flex; flex-direction: column; gap: 8px; max-height: 250px; overflow-y: auto;">
                 ${reviewsHtml}
@@ -1737,16 +1748,6 @@
               <h4 style="margin: 20px 0 8px 0; color: #1e3a8a; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.5px;">Опис / Характеристики</h4>
               <p style="font-size: 0.85rem; color: #334155; line-height: 1.6; margin: 0; white-space: pre-line; background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0;">${item.description}</p>
               
-              <div style="margin-top: 15px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px;">
-                <div style="font-size: 0.78rem; font-weight: 800; color: #1e3a8a; text-transform: uppercase; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
-                  <i class="fa-solid fa-shield-halved"></i> Стандарти безпеки сервісу
-                </div>
-                <div style="font-size: 0.75rem; color: #475569; display: flex; flex-direction: column; gap: 6px;">
-                  <div style="display: flex; align-items: center; gap: 8px;"><i class="fa-solid fa-check" style="color: #059669;"></i> Прямий контакт із власником без посередників</div>
-                  <div style="display: flex; align-items: center; gap: 8px;"><i class="fa-solid fa-check" style="color: #059669;"></i> Перевірені дані та актуальний статус позиції</div>
-                </div>
-              </div>
-
               ${isOwnerOrAdmin ? `
                 <div style="margin-top: 25px; border-top: 1px solid #e2e8f0; padding-top: 15px; display: flex; gap: 10px;">
                   <button class="btn-primary" onclick="editProduct('${item.id}')" style="background: #f59e0b;"><i class="fa-solid fa-pen"></i> Редагувати</button>
@@ -1758,16 +1759,29 @@
         `;
         window.scrollTo(0, 0);
 
+        // Безпечне завантаження та сортування відгуків у JS (без помилок індексів Firestore)
         try {
-          const revQuery = query(collection(db, "shop_reviews"), where("listingId", "==", id), orderBy("createdAt", "desc"));
+          const revQuery = query(collection(db, "shop_reviews"), where("listingId", "==", id));
           const revSnap = await getDocs(revQuery);
           const revContainer = document.getElementById('reviewsListContainer');
+          
           if (revSnap.empty) {
             revContainer.innerHTML = '<p style="font-size: 0.78rem; color: #64748b; font-style: italic;">Поки немає відгуків щодо цієї угоди.</p>';
           } else {
-            revContainer.innerHTML = '';
+            let reviews = [];
             revSnap.forEach(revDoc => {
-              const r = revDoc.data();
+              reviews.push({ id: revDoc.id, ...revDoc.data() });
+            });
+            
+            // Сортування у JavaScript (найновіші зверху)
+            reviews.sort((a, b) => {
+              const ta = a.createdAt?.toMillis ? a.createdAt.toMillis() : 0;
+              const tb = b.createdAt?.toMillis ? b.createdAt.toMillis() : 0;
+              return tb - ta;
+            });
+
+            revContainer.innerHTML = '';
+            reviews.forEach(r => {
               let badgeColor = '#64748b';
               let badgeText = 'Утримався';
               if (r.rating === 'satisfactory') { badgeColor = '#059669'; badgeText = 'Задовільно'; }

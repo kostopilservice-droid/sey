@@ -277,12 +277,46 @@
         }
         .slider-cta-btn:hover { background: #b9372c; }
 
+        /* ПАНЕЛЬ ШВИДКИХ ФІЛЬТРІВ */
+        .filter-toolbar {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 12px 18px;
+            margin-top: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+        }
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .filter-input {
+            width: 95px;
+            padding: 6px 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            outline: none;
+            background: #f8fafc;
+        }
+        .filter-input:focus {
+            border-color: var(--olx-color);
+            background: #ffffff;
+        }
+
         /* КАРТКИ ТОВАРУ */
         .market-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(265px, 1fr));
             gap: 16px;
-            margin-top: 25px;
+            margin-top: 18px;
         }
 
         .product-card {
@@ -304,16 +338,46 @@
             border-color: #cbd5e1;
         }
 
+        /* Кнопка обраного поверх фото */
+        .fav-card-btn {
+            position: absolute;
+            top: 22px;
+            right: 22px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.92);
+            border: 1px solid #e2e8f0;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 5;
+            transition: all 0.2s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .fav-card-btn:hover {
+            transform: scale(1.08);
+            color: var(--danger);
+        }
+        .fav-card-btn.active {
+            color: var(--danger);
+            background: #fef2f2;
+            border-color: #fecaca;
+        }
+
         .card-collage-box {
             display: grid;
             gap: 4px;
-            height: 150px;
+            height: 155px;
             border-radius: 8px;
             overflow: hidden;
             background: #f1f5f9;
             margin-bottom: 10px;
             cursor: pointer;
             border: 1px solid #e2e8f0;
+            position: relative;
         }
         .card-collage-box.single { grid-template-columns: 1fr; }
         .card-collage-box.double { grid-template-columns: 2fr 1fr; }
@@ -332,11 +396,27 @@
         .collage-sub-top { grid-column: 2 / 3; grid-row: 1 / 2; height: 100%; }
         .collage-sub-bot { grid-column: 2 / 3; grid-row: 2 / 3; height: 100%; }
 
+        .photo-count-badge {
+            position: absolute;
+            bottom: 6px;
+            left: 6px;
+            background: rgba(15, 23, 42, 0.75);
+            color: white;
+            font-size: 0.65rem;
+            font-weight: bold;
+            padding: 2px 7px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
         .card-header-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 6px;
+            gap: 6px;
         }
 
         .condition-badge {
@@ -347,6 +427,7 @@
             border-radius: 4px;
             font-weight: 800;
             text-transform: uppercase;
+            flex-shrink: 0;
         }
 
         .card-category-sub {
@@ -403,13 +484,28 @@
         .card-resume-table td.label {
             color: #64748b;
             font-weight: 600;
-            width: 45%;
+            width: 42%;
             background: #f1f5f9;
             border-right: 1px solid #e2e8f0;
         }
         .card-resume-table td.val {
             font-weight: 700;
             color: #0f172a;
+        }
+
+        .reveal-phone-inline {
+            background: #e0f2fe;
+            color: var(--olx-color);
+            border: none;
+            padding: 2px 7px;
+            border-radius: 4px;
+            font-size: 0.68rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .reveal-phone-inline:hover {
+            background: #bae6fd;
         }
 
         .card-price-box {
@@ -569,12 +665,13 @@
         </a>
 
         <!-- Пошук у шапці -->
-        <div style="flex: 1; max-width: 340px; min-width: 160px;">
+        <div style="flex: 1; max-width: 380px; min-width: 160px;">
           <div style="position: relative; width: 100%;">
             <span style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: #64748b; pointer-events: none; font-size: 0.80rem;">
               <i class="fa-solid fa-magnifying-glass"></i>
             </span>
-            <input type="text" id="shopSearch" placeholder="Пошук оголошень..." style="width: 100%; box-sizing: border-box; padding: 7px 10px 7px 32px; font-size: 0.8rem; background: #ffffff; color: #1e293b; border: 1px solid #cbd5e1; border-radius: 6px; outline: none;" />
+            <input type="text" id="shopSearch" placeholder="Пошук за назвою, описом або категорією..." style="width: 100%; box-sizing: border-box; padding: 7px 28px 7px 32px; font-size: 0.8rem; background: #ffffff; color: #1e293b; border: 1px solid #cbd5e1; border-radius: 6px; outline: none;" />
+            <button id="clearSearchBtn" style="display: none; position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 0.85rem;">&times;</button>
           </div>
         </div>
 
@@ -616,18 +713,24 @@
                 <i class="fa-solid fa-shield-halved"></i> Модератор
               </span>
 
+              <!-- КНОПКА ОБРАНОГО -->
+              <button id="toggleFavoritesBtn" style="background: #ffffff; color: #334155; border: 1px solid #cbd5e1; padding: 6px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+                <i class="fa-solid fa-heart" style="color: var(--danger);"></i> Обране (<span id="favCountBadge">0</span>)
+              </button>
+
               <!-- СОРТУВАННЯ -->
               <select id="sortFilter" style="background: #ffffff; border: 1px solid #cbd5e1; padding: 6px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; color: #334155; cursor: pointer; outline: none;">
                 <option value="newest">Новіші спочатку</option>
                 <option value="price_asc">Від дешевших</option>
                 <option value="price_desc">Від дорожчих</option>
+                <option value="popular">За переглядами</option>
               </select>
 
               <button id="toggleFormBtn" class="btn-primary">
                 <i class="fa-solid fa-plus"></i> Подати оголошення
               </button>
               <button id="resetFilterBtn" style="background: #e2e8f0; color: #334155; border: none; padding: 6px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; cursor: pointer;">
-                <i class="fa-solid fa-rotate-left"></i> Усі оголошення
+                <i class="fa-solid fa-rotate-left"></i> Скинути фільтри
               </button>
             </div>
           </div>
@@ -686,6 +789,27 @@
               </div>
 
             </div>
+          </div>
+        </div>
+
+        <!-- ПАНЕЛЬ ФІЛЬТРІВ (ЦІНА, СТАН, ЛІЧИЛЬНИК) -->
+        <div class="filter-toolbar">
+          <div class="filter-group">
+            <span style="font-size: 0.78rem; font-weight: 700; color: #334155;"><i class="fa-solid fa-filter" style="color: var(--olx-color);"></i> Фільтри:</span>
+            <input type="number" id="priceMinFilter" class="filter-input" placeholder="Ціна від, ₴" min="0">
+            <span style="color: #94a3b8;">—</span>
+            <input type="number" id="priceMaxFilter" class="filter-input" placeholder="Ціна до, ₴" min="0">
+
+            <select id="conditionFilter" style="background: #f8fafc; border: 1px solid #cbd5e1; padding: 6px 10px; border-radius: 6px; font-size: 0.78rem; font-weight: 600; color: #334155; cursor: pointer; outline: none;">
+              <option value="all">Будь-який стан</option>
+              <option value="Нове">Нове</option>
+              <option value="Б/В">Б/В</option>
+              <option value="Відновлене">Відновлене</option>
+            </select>
+          </div>
+
+          <div id="activeResultsCounter" style="font-size: 0.78rem; font-weight: 700; color: #475569;">
+            Знайдено оголошень: 0
           </div>
         </div>
 
@@ -752,9 +876,20 @@
               <input type="tel" id="adContact" placeholder="+380971234567" required style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; margin-top: 3px;" />
             </div>
 
-            <div style="grid-column: 1 / -1;">
-              <label style="font-size: 0.75rem; font-weight: bold; color: #475569;">Фотографії (посилання через кому для колажу):</label>
-              <input type="text" id="adPhotos" placeholder="https://img1.jpg, https://img2.jpg, https://img3.jpg" required style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; margin-top: 3px;" />
+            <div>
+              <label style="font-size: 0.75rem; font-weight: bold; color: #475569;">Населений пункт (необов'язково):</label>
+              <input type="text" id="adLocation" placeholder="Наприклад: Костопіль" style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; margin-top: 3px;" />
+            </div>
+
+            <div style="grid-column: 1 / -1; background: #f8fafc; padding: 10px; border-radius: 8px; border: 1px solid #e2e8f0;">
+              <label style="font-size: 0.75rem; font-weight: bold; color: #1e3a8a; display: block; margin-bottom: 6px;">
+                <i class="fa-solid fa-images"></i> Фотографії товару (завантажте з пристрою або вставте посилання через кому):
+              </label>
+              <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
+                <input type="file" id="adPhotoFiles" accept="image/*" multiple style="font-size: 0.78rem; color: #334155;" />
+                <span id="uploadProgressText" style="font-size: 0.75rem; font-weight: bold; color: var(--olx-color);"></span>
+              </div>
+              <input type="text" id="adPhotos" placeholder="Або вставте посилання: https://img1.jpg, https://img2.jpg" style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; margin-top: 8px; background: white;" />
             </div>
 
             <div style="grid-column: 1 / -1;">
@@ -838,7 +973,8 @@
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
       import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-      import { getFirestore, collection, addDoc, query, where, getDocs, orderBy, limit, startAfter, onSnapshot, doc, deleteDoc, updateDoc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+      import { getFirestore, collection, addDoc, query, where, getDocs, orderBy, limit, startAfter, onSnapshot, doc, deleteDoc, updateDoc, setDoc, getDoc, serverTimestamp, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+      import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
       const ALLOWED_ADMINS = [
         "admin@neoservice.ks.ua",
@@ -862,11 +998,50 @@
       const app = initializeApp(firebaseConfig);
       const auth = getAuth(app);
       const db = getFirestore(app);
+      const storage = getStorage(app);
 
       function isAdminUser(email) {
         if (!email) return false;
         return ALLOWED_ADMINS.some(admin => admin.toLowerCase() === email.trim().toLowerCase());
       }
+
+      // ОБРАНЕ (LOCALSTORAGE)
+      let favoriteIds = JSON.parse(localStorage.getItem('neoservice_shop_favs') || '[]');
+      let showOnlyFavorites = false;
+
+      function updateFavBadge() {
+        const badge = document.getElementById('favCountBadge');
+        if (badge) badge.textContent = favoriteIds.length;
+      }
+      updateFavBadge();
+
+      window.toggleFavorite = function(id, event) {
+        if (event) event.stopPropagation();
+        const idx = favoriteIds.indexOf(id);
+        if (idx > -1) {
+          favoriteIds.splice(idx, 1);
+        } else {
+          favoriteIds.push(id);
+        }
+        localStorage.setItem('neoservice_shop_favs', JSON.stringify(favoriteIds));
+        updateFavBadge();
+        filterCards();
+      };
+
+      document.getElementById('toggleFavoritesBtn').addEventListener('click', () => {
+        showOnlyFavorites = !showOnlyFavorites;
+        const btn = document.getElementById('toggleFavoritesBtn');
+        if (showOnlyFavorites) {
+          btn.style.background = '#fef2f2';
+          btn.style.borderColor = 'var(--danger)';
+          btn.style.color = 'var(--danger)';
+        } else {
+          btn.style.background = '#ffffff';
+          btn.style.borderColor = '#cbd5e1';
+          btn.style.color = '#334155';
+        }
+        filterCards();
+      });
 
       // Форматування дати
       function formatTimeAgo(timestamp) {
@@ -890,13 +1065,19 @@
       }
 
       // Присутність
-      async function updateUserPresence(user) {
+      async function updateUserPresence(user, online = true) {
         if (!user) return;
         const userRef = doc(db, "users", user.uid);
         try {
-          await setDoc(userRef, { email: user.email, lastSeen: serverTimestamp(), isOnline: true }, { merge: true });
+          await setDoc(userRef, { email: user.email, lastSeen: serverTimestamp(), isOnline: online }, { merge: true });
         } catch (e) {}
       }
+
+      window.addEventListener('beforeunload', () => {
+        if (auth.currentUser) {
+          updateUserPresence(auth.currentUser, false);
+        }
+      });
 
       let authMode = 'login';
       window.openAuthModal = function(mode = 'login') {
@@ -975,7 +1156,7 @@
             div.innerHTML = `
               <div style="overflow: hidden;">
                 <div style="font-size: 0.8rem; font-weight: bold; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 260px;">${data.title}</div>
-                <div style="font-size: 0.72rem; color: #059669; font-weight: bold;">${data.price} ₴</div>
+                <div style="font-size: 0.72rem; color: #059669; font-weight: bold;">${data.price} ₴ • <span style="color:#64748b; font-weight:normal;"><i class="fa-regular fa-eye"></i> ${data.views || 0}</span></div>
               </div>
               <div style="display: flex; gap: 4px;">
                 <button onclick="document.getElementById('cabinetModal').style.display='none'; editProduct('${docSnap.id}')" style="background: #f59e0b; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; cursor: pointer; font-weight: bold;"><i class="fa-solid fa-pen"></i></button>
@@ -991,6 +1172,7 @@
 
       document.getElementById('cabinetLogoutBtn').addEventListener('click', async () => {
         if (confirm('Ви дійсно хочете вийти з акаунта?')) {
+          await updateUserPresence(auth.currentUser, false);
           await signOut(auth);
           document.getElementById('cabinetModal').style.display = 'none';
         }
@@ -1019,8 +1201,8 @@
             </button>
           `;
         } else {
-          await updateUserPresence(user);
-          setInterval(() => updateUserPresence(user), 120000);
+          await updateUserPresence(user, true);
+          setInterval(() => updateUserPresence(user, true), 120000);
 
           toggleBtn.innerHTML = `<i class="fa-solid fa-plus"></i> Подати оголошення`;
           if (isAdminUser(user.email)) {
@@ -1039,6 +1221,7 @@
             </button>
           `;
         }
+        filterCards();
       });
 
       // Слайдери
@@ -1306,7 +1489,23 @@
       }
 
       initCatalog();
-      document.getElementById('resetFilterBtn').addEventListener('click', () => { activeFilter = 'all'; filterCards(); });
+
+      document.getElementById('resetFilterBtn').addEventListener('click', () => {
+        activeFilter = 'all';
+        showOnlyFavorites = false;
+        const favBtn = document.getElementById('toggleFavoritesBtn');
+        favBtn.style.background = '#ffffff';
+        favBtn.style.borderColor = '#cbd5e1';
+        favBtn.style.color = '#334155';
+
+        document.getElementById('shopSearch').value = '';
+        document.getElementById('clearSearchBtn').style.display = 'none';
+        document.getElementById('priceMinFilter').value = '';
+        document.getElementById('priceMaxFilter').value = '';
+        document.getElementById('conditionFilter').value = 'all';
+        document.getElementById('sortFilter').value = 'newest';
+        filterCards();
+      });
 
       const newAdFormCard = document.getElementById('newAdFormCard');
       const addListingForm = document.getElementById('addListingForm');
@@ -1324,6 +1523,7 @@
         document.getElementById('editingDocId').value = '';
         document.getElementById('formHeading').innerHTML = '<i class="fa-solid fa-rectangle-ad"></i> Створити нове оголошення';
         document.getElementById('submitFormBtn').textContent = 'Опублікувати';
+        document.getElementById('uploadProgressText').textContent = '';
         addListingForm.reset();
         newAdFormCard.style.display = newAdFormCard.style.display === 'none' ? 'block' : 'none';
         window.scrollTo(0, newAdFormCard.offsetTop - 50);
@@ -1331,33 +1531,63 @@
 
       document.getElementById('cancelFormBtn').addEventListener('click', () => newAdFormCard.style.display = 'none');
 
+      // Завантаження файлів у Firebase Storage
+      async function uploadSelectedImages(files) {
+        const uploadedUrls = [];
+        const progressEl = document.getElementById('uploadProgressText');
+        for (let i = 0; i < files.length; i++) {
+          const file = files[i];
+          progressEl.textContent = `Завантаження фото ${i + 1} з ${files.length}...`;
+          const storageRef = ref(storage, `shop_ads/${currentUser.uid}/${Date.now()}_${file.name}`);
+          await uploadBytes(storageRef, file);
+          const url = await getDownloadURL(storageRef);
+          uploadedUrls.push(url);
+        }
+        progressEl.textContent = '';
+        return uploadedUrls;
+      }
+
       addListingForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         if (!currentUser) return;
 
-        const editingId = document.getElementById('editingDocId').value;
-        const photosRaw = document.getElementById('adPhotos').value;
-        const photosArray = photosRaw.split(',').map(s => s.trim()).filter(s => s.startsWith('http'));
-
-        const adData = {
-          title: document.getElementById('adTitle').value,
-          category: document.getElementById('adCategory').value,
-          subcategory: document.getElementById('adSubcategory').value,
-          condition: document.getElementById('adCondition').value,
-          price: Number(document.getElementById('adPrice').value),
-          contact: document.getElementById('adContact').value,
-          photosArray: photosArray,
-          description: document.getElementById('adDescription').value,
-          userEmail: currentUser.email,
-          userId: currentUser.uid
-        };
+        const submitBtn = document.getElementById('submitFormBtn');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Збереження...';
 
         try {
+          const editingId = document.getElementById('editingDocId').value;
+          const fileInput = document.getElementById('adPhotoFiles');
+          let uploadedUrls = [];
+
+          if (fileInput.files && fileInput.files.length > 0) {
+            uploadedUrls = await uploadSelectedImages(fileInput.files);
+          }
+
+          const photosRaw = document.getElementById('adPhotos').value;
+          const urlList = photosRaw.split(',').map(s => s.trim()).filter(s => s.startsWith('http'));
+          const photosArray = [...uploadedUrls, ...urlList];
+
+          const adData = {
+            title: document.getElementById('adTitle').value,
+            category: document.getElementById('adCategory').value,
+            subcategory: document.getElementById('adSubcategory').value,
+            condition: document.getElementById('adCondition').value,
+            price: Number(document.getElementById('adPrice').value),
+            contact: document.getElementById('adContact').value,
+            location: document.getElementById('adLocation').value.trim(),
+            photosArray: photosArray,
+            description: document.getElementById('adDescription').value,
+            userEmail: currentUser.email,
+            userId: currentUser.uid
+          };
+
           if (editingId) {
             await updateDoc(doc(db, "shop_listings", editingId), adData);
             alert('Оновлено успішно!');
           } else {
             adData.createdAt = serverTimestamp();
+            adData.views = 0;
             await addDoc(collection(db, "shop_listings"), adData);
             alert('Опубліковано!');
           }
@@ -1365,7 +1595,12 @@
           document.getElementById('editingDocId').value = '';
           newAdFormCard.style.display = 'none';
           loadInitialListings();
-        } catch (err) { alert('Помилка: ' + err.message); }
+        } catch (err) {
+          alert('Помилка: ' + err.message);
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Зберегти оголошення';
+        }
       });
 
       window.deleteProduct = async function(docId) {
@@ -1394,6 +1629,7 @@
         document.getElementById('adCondition').value = item.condition || 'Б/В';
         document.getElementById('adPrice').value = item.price;
         document.getElementById('adContact').value = item.contact;
+        document.getElementById('adLocation').value = item.location || '';
         document.getElementById('adPhotos').value = (item.photosArray || []).join(', ');
         document.getElementById('adDescription').value = item.description;
 
@@ -1403,10 +1639,34 @@
         window.scrollTo(0, newAdFormCard.offsetTop - 50);
       };
 
-      // Детальна сторінка товару з перевіркою онлайн-статусу
-      window.openProductDetail = function(id, pushHistory = true) {
-        const item = allProducts.find(p => p.id === id);
-        if (!item) return;
+      // Детальна сторінка товару з лічильником переглядів та перевіркою онлайн-статусу
+      window.openProductDetail = async function(id, pushHistory = true) {
+        let item = allProducts.find(p => p.id === id);
+
+        // Якщо товар не знайдено у поточному списку (наприклад, перехід за прямим посиланням)
+        if (!item) {
+          try {
+            const singleSnap = await getDoc(doc(db, "shop_listings", id));
+            if (singleSnap.exists()) {
+              item = { id: singleSnap.id, ...singleSnap.data() };
+              allProducts.push(item);
+            } else {
+              return;
+            }
+          } catch (e) {
+            return;
+          }
+        }
+
+        // Інкремент переглядів (1 раз за сесію для одного оголошення)
+        const viewedKey = `viewed_ad_${id}`;
+        if (!sessionStorage.getItem(viewedKey)) {
+          sessionStorage.setItem(viewedKey, '1');
+          item.views = (item.views || 0) + 1;
+          try {
+            updateDoc(doc(db, "shop_listings", id), { views: increment(1) });
+          } catch (e) {}
+        }
 
         if (pushHistory) {
             history.pushState({ id: id }, '', `shop.html?id=${id}`);
@@ -1421,10 +1681,11 @@
         const mainPhoto = photos[0];
         const isOwnerOrAdmin = currentUser && (isAdminUser(currentUser.email) || currentUser.email === item.userEmail);
         const pubDateFormatted = formatTimeAgo(item.createdAt);
+        const isFav = favoriteIds.includes(item.id);
 
-        let galleryHtml = `<div style="border-radius: 8px; overflow: hidden; background: #f8fafc; border: 1px solid #e2e8f0; height: 320px; margin-bottom: 10px;"><img src="${mainPhoto}" style="width: 100%; height: 100%; object-fit: cover;" alt="${item.title}"></div>`;
+        let galleryHtml = `<div style="border-radius: 8px; overflow: hidden; background: #f8fafc; border: 1px solid #e2e8f0; height: 320px; margin-bottom: 10px;"><img id="detailMainImg" src="${mainPhoto}" style="width: 100%; height: 100%; object-fit: cover;" alt="${item.title}"></div>`;
         if (photos.length > 1) {
-          galleryHtml += `<div style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 5px;">` + photos.map(p => `<img src="${p}" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; border: 1px solid #cbd5e1; cursor: pointer;" onclick="this.closest('#productDetailContent').querySelector('img').src='${p}'">`).join('') + `</div>`;
+          galleryHtml += `<div style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 5px;">` + photos.map(p => `<img src="${p}" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; border: 1px solid #cbd5e1; cursor: pointer;" onclick="document.getElementById('detailMainImg').src='${p}'">`).join('') + `</div>`;
         }
 
         document.getElementById('productDetailContent').innerHTML = `
@@ -1434,22 +1695,29 @@
               <h2 style="margin: 0; color: #1e3a8a; font-size: 1.4rem; font-weight: 800;">${item.title}</h2>
               <div style="font-size: 0.75rem; color: #64748b; display: flex; gap: 15px; margin-top: 6px; align-items: center; flex-wrap: wrap;">
                 <span><i class="fa-regular fa-clock"></i> Опубліковано: ${pubDateFormatted}</span>
+                <span><i class="fa-regular fa-eye"></i> Переглядів: <b>${item.views || 1}</b></span>
+                ${item.location ? `<span><i class="fa-solid fa-location-dot" style="color: var(--olx-color);"></i> ${item.location}</span>` : ''}
                 <span id="sellerOnlineStatus"><i class="status-offline"></i> Перевірка статусу...</span>
               </div>
             </div>
-            <div style="text-align: right;">
+            <div style="text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 6px;">
               <div style="font-size: 1.6rem; font-weight: 900; color: #0f172a;">${item.price.toLocaleString('uk-UA')} ₴</div>
-              <span class="condition-badge" style="margin-top: 4px; display: inline-block;">Стан: ${item.condition || 'Б/В'}</span>
+              <div style="display: flex; gap: 8px; align-items: center;">
+                <span class="condition-badge">Стан: ${item.condition || 'Б/В'}</span>
+                <button onclick="toggleFavorite('${item.id}'); openProductDetail('${item.id}', false);" style="background: ${isFav ? '#fef2f2' : '#f8fafc'}; border: 1px solid ${isFav ? '#fecaca' : '#cbd5e1'}; color: ${isFav ? 'var(--danger)' : '#475569'}; padding: 4px 10px; border-radius: 6px; font-size: 0.72rem; font-weight: bold; cursor: pointer;">
+                  <i class="fa-${isFav ? 'solid' : 'regular'} fa-heart"></i> ${isFav ? 'В обраному' : 'В обране'}
+                </button>
+              </div>
             </div>
           </div>
 
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; align-items: start;">
             <div>
               ${galleryHtml}
-              <div style="margin-top: 15px; display: flex; gap: 10px;">
-                <a href="tel:${item.contact}" class="btn-primary" style="flex: 1; justify-content: center; text-decoration: none; padding: 10px;">
-                  <i class="fa-solid fa-phone"></i> <b>Зв'язатися: ${item.contact}</b>
-                </a>
+              <div id="detailContactBox" style="margin-top: 15px; display: flex; gap: 10px;">
+                <button onclick="document.getElementById('detailContactBox').innerHTML = '<a href=\\'tel:${item.contact}\\' class=\\'btn-primary\\' style=\\'flex: 1; justify-content: center; text-decoration: none; padding: 10px; background: #059669;\\'><i class=\\'fa-solid fa-phone\\'></i> <b>${item.contact}</b></a><button onclick=\\'navigator.clipboard.writeText(\\'${item.contact}\\'); alert(\\'Номер скопійовано!\\');\\' style=\\'background: #f1f5f9; border: 1px solid #cbd5e1; padding: 0 14px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 0.78rem;\\'><i class=\\'fa-regular fa-copy\\'></i></button>'" class="btn-primary" style="flex: 1; justify-content: center; padding: 10px;">
+                  <i class="fa-solid fa-phone"></i> <b>Показати телефон продавця</b>
+                </button>
               </div>
 
               <div style="margin-top: 15px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px;">
@@ -1476,6 +1744,7 @@
                 <tr><th>Категорія</th><td>${item.category}</td></tr>
                 <tr><th>Підкатегорія</th><td>${item.subcategory || '—'}</td></tr>
                 <tr><th>Стан товару</th><td>${item.condition || 'Б/В'}</td></tr>
+                ${item.location ? `<tr><th>Локація</th><td>${item.location}</td></tr>` : ''}
                 <tr><th>Вартість</th><td>${item.price.toLocaleString('uk-UA')} UAH</td></tr>
                 <tr><th>Автор</th><td>${item.userEmail || 'Приховано'}</td></tr>
               </table>
@@ -1532,6 +1801,19 @@
         history.pushState({}, '', 'shop.html');
         document.getElementById('productDetailView').style.display = 'none';
         document.getElementById('mainCatalogWrapper').style.display = 'block';
+        filterCards();
+      });
+
+      // Підтримка кнопки «Назад» / «Вперед» у браузері
+      window.addEventListener('popstate', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const targetId = urlParams.get('id');
+        if (targetId) {
+          openProductDetail(targetId, false);
+        } else {
+          document.getElementById('productDetailView').style.display = 'none';
+          document.getElementById('mainCatalogWrapper').style.display = 'block';
+        }
       });
 
       async function loadInitialListings() {
@@ -1545,17 +1827,14 @@
             snapshot.forEach(docSnap => { allProducts.push({ id: docSnap.id, ...docSnap.data() }); });
             filterCards();
             if (snapshot.docs.length === PAGE_SIZE) renderLoadMoreButton();
-
-            const urlParams = new URLSearchParams(window.location.search);
-            const targetId = urlParams.get('id');
-            if (targetId) {
-              if (allProducts.some(p => p.id === targetId)) {
-                openProductDetail(targetId, false);
-              }
-            }
-
           } else {
             shopProductsContainer.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; padding: 30px; color: #64748b;">Оголошень поки немає. Будьте першим!</div>`;
+          }
+
+          const urlParams = new URLSearchParams(window.location.search);
+          const targetId = urlParams.get('id');
+          if (targetId) {
+            openProductDetail(targetId, false);
           }
         } catch (err) {
           shopProductsContainer.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; padding: 30px; color: var(--danger);">Помилка завантаження даних.</div>`;
@@ -1597,17 +1876,21 @@
 
       function renderCollageHtml(photos, productId) {
         const list = (photos && photos.length > 0) ? photos : ['https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=300&q=80'];
-        
+        const countBadge = list.length > 1 ? `<span class="photo-count-badge"><i class="fa-solid fa-camera"></i> ${list.length}</span>` : '';
+
         if (list.length === 1) {
           return `<div class="card-collage-box single" onclick="openProductDetail('${productId}')"><img src="${list[0]}" class="collage-img" alt=""></div>`;
         } else if (list.length === 2) {
-          return `<div class="card-collage-box double" onclick="openProductDetail('${productId}')"><img src="${list[0]}" class="collage-img collage-main" alt=""><img src="${list[1]}" class="collage-img collage-sub-top" style="grid-column: 2/3; grid-row: 1/-1;" alt=""></div>`;
+          return `<div class="card-collage-box double" onclick="openProductDetail('${productId}')"><img src="${list[0]}" class="collage-img collage-main" alt=""><img src="${list[1]}" class="collage-img collage-sub-top" style="grid-column: 2/3; grid-row: 1/-1;" alt="">${countBadge}</div>`;
         } else {
-          return `<div class="card-collage-box triple" onclick="openProductDetail('${productId}')"><img src="${list[0]}" class="collage-img collage-main" alt=""><img src="${list[1]}" class="collage-img collage-sub-top" alt=""><img src="${list[2]}" class="collage-img collage-sub-bot" alt=""></div>`;
+          return `<div class="card-collage-box triple" onclick="openProductDetail('${productId}')"><img src="${list[0]}" class="collage-img collage-main" alt=""><img src="${list[1]}" class="collage-img collage-sub-top" alt=""><img src="${list[2]}" class="collage-img collage-sub-bot" alt="">${countBadge}</div>`;
         }
       }
 
       function renderProductsGrid(products) {
+        const counterEl = document.getElementById('activeResultsCounter');
+        if (counterEl) counterEl.textContent = `Знайдено оголошень: ${products.length}`;
+
         shopProductsContainer.innerHTML = '';
         if (products.length === 0) {
             shopProductsContainer.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; padding: 30px; color: #64748b;">За вашим запитом нічого не знайдено.</div>`;
@@ -1621,8 +1904,13 @@
           const isOwnerOrAdmin = currentUser && (isAdminUser(currentUser.email) || currentUser.email === item.userEmail);
           const collageMarkup = renderCollageHtml(item.photosArray, item.id);
           const pubDateFormatted = formatTimeAgo(item.createdAt);
+          const isFav = favoriteIds.includes(item.id);
 
           card.innerHTML = `
+            <button class="fav-card-btn ${isFav ? 'active' : ''}" onclick="toggleFavorite('${item.id}', event)" title="${isFav ? 'Прибрати з обраного' : 'Додати в обране'}">
+              <i class="fa-${isFav ? 'solid' : 'regular'} fa-heart"></i>
+            </button>
+
             <div>
               ${collageMarkup}
 
@@ -1636,12 +1924,14 @@
 
               <table class="card-resume-table">
                 <tr>
-                  <td class="label">Наявність</td>
-                  <td class="val" style="color: #059669;">Готово до замовлення</td>
+                  <td class="label">${item.location ? 'Локація' : 'Наявність'}</td>
+                  <td class="val" style="color: ${item.location ? '#1e293b' : '#059669'};">${item.location || 'В наявності'}</td>
                 </tr>
                 <tr>
                   <td class="label">Зв'язок</td>
-                  <td class="val">${item.contact || 'В описі'}</td>
+                  <td class="val" id="phoneCell_${item.id}">
+                    ${item.contact ? `<button class="reveal-phone-inline" onclick="document.getElementById('phoneCell_${item.id}').innerHTML='<a href=\\'tel:${item.contact}\\' style=\\'color: var(--olx-color); text-decoration: none;\\'>${item.contact}</a>'">Показати номер</button>` : 'В описі'}
+                  </td>
                 </tr>
               </table>
             </div>
@@ -1656,8 +1946,9 @@
                 <i class="fa-solid fa-eye"></i> Переглянути повністю
               </button>
 
-              <div style="font-size: 0.7rem; color: #64748b; margin-top: 6px; text-align: right; display: flex; justify-content: flex-end; align-items: center; gap: 4px;">
-                <i class="fa-regular fa-clock"></i> ${pubDateFormatted}
+              <div style="font-size: 0.7rem; color: #64748b; margin-top: 6px; display: flex; justify-content: space-between; align-items: center;">
+                <span><i class="fa-regular fa-eye"></i> ${item.views || 0}</span>
+                <span><i class="fa-regular fa-clock"></i> ${pubDateFormatted}</span>
               </div>
               
               ${isOwnerOrAdmin ? `
@@ -1673,22 +1964,36 @@
       }
 
       function filterCards() {
-        const searchQuery = document.getElementById('shopSearch').value.toLowerCase();
+        const searchInput = document.getElementById('shopSearch');
+        const searchQuery = searchInput.value.toLowerCase();
+        document.getElementById('clearSearchBtn').style.display = searchQuery ? 'block' : 'none';
+
         const sortMethod = document.getElementById('sortFilter')?.value || 'newest';
+        const minPrice = Number(document.getElementById('priceMinFilter')?.value) || 0;
+        const maxPrice = Number(document.getElementById('priceMaxFilter')?.value) || Infinity;
+        const condFilter = document.getElementById('conditionFilter')?.value || 'all';
 
         let filtered = allProducts.filter(item => {
+          if (showOnlyFavorites && !favoriteIds.includes(item.id)) return false;
+
           const cat = item.category || '';
           const sub = item.subcategory || '';
-          const text = `${item.title} ${item.description}`.toLowerCase();
+          const text = `${item.title} ${item.description} ${cat} ${sub} ${item.location || ''}`.toLowerCase();
+          
           const matchesFilter = (activeFilter === 'all' || cat === activeFilter || sub === activeFilter);
           const matchesSearch = text.includes(searchQuery);
-          return matchesFilter && matchesSearch;
+          const matchesPrice = item.price >= minPrice && item.price <= maxPrice;
+          const matchesCondition = (condFilter === 'all' || (item.condition || 'Б/В') === condFilter);
+
+          return matchesFilter && matchesSearch && matchesPrice && matchesCondition;
         });
 
         if (sortMethod === 'price_asc') {
           filtered.sort((a, b) => a.price - b.price);
         } else if (sortMethod === 'price_desc') {
           filtered.sort((a, b) => b.price - a.price);
+        } else if (sortMethod === 'popular') {
+          filtered.sort((a, b) => (b.views || 0) - (a.views || 0));
         } else {
           filtered.sort((a, b) => {
             const ta = a.createdAt?.toMillis ? a.createdAt.toMillis() : 0;
@@ -1701,7 +2006,14 @@
       }
 
       document.getElementById('shopSearch').addEventListener('input', filterCards);
+      document.getElementById('clearSearchBtn').addEventListener('click', () => {
+        document.getElementById('shopSearch').value = '';
+        filterCards();
+      });
       document.getElementById('sortFilter')?.addEventListener('change', filterCards);
+      document.getElementById('priceMinFilter')?.addEventListener('input', filterCards);
+      document.getElementById('priceMaxFilter')?.addEventListener('input', filterCards);
+      document.getElementById('conditionFilter')?.addEventListener('change', filterCards);
       
       loadInitialListings();
     </script>

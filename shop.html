@@ -226,8 +226,11 @@
             background: #f1f5f9;
             flex-shrink: 0;
         }
+        .ticker-item div {
+            min-width: 0;
+        }
 
-        /* ІДЕАЛЬНИЙ СЛАЙДЕР БЕЗ ОБРІЗАННЯ ТА ЗМІЩЕНЬ */
+        /* ІДЕАЛЬНИЙ СЛАЙДЕР НА ВСЮ ШИРИНУ */
         .custom-slider-box {
             background: white;
             border: 1px solid #e2e8f0;
@@ -251,7 +254,7 @@
         .custom-slide-img-wrap img {
             width: 100%;
             height: 100%;
-            object-fit: contain;
+            object-fit: cover; /* Змінено з contain на cover для заповнення всієї ширини */
         }
         .slider-cta-btn {
             display: flex;
@@ -584,13 +587,13 @@
             <!-- Ліва колонка: Категорії -->
             <div class="categories-sidebar" id="categoriesSidebar"></div>
             
-            <!-- Права колонка: Підкатегорії + Слайдер + Збільшена бігуча стрічка -->
+            <!-- Права колонка: Підкатегорії + Слайдер + Бігуча стрічка -->
             <div class="subcategories-panel">
               <div>
                 <div id="subcategoriesContent"></div>
               </div>
 
-              <!-- СВІТЛИЙ БАНЕР САЙДБАРА В СТИЛІ САЙТУ З АВТОСЛАЙДЕРОМ -->
+              <!-- БАНЕР САЙДБАРА НА ВСЮ ШИРИНУ -->
               <div class="custom-slider-box" id="sidebarBannerContainer">
                   <a id="sidebarBannerLink" href="commercial.html" target="_blank" class="block" style="text-decoration: none; color: inherit; display: block;">
                       <div class="custom-slide-img-wrap">

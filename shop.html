@@ -230,7 +230,7 @@
             min-width: 0;
         }
 
-        /* ІДЕАЛЬНИЙ СЛАЙДЕР НА ВСЮ ШИРИНУ */
+        /* СЛАЙДЕР НА ВСЮ ШИРИНУ */
         .custom-slider-box {
             background: white;
             border: 1px solid #e2e8f0;
@@ -254,7 +254,7 @@
         .custom-slide-img-wrap img {
             width: 100%;
             height: 100%;
-            object-fit: cover; /* Змінено з contain на cover для заповнення всієї ширини */
+            object-fit: cover;
         }
         .slider-cta-btn {
             display: flex;
@@ -433,52 +433,6 @@
             display: inline-block;
             box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.2);
         }
-        .sync-new-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 12px;
-        }
-        .sync-card {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            padding: 10px;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-        .sync-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(35, 82, 124, 0.12);
-            border-color: var(--olx-color);
-        }
-        .sync-card img {
-            width: 100%;
-            height: 105px;
-            object-fit: cover;
-            border-radius: 6px;
-            background: #f1f5f9;
-            margin-bottom: 8px;
-        }
-        .sync-card-title {
-            font-size: 0.78rem;
-            font-weight: 600;
-            color: #1e293b;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            line-height: 1.3;
-            height: 2.6em;
-            margin-bottom: 6px;
-        }
-        .sync-card-price {
-            font-size: 0.88rem;
-            font-weight: 800;
-            color: var(--olx-color);
-        }
 
         /* ПОВНОЦІННА СТОРІНКА ОГОЛОШЕННЯ */
         #productDetailView {
@@ -518,17 +472,18 @@
 </head>
 <body>
 
-    <!-- ШАПКА -->
+    <!-- ШАПКА З ЛОГОТИПОМ NEOSERVICE ТА КНОПКАМИ АВТОРИЗАЦІЇ / КАБІНЕТУ -->
     <header style="background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); color: white; padding: 14px 20px; border-bottom: 3px solid var(--olx-color);">
       <div style="max-width: 1280px; margin: 0 auto; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 15px;">
         
-        <a href="index.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none; color: white;">
+        <!-- ЛОГОТИП NEOSERVICE -->
+        <a href="shop.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none; color: white;">
           <div style="background: rgba(255, 255, 255, 0.15); border-radius: 12px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">
             📋
           </div>
           <div>
             <div style="font-size: 1.3rem; font-weight: 900; letter-spacing: 0.8px; text-transform: uppercase; line-height: 1.1;">
-              NEO<span style="color: #60a5fa;">BOARD</span>
+              NEO<span style="color: #60a5fa;">SERVICE</span>
             </div>
             <div style="font-size: 0.74rem; color: #cbd5e1; margin-top: 2px;">
               Дошка приватних оголошень
@@ -537,13 +492,18 @@
         </a>
 
         <!-- Пошук -->
-        <div style="flex: 1; max-width: 380px; min-width: 220px;">
+        <div style="flex: 1; max-width: 340px; min-width: 200px;">
           <div style="position: relative; width: 100%;">
             <span style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8; pointer-events: none; font-size: 0.82rem;">
               <i class="fa-solid fa-magnifying-glass"></i>
             </span>
-            <input type="text" id="shopSearch" placeholder="Пошук оголошень за назвою або описом..." style="width: 100%; box-sizing: border-box; padding: 8px 12px 8px 34px; font-size: 0.82rem; background: rgba(255, 255, 255, 0.15); color: white; border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 8px; outline: none;" />
+            <input type="text" id="shopSearch" placeholder="Пошук оголошень за назвою..." style="width: 100%; box-sizing: border-box; padding: 8px 12px 8px 34px; font-size: 0.82rem; background: rgba(255, 255, 255, 0.15); color: white; border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 8px; outline: none;" />
           </div>
+        </div>
+
+        <!-- КНОПКА КАБІНЕТУ / ВХОДУ В ШАПЦІ -->
+        <div id="headerAuthArea" style="display: flex; align-items: center; gap: 10px;">
+          <!-- Динамічно заповнюється скриптом залежно від входу -->
         </div>
 
       </div>
@@ -593,7 +553,7 @@
                 <div id="subcategoriesContent"></div>
               </div>
 
-              <!-- БАНЕР САЙДБАРА НА ВСЮ ШИРИНУ -->
+              <!-- РЕКЛАМНИЙ СЛАЙДЕР -->
               <div class="custom-slider-box" id="sidebarBannerContainer">
                   <a id="sidebarBannerLink" href="commercial.html" target="_blank" class="block" style="text-decoration: none; color: inherit; display: block;">
                       <div class="custom-slide-img-wrap">
@@ -642,9 +602,7 @@
                 </button>
                 
                 <div class="ticker-wrapper" style="margin-top: 4px;">
-                  <div id="runningBannersTrack" class="ticker-track">
-                    <!-- Заповнюється динамічно -->
-                  </div>
+                  <div id="runningBannersTrack" class="ticker-track"></div>
                 </div>
               </div>
 
@@ -652,14 +610,13 @@
           </div>
         </div>
 
-        <!-- МОДАЛЬНЕ ВІКНО РЕДАГУВАННЯ ГОЛОВНОГО СЛАЙДЕРА -->
+        <!-- МОДАЛЬНЕ ВІКНО РЕДАГУВАННЯ СЛАЙДЕРА -->
         <div id="bannerModal" style="display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.7); z-index: 9999; justify-content: center; align-items: center; padding: 15px;">
           <div style="background: white; border-radius: 12px; max-width: 500px; width: 100%; padding: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">
               <h3 style="margin: 0; color: #1e3a8a; font-size: 1.1rem;"><i class="fa-solid fa-pen-to-square"></i> Керування слайдером</h3>
               <button id="closeBannerModal" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #64748b;">&times;</button>
             </div>
-            <p style="font-size: 0.78rem; color: #64748b; margin-top: 0;">Управління слайдами рекламного банера в реальному часі через Firebase.</p>
             <div id="bannerAdminList" style="max-height: 300px; overflow-y: auto; margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px;"></div>
             <div style="display: flex; justify-content: flex-end; gap: 8px;">
               <button type="button" id="cancelBannerBtn" style="padding: 6px 12px; border-radius: 6px; border: 1px solid #cbd5e1; background: #f1f5f9; cursor: pointer; font-size: 0.8rem;">Закрити</button>
@@ -674,7 +631,6 @@
               <h3 style="margin: 0; color: #1e3a8a; font-size: 1.1rem;"><i class="fa-solid fa-bullhorn"></i> Керування бігучими банерами</h3>
               <button onclick="document.getElementById('runningBannerModal').style.display='none'" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #64748b;">&times;</button>
             </div>
-            <p style="font-size: 0.78rem; color: #64748b; margin-top: 0;">Налаштування партнерських банерів у бігучій стрічці.</p>
             <div id="runningBannerAdminList" style="max-height: 300px; overflow-y: auto; margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px;"></div>
             <div style="display: flex; justify-content: flex-end; gap: 8px;">
               <button type="button" onclick="document.getElementById('runningBannerModal').style.display='none'" style="padding: 6px 12px; border-radius: 6px; border: 1px solid #cbd5e1; background: #f1f5f9; cursor: pointer; font-size: 0.8rem;">Закрити</button>
@@ -750,20 +706,59 @@
         <button id="backToCatalogBtn" style="background: #f1f5f9; border: 1px solid #cbd5e1; padding: 6px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-bottom: 20px; font-size: 0.8rem;">
           <i class="fa-solid fa-arrow-left"></i> Назад до дошки
         </button>
-
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; align-items: start;" id="productDetailContent"></div>
       </div>
 
-      <!-- БЛОК "НОВІ ОГОЛОШЕННЯ" ПІД ФУТЕРОМ -->
-      <div class="sync-new-section-bottom" id="bottomNewAdsSection">
-        <div class="sync-new-header">
-          <span class="sync-new-title">
-            <span class="sync-live-dot"></span> Нові оголошення
-          </span>
-          <span style="font-size: 0.75rem; color: #64748b; font-weight: 600;">Останні публікації користувачів у реальному часі</span>
+      <!-- МОДАЛЬНЕ ВІКНО АВТОРИЗАЦІЇ ТА РЕЄСТРАЦІЇ -->
+      <div id="authModal" style="display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.7); z-index: 9999; justify-content: center; align-items: center; padding: 15px;">
+        <div style="background: white; border-radius: 12px; max-width: 400px; width: 100%; padding: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">
+            <h3 id="authModalTitle" style="margin: 0; color: #1e3a8a; font-size: 1.1rem;"><i class="fa-solid fa-user-lock"></i> Авторизація</h3>
+            <button onclick="document.getElementById('authModal').style.display='none'" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #64748b;">&times;</button>
+          </div>
+          
+          <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+            <button type="button" id="tabLoginBtn" onclick="switchAuthTab('login')" style="flex: 1; padding: 8px; font-weight: bold; border-radius: 6px; border: 1px solid #cbd5e1; background: var(--olx-color); color: white; cursor: pointer; font-size: 0.8rem;">Вхід</button>
+            <button type="button" id="tabRegisterBtn" onclick="switchAuthTab('register')" style="flex: 1; padding: 8px; font-weight: bold; border-radius: 6px; border: 1px solid #cbd5e1; background: #f1f5f9; color: #334155; cursor: pointer; font-size: 0.8rem;">Реєстрація</button>
+          </div>
+
+          <form id="authModalForm" style="display: flex; flex-direction: column; gap: 10px;">
+            <div>
+              <label style="font-size: 0.75rem; font-weight: bold; color: #475569;">Email:</label>
+              <input type="email" id="modalAuthEmail" placeholder="your@email.com" required style="width: 100%; box-sizing: border-box; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.82rem; margin-top: 3px;" />
+            </div>
+            <div>
+              <label style="font-size: 0.75rem; font-weight: bold; color: #475569;">Пароль:</label>
+              <input type="password" id="modalAuthPassword" placeholder="••••••••" required style="width: 100%; box-sizing: border-box; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.82rem; margin-top: 3px;" />
+            </div>
+            <div id="modalAuthError" style="color: var(--danger); font-size: 0.75rem; display: none;"></div>
+            <button type="submit" id="modalAuthSubmitBtn" class="btn-primary" style="width: 100%; justify-content: center; padding: 10px; margin-top: 5px; font-size: 0.85rem;">Увійти</button>
+          </form>
         </div>
-        <div class="sync-new-grid" id="syncNewGrid">
-          <div style="font-size: 0.8rem; color: #64748b; grid-column: 1 / -1;">Завантаження нових оголошень...</div>
+      </div>
+
+      <!-- МОДАЛЬНЕ ВІКНО "ВЛАСНИЙ КАБІНЕТ" -->
+      <div id="cabinetModal" style="display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.7); z-index: 9999; justify-content: center; align-items: center; padding: 15px;">
+        <div style="background: white; border-radius: 12px; max-width: 550px; width: 100%; padding: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); max-height: 80vh; overflow-y: auto;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">
+            <h3 style="margin: 0; color: #1e3a8a; font-size: 1.1rem;"><i class="fa-solid fa-house" style="color: #23527c;"></i> Власний кабінет</h3>
+            <button onclick="document.getElementById('cabinetModal').style.display='none'" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #64748b;">&times;</button>
+          </div>
+          
+          <div style="margin-bottom: 15px; font-size: 0.85rem; color: #334155; background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0;">
+            <div><strong>Акаунт:</strong> <span id="cabinetUserEmail" style="color: var(--olx-color); font-weight: bold;"></span></div>
+            <div style="margin-top: 4px;">Роль: <span id="cabinetUserRole" style="font-weight: bold; color: #059669;">Користувач</span></div>
+          </div>
+
+          <h4 style="font-size: 0.9rem; color: #1e3a8a; margin-bottom: 10px; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px;">Мої оголошення</h4>
+          <div id="cabinetUserAdsList" style="display: flex; flex-direction: column; gap: 8px; max-height: 250px; overflow-y: auto;">
+            <p style="font-size: 0.8rem; color: #64748b;">Завантаження вашої історії...</p>
+          </div>
+
+          <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px; border-top: 1px solid #e2e8f0; padding-top: 15px;">
+            <button type="button" onclick="document.getElementById('cabinetModal').style.display='none'" style="padding: 6px 14px; border-radius: 6px; border: 1px solid #cbd5e1; background: #f1f5f9; cursor: pointer; font-size: 0.8rem;">Закрити</button>
+            <button type="button" id="cabinetLogoutBtn" style="padding: 6px 14px; border-radius: 6px; border: none; background: var(--danger); color: white; cursor: pointer; font-size: 0.8rem; font-weight: bold;">Вийти з акаунта</button>
+          </div>
         </div>
       </div>
 
@@ -776,7 +771,7 @@
     <!-- Firebase та Логіка -->
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-      import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+      import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
       import { getFirestore, collection, addDoc, query, where, getDocs, orderBy, limit, startAfter, onSnapshot, doc, deleteDoc, updateDoc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
       const ALLOWED_ADMINS = [
@@ -806,6 +801,151 @@
         if (!email) return false;
         return ALLOWED_ADMINS.some(admin => admin.toLowerCase() === email.trim().toLowerCase());
       }
+
+      // Управління модальним вікном авторизації/реєстрації
+      let authMode = 'login'; // 'login' або 'register'
+      window.openAuthModal = function(mode = 'login') {
+        authMode = mode;
+        const titleEl = document.getElementById('authModalTitle');
+        const submitBtn = document.getElementById('modalAuthSubmitBtn');
+        const loginBtn = document.getElementById('tabLoginBtn');
+        const regBtn = document.getElementById('tabRegisterBtn');
+        
+        if (mode === 'login') {
+          titleEl.innerHTML = '<i class="fa-solid fa-user-lock"></i> Авторизація';
+          submitBtn.textContent = 'Увійти';
+          loginBtn.style.background = 'var(--olx-color)';
+          loginBtn.style.color = 'white';
+          regBtn.style.background = '#f1f5f9';
+          regBtn.style.color = '#334155';
+        } else {
+          titleEl.innerHTML = '<i class="fa-solid fa-user-plus"></i> Реєстрація нового акаунта';
+          submitBtn.textContent = 'Зареєструватися';
+          regBtn.style.background = 'var(--olx-color)';
+          regBtn.style.color = 'white';
+          loginBtn.style.background = '#f1f5f9';
+          loginBtn.style.color = '#334155';
+        }
+        document.getElementById('modalAuthError').style.display = 'none';
+        document.getElementById('authModal').style.display = 'flex';
+      }
+
+      window.switchAuthTab = function(mode) {
+        openAuthModal(mode);
+      }
+
+      document.getElementById('authModalForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('modalAuthEmail').value;
+        const pass = document.getElementById('modalAuthPassword').value;
+        const errDiv = document.getElementById('modalAuthError');
+        errDiv.style.display = 'none';
+
+        try {
+          if (authMode === 'login') {
+            await signInWithEmailAndPassword(auth, email, pass);
+          } else {
+            await createUserWithEmailAndPassword(auth, email, pass);
+            alert('Реєстрація успішна!');
+          }
+          document.getElementById('authModal').style.display = 'none';
+          document.getElementById('authModalForm').reset();
+        } catch (err) {
+          errDiv.textContent = 'Помилка: ' + err.message;
+          errDiv.style.display = 'block';
+        }
+      });
+
+      // Логіка Власного кабінету
+      window.openCabinetModal = async function() {
+        if (!auth.currentUser) return;
+        document.getElementById('cabinetUserEmail').textContent = auth.currentUser.email;
+        const isAdm = isAdminUser(auth.currentUser.email);
+        document.getElementById('cabinetUserRole').textContent = isAdm ? 'Адміністратор / Модератор' : 'Користувач';
+        
+        const listContainer = document.getElementById('cabinetUserAdsList');
+        listContainer.innerHTML = '<p style="font-size: 0.8rem; color: #64748b;">Завантаження ваших оголошень...</p>';
+        document.getElementById('cabinetModal').style.display = 'flex';
+
+        try {
+          const q = query(collection(db, "shop_listings"), where("userEmail", "==", auth.currentUser.email));
+          const snapshot = await getDocs(q);
+          if (snapshot.empty) {
+            listContainer.innerHTML = '<p style="font-size: 0.8rem; color: #64748b;">У вас поки немає активних оголошень.</p>';
+            return;
+          }
+
+          listContainer.innerHTML = '';
+          snapshot.forEach(docSnap => {
+            const data = docSnap.data();
+            const div = document.createElement('div');
+            div.style.cssText = "display: flex; justify-content: space-between; align-items: center; background: #f8fafc; border: 1px solid #e2e8f0; padding: 8px 12px; border-radius: 6px;";
+            div.innerHTML = `
+              <div style="overflow: hidden;">
+                <div style="font-size: 0.8rem; font-weight: bold; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 260px;">${data.title}</div>
+                <div style="font-size: 0.72rem; color: #059669; font-weight: bold;">${data.price} ₴</div>
+              </div>
+              <div style="display: flex; gap: 4px;">
+                <button onclick="document.getElementById('cabinetModal').style.display='none'; editProduct('${docSnap.id}')" style="background: #f59e0b; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; cursor: pointer; font-weight: bold;"><i class="fa-solid fa-pen"></i></button>
+                <button onclick="document.getElementById('cabinetModal').style.display='none'; deleteProduct('${docSnap.id}')" style="background: var(--danger); color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; cursor: pointer;"><i class="fa-solid fa-trash"></i></button>
+              </div>
+            `;
+            listContainer.appendChild(div);
+          });
+        } catch (e) {
+          listContainer.innerHTML = '<p style="font-size: 0.8rem; color: var(--danger);">Помилка завантаження.</p>';
+        }
+      }
+
+      document.getElementById('cabinetLogoutBtn').addEventListener('click', async () => {
+        if (confirm('Ви дійсно хочете вийти з акаунта?')) {
+          await signOut(auth);
+          document.getElementById('cabinetModal').style.display = 'none';
+        }
+      });
+
+      // Відстеження стану авторизації та оновлення шапки
+      onAuthStateChanged(auth, (user) => {
+        currentUser = user;
+        const toggleBtn = document.getElementById('toggleFormBtn');
+        const adminBadge = document.getElementById('adminStatusBadge');
+        const adminBannerSettingsBtn = document.getElementById('adminBannerSettingsBtn');
+        const adminRunningBannerBtn = document.getElementById('adminRunningBannerBtn');
+        const headerAuthArea = document.getElementById('headerAuthArea');
+
+        if (!user) {
+          toggleBtn.innerHTML = `<i class="fa-solid fa-lock"></i> Увійдіть для подачі`;
+          adminBadge.style.display = 'none';
+          if (adminBannerSettingsBtn) adminBannerSettingsBtn.style.display = 'none';
+          if (adminRunningBannerBtn) adminRunningBannerBtn.style.display = 'none';
+
+          headerAuthArea.innerHTML = `
+            <button onclick="openAuthModal('login')" style="background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 6px 12px; border-radius: 6px; font-size: 0.78rem; font-weight: bold; cursor: pointer; transition: background 0.2s;">
+              <i class="fa-solid fa-right-to-bracket"></i> Увійти
+            </button>
+            <button onclick="openAuthModal('register')" style="background: var(--olx-color); border: none; color: white; padding: 6px 12px; border-radius: 6px; font-size: 0.78rem; font-weight: bold; cursor: pointer;">
+              Реєстрація
+            </button>
+          `;
+        } else {
+          toggleBtn.innerHTML = `<i class="fa-solid fa-plus"></i> Подати оголошення`;
+          if (isAdminUser(user.email)) {
+            adminBadge.style.display = 'inline-block';
+            if (adminBannerSettingsBtn) adminBannerSettingsBtn.style.display = 'flex';
+            if (adminRunningBannerBtn) adminRunningBannerBtn.style.display = 'block';
+          } else {
+            adminBadge.style.display = 'none';
+            if (adminBannerSettingsBtn) adminBannerSettingsBtn.style.display = 'none';
+            if (adminRunningBannerBtn) adminRunningBannerBtn.style.display = 'none';
+          }
+
+          headerAuthArea.innerHTML = `
+            <button onclick="openCabinetModal()" style="background: var(--olx-color); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 6px 14px; border-radius: 6px; font-size: 0.78rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+              <i class="fa-solid fa-house" style="color: white;"></i> Власний кабінет
+            </button>
+          `;
+        }
+      });
 
       // Логіка головного слайдера банера
       let sidebarSlides = [
@@ -1157,39 +1297,13 @@
         filterCards();
       });
 
-      onAuthStateChanged(auth, (user) => {
-        currentUser = user;
-        const toggleBtn = document.getElementById('toggleFormBtn');
-        const adminBadge = document.getElementById('adminStatusBadge');
-        const adminBannerSettingsBtn = document.getElementById('adminBannerSettingsBtn');
-        const adminRunningBannerBtn = document.getElementById('adminRunningBannerBtn');
-        
-        if (!user) {
-          toggleBtn.innerHTML = `<i class="fa-solid fa-lock"></i> Увійдіть для подачі`;
-          adminBadge.style.display = 'none';
-          if (adminBannerSettingsBtn) adminBannerSettingsBtn.style.display = 'none';
-          if (adminRunningBannerBtn) adminRunningBannerBtn.style.display = 'none';
-        } else {
-          toggleBtn.innerHTML = `<i class="fa-solid fa-plus"></i> Подати оголошення`;
-          if (isAdminUser(user.email)) {
-            adminBadge.style.display = 'inline-block';
-            if (adminBannerSettingsBtn) adminBannerSettingsBtn.style.display = 'flex';
-            if (adminRunningBannerBtn) adminRunningBannerBtn.style.display = 'block';
-          } else {
-            adminBadge.style.display = 'none';
-            if (adminBannerSettingsBtn) adminBannerSettingsBtn.style.display = 'none';
-            if (adminRunningBannerBtn) adminRunningBannerBtn.style.display = 'none';
-          }
-        }
-      });
-
       const newAdFormCard = document.getElementById('newAdFormCard');
       const addListingForm = document.getElementById('addListingForm');
 
       document.getElementById('toggleFormBtn').addEventListener('click', async () => {
         if (!currentUser) {
-          alert('Будь ласка, увійдіть в акаунт на головній сторінці!');
-          window.location.href = 'index.html#auth-section';
+          alert('Будь ласка, увійдіть в акаунт у верхній панелі!');
+          openAuthModal('login');
           return;
         }
 

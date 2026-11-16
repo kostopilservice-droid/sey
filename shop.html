@@ -543,7 +543,7 @@
             background: #f8fafc;
         }
 
-        /* ПОВНОЦІННА СТОРІНКА ДЕТАЛЕЙ */
+        /* ПОВНОЦІННА СТОРІНКА ДЕТАЛЕЙ ТА ПРОФЕСІЙНИЙ ПАСПОРТ */
         #productDetailView {
             display: none;
             background: white;
@@ -553,22 +553,61 @@
             border: 1px solid #e2e8f0;
             box-shadow: 0 4px 12px rgba(0,0,0,0.04);
         }
-        .resume-table-full {
+
+        /* Стилі для професійного паспорта позиції */
+        .pro-passport-card {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            margin-bottom: 20px;
+        }
+        .pro-passport-header {
+            background: linear-gradient(135deg, #1e3a8a, #23527c);
+            color: white;
+            padding: 12px 16px;
+            font-size: 0.9rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .pro-passport-table {
             width: 100%;
             border-collapse: collapse;
-            margin: 15px 0;
-            font-size: 0.85rem;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            overflow: hidden;
+            font-size: 0.83rem;
         }
-        .resume-table-full th, .resume-table-full td {
-            padding: 10px 14px;
+        .pro-passport-table tr {
             border-bottom: 1px solid #e2e8f0;
+            transition: background 0.15s;
+        }
+        .pro-passport-table tr:hover {
+            background: #f8fafc;
+        }
+        .pro-passport-table tr:last-child {
+            border-bottom: none;
+        }
+        .pro-passport-table th, .pro-passport-table td {
+            padding: 10px 14px;
             text-align: left;
         }
-        .resume-table-full th { background: #f1f5f9; color: #334155; font-weight: 700; width: 30%; }
-        .resume-table-full td { background: #ffffff; color: #0f172a; font-weight: 600; }
+        .pro-passport-table th {
+            background: #f1f5f9;
+            color: #475569;
+            font-weight: 700;
+            width: 38%;
+            border-right: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .pro-passport-table td {
+            color: #0f172a;
+            font-weight: 600;
+        }
 
         .btn-primary {
             background: var(--olx-color);
@@ -1581,7 +1620,7 @@
         window.scrollTo(0, newAdFormCard.offsetTop - 50);
       };
 
-      // ФУНКЦІЯ ВІДГУКІВ ТА ЗАВЕРШЕННЯ УГОДИ
+      // ФУНКЦІЇ ВІДГУКІВ ТА УГОД
       window.submitSellerReview = async function(listingId, sellerEmail) {
         if (!currentUser) {
           alert('Будь ласка, увійдіть в акаунт для залишення відгуку!');
@@ -1618,7 +1657,19 @@
         }
       };
 
-      // ДЕТАЛЬНА СТОРІНКА ТОВАРУ (УСІ БЛОКИ БЕЗПЕКИ ТА ВІДГУКІВ ПІД ГАЛЕРЕЄЮ)
+      window.deleteReview = async function(reviewId, listingId) {
+        if (confirm('Ви дійсно хочете видалити цей відгук?')) {
+          try {
+            await deleteDoc(doc(db, "shop_reviews", reviewId));
+            alert('Відгук успішно видалено!');
+            openProductDetail(listingId, false);
+          } catch (err) {
+            alert('Помилка видалення відгуку: ' + err.message);
+          }
+        }
+      };
+
+      // ДЕТАЛЬНА СТОРІНКА ТОВАРУ ТА ПРОФЕСІЙНИЙ ПАСПОРТ
       window.openProductDetail = async function(id, pushHistory = true) {
         let item = allProducts.find(p => p.id === id);
 
@@ -1695,7 +1746,7 @@
             <div>
               ${galleryHtml}
               <div id="detailContactBox" style="margin-top: 15px; display: flex; gap: 10px;">
-                <button onclick="document.getElementById('detailContactBox').innerHTML = '<a href=\\'tel:${item.contact}\\' class=\\'btn-primary\\' style=\\'flex: 1; justify-content: center; text-decoration: none; padding: 10px; background: #059669;\\'><i class=\\'fa-solid fa-phone\\'></i> <b>${item.contact}</b></a><button onclick=\\'navigator.clipboard.writeText(\\'${item.contact}\\'); alert(\\'Номер скопійовано!\\');\\' style=\\'background: #f1f5f9; border: 1px solid #cbd5e1; padding: 0 14px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 0.78rem;\\'><i class=\\'fa-regular fa-copy\\'></i></button>'" class="btn-primary" style="flex: 1; justify-content: center; padding: 10px;">
+                <button onclick="document.getElementById('detailContactBox').innerHTML = '<a href=\'tel:${item.contact}\' class=\'btn-primary\' style=\'flex: 1; justify-content: center; text-decoration: none; padding: 10px; background: #059669;\'><i class=\'fa-solid fa-phone\'></i> <b>${item.contact}</b></a><button onclick=\'navigator.clipboard.writeText(\'${item.contact}\'); alert(\'Номер скопійовано!\');\' style=\'background: #f1f5f9; border: 1px solid #cbd5e1; padding: 0 14px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 0.78rem;\'><i class=\'fa-regular fa-copy\'></i></button>'" class="btn-primary" style="flex: 1; justify-content: center; padding: 10px;">
                   <i class="fa-solid fa-phone"></i> <b>Показати телефон продавця</b>
                 </button>
               </div>
@@ -1732,26 +1783,57 @@
               </div>
             </div>
 
-            <!-- ПРАВА КОЛОНКА: Паспорт товару та опис -->
+            <!-- ПРАВА КОЛОНКА: ПРОФЕСІЙНИЙ ПАСПОРТ ПОЗИЦІЇ ТА ОПИС -->
             <div>
-              <h4 style="margin: 0 0 10px 0; color: #1e3a8a; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.5px;">Паспорт позиції</h4>
-              <table class="resume-table-full">
-                <tr><th>Найменування</th><td>${item.title}</td></tr>
-                <tr><th>Категорія</th><td>${item.category}</td></tr>
-                <tr><th>Підкатегорія</th><td>${item.subcategory || '—'}</td></tr>
-                <tr><th>Стан товару</th><td>${item.condition || 'Б/В'}</td></tr>
-                ${item.location ? `<tr><th>Локація</th><td>${item.location}</td></tr>` : ''}
-                <tr><th>Вартість</th><td>${item.price.toLocaleString('uk-UA')} UAH</td></tr>
-                <tr><th>Автор (Продавець)</th><td>${item.userEmail || 'Приховано'}</td></tr>
-              </table>
+              <div class="pro-passport-card">
+                <div class="pro-passport-header">
+                  <span><i class="fa-solid fa-id-card-clip mr-1.5"></i> Професійний паспорт позиції</span>
+                  <span style="font-size: 0.7rem; background: rgba(255,255,255,0.2); padding: 2px 8px; border-radius: 4px;">ID: ${item.id.substring(0, 8)}...</span>
+                </div>
+                <table class="pro-passport-table">
+                  <tr>
+                    <th><i class="fa-solid fa-tag text-blue-800"></i> Найменування</th>
+                    <td>${item.title}</td>
+                  </tr>
+                  <tr>
+                    <th><i class="fa-solid fa-folder-tree text-blue-800"></i> Категорія</th>
+                    <td>${item.category}</td>
+                  </tr>
+                  <tr>
+                    <th><i class="fa-solid fa-diagram-sub-entry text-blue-800"></i> Підкатегорія</th>
+                    <td>${item.subcategory || '—'}</td>
+                  </tr>
+                  <tr>
+                    <th><i class="fa-solid fa-circle-check text-blue-800"></i> Стан товару</th>
+                    <td><span style="background: #e0f2fe; color: var(--olx-color); padding: 2px 8px; border-radius: 4px; font-weight: 800; font-size: 0.75rem;">${item.condition || 'Б/В'}</span></td>
+                  </tr>
+                  ${item.location ? `
+                  <tr>
+                    <th><i class="fa-solid fa-location-dot text-blue-800"></i> Локація</th>
+                    <td>${item.location}</td>
+                  </tr>` : ''}
+                  <tr>
+                    <th><i class="fa-solid fa-coins text-blue-800"></i> Вартість</th>
+                    <td><strong style="color: #059669; font-size: 1rem;">${item.price.toLocaleString('uk-UA')} UAH</strong></td>
+                  </tr>
+                  <tr>
+                    <th><i class="fa-solid fa-user-shield text-blue-800"></i> Продавец (Автор)</th>
+                    <td>${item.userEmail || 'Приховано'}</td>
+                  </tr>
+                </table>
+              </div>
 
-              <h4 style="margin: 20px 0 8px 0; color: #1e3a8a; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.5px;">Опис / Характеристики</h4>
-              <p style="font-size: 0.85rem; color: #334155; line-height: 1.6; margin: 0; white-space: pre-line; background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0;">${item.description}</p>
+              <div style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 10px; padding: 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
+                <h4 style="margin: 0 0 10px 0; color: #1e3a8a; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px;">
+                  <i class="fa-solid fa-align-left"></i> Опис та технічні характеристики
+                </h4>
+                <p style="font-size: 0.85rem; color: #334155; line-height: 1.6; margin: 0; white-space: pre-line; background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0;">${item.description}</p>
+              </div>
               
               ${isOwnerOrAdmin ? `
-                <div style="margin-top: 25px; border-top: 1px solid #e2e8f0; padding-top: 15px; display: flex; gap: 10px;">
-                  <button class="btn-primary" onclick="editProduct('${item.id}')" style="background: #f59e0b;"><i class="fa-solid fa-pen"></i> Редагувати</button>
-                  <button class="btn-primary" onclick="deleteProduct('${item.id}')" style="background: var(--danger);"><i class="fa-solid fa-trash"></i> Видалити</button>
+                <div style="margin-top: 20px; display: flex; gap: 10px;">
+                  <button class="btn-primary" onclick="editProduct('${item.id}')" style="background: #f59e0b; flex: 1; justify-content: center;"><i class="fa-solid fa-pen"></i> Редагувати позицію</button>
+                  <button class="btn-primary" onclick="deleteProduct('${item.id}')" style="background: var(--danger); flex: 1; justify-content: center;"><i class="fa-solid fa-trash"></i> Видалити позицію</button>
                 </div>
               ` : ''}
             </div>
@@ -1759,7 +1841,7 @@
         `;
         window.scrollTo(0, 0);
 
-        // Безпечне завантаження та сортування відгуків у JS (без помилок індексів Firestore)
+        // Безпечне завантаження та сортування відгуків у JS із можливістю видалення
         try {
           const revQuery = query(collection(db, "shop_reviews"), where("listingId", "==", id));
           const revSnap = await getDocs(revQuery);
@@ -1773,7 +1855,6 @@
               reviews.push({ id: revDoc.id, ...revDoc.data() });
             });
             
-            // Сортування у JavaScript (найновіші зверху)
             reviews.sort((a, b) => {
               const ta = a.createdAt?.toMillis ? a.createdAt.toMillis() : 0;
               const tb = b.createdAt?.toMillis ? b.createdAt.toMillis() : 0;
@@ -1787,15 +1868,20 @@
               if (r.rating === 'satisfactory') { badgeColor = '#059669'; badgeText = 'Задовільно'; }
               else if (r.rating === 'unsatisfactory') { badgeColor = '#dc2626'; badgeText = 'Незадовільно'; }
 
+              const canDeleteReview = currentUser && (isAdminUser(currentUser.email) || r.reviewerEmail === currentUser.email);
+
               const div = document.createElement('div');
-              div.style.cssText = "background: #f8fafc; border: 1px solid #e2e8f0; padding: 8px 12px; border-radius: 6px; font-size: 0.78rem;";
+              div.style.cssText = "background: #f8fafc; border: 1px solid #e2e8f0; padding: 10px 12px; border-radius: 8px; font-size: 0.78rem;";
               div.innerHTML = `
-                <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-                  <strong style="color: #1e293b;">${r.reviewerEmail || 'Користувач'}</strong>
-                  <span style="color: ${badgeColor}; font-weight: bold;">${badgeText}</span>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                  <strong style="color: #1e293b;"><i class="fa-regular fa-user mr-1 text-blue-800"></i> ${r.reviewerEmail || 'Користувач'}</strong>
+                  <div style="display: flex; gap: 10px; align-items: center;">
+                    <span style="color: ${badgeColor}; font-weight: bold; background: #ffffff; padding: 2px 6px; border-radius: 4px; border: 1px solid #e2e8f0;">${badgeText}</span>
+                    ${canDeleteReview ? `<button onclick="deleteReview('${r.id}', '${id}')" style="background: none; border: none; color: var(--danger); cursor: pointer; font-size: 0.85rem;" title="Видалити відгук"><i class="fa-solid fa-trash"></i></button>` : ''}
+                  </div>
                 </div>
-                ${r.comment ? `<div style="color: #475569; margin-bottom: 4px;">${r.comment}</div>` : ''}
-                <div style="font-size: 0.68rem; color: #94a3b8; text-align: right;">${formatTimeAgo(r.createdAt)}</div>
+                ${r.comment ? `<div style="color: #475569; margin-bottom: 6px; padding-left: 2px;">${r.comment}</div>` : ''}
+                <div style="font-size: 0.68rem; color: #94a3b8; text-align: right;"><i class="fa-regular fa-clock"></i> ${formatTimeAgo(r.createdAt)}</div>
               `;
               revContainer.appendChild(div);
             });
@@ -1970,7 +2056,7 @@
                 <tr>
                   <td class="label">Зв'язок</td>
                   <td class="val" id="phoneCell_${item.id}">
-                    ${item.contact ? `<button class="reveal-phone-inline" onclick="document.getElementById('phoneCell_${item.id}').innerHTML='<a href=\\'tel:${item.contact}\\' style=\\'color: var(--olx-color); text-decoration: none;\\'>${item.contact}</a>'">Показати номер</button>` : 'В описі'}
+                    ${item.contact ? `<button class="reveal-phone-inline" onclick="document.getElementById('phoneCell_${item.id}').innerHTML='<a href=\'tel:${item.contact}\' style=\'color: var(--olx-color); text-decoration: none;\'>${item.contact}</a>'">Показати номер</button>` : 'В описі'}
                   </td>
                 </tr>
               </table>

@@ -906,6 +906,24 @@
         <div id="productDetailContent"></div>
       </div>
 
+      <!-- МОДАЛЬНЕ ВІКНО ПЕРЕГЛЯДУ ЗОБРАЖЕНЬ (LIGHTBOX) -->
+      <div id="imageLightboxModal" style="display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.9); z-index: 99999; justify-content: center; align-items: center; padding: 20px;">
+        <button onclick="closeLightbox()" style="position: absolute; top: 20px; right: 25px; background: none; border: none; color: white; font-size: 2rem; cursor: pointer; z-index: 100000;">&times;</button>
+        
+        <button onclick="prevLightboxImage(event)" style="position: absolute; left: 20px; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.2); border: none; color: white; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.2rem; transition: background 0.2s;">
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        
+        <div style="max-width: 900px; max-height: 85vh; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+          <img id="lightboxImage" src="" style="max-width: 100%; max-height: 75vh; object-fit: contain; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);" />
+          <div id="lightboxCounter" style="color: white; font-size: 0.85rem; margin-top: 10px; font-weight: bold;"></div>
+        </div>
+
+        <button onclick="nextLightboxImage(event)" style="position: absolute; right: 20px; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.2); border: none; color: white; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.2rem; transition: background 0.2s;">
+          <i class="fa-solid fa-chevron-right"></i>
+        </button>
+      </div>
+
       <!-- МОДАЛЬНІ ВІКНА АВТОРИЗАЦІЇ ТА КАБІНЕТУ -->
       <div id="authModal" style="display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.7); z-index: 9999; justify-content: center; align-items: center; padding: 15px;">
         <div style="background: white; border-radius: 12px; max-width: 400px; width: 100%; padding: 24px;">
@@ -1402,6 +1420,11 @@
       let lastVisibleDoc = null;
       let isLoadingMore = false;
 
+      // Глобальні змінні для лайтбокса галереї з автопереключенням
+      let currentLightboxPhotos = [];
+      let currentLightboxIndex = 0;
+      let lightboxInterval = null;
+
       function populateSubSelect(catName, targetSelect) {
         const catObj = categoriesData.find(c => c.name === catName);
         targetSelect.innerHTML = '';
@@ -1669,6 +1692,49 @@
         }
       };
 
+      // ФУНКЦІЇ ЛАЙТБОКСА ГАЛЕРЕЇ З АВТОПЕРЕКЛЮЧЕННЯМ
+      window.openLightbox = function(index = 0) {
+        if (!currentLightboxPhotos || currentLightboxPhotos.length === 0) return;
+        currentLightboxIndex = index;
+        updateLightboxView();
+        document.getElementById('imageLightboxModal').style.display = 'flex';
+        
+        // Автопереключення зображень кожні 4 секунди
+        clearInterval(lightboxInterval);
+        lightboxInterval = setInterval(() => {
+          currentLightboxIndex = (currentLightboxIndex + 1) % currentLightboxPhotos.length;
+          updateLightboxView();
+        }, 4000);
+      };
+
+      window.closeLightbox = function() {
+        clearInterval(lightboxInterval);
+        document.getElementById('imageLightboxModal').style.display = 'none';
+      };
+
+      window.nextLightboxImage = function(e) {
+        if (e) e.stopPropagation();
+        clearInterval(lightboxInterval);
+        currentLightboxIndex = (currentLightboxIndex + 1) % currentLightboxPhotos.length;
+        updateLightboxView();
+      };
+
+      window.prevLightboxImage = function(e) {
+        if (e) e.stopPropagation();
+        clearInterval(lightboxInterval);
+        currentLightboxIndex = (currentLightboxIndex - 1 + currentLightboxPhotos.length) % currentLightboxPhotos.length;
+        updateLightboxView();
+      };
+
+      function updateLightboxView() {
+        const imgEl = document.getElementById('lightboxImage');
+        const counterEl = document.getElementById('lightboxCounter');
+        if (imgEl && currentLightboxPhotos.length > 0) {
+          imgEl.src = currentLightboxPhotos[currentLightboxIndex];
+          if (counterEl) counterEl.textContent = `Фото ${currentLightboxIndex + 1} з ${currentLightboxPhotos.length}`;
+        }
+      }
+
       // ДЕТАЛЬНА СТОРІНКА ТОВАРУ ТА ПРОФЕСІЙНИЙ ПАСПОРТ
       window.openProductDetail = async function(id, pushHistory = true) {
         let item = allProducts.find(p => p.id === id);
@@ -1706,14 +1772,15 @@
         detailView.style.display = 'block';
 
         const photos = (item.photosArray && item.photosArray.length > 0) ? item.photosArray : ['https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=600&q=80'];
+        currentLightboxPhotos = photos; // Зберігаємо для лайтбокса
         const mainPhoto = photos[0];
         const isOwnerOrAdmin = currentUser && (isAdminUser(currentUser.email) || currentUser.email === item.userEmail);
         const pubDateFormatted = formatTimeAgo(item.createdAt);
         const isFav = favoriteIds.includes(item.id);
 
-        let galleryHtml = `<div style="border-radius: 8px; overflow: hidden; background: #f8fafc; border: 1px solid #e2e8f0; height: 320px; margin-bottom: 10px;"><img id="detailMainImg" src="${mainPhoto}" style="width: 100%; height: 100%; object-fit: cover;" alt="${item.title}"></div>`;
+        let galleryHtml = `<div style="border-radius: 8px; overflow: hidden; background: #f8fafc; border: 1px solid #e2e8f0; height: 320px; margin-bottom: 10px; cursor: pointer;" onclick="openLightbox(0)"><img id="detailMainImg" src="${mainPhoto}" style="width: 100%; height: 100%; object-fit: cover;" alt="${item.title}" title="Натисніть для збільшення"></div>`;
         if (photos.length > 1) {
-          galleryHtml += `<div style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 5px;">` + photos.map(p => `<img src="${p}" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; border: 1px solid #cbd5e1; cursor: pointer;" onclick="document.getElementById('detailMainImg').src='${p}'">`).join('') + `</div>`;
+          galleryHtml += `<div style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 5px;">` + photos.map((p, idx) => `<img src="${p}" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; border: 1px solid #cbd5e1; cursor: pointer;" onclick="openLightbox(${idx})">`).join('') + `</div>`;
         }
 
         let reviewsHtml = '<p style="font-size: 0.8rem; color: #64748b;">Завантаження відгуків...</p>';
@@ -1742,7 +1809,7 @@
 
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; align-items: start;">
             
-            <!-- ЛІВА КОЛОНКА: Галерея, Контакт, Стандарти безпеки та Відгуки -->
+            <!-- ЛІВА КОЛОНКА: Галерея та Контакти -->
             <div>
               ${galleryHtml}
               <div id="detailContactBox" style="margin-top: 15px; display: flex; gap: 10px;">
@@ -1750,40 +1817,9 @@
                   <i class="fa-solid fa-phone"></i> <b>Показати телефон продавця</b>
                 </button>
               </div>
-
-              <!-- Стандарти безпеки сервісу -->
-              <div style="margin-top: 15px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px;">
-                <div style="font-size: 0.78rem; font-weight: 800; color: #1e3a8a; text-transform: uppercase; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
-                  <i class="fa-solid fa-shield-halved"></i> Стандарти безпеки сервісу
-                </div>
-                <div style="font-size: 0.75rem; color: #475569; display: flex; flex-direction: column; gap: 6px;">
-                  <div style="display: flex; align-items: center; gap: 8px;"><i class="fa-solid fa-check" style="color: #059669;"></i> Прямий контакт із власником без посередників</div>
-                  <div style="display: flex; align-items: center; gap: 8px;"><i class="fa-solid fa-check" style="color: #059669;"></i> Перевірені дані та актуальний статус позиції</div>
-                </div>
-              </div>
-
-              <!-- Блок завершення угоди та залишення відгуку -->
-              <div style="margin-top: 15px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 10px; padding: 15px;">
-                <h4 style="margin: 0 0 10px 0; color: #1e3a8a; font-size: 0.9rem;"><i class="fa-solid fa-handshake"></i> Угода пройшла успішно? Оцініть продавця:</h4>
-                <div style="display: flex; gap: 15px; margin-bottom: 10px; flex-wrap: wrap; font-size: 0.8rem; font-weight: bold;">
-                  <label style="color: #059669; cursor: pointer;"><input type="radio" name="dealRating" value="satisfactory"> Задовільно</label>
-                  <label style="color: #dc2626; cursor: pointer;"><input type="radio" name="dealRating" value="unsatisfactory"> Незадовільно</label>
-                  <label style="color: #64748b; cursor: pointer;"><input type="radio" name="dealRating" value="abstained"> Утримався</label>
-                </div>
-                <textarea id="dealCommentText" rows="2" placeholder="Напишіть коментар до угоди..." style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; background: white; margin-bottom: 8px; font-family: inherit;"></textarea>
-                <button onclick="submitSellerReview('${item.id}', '${item.userEmail}')" class="btn-primary" style="font-size: 0.78rem; padding: 6px 14px; width: 100%; justify-content: center;">
-                  <i class="fa-solid fa-paper-plane"></i> Надіслати відгук та завершити угоду
-                </button>
-              </div>
-
-              <!-- Список відгуків під формою -->
-              <h4 style="margin: 20px 0 10px 0; color: #1e3a8a; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px;">Відгуки та рейтинг угоди</h4>
-              <div id="reviewsListContainer" style="display: flex; flex-direction: column; gap: 8px; max-height: 250px; overflow-y: auto;">
-                ${reviewsHtml}
-              </div>
             </div>
 
-            <!-- ПРАВА КОЛОНКА: ПРОФЕСІЙНИЙ ПАСПОРТ ПОЗИЦІЇ ТА ОПИС -->
+            <!-- ПРАВА КОЛОНКА: ПРОФЕСІЙНИЙ ПАСПОРТ, ОПИС, СТАНДАРТИ БЕЗПЕКИ ТА ВІДГУКИ -->
             <div>
               <div class="pro-passport-card">
                 <div class="pro-passport-header">
@@ -1828,6 +1864,37 @@
                   <i class="fa-solid fa-align-left"></i> Опис та технічні характеристики
                 </h4>
                 <p style="font-size: 0.85rem; color: #334155; line-height: 1.6; margin: 0; white-space: pre-line; background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0;">${item.description}</p>
+              </div>
+
+              <!-- Стандарти безпеки сервісу (переміщено під опис) -->
+              <div style="margin-top: 20px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px;">
+                <div style="font-size: 0.78rem; font-weight: 800; color: #1e3a8a; text-transform: uppercase; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                  <i class="fa-solid fa-shield-halved"></i> Стандарти безпеки сервісу
+                </div>
+                <div style="font-size: 0.75rem; color: #475569; display: flex; flex-direction: column; gap: 6px;">
+                  <div style="display: flex; align-items: center; gap: 8px;"><i class="fa-solid fa-check" style="color: #059669;"></i> Прямий контакт із власником без посередників</div>
+                  <div style="display: flex; align-items: center; gap: 8px;"><i class="fa-solid fa-check" style="color: #059669;"></i> Перевірені дані та актуальний статус позиції</div>
+                </div>
+              </div>
+
+              <!-- Блок завершення угоди та залишення відгуку -->
+              <div style="margin-top: 15px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 10px; padding: 15px;">
+                <h4 style="margin: 0 0 10px 0; color: #1e3a8a; font-size: 0.9rem;"><i class="fa-solid fa-handshake"></i> Угода пройшла успішно? Оцініть продавця:</h4>
+                <div style="display: flex; gap: 15px; margin-bottom: 10px; flex-wrap: wrap; font-size: 0.8rem; font-weight: bold;">
+                  <label style="color: #059669; cursor: pointer;"><input type="radio" name="dealRating" value="satisfactory"> Задовільно</label>
+                  <label style="color: #dc2626; cursor: pointer;"><input type="radio" name="dealRating" value="unsatisfactory"> Незадовільно</label>
+                  <label style="color: #64748b; cursor: pointer;"><input type="radio" name="dealRating" value="abstained"> Утримався</label>
+                </div>
+                <textarea id="dealCommentText" rows="2" placeholder="Напишіть коментар до угоди..." style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; background: white; margin-bottom: 8px; font-family: inherit;"></textarea>
+                <button onclick="submitSellerReview('${item.id}', '${item.userEmail}')" class="btn-primary" style="font-size: 0.78rem; padding: 6px 14px; width: 100%; justify-content: center;">
+                  <i class="fa-solid fa-paper-plane"></i> Надіслати відгук та завершити угоду
+                </button>
+              </div>
+
+              <!-- Список відгуків під формою -->
+              <h4 style="margin: 20px 0 10px 0; color: #1e3a8a; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px;">Відгуки та рейтинг угоди</h4>
+              <div id="reviewsListContainer" style="display: flex; flex-direction: column; gap: 8px; max-height: 250px; overflow-y: auto;">
+                ${reviewsHtml}
               </div>
               
               ${isOwnerOrAdmin ? `

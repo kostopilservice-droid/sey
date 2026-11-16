@@ -534,7 +534,7 @@
 </head>
 <body>
 
-    <!-- ШАПКА ЗІ ЗБАЛАНСОВАНИМ РОЗМІЩЕННЯМ -->
+    <!-- ШАПКА ЗІ СТАТИЧНИМИ КНОПКАМИ АВТОРИЗАЦІЇ (ВИДИМІ МИТТЄВО) -->
     <header style="background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); color: white; padding: 12px 20px; border-bottom: 3px solid var(--olx-color);">
       <div style="max-width: 1280px; margin: 0 auto; display: flex; flex-wrap: nowrap; align-items: center; justify-content: space-between; gap: 15px;">
         
@@ -562,8 +562,15 @@
           </div>
         </div>
 
-        <!-- Область авторизації / кабінету завжди видима -->
-        <div id="headerAuthArea" style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;"></div>
+        <!-- Кнопки авторизації за замовчуванням (оновлюються при вході) -->
+        <div id="headerAuthArea" style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
+          <button onclick="openAuthModal('login')" style="background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 6px 12px; border-radius: 6px; font-size: 0.78rem; font-weight: bold; cursor: pointer;">
+            <i class="fa-solid fa-right-to-bracket"></i> Увійти
+          </button>
+          <button onclick="openAuthModal('register')" style="background: var(--olx-color); border: none; color: white; padding: 6px 12px; border-radius: 6px; font-size: 0.78rem; font-weight: bold; cursor: pointer;">
+            Реєстрація
+          </button>
+        </div>
 
       </div>
     </header>
@@ -1337,7 +1344,7 @@
         window.scrollTo(0, newAdFormCard.offsetTop - 50);
       };
 
-      // Детальна сторінка з професійним заповненням пустих місць
+      // Детальна сторінка
       window.openProductDetail = function(id) {
         const item = allProducts.find(p => p.id === id);
         if (!item) return;

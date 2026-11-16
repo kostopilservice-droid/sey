@@ -983,7 +983,6 @@
         filterCards();
       });
 
-      // Безпечна функція форматування дати (усуває "Invalid Date")
       function formatTimeAgo(timestamp) {
         if (!timestamp) return 'Щойно';
         let date;
@@ -1607,7 +1606,7 @@
             listingId: listingId,
             sellerEmail: sellerEmail,
             reviewerEmail: currentUser.email,
-            rating: ratingType, // 'satisfactory', 'unsatisfactory', 'abstained'
+            rating: ratingType,
             comment: commentText || '',
             createdAt: serverTimestamp()
           });
@@ -1619,7 +1618,7 @@
         }
       };
 
-      // ДЕТАЛЬНА СТОРІНКА ТОВАРУ
+      // ДЕТАЛЬНА СТОРІНКА ТОВАРУ (З БЛОКОМ ВІДГУКІВ ПІД ГАЛЕРЕЄЮ)
       window.openProductDetail = async function(id, pushHistory = true) {
         let item = allProducts.find(p => p.id === id);
 
@@ -1666,7 +1665,6 @@
           galleryHtml += `<div style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 5px;">` + photos.map(p => `<img src="${p}" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; border: 1px solid #cbd5e1; cursor: pointer;" onclick="document.getElementById('detailMainImg').src='${p}'">`).join('') + `</div>`;
         }
 
-        // Завантаження відгуків для цього оголошення/продавця
         let reviewsHtml = '<p style="font-size: 0.8rem; color: #64748b;">Завантаження відгуків...</p>';
         document.getElementById('productDetailContent').innerHTML = `
           <div style="border-bottom: 2px solid #e2e8f0; padding-bottom: 15px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 15px;">
@@ -1692,6 +1690,8 @@
           </div>
 
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; align-items: start;">
+            
+            <!-- ЛІВА КОЛОНКА: Галерея + Блок завершення угоди та відгуків -->
             <div>
               ${galleryHtml}
               <div id="detailContactBox" style="margin-top: 15px; display: flex; gap: 10px;">
@@ -1700,17 +1700,28 @@
                 </button>
               </div>
 
-              <div style="margin-top: 15px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px;">
-                <div style="font-size: 0.78rem; font-weight: 800; color: #1e3a8a; text-transform: uppercase; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
-                  <i class="fa-solid fa-shield-halved"></i> Стандарти безпеки сервісу
+              <!-- БЛОК ЗАВЕРШЕННЯ УГОДИ ТА ЗАЛИШЕННЯ ВІДГУКУ ПІД ГАЛЕРЕЄЮ -->
+              <div style="margin-top: 20px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 10px; padding: 15px;">
+                <h4 style="margin: 0 0 10px 0; color: #1e3a8a; font-size: 0.9rem;"><i class="fa-solid fa-handshake"></i> Угода пройшла успішно? Оцініть продавця:</h4>
+                <div style="display: flex; gap: 15px; margin-bottom: 10px; flex-wrap: wrap; font-size: 0.8rem; font-weight: bold;">
+                  <label style="color: #059669; cursor: pointer;"><input type="radio" name="dealRating" value="satisfactory"> Задовільно</label>
+                  <label style="color: #dc2626; cursor: pointer;"><input type="radio" name="dealRating" value="unsatisfactory"> Незадовільно</label>
+                  <label style="color: #64748b; cursor: pointer;"><input type="radio" name="dealRating" value="abstained"> Утримався</label>
                 </div>
-                <div style="font-size: 0.75rem; color: #475569; display: flex; flex-direction: column; gap: 6px;">
-                  <div style="display: flex; align-items: center; gap: 8px;"><i class="fa-solid fa-check" style="color: #059669;"></i> Прямий контакт із власником без посередників</div>
-                  <div style="display: flex; align-items: center; gap: 8px;"><i class="fa-solid fa-check" style="color: #059669;"></i> Перевірені дані та актуальний статус позиції</div>
-                </div>
+                <textarea id="dealCommentText" rows="2" placeholder="Напишіть коментар до угоди..." style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; background: white; margin-bottom: 8px; font-family: inherit;"></textarea>
+                <button onclick="submitSellerReview('${item.id}', '${item.userEmail}')" class="btn-primary" style="font-size: 0.78rem; padding: 6px 14px; width: 100%; justify-content: center;">
+                  <i class="fa-solid fa-paper-plane"></i> Надіслати відгук та завершити угоду
+                </button>
+              </div>
+
+              <!-- СПИСОК ВІДГУКІВ ПІД ФОРМОЮ -->
+              <h4 style="margin: 20px 0 10px 0; color: #1e3a8a; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px;">Відгуки та рейтинг угоди</h4>
+              <div id="reviewsListContainer" style="display: flex; flex-direction: column; gap: 8px; max-height: 250px; overflow-y: auto;">
+                ${reviewsHtml}
               </div>
             </div>
 
+            <!-- ПРАВА КОЛОНКА: Паспорт товару та опис -->
             <div>
               <h4 style="margin: 0 0 10px 0; color: #1e3a8a; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.5px;">Паспорт позиції</h4>
               <table class="resume-table-full">
@@ -1726,24 +1737,14 @@
               <h4 style="margin: 20px 0 8px 0; color: #1e3a8a; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.5px;">Опис / Характеристики</h4>
               <p style="font-size: 0.85rem; color: #334155; line-height: 1.6; margin: 0; white-space: pre-line; background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0;">${item.description}</p>
               
-              <!-- БЛОК ЗАВЕРШЕННЯ УГОДИ ТА ЗАЛИШЕННЯ ВІДГУКУ -->
-              <div style="margin-top: 25px; background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 10px; padding: 15px;">
-                <h4 style="margin: 0 0 10px 0; color: #1e3a8a; font-size: 0.9rem;"><i class="fa-solid fa-handshake"></i> Угода пройшла успішно? Оцініть продавця:</h4>
-                <div style="display: flex; gap: 15px; margin-bottom: 10px; flex-wrap: wrap; font-size: 0.8rem; font-weight: bold;">
-                  <label style="color: #059669; cursor: pointer;"><input type="radio" name="dealRating" value="satisfactory"> Задовільно</label>
-                  <label style="color: #dc2626; cursor: pointer;"><input type="radio" name="dealRating" value="unsatisfactory"> Незадовільно</label>
-                  <label style="color: #64748b; cursor: pointer;"><input type="radio" name="dealRating" value="abstained"> Утримався</label>
+              <div style="margin-top: 15px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px;">
+                <div style="font-size: 0.78rem; font-weight: 800; color: #1e3a8a; text-transform: uppercase; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                  <i class="fa-solid fa-shield-halved"></i> Стандарти безпеки сервісу
                 </div>
-                <textarea id="dealCommentText" rows="2" placeholder="Напишіть коментар до угоди..." style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; background: white; margin-bottom: 8px; font-family: inherit;"></textarea>
-                <button onclick="submitSellerReview('${item.id}', '${item.userEmail}')" class="btn-primary" style="font-size: 0.78rem; padding: 6px 14px;">
-                  <i class="fa-solid fa-paper-plane"></i> Надіслати відгук та завершити угоду
-                </button>
-              </div>
-
-              <!-- СПИСОК ВІДГУКІВ ПРО ПРОДАВЦЯ / ТОВАР -->
-              <h4 style="margin: 25px 0 10px 0; color: #1e3a8a; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.5px;">Відгуки та рейтинг угоди</h4>
-              <div id="reviewsListContainer" style="display: flex; flex-direction: column; gap: 8px; max-height: 200px; overflow-y: auto;">
-                ${reviewsHtml}
+                <div style="font-size: 0.75rem; color: #475569; display: flex; flex-direction: column; gap: 6px;">
+                  <div style="display: flex; align-items: center; gap: 8px;"><i class="fa-solid fa-check" style="color: #059669;"></i> Прямий контакт із власником без посередників</div>
+                  <div style="display: flex; align-items: center; gap: 8px;"><i class="fa-solid fa-check" style="color: #059669;"></i> Перевірені дані та актуальний статус позиції</div>
+                </div>
               </div>
 
               ${isOwnerOrAdmin ? `
@@ -1757,7 +1758,6 @@
         `;
         window.scrollTo(0, 0);
 
-        // Завантаження відгуків з Firestore
         try {
           const revQuery = query(collection(db, "shop_reviews"), where("listingId", "==", id), orderBy("createdAt", "desc"));
           const revSnap = await getDocs(revQuery);
@@ -1791,7 +1791,6 @@
           if (revContainer) revContainer.innerHTML = '<p style="font-size: 0.78rem; color: #64748b;">Не вдалося завантажити відгуки.</p>';
         }
 
-        // Перевірка онлайн-статусу
         setTimeout(async () => {
             try {
                 let userDocRef = null;

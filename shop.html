@@ -277,7 +277,7 @@
         }
         .slider-cta-btn:hover { background: #b9372c; }
 
-        /* ПАНЕЛЬ ШВИДКИХ ФІЛЬТРІВ */
+        /* ПАНЕЛЬ ФІЛЬТРІВ */
         .filter-toolbar {
             background: white;
             border: 1px solid #e2e8f0;
@@ -305,10 +305,6 @@
             font-size: 0.78rem;
             outline: none;
             background: #f8fafc;
-        }
-        .filter-input:focus {
-            border-color: var(--olx-color);
-            background: #ffffff;
         }
 
         /* КАРТКИ ТОВАРУ */
@@ -338,7 +334,6 @@
             border-color: #cbd5e1;
         }
 
-        /* Кнопка обраного поверх фото */
         .fav-card-btn {
             position: absolute;
             top: 22px;
@@ -355,17 +350,9 @@
             cursor: pointer;
             z-index: 5;
             transition: all 0.2s;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-        .fav-card-btn:hover {
-            transform: scale(1.08);
-            color: var(--danger);
-        }
-        .fav-card-btn.active {
-            color: var(--danger);
-            background: #fef2f2;
-            border-color: #fecaca;
-        }
+        .fav-card-btn:hover { color: var(--danger); transform: scale(1.08); }
+        .fav-card-btn.active { color: var(--danger); background: #fef2f2; border-color: #fecaca; }
 
         .card-collage-box {
             display: grid;
@@ -502,11 +489,8 @@
             font-size: 0.68rem;
             font-weight: bold;
             cursor: pointer;
-            transition: background 0.2s;
         }
-        .reveal-phone-inline:hover {
-            background: #bae6fd;
-        }
+        .reveal-phone-inline:hover { background: #bae6fd; }
 
         .card-price-box {
             display: flex;
@@ -583,17 +567,8 @@
             border-bottom: 1px solid #e2e8f0;
             text-align: left;
         }
-        .resume-table-full th {
-            background: #f1f5f9;
-            color: #334155;
-            font-weight: 700;
-            width: 30%;
-        }
-        .resume-table-full td {
-            background: #ffffff;
-            color: #0f172a;
-            font-weight: 600;
-        }
+        .resume-table-full th { background: #f1f5f9; color: #334155; font-weight: 700; width: 30%; }
+        .resume-table-full td { background: #ffffff; color: #0f172a; font-weight: 600; }
 
         .btn-primary {
             background: var(--olx-color);
@@ -611,56 +586,30 @@
         }
         .btn-primary:hover { background: #1a3c5a; }
 
-        /* АНІМАЦІЯ ПРИСУТНОСТІ (ONLINE) */
         @keyframes pulse-green {
             0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
             70% { box-shadow: 0 0 0 4px rgba(16, 185, 129, 0); }
             100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
         }
-        .status-online {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            background-color: #10b981;
-            border-radius: 50%;
-            animation: pulse-green 2s infinite;
-            margin-right: 4px;
-        }
-        .status-offline {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            background-color: #94a3b8;
-            border-radius: 50%;
-            margin-right: 4px;
-        }
+        .status-online { display: inline-block; width: 8px; height: 8px; background-color: #10b981; border-radius: 50%; animation: pulse-green 2s infinite; margin-right: 4px; }
+        .status-offline { display: inline-block; width: 8px; height: 8px; background-color: #94a3b8; border-radius: 50%; margin-right: 4px; }
 
-        footer {
-            text-align: center;
-            padding: 20px;
-            background: #0f172a;
-            color: white;
-            margin-top: 40px;
-        }
+        footer { text-align: center; padding: 20px; background: #0f172a; color: white; margin-top: 40px; }
     </style>
 </head>
 <body>
 
-    <!-- ШАПКА З ОРИГІНАЛЬНИМ НАДІЙНИМ ЛОГОТИПОМ -->
+    <!-- ШАПКА -->
     <header style="background: rgba(241, 245, 249, 0.80); backdrop-filter: blur(6px); color: #1e293b; padding: 12px 20px; border-bottom: 2px solid #cbd5e1; box-shadow: 0 2px 6px rgba(0,0,0,0.04);">
       <div style="max-width: 1280px; margin: 0 auto; display: flex; flex-wrap: nowrap; align-items: center; justify-content: space-between; gap: 15px;">
         
         <a href="index.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: #0f172a; flex-shrink: 0;">
-          <div style="background: #e0f2fe; border-radius: 10px; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem;">
-            📋
-          </div>
+          <div style="background: #e0f2fe; border-radius: 10px; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem;">📋</div>
           <div>
             <div style="font-size: 1.2rem; font-weight: 900; letter-spacing: 0.8px; text-transform: uppercase; line-height: 1.1; color: #0f172a;">
               NEO<span style="color: var(--olx-color);">SERVICE</span>
             </div>
-            <div style="font-size: 0.7rem; color: #64748b; margin-top: 1px;">
-              Дошка оголошень
-            </div>
+            <div style="font-size: 0.7rem; color: #64748b; margin-top: 1px;">Дошка оголошень</div>
           </div>
         </a>
 
@@ -675,7 +624,7 @@
           </div>
         </div>
 
-        <!-- Кнопки входу та реєстрації за замовчуванням -->
+        <!-- Кнопки входу -->
         <div id="headerAuthArea" style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
           <button onclick="openAuthModal('login')" style="background: #ffffff; border: 1px solid #cbd5e1; color: #1e293b; padding: 6px 12px; border-radius: 6px; font-size: 0.78rem; font-weight: bold; cursor: pointer;">
             <i class="fa-solid fa-right-to-bracket"></i> Увійти
@@ -688,7 +637,7 @@
       </div>
     </header>
 
-    <!-- СИНЯ ПАНЕЛЬ НАВІГАЦІЇ -->
+    <!-- ПАНЕЛЬ НАВІГАЦІЇ -->
     <nav>
         <a href="index.html"><i class="fa-solid fa-house"></i> Головна</a>
         <a href="baza.html"><i class="fa-solid fa-book-open"></i> База знань</a>
@@ -792,7 +741,7 @@
           </div>
         </div>
 
-        <!-- ПАНЕЛЬ ФІЛЬТРІВ (ЦІНА, СТАН, ЛІЧИЛЬНИК) -->
+        <!-- ПАНЕЛЬ ФІЛЬТРІВ -->
         <div class="filter-toolbar">
           <div class="filter-group">
             <span style="font-size: 0.78rem; font-weight: 700; color: #334155;"><i class="fa-solid fa-filter" style="color: var(--olx-color);"></i> Фільтри:</span>
@@ -877,19 +826,19 @@
             </div>
 
             <div>
-              <label style="font-size: 0.75rem; font-weight: bold; color: #475569;">Населений пункт (необов'язково):</label>
+              <label style="font-size: 0.75rem; font-weight: bold; color: #475569;">Населений пункт:</label>
               <input type="text" id="adLocation" placeholder="Наприклад: Костопіль" style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; margin-top: 3px;" />
             </div>
 
             <div style="grid-column: 1 / -1; background: #f8fafc; padding: 10px; border-radius: 8px; border: 1px solid #e2e8f0;">
               <label style="font-size: 0.75rem; font-weight: bold; color: #1e3a8a; display: block; margin-bottom: 6px;">
-                <i class="fa-solid fa-images"></i> Фотографії товару (завантажте з пристрою або вставте посилання через кому):
+                <i class="fa-solid fa-images"></i> Фотографії товару (з пристрою або посилання):
               </label>
               <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
                 <input type="file" id="adPhotoFiles" accept="image/*" multiple style="font-size: 0.78rem; color: #334155;" />
                 <span id="uploadProgressText" style="font-size: 0.75rem; font-weight: bold; color: var(--olx-color);"></span>
               </div>
-              <input type="text" id="adPhotos" placeholder="Або вставте посилання: https://img1.jpg, https://img2.jpg" style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; margin-top: 8px; background: white;" />
+              <input type="text" id="adPhotos" placeholder="Або посилання через кому: https://img1.jpg, https://img2.jpg" style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; margin-top: 8px; background: white;" />
             </div>
 
             <div style="grid-column: 1 / -1;">
@@ -1005,7 +954,6 @@
         return ALLOWED_ADMINS.some(admin => admin.toLowerCase() === email.trim().toLowerCase());
       }
 
-      // ОБРАНЕ (LOCALSTORAGE)
       let favoriteIds = JSON.parse(localStorage.getItem('neoservice_shop_favs') || '[]');
       let showOnlyFavorites = false;
 
@@ -1018,11 +966,7 @@
       window.toggleFavorite = function(id, event) {
         if (event) event.stopPropagation();
         const idx = favoriteIds.indexOf(id);
-        if (idx > -1) {
-          favoriteIds.splice(idx, 1);
-        } else {
-          favoriteIds.push(id);
-        }
+        if (idx > -1) { favoriteIds.splice(idx, 1); } else { favoriteIds.push(id); }
         localStorage.setItem('neoservice_shop_favs', JSON.stringify(favoriteIds));
         updateFavBadge();
         filterCards();
@@ -1032,21 +976,32 @@
         showOnlyFavorites = !showOnlyFavorites;
         const btn = document.getElementById('toggleFavoritesBtn');
         if (showOnlyFavorites) {
-          btn.style.background = '#fef2f2';
-          btn.style.borderColor = 'var(--danger)';
-          btn.style.color = 'var(--danger)';
+          btn.style.background = '#fef2f2'; btn.style.borderColor = 'var(--danger)'; btn.style.color = 'var(--danger)';
         } else {
-          btn.style.background = '#ffffff';
-          btn.style.borderColor = '#cbd5e1';
-          btn.style.color = '#334155';
+          btn.style.background = '#ffffff'; btn.style.borderColor = '#cbd5e1'; btn.style.color = '#334155';
         }
         filterCards();
       });
 
-      // Форматування дати
+      // Безпечна функція форматування дати (усуває "Invalid Date")
       function formatTimeAgo(timestamp) {
-        if (!timestamp) return 'Нещодавно';
-        const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+        if (!timestamp) return 'Щойно';
+        let date;
+        try {
+          if (typeof timestamp.toDate === 'function') {
+            date = timestamp.toDate();
+          } else if (timestamp instanceof Date) {
+            date = timestamp;
+          } else if (typeof timestamp === 'number' || typeof timestamp === 'string') {
+            date = new Date(timestamp);
+          } else {
+            return 'Щойно';
+          }
+          if (isNaN(date.getTime())) return 'Щойно';
+        } catch (e) {
+          return 'Щойно';
+        }
+
         const now = new Date();
         const diffMs = now - date;
         const diffMins = Math.floor(diffMs / 60000);
@@ -1064,7 +1019,6 @@
         return date.toLocaleDateString('uk-UA', { day: 'numeric', month: 'long', year: 'numeric' });
       }
 
-      // Присутність
       async function updateUserPresence(user, online = true) {
         if (!user) return;
         const userRef = doc(db, "users", user.uid);
@@ -1074,9 +1028,7 @@
       }
 
       window.addEventListener('beforeunload', () => {
-        if (auth.currentUser) {
-          updateUserPresence(auth.currentUser, false);
-        }
+        if (auth.currentUser) updateUserPresence(auth.currentUser, false);
       });
 
       let authMode = 'login';
@@ -1090,17 +1042,13 @@
         if (mode === 'login') {
           titleEl.innerHTML = '<i class="fa-solid fa-user-lock"></i> Авторизація';
           submitBtn.textContent = 'Увійти';
-          loginBtn.style.background = 'var(--olx-color)';
-          loginBtn.style.color = 'white';
-          regBtn.style.background = '#f1f5f9';
-          regBtn.style.color = '#334155';
+          loginBtn.style.background = 'var(--olx-color)'; loginBtn.style.color = 'white';
+          regBtn.style.background = '#f1f5f9'; regBtn.style.color = '#334155';
         } else {
           titleEl.innerHTML = '<i class="fa-solid fa-user-plus"></i> Реєстрація акаунта';
           submitBtn.textContent = 'Зареєструватися';
-          regBtn.style.background = 'var(--olx-color)';
-          regBtn.style.color = 'white';
-          loginBtn.style.background = '#f1f5f9';
-          loginBtn.style.color = '#334155';
+          regBtn.style.background = 'var(--olx-color)'; regBtn.style.color = 'white';
+          loginBtn.style.background = '#f1f5f9'; loginBtn.style.color = '#334155';
         }
         document.getElementById('modalAuthError').style.display = 'none';
         document.getElementById('authModal').style.display = 'flex';
@@ -1224,7 +1172,7 @@
         filterCards();
       });
 
-      // Слайдери
+      // Слайдери та бігучі стрічки
       let sidebarSlides = [
         { image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800", title: "Оцінка Нерухомості", subtitle: "Твоє місто", link: "commercial.html", btnText: "Дізнатися більше" },
         { image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800", title: "Продаж квартир та будинків", subtitle: "Найкращі пропозиції на ринку", link: "shop.html", btnText: "Переглянути" }
@@ -1317,7 +1265,6 @@
       document.getElementById('closeBannerModal').addEventListener('click', () => document.getElementById('bannerModal').style.display = 'none');
       document.getElementById('cancelBannerBtn').addEventListener('click', () => document.getElementById('bannerModal').style.display = 'none');
 
-      // Бігучі банери
       let runningBanners = [
         { text: "Автозапчастини", image: "https://images.unsplash.com/photo-1511919884226-fd3cad34687c?w=400", link: "auto.html" },
         { text: "Ремонт електроніки", image: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=400", link: "baza.html" },
@@ -1383,7 +1330,6 @@
         try { await setDoc(runningBannerDocRef, { items: runningBanners }); openRunningBannerModal(); } catch (e) {}
       }
 
-      // Повний список 19 категорій
       const categoriesData = [
         { name: "Краса та здоров'я", icon: "fa-heart-pulse", sub: ["Догляд за волоссям", "Догляд за обличчям", "Парфумерія", "Манікюр"] },
         { name: "Товари для дому", icon: "fa-house", sub: ["Кухонне приладдя", "Посуд", "Освітлення", "Сантехніка"] },
@@ -1494,9 +1440,7 @@
         activeFilter = 'all';
         showOnlyFavorites = false;
         const favBtn = document.getElementById('toggleFavoritesBtn');
-        favBtn.style.background = '#ffffff';
-        favBtn.style.borderColor = '#cbd5e1';
-        favBtn.style.color = '#334155';
+        favBtn.style.background = '#ffffff'; favBtn.style.borderColor = '#cbd5e1'; favBtn.style.color = '#334155';
 
         document.getElementById('shopSearch').value = '';
         document.getElementById('clearSearchBtn').style.display = 'none';
@@ -1531,7 +1475,6 @@
 
       document.getElementById('cancelFormBtn').addEventListener('click', () => newAdFormCard.style.display = 'none');
 
-      // Завантаження файлів у Firebase Storage
       async function uploadSelectedImages(files) {
         const uploadedUrls = [];
         const progressEl = document.getElementById('uploadProgressText');
@@ -1639,11 +1582,47 @@
         window.scrollTo(0, newAdFormCard.offsetTop - 50);
       };
 
-      // Детальна сторінка товару з лічильником переглядів та перевіркою онлайн-статусу
+      // ФУНКЦІЯ ВІДГУКІВ ТА ЗАВЕРШЕННЯ УГОДИ
+      window.submitSellerReview = async function(listingId, sellerEmail) {
+        if (!currentUser) {
+          alert('Будь ласка, увійдіть в акаунт для залишення відгуку!');
+          openAuthModal('login');
+          return;
+        }
+        if (currentUser.email === sellerEmail) {
+          alert('Ви не можете залишати відгук на власне оголошення!');
+          return;
+        }
+
+        const ratingType = document.querySelector('input[name="dealRating"]:checked')?.value;
+        const commentText = document.getElementById('dealCommentText')?.value.trim();
+
+        if (!ratingType) {
+          alert('Будь ласка, оберіть результат угоди (Задовільно / Незадовільно / Утримався)!');
+          return;
+        }
+
+        try {
+          await addDoc(collection(db, "shop_reviews"), {
+            listingId: listingId,
+            sellerEmail: sellerEmail,
+            reviewerEmail: currentUser.email,
+            rating: ratingType, // 'satisfactory', 'unsatisfactory', 'abstained'
+            comment: commentText || '',
+            createdAt: serverTimestamp()
+          });
+
+          alert('Відгук успішно надіслано! Дякуємо за оцінку угоди.');
+          openProductDetail(listingId, false);
+        } catch (err) {
+          alert('Помилка збереження відгуку: ' + err.message);
+        }
+      };
+
+      // ДЕТАЛЬНА СТОРІНКА ТОВАРУ
       window.openProductDetail = async function(id, pushHistory = true) {
         let item = allProducts.find(p => p.id === id);
 
-        // Якщо товар не знайдено у поточному списку (наприклад, перехід за прямим посиланням)
         if (!item) {
           try {
             const singleSnap = await getDoc(doc(db, "shop_listings", id));
@@ -1658,7 +1637,6 @@
           }
         }
 
-        // Інкремент переглядів (1 раз за сесію для одного оголошення)
         const viewedKey = `viewed_ad_${id}`;
         if (!sessionStorage.getItem(viewedKey)) {
           sessionStorage.setItem(viewedKey, '1');
@@ -1688,6 +1666,8 @@
           galleryHtml += `<div style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 5px;">` + photos.map(p => `<img src="${p}" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; border: 1px solid #cbd5e1; cursor: pointer;" onclick="document.getElementById('detailMainImg').src='${p}'">`).join('') + `</div>`;
         }
 
+        // Завантаження відгуків для цього оголошення/продавця
+        let reviewsHtml = '<p style="font-size: 0.8rem; color: #64748b;">Завантаження відгуків...</p>';
         document.getElementById('productDetailContent').innerHTML = `
           <div style="border-bottom: 2px solid #e2e8f0; padding-bottom: 15px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 15px;">
             <div>
@@ -1727,12 +1707,6 @@
                 <div style="font-size: 0.75rem; color: #475569; display: flex; flex-direction: column; gap: 6px;">
                   <div style="display: flex; align-items: center; gap: 8px;"><i class="fa-solid fa-check" style="color: #059669;"></i> Прямий контакт із власником без посередників</div>
                   <div style="display: flex; align-items: center; gap: 8px;"><i class="fa-solid fa-check" style="color: #059669;"></i> Перевірені дані та актуальний статус позиції</div>
-                  <div style="display: flex; align-items: center; gap: 8px;"><i class="fa-solid fa-check" style="color: #059669;"></i> Підтримка регіонального технічного порталу</div>
-                </div>
-                <div style="margin-top: 12px; display: flex; gap: 6px;">
-                  <button onclick="navigator.clipboard.writeText(window.location.href); alert('Посилання на оголошення скопійовано в буфер обміну!');" style="flex: 1; background: #ffffff; border: 1px solid #cbd5e1; padding: 6px; border-radius: 6px; font-size: 0.72rem; font-weight: bold; color: #334155; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
-                    <i class="fa-solid fa-share-nodes"></i> Поділитися посиланням
-                  </button>
                 </div>
               </div>
             </div>
@@ -1746,12 +1720,32 @@
                 <tr><th>Стан товару</th><td>${item.condition || 'Б/В'}</td></tr>
                 ${item.location ? `<tr><th>Локація</th><td>${item.location}</td></tr>` : ''}
                 <tr><th>Вартість</th><td>${item.price.toLocaleString('uk-UA')} UAH</td></tr>
-                <tr><th>Автор</th><td>${item.userEmail || 'Приховано'}</td></tr>
+                <tr><th>Автор (Продавець)</th><td>${item.userEmail || 'Приховано'}</td></tr>
               </table>
 
               <h4 style="margin: 20px 0 8px 0; color: #1e3a8a; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.5px;">Опис / Характеристики</h4>
               <p style="font-size: 0.85rem; color: #334155; line-height: 1.6; margin: 0; white-space: pre-line; background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0;">${item.description}</p>
               
+              <!-- БЛОК ЗАВЕРШЕННЯ УГОДИ ТА ЗАЛИШЕННЯ ВІДГУКУ -->
+              <div style="margin-top: 25px; background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 10px; padding: 15px;">
+                <h4 style="margin: 0 0 10px 0; color: #1e3a8a; font-size: 0.9rem;"><i class="fa-solid fa-handshake"></i> Угода пройшла успішно? Оцініть продавця:</h4>
+                <div style="display: flex; gap: 15px; margin-bottom: 10px; flex-wrap: wrap; font-size: 0.8rem; font-weight: bold;">
+                  <label style="color: #059669; cursor: pointer;"><input type="radio" name="dealRating" value="satisfactory"> Задовільно</label>
+                  <label style="color: #dc2626; cursor: pointer;"><input type="radio" name="dealRating" value="unsatisfactory"> Незадовільно</label>
+                  <label style="color: #64748b; cursor: pointer;"><input type="radio" name="dealRating" value="abstained"> Утримався</label>
+                </div>
+                <textarea id="dealCommentText" rows="2" placeholder="Напишіть коментар до угоди..." style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; background: white; margin-bottom: 8px; font-family: inherit;"></textarea>
+                <button onclick="submitSellerReview('${item.id}', '${item.userEmail}')" class="btn-primary" style="font-size: 0.78rem; padding: 6px 14px;">
+                  <i class="fa-solid fa-paper-plane"></i> Надіслати відгук та завершити угоду
+                </button>
+              </div>
+
+              <!-- СПИСОК ВІДГУКІВ ПРО ПРОДАВЦЯ / ТОВАР -->
+              <h4 style="margin: 25px 0 10px 0; color: #1e3a8a; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.5px;">Відгуки та рейтинг угоди</h4>
+              <div id="reviewsListContainer" style="display: flex; flex-direction: column; gap: 8px; max-height: 200px; overflow-y: auto;">
+                ${reviewsHtml}
+              </div>
+
               ${isOwnerOrAdmin ? `
                 <div style="margin-top: 25px; border-top: 1px solid #e2e8f0; padding-top: 15px; display: flex; gap: 10px;">
                   <button class="btn-primary" onclick="editProduct('${item.id}')" style="background: #f59e0b;"><i class="fa-solid fa-pen"></i> Редагувати</button>
@@ -1763,7 +1757,41 @@
         `;
         window.scrollTo(0, 0);
 
-        // Перевірка онлайн-статусу продавця
+        // Завантаження відгуків з Firestore
+        try {
+          const revQuery = query(collection(db, "shop_reviews"), where("listingId", "==", id), orderBy("createdAt", "desc"));
+          const revSnap = await getDocs(revQuery);
+          const revContainer = document.getElementById('reviewsListContainer');
+          if (revSnap.empty) {
+            revContainer.innerHTML = '<p style="font-size: 0.78rem; color: #64748b; font-style: italic;">Поки немає відгуків щодо цієї угоди.</p>';
+          } else {
+            revContainer.innerHTML = '';
+            revSnap.forEach(revDoc => {
+              const r = revDoc.data();
+              let badgeColor = '#64748b';
+              let badgeText = 'Утримався';
+              if (r.rating === 'satisfactory') { badgeColor = '#059669'; badgeText = 'Задовільно'; }
+              else if (r.rating === 'unsatisfactory') { badgeColor = '#dc2626'; badgeText = 'Незадовільно'; }
+
+              const div = document.createElement('div');
+              div.style.cssText = "background: #f8fafc; border: 1px solid #e2e8f0; padding: 8px 12px; border-radius: 6px; font-size: 0.78rem;";
+              div.innerHTML = `
+                <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                  <strong style="color: #1e293b;">${r.reviewerEmail || 'Користувач'}</strong>
+                  <span style="color: ${badgeColor}; font-weight: bold;">${badgeText}</span>
+                </div>
+                ${r.comment ? `<div style="color: #475569; margin-bottom: 4px;">${r.comment}</div>` : ''}
+                <div style="font-size: 0.68rem; color: #94a3b8; text-align: right;">${formatTimeAgo(r.createdAt)}</div>
+              `;
+              revContainer.appendChild(div);
+            });
+          }
+        } catch (e) {
+          const revContainer = document.getElementById('reviewsListContainer');
+          if (revContainer) revContainer.innerHTML = '<p style="font-size: 0.78rem; color: #64748b;">Не вдалося завантажити відгуки.</p>';
+        }
+
+        // Перевірка онлайн-статусу
         setTimeout(async () => {
             try {
                 let userDocRef = null;
@@ -1804,7 +1832,6 @@
         filterCards();
       });
 
-      // Підтримка кнопки «Назад» / «Вперед» у браузері
       window.addEventListener('popstate', () => {
         const urlParams = new URLSearchParams(window.location.search);
         const targetId = urlParams.get('id');

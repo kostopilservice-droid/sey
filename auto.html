@@ -572,10 +572,10 @@
             <!-- ОСНОВНА СІТКА З ОГОЛОШЕННЯМИ -->
             <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 pt-2">
                 
-                <div class="lg:col-span-3 space-y-4">
+                <div class="lg:col-span-3 space-y-3">
                     <h2 class="text-lg font-bold text-gray-800" id="feedTitle">Пропозиції з продажу авто</h2>
                     
-                    <div id="autoProductsContainer" class="space-y-4">
+                    <div id="autoProductsContainer" class="space-y-2.5">
                         <p class="text-center text-gray-400 text-xs py-8">Завантаження пропозицій з бази даних...</p>
                     </div>
 
@@ -805,9 +805,11 @@
                 .replace(/'/g, "&#039;");
         }
 
-        function formatTimeAgo(timestamp) {
-            if (!timestamp) return 'Нещодавно';
+        function formatTimeAgo(timestamp, fallbackStr = '') {
+            if (!timestamp) return fallbackStr || 'Нещодавно';
             const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+            if (isNaN(date.getTime())) return fallbackStr || 'Нещодавно';
+
             const now = new Date();
             const diffMs = now - date;
             const diffMins = Math.floor(diffMs / 60000);
@@ -822,7 +824,7 @@
             if (diffDays === 1 || (diffHours < 48 && date.getDate() === now.getDate() - 1)) {
                 return `Вчора о ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
             }
-            return date.toLocaleDateString('uk-UA', { day: 'numeric', month: 'long', year: 'numeric' });
+            return date.toLocaleDateString('uk-UA', { day: 'numeric', month: 'short', year: 'numeric' });
         }
 
         async function updateUserPresence(user) {
@@ -1318,7 +1320,7 @@
             const cardType = item.type || 'auto';
             const isPart = (cardType === 'parts' || cardType === 'part' || item.category === 'Автозапчастини');
             const isOwnerOrAdmin = currentUser && (currentUser.email === ADMIN_EMAIL || currentUser.email === item.userEmail);
-            const pubDateFormatted = formatTimeAgo(item.createdAt);
+            const pubDateFormatted = formatTimeAgo(item.createdAt, item.dateStr);
             const photosJSON = JSON.stringify(photos).replace(/"/g, '&quot;');
 
             let rawCity = (item.city || 'Костопіль').replace(/,/g, '').trim();
@@ -1334,7 +1336,6 @@
                 </div>
             ` : '';
 
-            // Кольоровий табличний блок характеристик
             const specRowsHTML = isPart ? `
                 <tr><th>Тип позиції</th><td><span class="px-2 py-0.5 bg-orange-100 text-orange-800 rounded font-bold text-xs">⚙️ Автозапчастина / Комплектуючі</span></td></tr>
                 <tr><th>Сумісність (Марка / Модель)</th><td>${escapeHTML(item.brand || '—')} ${escapeHTML(item.model || '—')} (${item.year || '—'} р.)</td></tr>
@@ -1619,7 +1620,7 @@
         };
 
         /* =====================================================================
-           КАРТКИ В СТРІЧЦІ КАТАЛОГУ
+           КОМПАКТНІ КАРТКИ В СТРІЧЦІ КАТАЛОГУ
         ===================================================================== */
         function createListingCardHTML(item, docId) {
             const photos = (item.photosArray && item.photosArray.length > 0) 
@@ -1637,7 +1638,7 @@
 
             const isOwnerOrAdmin = currentUser && (currentUser.email === ADMIN_EMAIL || currentUser.email === item.userEmail);
             const isFav = userFavoritesList.includes(docId);
-            const pubDateFormatted = formatTimeAgo(item.createdAt);
+            const pubDateFormatted = formatTimeAgo(item.createdAt, item.dateStr);
 
             const timestampVal = item.createdAt?.toMillis ? item.createdAt.toMillis() : (item.createdAt?.seconds ? item.createdAt.seconds * 1000 : Date.now());
 
@@ -1646,7 +1647,7 @@
             const itemRegion = (item.region || 'Рівненська область').trim();
 
             return `
-                <div class="product-card p-4 bg-white rounded flex flex-col sm:flex-row gap-4 items-start w-full"
+                <div class="product-card p-2.5 sm:p-3 bg-white rounded flex flex-col sm:flex-row gap-3 items-stretch w-full"
                      data-city="${rawCity.toLowerCase()}"
                      data-region="${itemRegion.toLowerCase()}"
                      data-brand="${(item.brand || '').toLowerCase()}"
@@ -1657,82 +1658,87 @@
                      data-type="${isPart ? 'parts' : 'auto'}"
                      data-partnum="${(item.partNumber || '').toLowerCase()}">
                     
-                    <div class="w-full sm:w-64 h-40 bg-gray-900 rounded overflow-hidden relative flex-shrink-0 cursor-pointer group" onclick="openAutoDetail('${docId}')">
+                    <!-- КОМПАКТНЕ ФОТО -->
+                    <div class="w-full sm:w-52 h-36 sm:h-auto min-h-[128px] bg-gray-900 rounded overflow-hidden relative flex-shrink-0 cursor-pointer group" onclick="openAutoDetail('${docId}')">
                         <img src="${mainPhoto}" alt="${escapeHTML(item.title)}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                         
                         ${isPart ? 
-                            `<span class="absolute top-2 left-2 px-2 py-0.5 bg-orange-600 text-white font-bold text-[10px] rounded flex items-center gap-1">⚙️ Запчастина</span>` :
-                            `<span class="absolute top-2 left-2 px-2 py-0.5 bg-green-600 text-white font-bold text-[10px] rounded flex items-center gap-1"><i class="fa-solid fa-circle-check"></i> Перевірено VIN</span>`
+                            `<span class="absolute top-1.5 left-1.5 px-1.5 py-0.5 bg-orange-600 text-white font-bold text-[9px] rounded flex items-center gap-1">⚙️ Запчастина</span>` :
+                            `<span class="absolute top-1.5 left-1.5 px-1.5 py-0.5 bg-green-600 text-white font-bold text-[9px] rounded flex items-center gap-1"><i class="fa-solid fa-circle-check"></i> VIN ОК</span>`
                         }
                         
-                        <span class="absolute bottom-2 right-2 px-2 py-0.5 bg-black/70 text-white font-bold text-[10px] rounded flex items-center gap-1 backdrop-blur-sm">
+                        <span class="absolute bottom-1.5 right-1.5 px-1.5 py-0.5 bg-black/75 text-white font-bold text-[9px] rounded flex items-center gap-1">
                             <i class="fa-solid fa-camera"></i> ${photosCount}
                         </span>
                     </div>
 
-                    <div class="flex-grow space-y-1.5 text-xs w-full">
-                        <div class="flex justify-between items-start gap-2">
-                            <div>
-                                <h3 class="font-bold ${isPart ? 'text-orange-700' : 'text-blue-700'} text-lg hover:underline cursor-pointer leading-tight" onclick="openAutoDetail('${docId}')">${escapeHTML(item.title)}</h3>
-                                <div class="text-[11px] text-gray-500 font-semibold">${isPart ? `Сумісність: ${escapeHTML(item.brand || '')} ${escapeHTML(item.model || '')} (${item.year || ''})` : escapeHTML(item.generation || 'I покоління')}</div>
+                    <!-- ОСНОВНИЙ КОНТЕНТ -->
+                    <div class="flex-grow flex flex-col justify-between space-y-1 text-xs w-full min-w-0">
+                        <div>
+                            <!-- ВЕРХНІЙ РЯДОК: НАЗВА + ЦІНА + КНОПКА -->
+                            <div class="flex flex-wrap justify-between items-start gap-2">
+                                <div class="min-w-0">
+                                    <div class="flex items-baseline gap-2 flex-wrap">
+                                        <h3 class="font-extrabold ${isPart ? 'text-orange-700' : 'text-blue-700'} text-base hover:underline cursor-pointer leading-snug" onclick="openAutoDetail('${docId}')">${escapeHTML(item.title)}</h3>
+                                        <span class="text-[11px] text-gray-400 font-semibold truncate">${isPart ? `(${escapeHTML(item.brand || '')} ${escapeHTML(item.model || '')})` : escapeHTML(item.generation || '')}</span>
+                                    </div>
+                                    <div class="flex items-baseline gap-2">
+                                        <span class="text-lg font-black text-green-700 leading-tight">${priceUsd.toLocaleString()} $</span>
+                                        <span class="text-[11px] text-gray-500 font-semibold">• ${priceUah.toLocaleString()} грн</span>
+                                    </div>
+                                </div>
+
+                                <button onclick="openAutoDetail('${docId}')" class="px-2.5 py-1 bg-blue-50 hover:bg-blue-600 text-blue-700 hover:text-white border border-blue-200 rounded font-bold text-[11px] flex-shrink-0 flex items-center gap-1 transition">
+                                    <i class="fa-solid fa-comment-dots"></i> Деталі / Чат
+                                </button>
                             </div>
-                            <button onclick="openAutoDetail('${docId}')" class="px-2.5 py-1 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 rounded font-bold text-[11px] flex-shrink-0 flex items-center gap-1">
-                                <i class="fa-solid fa-comment-dots"></i> Деталі / Чат
-                            </button>
+
+                            <!-- ХАРАКТЕРИСТИКИ В КОМПАКТНУ СІТКУ -->
+                            ${isPart ? `
+                                <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-gray-700 text-[11px] pt-1">
+                                    <span><i class="fa-solid fa-tag text-orange-500"></i> Стан: <b>${escapeHTML(item.partCondition || 'б/в')}</b></span>
+                                    <span><i class="fa-solid fa-location-dot text-red-500"></i> ${escapeHTML(rawCity)}, ${escapeHTML(itemRegion)}</span>
+                                    <span class="part-number-tag px-1.5 py-0.2 text-[10px] rounded">
+                                        <i class="fa-solid fa-barcode text-orange-600"></i> OEM: ${escapeHTML(item.partNumber || '—')}
+                                    </span>
+                                </div>
+                            ` : `
+                                <div class="grid grid-cols-2 sm:grid-cols-4 gap-x-2 gap-y-0.5 text-gray-700 text-[11px] pt-1">
+                                    <div class="truncate"><i class="fa-regular fa-clock text-blue-600"></i> ${item.mileage || '0'} тис. км</div>
+                                    <div class="truncate"><i class="fa-solid fa-gas-pump text-gray-500"></i> ${escapeHTML(item.engine || '—')}</div>
+                                    <div class="truncate"><i class="fa-solid fa-gear text-gray-500"></i> ${escapeHTML(item.gearbox || '—')}</div>
+                                    <div class="truncate"><i class="fa-solid fa-location-dot text-red-500"></i> ${escapeHTML(rawCity)}</div>
+                                </div>
+
+                                <div class="flex flex-wrap items-center gap-1.5 pt-1">
+                                    <span class="state-number-tag px-1.5 py-0.2 text-[10px] rounded">
+                                        <span class="state-flag">UA</span> ${escapeHTML(item.stateNum || '—')}
+                                    </span>
+                                    <span class="vin-number-tag px-1.5 py-0.2 text-[10px] rounded">
+                                        <i class="fa-solid fa-shield-halved text-green-700"></i> ${escapeHTML(item.vin || '—')}
+                                    </span>
+                                    <span class="text-gray-500 text-[11px] truncate max-w-xs">• ${escapeHTML(item.description || '')}</span>
+                                </div>
+                            `}
                         </div>
 
-                        <div class="flex items-baseline gap-2 pt-0.5">
-                            <span class="text-xl font-black text-green-700">${priceUsd.toLocaleString()} $</span>
-                            <span class="text-xs text-gray-500 font-semibold">• ${priceUah.toLocaleString()} грн</span>
-                        </div>
-
-                        ${isPart ? `
-                            <div class="grid grid-cols-2 gap-y-1 text-gray-700 text-xs pt-1">
-                                <div class="flex items-center gap-1.5"><i class="fa-solid fa-tag text-orange-500"></i> Стан: <b>${escapeHTML(item.partCondition || 'б/в')}</b></div>
-                                <div class="flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-red-500"></i> ${escapeHTML(rawCity)}, ${escapeHTML(itemRegion)}</div>
-                            </div>
-
-                            <div class="flex flex-wrap items-center gap-2 pt-1.5">
-                                <span class="part-number-tag px-2 py-0.5 text-[10px] rounded">
-                                    <i class="fa-solid fa-barcode text-orange-600"></i> OEM / Part №: ${escapeHTML(item.partNumber || 'Не вказано')}
-                                </span>
-                            </div>
-                        ` : `
-                            <div class="grid grid-cols-2 gap-y-1 text-gray-700 text-xs pt-1">
-                                <div class="flex items-center gap-1.5"><i class="fa-regular fa-clock text-blue-600"></i> ${item.mileage || '18'} тис. км</div>
-                                <div class="flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-red-500"></i> ${escapeHTML(rawCity)}, ${escapeHTML(itemRegion)}</div>
-                                <div class="flex items-center gap-1.5"><i class="fa-solid fa-gas-pump text-gray-600"></i> ${escapeHTML(item.engine || 'Дизель, 1.9 л.')}</div>
-                                <div class="flex items-center gap-1.5"><i class="fa-solid fa-gear text-gray-600"></i> ${escapeHTML(item.gearbox || 'Механіка')}</div>
-                            </div>
-
-                            <div class="flex flex-wrap items-center gap-2 pt-1.5">
-                                <span class="state-number-tag px-2 py-0.5 text-[10px] rounded">
-                                    <span class="state-flag">UA</span> ${escapeHTML(item.stateNum || 'CA 9345 KO')}
-                                </span>
-                                <span class="vin-number-tag px-2 py-0.5 text-[10px] rounded">
-                                    <i class="fa-solid fa-shield-halved text-green-700"></i> VIN ${escapeHTML(item.vin || 'LGWFF6A52NH924185')}
-                                </span>
-                            </div>
-                        `}
-
-                        <p class="text-gray-600 text-xs line-clamp-1 pt-1">${escapeHTML(item.description || "Детальний опис товару.")}</p>
-
-                        <div class="flex flex-wrap justify-between items-center gap-2 pt-2 border-t border-gray-100 text-[11px] text-gray-400">
-                            <div class="flex flex-wrap items-center gap-3">
+                        <!-- НИЖНІЙ РЯДОК У ОДНУ ЛІНІЮ -->
+                        <div class="flex flex-wrap justify-between items-center gap-2 pt-1.5 mt-1 border-t border-gray-100 text-[10px] text-gray-400">
+                            <div class="flex items-center gap-2.5 truncate">
                                 <span><i class="fa-regular fa-clock"></i> ${pubDateFormatted}</span>
-                                <span class="text-gray-500 font-semibold flex items-center gap-1"><i class="fa-solid fa-circle text-[7px]" style="color: #059669;"></i> Продавець на зв'язку</span>
-                                <span class="text-gray-500 font-semibold">• Автор: ${escapeHTML(item.userEmail || 'Не вказано')}</span>
+                                <span class="text-green-600 font-semibold flex items-center gap-1"><i class="fa-solid fa-circle text-[6px]"></i> На зв'язку</span>
+                                <span class="text-gray-500 truncate hidden sm:inline">• ${escapeHTML(item.userEmail || '')}</span>
                             </div>
-                            <div class="flex items-center gap-4 text-gray-500">
-                                <a href="tel:${escapeHTML(item.contact)}" class="font-bold text-blue-600 hover:underline">📞 ${escapeHTML(item.contact)}</a>
+                            <div class="flex items-center gap-3 flex-shrink-0">
+                                <a href="tel:${escapeHTML(item.contact)}" class="font-bold text-blue-600 hover:underline text-[11px]">📞 ${escapeHTML(item.contact)}</a>
                                 
-                                <button onclick="toggleFavorite('${docId}')" class="text-base transition-transform active:scale-125 ${isFav ? 'text-red-600' : 'text-gray-400 hover:text-red-500'}" title="${isFav ? 'Видалити з обраного' : 'Додати в обране'}">
+                                <button onclick="toggleFavorite('${docId}')" class="text-sm transition-transform active:scale-125 ${isFav ? 'text-red-600' : 'text-gray-400 hover:text-red-500'}" title="${isFav ? 'Видалити з обраного' : 'Додати в обране'}">
                                     <i class="${isFav ? 'fa-solid' : 'fa-regular'} fa-heart"></i>
                                 </button>
 
                                 ${isOwnerOrAdmin ? `
-                                    <button onclick="editProduct('${docId}')" class="text-blue-600 font-bold hover:underline">Редагувати</button>
-                                    <button class="delete-btn text-red-500 font-bold hover:underline" data-id="${docId}">Видалити</button>
+                                    <button onclick="editProduct('${docId}')" class="text-blue-600 font-bold hover:underline">Ред.</button>
+                                    <button class="delete-btn text-red-500 font-bold hover:underline" data-id="${docId}">Вид.</button>
                                 ` : ''}
                             </div>
                         </div>
@@ -1784,7 +1790,7 @@
                 const mainPhoto = photos[0];
                 const priceUsd = item.priceUSD || 0;
                 const isPart = (item.type === 'parts' || item.type === 'part' || item.category === 'Автозапчастини');
-                const pubDateFormatted = formatTimeAgo(item.createdAt);
+                const pubDateFormatted = formatTimeAgo(item.createdAt, item.dateStr);
                 let rawCity = (item.city || 'Костопіль').replace(/,/g, '').trim();
                 if (!rawCity.toLowerCase().startsWith('м.')) rawCity = 'м. ' + rawCity;
 

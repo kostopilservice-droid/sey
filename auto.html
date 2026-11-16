@@ -170,7 +170,6 @@
             <div class="max-w-6xl mx-auto px-4 flex items-center justify-between">
                 
                 <div class="flex items-center gap-3">
-                    <!-- Мобільна кнопка меню (Гамбургер) -->
                     <button onClick="toggleMobileMenu()" class="md:hidden text-gray-700 text-xl focus:outline-none">
                         <i class="fa-solid fa-bars"></i>
                     </button>
@@ -197,7 +196,7 @@
             </div>
         </div>
 
-        <!-- ВИДАТНЕ МОБІЛЬНЕ МЕНЮ -->
+        <!-- МОБІЛЬНЕ МЕНЮ -->
         <div id="mobileMenuDropdown" class="hidden md:hidden bg-white border-b border-gray-200 px-4 py-3 space-y-2 text-xs font-bold text-gray-800 shadow-lg">
             <a href="#auto" onClick="switchCategoryFilter('auto'); toggleMobileMenu();" class="block py-1.5 border-b border-gray-100"><i class="fa-solid fa-car text-blue-600 mr-2"></i> Легкові авто</a>
             <a href="#parts" onClick="switchCategoryFilter('parts'); toggleMobileMenu();" class="block py-1.5 border-b border-gray-100"><i class="fa-solid fa-gears text-orange-600 mr-2"></i> Автозапчастини</a>
@@ -216,7 +215,7 @@
         
         <h1 class="text-xl sm:text-2xl font-black text-gray-900" id="mainHeaderTitle">Продаж автомобілів в Україні</h1>
 
-        <!-- ЧЕРВОНИЙ БЛОК ФІЛЬТРІВ -->
+        <!-- ЧЕРВОНИЙ БЛОК ФІЛЬТРІВ ТА СОРТУВАННЯ -->
         <div class="search-box-red p-4 text-white">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 
@@ -253,7 +252,7 @@
                     </button>
                 </div>
 
-                <div class="space-y-3 pt-6 md:pt-7">
+                <div class="space-y-3 pt-2 md:pt-7">
                     <select id="filterRegion" onChange="updateFilterCities(); filterCards();" class="w-full px-3 py-2 text-xs bg-white text-gray-800 rounded border-none outline-none font-semibold">
                         <option value="">Регіон: Всі області України</option>
                         <option value="Рівненська область">Рівненська область</option>
@@ -301,7 +300,16 @@
                     </div>
                 </div>
 
-                <div class="flex items-end pt-2 md:pt-0">
+                <div class="space-y-3 flex flex-col justify-end pt-2 md:pt-0">
+                    <div>
+                        <label class="block text-[10px] font-bold uppercase tracking-wider mb-1 text-red-100">Сортування оголошень:</label>
+                        <select id="filterSort" onChange="filterCards()" class="w-full px-3 py-2 text-xs bg-white text-gray-800 rounded border-none outline-none font-semibold">
+                            <option value="newest">Свіжіші спочатку</option>
+                            <option value="price_asc">Від дешевших до дорожчих</option>
+                            <option value="price_desc">Від дорожчих до дешевших</option>
+                        </select>
+                    </div>
+
                     <button onClick="filterCards()" class="w-full py-3 btn-blue-search text-white font-black text-sm rounded shadow flex items-center justify-center gap-2">
                         <i class="fa-solid fa-magnifying-glass"></i> Пошук
                     </button>
@@ -731,7 +739,7 @@
             activeCategoryFilter = 'all';
         }
 
-        // Функція форматування дати українською
+        // Функція форматування дати українською (динамічний час тому)
         function formatTimeAgo(timestamp) {
             if (!timestamp) return 'Нещодавно';
             
@@ -754,7 +762,6 @@
             return date.toLocaleDateString('uk-UA', { day: 'numeric', month: 'long', year: 'numeric' });
         }
 
-        // Оновлення статусу присутності користувача в базі
         async function updateUserPresence(user) {
             if (!user) return;
             const userRef = doc(db, "users", user.uid);
@@ -981,7 +988,6 @@
             }
 
             if (user) {
-                // Оновлюємо статус активності у базі
                 await updateUserPresence(user);
                 setInterval(() => updateUserPresence(user), 120000);
 
@@ -1284,6 +1290,8 @@
             const photosJSON = JSON.stringify(photos).replace(/"/g, '&quot;');
             const pubDateFormatted = formatTimeAgo(item.createdAt);
 
+            const timestampVal = item.createdAt?.toMillis ? item.createdAt.toMillis() : (item.createdAt?.seconds ? item.createdAt.seconds * 1000 : Date.now());
+
             let rawCity = (item.city || 'Костопіль').replace(/,/g, '').trim();
             if (!rawCity.toLowerCase().startsWith('м.')) {
                 rawCity = 'м. ' + rawCity;
@@ -1298,6 +1306,7 @@
                      data-model="${(item.model || '').toLowerCase()}"
                      data-year="${item.year || '2022'}"
                      data-price="${priceUsd}"
+                     data-timestamp="${timestampVal}"
                      data-type="${isPart ? 'parts' : 'auto'}"
                      data-partnum="${(item.partNumber || '').toLowerCase()}">
                     
@@ -1547,9 +1556,11 @@
             const maxYear = parseInt(document.getElementById('filterYearMax')?.value) || 9999;
             const minPrice = parseFloat(document.getElementById('filterPriceMin')?.value) || 0;
             const maxPrice = parseFloat(document.getElementById('filterPriceMax')?.value) || Infinity;
+            const sortVal = document.getElementById('filterSort')?.value || 'newest';
 
+            const container = document.getElementById('autoProductsContainer');
             const cards = Array.from(document.querySelectorAll('.product-card'));
-            const matchingCards = [];
+            let matchingCards = [];
 
             cards.forEach(card => {
                 const cardCity = (card.getAttribute('data-city') || '').replace(/,/g, '').trim();
@@ -1591,6 +1602,18 @@
                 }
             });
 
+            // Сортування відібраних карток
+            matchingCards.sort((a, b) => {
+                const priceA = parseFloat(a.getAttribute('data-price')) || 0;
+                const priceB = parseFloat(b.getAttribute('data-price')) || 0;
+                const timeA = parseFloat(a.getAttribute('data-timestamp')) || 0;
+                const timeB = parseFloat(b.getAttribute('data-timestamp')) || 0;
+
+                if (sortVal === 'price_asc') return priceA - priceB;
+                if (sortVal === 'price_desc') return priceB - priceA;
+                return timeB - timeA; // 'newest' за замовчуванням
+            });
+
             const totalPages = Math.ceil(matchingCards.length / ITEMS_PER_PAGE) || 1;
             if (currentPage > totalPages) currentPage = totalPages;
             if (currentPage < 1) currentPage = 1;
@@ -1598,7 +1621,9 @@
             const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
             const endIndex = startIndex + ITEMS_PER_PAGE;
 
+            cards.forEach(c => c.style.display = 'none');
             matchingCards.forEach((card, index) => {
+                container.appendChild(card);
                 if (index >= startIndex && index < endIndex) {
                     card.style.display = 'flex';
                 } else {

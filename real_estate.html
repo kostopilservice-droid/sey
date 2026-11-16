@@ -594,6 +594,29 @@
         const ITEMS_PER_PAGE = 12;
         let currentPage = 1;
 
+        // Функція форматування дати українською (динамічний час тому)
+        function formatTimeAgo(timestamp) {
+            if (!timestamp) return 'Нещодавно';
+            
+            const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+            const now = new Date();
+            const diffMs = now - date;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMs / 3600000);
+            const diffDays = Math.floor(diffMs / 86400000);
+
+            if (diffMins < 2) return 'Щойно';
+            if (diffMins < 60) return `${diffMins} хв. тому`;
+            if (diffHours < 24 && date.getDate() === now.getDate()) {
+                return `Сьогодні о ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+            }
+            if (diffDays === 1 || (diffHours < 48 && date.getDate() === now.getDate() - 1)) {
+                return `Вчора о ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+            }
+            
+            return date.toLocaleDateString('uk-UA', { day: 'numeric', month: 'long', year: 'numeric' });
+        }
+
         const ukraineRegions = {
             "Рівненська область": ["Костопіль", "Рівне", "Березне", "Дубно", "Сарни", "Вараш", "Здолбунів", "Острог"],
             "Київська область": ["Київ", "Бровари", "Бориспіль", "Ірпінь", "Буча", "Біла Церква", "Вишневе", "Вишгород"],
@@ -1073,6 +1096,7 @@
             const isOwnerOrAdmin = currentUser && (currentUser.email === ADMIN_EMAIL || currentUser.email === item.userEmail);
             const isFav = userFavoritesList.includes(docId);
             const photosJSON = JSON.stringify(photos).replace(/"/g, '&quot;');
+            const pubDateFormatted = formatTimeAgo(item.createdAt);
 
             const rawCity = (item.city || 'Костопіль').replace(/,/g, '').trim();
             const formattedCity = rawCity.charAt(0).toUpperCase() + rawCity.slice(1);
@@ -1114,8 +1138,8 @@
                         <p class="text-gray-600 text-xs line-clamp-1 pt-1">${item.description || "Опис об'єкта нерухомості."}</p>
 
                         <div class="flex justify-between items-center pt-2 border-t border-gray-100 text-[11px] text-gray-400">
-                            <div class="flex items-center gap-2">
-                                <span><i class="fa-regular fa-clock"></i> ${item.dateStr || ''}</span>
+                            <div class="flex items-center gap-3">
+                                <span><i class="fa-regular fa-clock"></i> ${pubDateFormatted}</span>
                                 <span class="text-gray-500 font-semibold">• Автор: ${item.userEmail || 'Не вказано'}</span>
                             </div>
                             <div class="flex items-center gap-4 text-gray-500">
@@ -1176,6 +1200,7 @@
                 const mainPhoto = photos[0];
                 const priceUsd = item.priceUSD || 0;
                 const photosJSON = JSON.stringify(photos).replace(/"/g, '&quot;');
+                const pubDateFormatted = formatTimeAgo(item.createdAt);
                 const rawCity = (item.city || 'Костопіль').replace(/,/g, '').trim();
                 const formattedCity = rawCity.charAt(0).toUpperCase() + rawCity.slice(1);
 
@@ -1195,7 +1220,7 @@
                     </div>
                     <div class="pt-2 mt-2 border-t border-gray-100 flex justify-between items-center text-[11px]">
                         <a href="tel:${item.contact}" class="font-bold text-blue-600 hover:underline">📞 ${item.contact}</a>
-                        <span class="text-gray-400">${item.dealType || ''}</span>
+                        <span class="text-gray-400">${pubDateFormatted}</span>
                     </div>
                 `;
                 container.appendChild(miniCard);
@@ -1243,7 +1268,7 @@
         window.nextGalleryImage = function(e) {
             if (e) e.stopPropagation();
             if (currentGalleryPhotos.length <= 1) return;
-            currentPhotoIndex = (currentPhotoIndex + 1) % currentGalleryPhotos.length;
+            currentPhotoIndex = (currentPhotoIndex + 1 + currentGalleryPhotos.length) % currentGalleryPhotos.length;
             updateGalleryUI();
         };
 

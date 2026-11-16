@@ -529,6 +529,30 @@
         }
         .btn-primary:hover { background: #1a3c5a; }
 
+        /* АНІМАЦІЯ ПРИСУТНОСТІ (ONLINE) */
+        @keyframes pulse-green {
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { box-shadow: 0 0 0 4px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+        .status-online {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background-color: #10b981;
+            border-radius: 50%;
+            animation: pulse-green 2s infinite;
+            margin-right: 4px;
+        }
+        .status-offline {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background-color: #94a3b8;
+            border-radius: 50%;
+            margin-right: 4px;
+        }
+
         footer {
             text-align: center;
             padding: 20px;
@@ -540,7 +564,7 @@
 </head>
 <body>
 
-    <!-- ШАПКА З НЕПРОЗОРИМ СІРИМ (80%) ФОНОМ ТА РОЗМИВТЯМ -->
+    <!-- ШАПКА З НЕПРОЗОРИМ СІРИМ ФОНОМ ТА РОЗМИВТЯМ -->
     <header style="background: rgba(241, 245, 249, 0.80); backdrop-filter: blur(6px); color: #1e293b; padding: 12px 20px; border-bottom: 2px solid #cbd5e1; box-shadow: 0 2px 6px rgba(0,0,0,0.04);">
       <div style="max-width: 1280px; margin: 0 auto; display: flex; flex-wrap: nowrap; align-items: center; justify-content: space-between; gap: 15px;">
         
@@ -605,6 +629,14 @@
               <span id="adminStatusBadge" style="display: none; background: #fef3c7; color: #b45309; padding: 5px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: bold;">
                 <i class="fa-solid fa-shield-halved"></i> Модератор
               </span>
+
+              <!-- СОРТУВАННЯ -->
+              <select id="sortFilter" style="background: #ffffff; border: 1px solid #cbd5e1; padding: 6px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; color: #334155; cursor: pointer; outline: none;">
+                <option value="newest">Новіші спочатку</option>
+                <option value="price_asc">Від дешевших</option>
+                <option value="price_desc">Від дорожчих</option>
+              </select>
+
               <button id="toggleFormBtn" class="btn-primary">
                 <i class="fa-solid fa-plus"></i> Подати оголошення
               </button>
@@ -850,6 +882,36 @@
         return ALLOWED_ADMINS.some(admin => admin.toLowerCase() === email.trim().toLowerCase());
       }
 
+      // Форматування дати
+      function formatTimeAgo(timestamp) {
+        if (!timestamp) return 'Нещодавно';
+        const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+        const now = new Date();
+        const diffMs = now - date;
+        const diffMins = Math.floor(diffMs / 60000);
+        const diffHours = Math.floor(diffMs / 3600000);
+        const diffDays = Math.floor(diffMs / 86400000);
+
+        if (diffMins < 2) return 'Щойно';
+        if (diffMins < 60) return `${diffMins} хв. тому`;
+        if (diffHours < 24 && date.getDate() === now.getDate()) {
+          return `Сьогодні о ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+        }
+        if (diffDays === 1 || (diffHours < 48 && date.getDate() === now.getDate() - 1)) {
+          return `Вчора о ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+        }
+        return date.toLocaleDateString('uk-UA', { day: 'numeric', month: 'long', year: 'numeric' });
+      }
+
+      // Присутність
+      async function updateUserPresence(user) {
+        if (!user) return;
+        const userRef = doc(db, "users", user.uid);
+        try {
+          await setDoc(userRef, { email: user.email, lastSeen: serverTimestamp(), isOnline: true }, { merge: true });
+        } catch (e) {}
+      }
+
       let authMode = 'login';
       window.openAuthModal = function(mode = 'login') {
         authMode = mode;
@@ -948,7 +1010,7 @@
         }
       });
 
-      onAuthStateChanged(auth, (user) => {
+      onAuthStateChanged(auth, async (user) => {
         currentUser = user;
         const toggleBtn = document.getElementById('toggleFormBtn');
         const adminBadge = document.getElementById('adminStatusBadge');
@@ -971,6 +1033,9 @@
             </button>
           `;
         } else {
+          await updateUserPresence(user);
+          setInterval(() => updateUserPresence(user), 120000);
+
           toggleBtn.innerHTML = `<i class="fa-solid fa-plus"></i> Подати оголошення`;
           if (isAdminUser(user.email)) {
             adminBadge.style.display = 'inline-block';
@@ -1149,7 +1214,7 @@
         try { await setDoc(runningBannerDocRef, { items: runningBanners }); openRunningBannerModal(); } catch (e) {}
       }
 
-      // Каталог
+      // Повний список 19 категорій
       const categoriesData = [
         { name: "Краса та здоров'я", icon: "fa-heart-pulse", sub: ["Догляд за волоссям", "Догляд за обличчям", "Парфумерія", "Манікюр"] },
         { name: "Товари для дому", icon: "fa-house", sub: ["Кухонне приладдя", "Посуд", "Освітлення", "Сантехніка"] },
@@ -1297,7 +1362,8 @@
           contact: document.getElementById('adContact').value,
           photosArray: photosArray,
           description: document.getElementById('adDescription').value,
-          userEmail: currentUser.email
+          userEmail: currentUser.email,
+          userId: currentUser.uid // Для перевірки присутності
         };
 
         try {
@@ -1351,6 +1417,7 @@
         window.scrollTo(0, newAdFormCard.offsetTop - 50);
       };
 
+      // Детальна сторінка товару з перевіркою онлайн-статусу
       window.openProductDetail = function(id, pushHistory = true) {
         const item = allProducts.find(p => p.id === id);
         if (!item) return;
@@ -1367,6 +1434,7 @@
         const photos = (item.photosArray && item.photosArray.length > 0) ? item.photosArray : ['https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=600&q=80'];
         const mainPhoto = photos[0];
         const isOwnerOrAdmin = currentUser && (isAdminUser(currentUser.email) || currentUser.email === item.userEmail);
+        const pubDateFormatted = formatTimeAgo(item.createdAt);
 
         let galleryHtml = `<div style="border-radius: 8px; overflow: hidden; background: #f8fafc; border: 1px solid #e2e8f0; height: 320px; margin-bottom: 10px;"><img src="${mainPhoto}" style="width: 100%; height: 100%; object-fit: cover;" alt="${item.title}"></div>`;
         if (photos.length > 1) {
@@ -1378,6 +1446,10 @@
             <div>
               <div style="font-size: 0.75rem; color: #64748b; font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">Категорія: ${item.category} / ${item.subcategory || ''}</div>
               <h2 style="margin: 0; color: #1e3a8a; font-size: 1.4rem; font-weight: 800;">${item.title}</h2>
+              <div style="font-size: 0.75rem; color: #64748b; display: flex; gap: 15px; margin-top: 6px; align-items: center; flex-wrap: wrap;">
+                <span><i class="fa-regular fa-clock"></i> Опубліковано: ${pubDateFormatted}</span>
+                <span id="sellerOnlineStatus"><i class="status-offline"></i> Перевірка статусу...</span>
+              </div>
             </div>
             <div style="text-align: right;">
               <div style="font-size: 1.6rem; font-weight: 900; color: #0f172a;">${item.price.toLocaleString('uk-UA')} ₴</div>
@@ -1399,15 +1471,9 @@
                   <i class="fa-solid fa-shield-halved"></i> Стандарти безпеки сервісу
                 </div>
                 <div style="font-size: 0.75rem; color: #475569; display: flex; flex-direction: column; gap: 6px;">
-                  <div style="display: flex; align-items: center; gap: 8px;">
-                    <i class="fa-solid fa-check" style="color: #059669;"></i> Прямий контакт із власником без посередників
-                  </div>
-                  <div style="display: flex; align-items: center; gap: 8px;">
-                    <i class="fa-solid fa-check" style="color: #059669;"></i> Перевірені дані та актуальний статус позиції
-                  </div>
-                  <div style="display: flex; align-items: center; gap: 8px;">
-                    <i class="fa-solid fa-check" style="color: #059669;"></i> Підтримка регіонального технічного порталу
-                  </div>
+                  <div style="display: flex; align-items: center; gap: 8px;"><i class="fa-solid fa-check" style="color: #059669;"></i> Прямий контакт із власником без посередників</div>
+                  <div style="display: flex; align-items: center; gap: 8px;"><i class="fa-solid fa-check" style="color: #059669;"></i> Перевірені дані та актуальний статус позиції</div>
+                  <div style="display: flex; align-items: center; gap: 8px;"><i class="fa-solid fa-check" style="color: #059669;"></i> Підтримка регіонального технічного порталу</div>
                 </div>
                 <div style="margin-top: 12px; display: flex; gap: 6px;">
                   <button onclick="navigator.clipboard.writeText(window.location.href); alert('Посилання на оголошення скопійовано в буфер обміну!');" style="flex: 1; background: #ffffff; border: 1px solid #cbd5e1; padding: 6px; border-radius: 6px; font-size: 0.72rem; font-weight: bold; color: #334155; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
@@ -1441,6 +1507,39 @@
           </div>
         `;
         window.scrollTo(0, 0);
+
+        // Перевірка онлайн-статусу продавця
+        setTimeout(async () => {
+            try {
+                let userDocRef = null;
+                if (item.userId) {
+                    userDocRef = doc(db, "users", item.userId);
+                } else if (item.userEmail) {
+                    const uq = query(collection(db, "users"), where("email", "==", item.userEmail));
+                    const usnap = await getDocs(uq);
+                    if (!usnap.empty) userDocRef = usnap.docs[0].ref;
+                }
+
+                const statusContainer = document.getElementById('sellerOnlineStatus');
+                if (userDocRef && statusContainer) {
+                    const uDoc = await getDoc(userDocRef);
+                    if (uDoc.exists()) {
+                        const data = uDoc.data();
+                        const now = Date.now();
+                        const lastSeenMs = data.lastSeen ? data.lastSeen.toMillis() : 0;
+                        const diffMins = (now - lastSeenMs) / 60000;
+                        
+                        if (data.isOnline && diffMins < 5) {
+                            statusContainer.innerHTML = `<span style="color: #059669; font-weight: bold;"><i class="status-online"></i> Продавець онлайн</span>`;
+                        } else {
+                            statusContainer.innerHTML = `<span style="color: #64748b;"><i class="status-offline"></i> Був(ла) нещодавно</span>`;
+                        }
+                    } else {
+                        statusContainer.innerHTML = `<span style="color: #64748b;"><i class="status-offline"></i> Немає в мережі</span>`;
+                    }
+                }
+            } catch (e) {}
+        }, 100);
       };
 
       document.getElementById('backToCatalogBtn').addEventListener('click', () => {
@@ -1458,7 +1557,7 @@
           if (!snapshot.empty) {
             lastVisibleDoc = snapshot.docs[snapshot.docs.length - 1];
             snapshot.forEach(docSnap => { allProducts.push({ id: docSnap.id, ...docSnap.data() }); });
-            renderProductsGrid(allProducts);
+            filterCards();
             if (snapshot.docs.length === PAGE_SIZE) renderLoadMoreButton();
 
             const urlParams = new URLSearchParams(window.location.search);
@@ -1488,7 +1587,7 @@
           if (!snapshot.empty) {
             lastVisibleDoc = snapshot.docs[snapshot.docs.length - 1];
             snapshot.forEach(docSnap => { allProducts.push({ id: docSnap.id, ...docSnap.data() }); });
-            renderProductsGrid(allProducts);
+            filterCards();
             if (snapshot.docs.length < PAGE_SIZE) { if (loadMoreBtn) loadMoreBtn.remove(); }
             else { renderLoadMoreButton(); }
           } else { if (loadMoreBtn) loadMoreBtn.remove(); }
@@ -1514,40 +1613,28 @@
         const list = (photos && photos.length > 0) ? photos : ['https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=300&q=80'];
         
         if (list.length === 1) {
-          return `
-            <div class="card-collage-box single" onclick="openProductDetail('${productId}')">
-              <img src="${list[0]}" class="collage-img" alt="">
-            </div>
-          `;
+          return `<div class="card-collage-box single" onclick="openProductDetail('${productId}')"><img src="${list[0]}" class="collage-img" alt=""></div>`;
         } else if (list.length === 2) {
-          return `
-            <div class="card-collage-box double" onclick="openProductDetail('${productId}')">
-              <img src="${list[0]}" class="collage-img collage-main" alt="">
-              <img src="${list[1]}" class="collage-img collage-sub-top" style="grid-column: 2/3; grid-row: 1/-1;" alt="">
-            </div>
-          `;
+          return `<div class="card-collage-box double" onclick="openProductDetail('${productId}')"><img src="${list[0]}" class="collage-img collage-main" alt=""><img src="${list[1]}" class="collage-img collage-sub-top" style="grid-column: 2/3; grid-row: 1/-1;" alt=""></div>`;
         } else {
-          return `
-            <div class="card-collage-box triple" onclick="openProductDetail('${productId}')">
-              <img src="${list[0]}" class="collage-img collage-main" alt="">
-              <img src="${list[1]}" class="collage-img collage-sub-top" alt="">
-              <img src="${list[2]}" class="collage-img collage-sub-bot" alt="">
-            </div>
-          `;
+          return `<div class="card-collage-box triple" onclick="openProductDetail('${productId}')"><img src="${list[0]}" class="collage-img collage-main" alt=""><img src="${list[1]}" class="collage-img collage-sub-top" alt=""><img src="${list[2]}" class="collage-img collage-sub-bot" alt=""></div>`;
         }
       }
 
       function renderProductsGrid(products) {
         shopProductsContainer.innerHTML = '';
+        if (products.length === 0) {
+            shopProductsContainer.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; padding: 30px; color: #64748b;">За вашим запитом нічого не знайдено.</div>`;
+            return;
+        }
+
         products.forEach(item => {
           const card = document.createElement('div');
           card.className = 'product-card';
-          card.setAttribute('data-category', item.category);
-          card.setAttribute('data-subcategory', item.subcategory || '');
-          card.setAttribute('data-search', `${item.title} ${item.description}`.toLowerCase());
 
           const isOwnerOrAdmin = currentUser && (isAdminUser(currentUser.email) || currentUser.email === item.userEmail);
           const collageMarkup = renderCollageHtml(item.photosArray, item.id);
+          const pubDateFormatted = formatTimeAgo(item.createdAt);
 
           card.innerHTML = `
             <div>
@@ -1582,6 +1669,10 @@
               <button class="btn-view-ad" onclick="openProductDetail('${item.id}')">
                 <i class="fa-solid fa-eye"></i> Переглянути повністю
               </button>
+
+              <div style="font-size: 0.7rem; color: #64748b; margin-top: 6px; text-align: right; display: flex; justify-content: flex-end; align-items: center; gap: 4px;">
+                <i class="fa-regular fa-clock"></i> ${pubDateFormatted}
+              </div>
               
               ${isOwnerOrAdmin ? `
                 <div class="admin-actions">
@@ -1593,22 +1684,39 @@
           `;
           shopProductsContainer.appendChild(card);
         });
-        filterCards();
       }
 
       function filterCards() {
         const searchQuery = document.getElementById('shopSearch').value.toLowerCase();
-        document.querySelectorAll('.product-card').forEach(card => {
-          const cat = card.getAttribute('data-category');
-          const sub = card.getAttribute('data-subcategory');
-          const text = card.getAttribute('data-search');
+        const sortMethod = document.getElementById('sortFilter')?.value || 'newest';
+
+        let filtered = allProducts.filter(item => {
+          const cat = item.category || '';
+          const sub = item.subcategory || '';
+          const text = `${item.title} ${item.description}`.toLowerCase();
           const matchesFilter = (activeFilter === 'all' || cat === activeFilter || sub === activeFilter);
           const matchesSearch = text.includes(searchQuery);
-          card.style.display = (matchesFilter && matchesSearch) ? 'flex' : 'none';
+          return matchesFilter && matchesSearch;
         });
+
+        if (sortMethod === 'price_asc') {
+          filtered.sort((a, b) => a.price - b.price);
+        } else if (sortMethod === 'price_desc') {
+          filtered.sort((a, b) => b.price - a.price);
+        } else {
+          filtered.sort((a, b) => {
+            const ta = a.createdAt?.toMillis ? a.createdAt.toMillis() : 0;
+            const tb = b.createdAt?.toMillis ? b.createdAt.toMillis() : 0;
+            return tb - ta;
+          });
+        }
+
+        renderProductsGrid(filtered);
       }
 
       document.getElementById('shopSearch').addEventListener('input', filterCards);
+      document.getElementById('sortFilter')?.addEventListener('change', filterCards);
+      
       loadInitialListings();
     </script>
 </body>

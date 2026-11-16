@@ -2,7 +2,7 @@
 <html lang="uk">
 <head>
     <link rel="manifest" href="./manifest.json">
-    <meta name="theme-color" content="#0f172a">
+    <meta name="theme-color" content="#ffffff">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Дошка оголошень — Neoservice</title>
@@ -534,37 +534,37 @@
 </head>
 <body>
 
-    <!-- ШАПКА ЗІ СТАТИЧНИМИ КНОПКАМИ АВТОРИЗАЦІЇ (ВИДИМІ МИТТЄВО) -->
-    <header style="background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); color: white; padding: 12px 20px; border-bottom: 3px solid var(--olx-color);">
+    <!-- СВІТЛА ШАПКА ЗІ ЗБАЛАНСОВАНИМ ГОРИЗОНТАЛЬНИМ РОЗМІЩЕННЯМ -->
+    <header style="background: #ffffff; color: #1e293b; padding: 12px 20px; border-bottom: 2px solid #e2e8f0; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
       <div style="max-width: 1280px; margin: 0 auto; display: flex; flex-wrap: nowrap; align-items: center; justify-content: space-between; gap: 15px;">
         
-        <a href="shop.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: white; flex-shrink: 0;">
-          <div style="background: rgba(255, 255, 255, 0.15); border-radius: 10px; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem;">
+        <a href="shop.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: #0f172a; flex-shrink: 0;">
+          <div style="background: #e0f2fe; border-radius: 10px; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem;">
             📋
           </div>
           <div>
-            <div style="font-size: 1.2rem; font-weight: 900; letter-spacing: 0.8px; text-transform: uppercase; line-height: 1.1;">
-              NEO<span style="color: #60a5fa;">SERVICE</span>
+            <div style="font-size: 1.2rem; font-weight: 900; letter-spacing: 0.8px; text-transform: uppercase; line-height: 1.1; color: #0f172a;">
+              NEO<span style="color: var(--olx-color);">SERVICE</span>
             </div>
-            <div style="font-size: 0.7rem; color: #cbd5e1; margin-top: 1px;">
+            <div style="font-size: 0.7rem; color: #64748b; margin-top: 1px;">
               Дошка оголошень
             </div>
           </div>
         </a>
 
-        <!-- Пошук -->
-        <div style="flex: 1; max-width: 320px; min-width: 160px;">
+        <!-- Пошук у шапці -->
+        <div style="flex: 1; max-width: 340px; min-width: 160px;">
           <div style="position: relative; width: 100%;">
-            <span style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: #94a3b8; pointer-events: none; font-size: 0.8rem;">
+            <span style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: #64748b; pointer-events: none; font-size: 0.8rem;">
               <i class="fa-solid fa-magnifying-glass"></i>
             </span>
-            <input type="text" id="shopSearch" placeholder="Пошук оголошень..." style="width: 100%; box-sizing: border-box; padding: 7px 10px 7px 32px; font-size: 0.8rem; background: rgba(255, 255, 255, 0.15); color: white; border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 6px; outline: none;" />
+            <input type="text" id="shopSearch" placeholder="Пошук оголошень..." style="width: 100%; box-sizing: border-box; padding: 7px 10px 7px 32px; font-size: 0.8rem; background: #f8fafc; color: #1e293b; border: 1px solid #cbd5e1; border-radius: 6px; outline: none;" />
           </div>
         </div>
 
-        <!-- Кнопки авторизації за замовчуванням (оновлюються при вході) -->
+        <!-- Кнопки входу / реєстрації (або кабінет при авторизації) -->
         <div id="headerAuthArea" style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
-          <button onclick="openAuthModal('login')" style="background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 6px 12px; border-radius: 6px; font-size: 0.78rem; font-weight: bold; cursor: pointer;">
+          <button onclick="openAuthModal('login')" style="background: #f1f5f9; border: 1px solid #cbd5e1; color: #1e293b; padding: 6px 12px; border-radius: 6px; font-size: 0.78rem; font-weight: bold; cursor: pointer;">
             <i class="fa-solid fa-right-to-bracket"></i> Увійти
           </button>
           <button onclick="openAuthModal('register')" style="background: var(--olx-color); border: none; color: white; padding: 6px 12px; border-radius: 6px; font-size: 0.78rem; font-weight: bold; cursor: pointer;">
@@ -957,7 +957,7 @@
           if (adminRunningBannerBtn) adminRunningBannerBtn.style.display = 'none';
 
           headerAuthArea.innerHTML = `
-            <button onclick="openAuthModal('login')" style="background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 6px 12px; border-radius: 6px; font-size: 0.78rem; font-weight: bold; cursor: pointer;">
+            <button onclick="openAuthModal('login')" style="background: #f1f5f9; border: 1px solid #cbd5e1; color: #1e293b; padding: 6px 12px; border-radius: 6px; font-size: 0.78rem; font-weight: bold; cursor: pointer;">
               <i class="fa-solid fa-right-to-bracket"></i> Увійти
             </button>
             <button onclick="openAuthModal('register')" style="background: var(--olx-color); border: none; color: white; padding: 6px 12px; border-radius: 6px; font-size: 0.78rem; font-weight: bold; cursor: pointer;">
@@ -977,7 +977,7 @@
           }
 
           headerAuthArea.innerHTML = `
-            <button onclick="openCabinetModal()" style="background: var(--olx-color); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 6px 14px; border-radius: 6px; font-size: 0.78rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+            <button onclick="openCabinetModal()" style="background: var(--olx-color); border: 1px solid #cbd5e1; color: white; padding: 6px 14px; border-radius: 6px; font-size: 0.78rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 6px;">
               <i class="fa-solid fa-house" style="color: white;"></i> Власний кабінет
             </button>
           `;
@@ -1005,7 +1005,7 @@
         const dotsContainer = document.getElementById('sidebarBannerDots');
         if (dotsContainer) {
           dotsContainer.innerHTML = sidebarSlides.map((_, i) => `
-            <span onclick="goToSlide(${i}, event)" style="width: ${i === currentSlideIdx ? '16px' : '6px'}; height: 6px; background: ${i === currentSlideIdx ? 'white' : 'rgba(255,255,255,0.5)'}; border-radius: 3px; cursor: pointer;"></span>
+            <span onclick="goToSlide(${i}, event)" style="width: ${i === currentSlideIdx ? '16px' : '6px'}; height: 6px; background: ${i === currentSlideIdx ? '#1e3a8a' : '#cbd5e1'}; border-radius: 3px; cursor: pointer;"></span>
           `).join('');
         }
       }

@@ -231,6 +231,7 @@
             background: #f1f5f9;
             flex-shrink: 0;
         }
+        .ticker-item div { min-width: 0; }
 
         /* СЛАЙДЕР */
         .custom-slider-box {
@@ -276,7 +277,7 @@
         }
         .slider-cta-btn:hover { background: #b9372c; }
 
-        /* КАРТКИ ТОВАРУ */
+        /* КАРТКИ ТОВАРУ З КОЛАЖЕМ ТА ТАБЛИЦЕЮ */
         .market-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -303,6 +304,7 @@
             border-color: #cbd5e1;
         }
 
+        /* Стилі колажу фотографій у картці */
         .card-collage-box {
             display: grid;
             gap: 4px;
@@ -327,9 +329,21 @@
             transition: transform 0.2s;
         }
         .collage-img:hover { transform: scale(1.03); }
-        .collage-main { grid-column: 1 / 2; grid-row: 1 / -1; height: 100%; }
-        .collage-sub-top { grid-column: 2 / 3; grid-row: 1 / 2; height: 100%; }
-        .collage-sub-bot { grid-column: 2 / 3; grid-row: 2 / 3; height: 100%; }
+        .collage-main {
+            grid-column: 1 / 2;
+            grid-row: 1 / -1;
+            height: 100%;
+        }
+        .collage-sub-top {
+            grid-column: 2 / 3;
+            grid-row: 1 / 2;
+            height: 100%;
+        }
+        .collage-sub-bot {
+            grid-column: 2 / 3;
+            grid-row: 2 / 3;
+            height: 100%;
+        }
 
         .card-header-row {
             display: flex;
@@ -337,6 +351,7 @@
             align-items: center;
             margin-bottom: 6px;
         }
+
         .condition-badge {
             font-size: 0.68rem;
             background: #e0f2fe;
@@ -346,6 +361,7 @@
             font-weight: 800;
             text-transform: uppercase;
         }
+
         .card-category-sub {
             font-size: 0.7rem;
             color: #64748b;
@@ -379,6 +395,35 @@
             overflow: hidden;
             line-height: 1.3;
             height: 2.5em;
+        }
+
+        /* Таблиця характеристик (резюме позиції) */
+        .card-resume-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.73rem;
+            margin-bottom: 12px;
+            background: #f8fafc;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+        .card-resume-table td {
+            padding: 5px 8px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #334155;
+        }
+        .card-resume-table tr:last-child td { border-bottom: none; }
+        .card-resume-table td.label {
+            color: #64748b;
+            font-weight: 600;
+            width: 45%;
+            background: #f1f5f9;
+            border-right: 1px solid #e2e8f0;
+        }
+        .card-resume-table td.val {
+            font-weight: 700;
+            color: #0f172a;
         }
 
         .card-price-box {
@@ -416,6 +461,22 @@
         }
         .btn-view-ad:hover { background: #1a3c5a; }
 
+        .admin-actions {
+            display: flex;
+            gap: 4px;
+            margin-top: 6px;
+        }
+        .btn-sm-action {
+            flex: 1;
+            padding: 4px;
+            font-size: 0.7rem;
+            border-radius: 6px;
+            border: 1px solid #cbd5e1;
+            cursor: pointer;
+            font-weight: bold;
+            background: #f8fafc;
+        }
+
         /* ПОВНОЦІННА СТОРІНКА ДЕТАЛЕЙ */
         #productDetailView {
             display: none;
@@ -446,6 +507,12 @@
             font-weight: 700;
             width: 30%;
         }
+        .resume-table-full td {
+            background: #ffffff;
+            color: #0f172a;
+            font-weight: 600;
+        }
+
         .btn-primary {
             background: var(--olx-color);
             color: white;
@@ -462,30 +529,6 @@
         }
         .btn-primary:hover { background: #1a3c5a; }
 
-        /* АНІМАЦІЯ ПРИСУТНОСТІ (ONLINE) */
-        @keyframes pulse-green {
-            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
-            70% { box-shadow: 0 0 0 4px rgba(16, 185, 129, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
-        }
-        .status-online {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            background-color: #10b981;
-            border-radius: 50%;
-            animation: pulse-green 2s infinite;
-            margin-right: 4px;
-        }
-        .status-offline {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            background-color: #94a3b8;
-            border-radius: 50%;
-            margin-right: 4px;
-        }
-
         footer {
             text-align: center;
             padding: 20px;
@@ -497,7 +540,7 @@
 </head>
 <body>
 
-    <!-- ШАПКА З НЕПРОЗОРИМ СІРИМ ФОНОМ ТА РОЗМИВТЯМ -->
+    <!-- ШАПКА З НЕПРОЗОРИМ СІРИМ (80%) ФОНОМ ТА РОЗМИВТЯМ -->
     <header style="background: rgba(241, 245, 249, 0.80); backdrop-filter: blur(6px); color: #1e293b; padding: 12px 20px; border-bottom: 2px solid #cbd5e1; box-shadow: 0 2px 6px rgba(0,0,0,0.04);">
       <div style="max-width: 1280px; margin: 0 auto; display: flex; flex-wrap: nowrap; align-items: center; justify-content: space-between; gap: 15px;">
         
@@ -515,6 +558,7 @@
           </div>
         </a>
 
+        <!-- Пошук у шапці -->
         <div style="flex: 1; max-width: 340px; min-width: 160px;">
           <div style="position: relative; width: 100%;">
             <span style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: #64748b; pointer-events: none; font-size: 0.80rem;">
@@ -524,6 +568,7 @@
           </div>
         </div>
 
+        <!-- Кнопки входу та реєстрації за замовчуванням -->
         <div id="headerAuthArea" style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
           <button onclick="openAuthModal('login')" style="background: #ffffff; border: 1px solid #cbd5e1; color: #1e293b; padding: 6px 12px; border-radius: 6px; font-size: 0.78rem; font-weight: bold; cursor: pointer;">
             <i class="fa-solid fa-right-to-bracket"></i> Увійти
@@ -560,20 +605,11 @@
               <span id="adminStatusBadge" style="display: none; background: #fef3c7; color: #b45309; padding: 5px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: bold;">
                 <i class="fa-solid fa-shield-halved"></i> Модератор
               </span>
-              
-              <!-- НОВИЙ ФІЛЬТР СОРТУВАННЯ -->
-              <select id="sortFilter" style="background: #ffffff; border: 1px solid #cbd5e1; padding: 6px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; color: #334155; cursor: pointer; outline: none;">
-                <option value="newest">Новіші спочатку</option>
-                <option value="price_asc">Від дешевших</option>
-                <option value="price_desc">Від дорожчих</option>
-              </select>
-
-              <button id="resetFilterBtn" style="background: #e2e8f0; color: #334155; border: none; padding: 6px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; cursor: pointer;">
-                <i class="fa-solid fa-rotate-left"></i> Усі
-              </button>
-
               <button id="toggleFormBtn" class="btn-primary">
                 <i class="fa-solid fa-plus"></i> Подати оголошення
+              </button>
+              <button id="resetFilterBtn" style="background: #e2e8f0; color: #334155; border: none; padding: 6px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; cursor: pointer;">
+                <i class="fa-solid fa-rotate-left"></i> Усі оголошення
               </button>
             </div>
           </div>
@@ -591,12 +627,15 @@
                   <a id="sidebarBannerLink" href="commercial.html" target="_blank" class="block" style="text-decoration: none; color: inherit; display: block;">
                       <div class="custom-slide-img-wrap">
                           <img id="sidebarBannerImg" src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800" alt="Рекламний банер">
+                          
                           <div style="position: absolute; top: 10px; left: 10px; display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.95); padding: 3px 10px; border-radius: 20px; z-index: 10;">
                               <span style="width: 6px; height: 6px; background: #db4437; border-radius: 50%;"></span>
                               <span style="font-size: 10px; font-weight: 800; color: #1e293b; text-transform: uppercase;">Партнер</span>
                           </div>
+
                           <div id="sidebarBannerDots" style="position: absolute; top: 10px; right: 10px; display: flex; gap: 4px; background: rgba(0,0,0,0.4); padding: 4px 8px; border-radius: 12px; z-index: 10;"></div>
                       </div>
+
                       <div style="padding: 16px; background: white;">
                           <h4 id="sidebarBannerTitle" style="font-weight: 800; font-size: 1rem; color: #1e293b; margin: 0 0 4px 0;">Оцінка Нерухомості</h4>
                           <p id="sidebarBannerSubtitle" style="font-size: 0.8rem; color: #64748b; margin: 0; font-weight: 500;">Твоє місто</p>
@@ -605,14 +644,24 @@
                           </div>
                       </div>
                   </a>
-                  <button onClick="prevSidebarSlide(event)" style="position: absolute; left: 10px; top: 95px; background: rgba(255,255,255,0.9); border: 1px solid #cbd5e1; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10;"><i class="fa-solid fa-chevron-left text-xs"></i></button>
-                  <button onClick="nextSidebarSlide(event)" style="position: absolute; right: 14px; top: 95px; background: rgba(255,255,255,0.9); border: 1px solid #cbd5e1; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10;"><i class="fa-solid fa-chevron-right text-xs"></i></button>
-                  <button id="adminBannerSettingsBtn" style="display: none;" onClick="openBannerModal()" class="w-full py-2.5 bg-gray-50 hover:bg-gray-100 text-gray-700 font-bold text-xs flex items-center justify-center gap-1.5 border-t border-gray-200 transition-colors"><i class="fa-solid fa-sliders"></i> Керувати слайдером</button>
+
+                  <button onClick="prevSidebarSlide(event)" style="position: absolute; left: 10px; top: 95px; background: rgba(255,255,255,0.9); border: 1px solid #cbd5e1; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10;">
+                      <i class="fa-solid fa-chevron-left text-xs"></i>
+                  </button>
+                  <button onClick="nextSidebarSlide(event)" style="position: absolute; right: 14px; top: 95px; background: rgba(255,255,255,0.9); border: 1px solid #cbd5e1; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10;">
+                      <i class="fa-solid fa-chevron-right text-xs"></i>
+                  </button>
+
+                  <button id="adminBannerSettingsBtn" style="display: none;" onClick="openBannerModal()" class="w-full py-2.5 bg-gray-50 hover:bg-gray-100 text-gray-700 font-bold text-xs flex items-center justify-center gap-1.5 border-t border-gray-200 transition-colors">
+                      <i class="fa-solid fa-sliders"></i> Керувати слайдером
+                  </button>
               </div>
 
               <!-- БІГУЧА СТРІЧКА -->
               <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px; box-shadow: 0 2px 6px rgba(0,0,0,0.03); position: relative;">
-                <button id="adminRunningBannerBtn" style="display: none; position: absolute; top: 8px; right: 8px; z-index: 10; font-size: 0.72rem; background: #f1f5f9; border: 1px solid #cbd5e1; padding: 4px 10px; border-radius: 6px; cursor: pointer; font-weight: bold; color: #1e3a8a;" onclick="openRunningBannerModal()"><i class="fa-solid fa-gear"></i> Налаштувати</button>
+                <button id="adminRunningBannerBtn" style="display: none; position: absolute; top: 8px; right: 8px; z-index: 10; font-size: 0.72rem; background: #f1f5f9; border: 1px solid #cbd5e1; padding: 4px 10px; border-radius: 6px; cursor: pointer; font-weight: bold; color: #1e3a8a;" onclick="openRunningBannerModal()">
+                  <i class="fa-solid fa-gear"></i> Налаштувати
+                </button>
                 <div class="ticker-wrapper" style="margin-top: 4px;">
                   <div id="runningBannersTrack" class="ticker-track"></div>
                 </div>
@@ -622,27 +671,50 @@
           </div>
         </div>
 
-        <!-- МОДАЛЬНІ ВІКНА (Сховано для економії місця, залишено без змін) -->
-        <div id="bannerModal" style="display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.7); z-index: 9999; justify-content: center; align-items: center; padding: 15px;">...</div>
-        <div id="runningBannerModal" style="display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.7); z-index: 9999; justify-content: center; align-items: center; padding: 15px;">...</div>
+        <!-- МОДАЛЬНІ ВІКНА АДМІНІСТРУВАННЯ -->
+        <div id="bannerModal" style="display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.7); z-index: 9999; justify-content: center; align-items: center; padding: 15px;">
+          <div style="background: white; border-radius: 12px; max-width: 500px; width: 100%; padding: 24px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">
+              <h3 style="margin: 0; color: #1e3a8a; font-size: 1.1rem;"><i class="fa-solid fa-pen-to-square"></i> Керування слайдером</h3>
+              <button id="closeBannerModal" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #64748b;">&times;</button>
+            </div>
+            <div id="bannerAdminList" style="max-height: 300px; overflow-y: auto; margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px;"></div>
+            <div style="display: flex; justify-content: flex-end;"><button type="button" id="cancelBannerBtn" style="padding: 6px 12px; border-radius: 6px; border: 1px solid #cbd5e1; background: #f1f5f9; cursor: pointer; font-size: 0.8rem;">Закрити</button></div>
+          </div>
+        </div>
+
+        <div id="runningBannerModal" style="display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.7); z-index: 9999; justify-content: center; align-items: center; padding: 15px;">
+          <div style="background: white; border-radius: 12px; max-width: 500px; width: 100%; padding: 24px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">
+              <h3 style="margin: 0; color: #1e3a8a; font-size: 1.1rem;"><i class="fa-solid fa-bullhorn"></i> Керування бігучими банерами</h3>
+              <button onclick="document.getElementById('runningBannerModal').style.display='none'" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #64748b;">&times;</button>
+            </div>
+            <div id="runningBannerAdminList" style="max-height: 300px; overflow-y: auto; margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px;"></div>
+            <div style="display: flex; justify-content: flex-end;"><button type="button" onclick="document.getElementById('runningBannerModal').style.display='none'" style="padding: 6px 12px; border-radius: 6px; border: 1px solid #cbd5e1; background: #f1f5f9; cursor: pointer; font-size: 0.8rem;">Закрити</button></div>
+          </div>
+        </div>
 
         <!-- ФОРМА ПОДАЧІ / РЕДАГУВАННЯ ОГОЛОШЕННЯ -->
         <div id="newAdFormCard" style="display: none; background: white; border-radius: 12px; padding: 18px; margin-top: 15px; border: 2px dashed var(--olx-color); box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
           <h3 id="formHeading" style="margin-top: 0; color: #1e3a8a; font-size: 1rem;"><i class="fa-solid fa-rectangle-ad"></i> Створити нове оголошення</h3>
+          
           <form id="addListingForm" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
             <input type="hidden" id="editingDocId" />
             <div>
               <label style="font-size: 0.75rem; font-weight: bold; color: #475569;">Заголовок оголошення:</label>
               <input type="text" id="adTitle" maxlength="70" placeholder="Наприклад: Ноутбук Lenovo T14s" required style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; margin-top: 3px;" />
             </div>
+
             <div>
               <label style="font-size: 0.75rem; font-weight: bold; color: #475569;">Категорія:</label>
               <select id="adCategory" style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; margin-top: 3px; background: white;"></select>
             </div>
+
             <div>
               <label style="font-size: 0.75rem; font-weight: bold; color: #475569;">Підкатегорія:</label>
               <select id="adSubcategory" style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; margin-top: 3px; background: white;"></select>
             </div>
+
             <div>
               <label style="font-size: 0.75rem; font-weight: bold; color: #475569;">Стан:</label>
               <select id="adCondition" style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; margin-top: 3px; background: white;">
@@ -651,22 +723,27 @@
                 <option value="Відновлене">Відновлене</option>
               </select>
             </div>
+
             <div>
               <label style="font-size: 0.75rem; font-weight: bold; color: #475569;">Ціна (грн):</label>
               <input type="number" id="adPrice" placeholder="9999" required style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; margin-top: 3px;" />
             </div>
+
             <div>
               <label style="font-size: 0.75rem; font-weight: bold; color: #475569;">Телефон:</label>
               <input type="tel" id="adContact" placeholder="+380971234567" required style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; margin-top: 3px;" />
             </div>
+
             <div style="grid-column: 1 / -1;">
               <label style="font-size: 0.75rem; font-weight: bold; color: #475569;">Фотографії (посилання через кому для колажу):</label>
               <input type="text" id="adPhotos" placeholder="https://img1.jpg, https://img2.jpg, https://img3.jpg" required style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; margin-top: 3px;" />
             </div>
+
             <div style="grid-column: 1 / -1;">
               <label style="font-size: 0.75rem; font-weight: bold; color: #475569;">Детальний опис:</label>
               <textarea id="adDescription" rows="3" maxlength="800" placeholder="Опишіть характеристики, стан..." required style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; margin-top: 3px; font-family: inherit;"></textarea>
             </div>
+
             <div style="grid-column: 1 / -1; display: flex; justify-content: flex-end; gap: 8px;">
               <button type="button" id="cancelFormBtn" style="padding: 6px 12px; border-radius: 6px; border: 1px solid #cbd5e1; background: #f1f5f9; cursor: pointer; font-size: 0.8rem;">Скасувати</button>
               <button type="submit" class="btn-primary" style="padding: 6px 16px; font-size: 0.8rem;" id="submitFormBtn">Зберегти оголошення</button>
@@ -689,8 +766,49 @@
       </div>
 
       <!-- МОДАЛЬНІ ВІКНА АВТОРИЗАЦІЇ ТА КАБІНЕТУ -->
-      <div id="authModal" style="display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.7); z-index: 9999; justify-content: center; align-items: center; padding: 15px;">...</div>
-      <div id="cabinetModal" style="display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.7); z-index: 9999; justify-content: center; align-items: center; padding: 15px;">...</div>
+      <div id="authModal" style="display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.7); z-index: 9999; justify-content: center; align-items: center; padding: 15px;">
+        <div style="background: white; border-radius: 12px; max-width: 400px; width: 100%; padding: 24px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">
+            <h3 id="authModalTitle" style="margin: 0; color: #1e3a8a; font-size: 1.1rem;"><i class="fa-solid fa-user-lock"></i> Авторизація</h3>
+            <button onclick="document.getElementById('authModal').style.display='none'" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #64748b;">&times;</button>
+          </div>
+          <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+            <button type="button" id="tabLoginBtn" onclick="switchAuthTab('login')" style="flex: 1; padding: 8px; font-weight: bold; border-radius: 6px; border: 1px solid #cbd5e1; background: var(--olx-color); color: white; cursor: pointer; font-size: 0.8rem;">Вхід</button>
+            <button type="button" id="tabRegisterBtn" onclick="switchAuthTab('register')" style="flex: 1; padding: 8px; font-weight: bold; border-radius: 6px; border: 1px solid #cbd5e1; background: #f1f5f9; color: #334155; cursor: pointer; font-size: 0.8rem;">Реєстрація</button>
+          </div>
+          <form id="authModalForm" style="display: flex; flex-direction: column; gap: 10px;">
+            <div>
+              <label style="font-size: 0.75rem; font-weight: bold; color: #475569;">Email:</label>
+              <input type="email" id="modalAuthEmail" placeholder="your@email.com" required style="width: 100%; box-sizing: border-box; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.82rem; margin-top: 3px;" />
+            </div>
+            <div>
+              <label style="font-size: 0.75rem; font-weight: bold; color: #475569;">Пароль:</label>
+              <input type="password" id="modalAuthPassword" placeholder="••••••••" required style="width: 100%; box-sizing: border-box; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.82rem; margin-top: 3px;" />
+            </div>
+            <div id="modalAuthError" style="color: var(--danger); font-size: 0.75rem; display: none;"></div>
+            <button type="submit" id="modalAuthSubmitBtn" class="btn-primary" style="width: 100%; justify-content: center; padding: 10px; margin-top: 5px;">Увійти</button>
+          </form>
+        </div>
+      </div>
+
+      <div id="cabinetModal" style="display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.7); z-index: 9999; justify-content: center; align-items: center; padding: 15px;">
+        <div style="background: white; border-radius: 12px; max-width: 550px; width: 100%; padding: 24px; max-height: 80vh; overflow-y: auto;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">
+            <h3 style="margin: 0; color: #1e3a8a; font-size: 1.1rem;"><i class="fa-solid fa-house" style="color: #23527c;"></i> Власний кабінет</h3>
+            <button onclick="document.getElementById('cabinetModal').style.display='none'" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #64748b;">&times;</button>
+          </div>
+          <div style="margin-bottom: 15px; font-size: 0.85rem; color: #334155; background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0;">
+            <div><strong>Акаунт:</strong> <span id="cabinetUserEmail" style="color: var(--olx-color); font-weight: bold;"></span></div>
+            <div style="margin-top: 4px;">Роль: <span id="cabinetUserRole" style="font-weight: bold; color: #059669;">Користувач</span></div>
+          </div>
+          <h4 style="font-size: 0.9rem; color: #1e3a8a; margin-bottom: 10px; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px;">Мої оголошення</h4>
+          <div id="cabinetUserAdsList" style="display: flex; flex-direction: column; gap: 8px; max-height: 250px; overflow-y: auto;"></div>
+          <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px; border-top: 1px solid #e2e8f0; padding-top: 15px;">
+            <button type="button" onclick="document.getElementById('cabinetModal').style.display='none'" style="padding: 6px 14px; border-radius: 6px; border: 1px solid #cbd5e1; background: #f1f5f9; cursor: pointer; font-size: 0.8rem;">Закрити</button>
+            <button type="button" id="cabinetLogoutBtn" style="padding: 6px 14px; border-radius: 6px; border: none; background: var(--danger); color: white; cursor: pointer; font-size: 0.8rem; font-weight: bold;">Вийти з акаунта</button>
+          </div>
+        </div>
+      </div>
 
     </div>
 
@@ -704,7 +822,12 @@
       import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
       import { getFirestore, collection, addDoc, query, where, getDocs, orderBy, limit, startAfter, onSnapshot, doc, deleteDoc, updateDoc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-      const ALLOWED_ADMINS = ["admin@neoservice.ks.ua", "kostopilservice@gmail.com", "olegdriganec@gmail.com"];
+      const ALLOWED_ADMINS = [
+        "admin@neoservice.ks.ua",
+        "kostopilservice@gmail.com",
+        "olegdriganec@gmail.com"
+      ];
+      
       const FREE_ADS_LIMIT = 5;
       const PAGE_SIZE = 20;
 
@@ -727,42 +850,6 @@
         return ALLOWED_ADMINS.some(admin => admin.toLowerCase() === email.trim().toLowerCase());
       }
 
-      // Функція форматування дати українською
-      function formatTimeAgo(timestamp) {
-        if (!timestamp) return 'Нещодавно';
-        const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
-        const now = new Date();
-        const diffMs = now - date;
-        const diffMins = Math.floor(diffMs / 60000);
-        const diffHours = Math.floor(diffMs / 3600000);
-        const diffDays = Math.floor(diffMs / 86400000);
-
-        if (diffMins < 2) return 'Щойно';
-        if (diffMins < 60) return `${diffMins} хв. тому`;
-        if (diffHours < 24 && date.getDate() === now.getDate()) {
-          return `Сьогодні о ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
-        }
-        if (diffDays === 1 || (diffHours < 48 && date.getDate() === now.getDate() - 1)) {
-          return `Вчора о ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
-        }
-        return date.toLocaleDateString('uk-UA', { day: 'numeric', month: 'long', year: 'numeric' });
-      }
-
-      // Оновлення статусу присутності користувача в базі
-      async function updateUserPresence(user) {
-        if (!user) return;
-        const userRef = doc(db, "users", user.uid);
-        try {
-          await setDoc(userRef, {
-            email: user.email,
-            lastSeen: serverTimestamp(),
-            isOnline: true
-          }, { merge: true });
-        } catch (e) {
-          console.error("Помилка оновлення присутності:", e);
-        }
-      }
-
       let authMode = 'login';
       window.openAuthModal = function(mode = 'login') {
         authMode = mode;
@@ -772,59 +859,109 @@
         const regBtn = document.getElementById('tabRegisterBtn');
         
         if (mode === 'login') {
-          if (titleEl) titleEl.innerHTML = '<i class="fa-solid fa-user-lock"></i> Авторизація';
-          if (submitBtn) submitBtn.textContent = 'Увійти';
-          if (loginBtn) { loginBtn.style.background = 'var(--olx-color)'; loginBtn.style.color = 'white'; }
-          if (regBtn) { regBtn.style.background = '#f1f5f9'; regBtn.style.color = '#334155'; }
+          titleEl.innerHTML = '<i class="fa-solid fa-user-lock"></i> Авторизація';
+          submitBtn.textContent = 'Увійти';
+          loginBtn.style.background = 'var(--olx-color)';
+          loginBtn.style.color = 'white';
+          regBtn.style.background = '#f1f5f9';
+          regBtn.style.color = '#334155';
         } else {
-          if (titleEl) titleEl.innerHTML = '<i class="fa-solid fa-user-plus"></i> Реєстрація акаунта';
-          if (submitBtn) submitBtn.textContent = 'Зареєструватися';
-          if (regBtn) { regBtn.style.background = 'var(--olx-color)'; regBtn.style.color = 'white'; }
-          if (loginBtn) { loginBtn.style.background = '#f1f5f9'; loginBtn.style.color = '#334155'; }
+          titleEl.innerHTML = '<i class="fa-solid fa-user-plus"></i> Реєстрація акаунта';
+          submitBtn.textContent = 'Зареєструватися';
+          regBtn.style.background = 'var(--olx-color)';
+          regBtn.style.color = 'white';
+          loginBtn.style.background = '#f1f5f9';
+          loginBtn.style.color = '#334155';
         }
-        const errDiv = document.getElementById('modalAuthError');
-        if(errDiv) errDiv.style.display = 'none';
-        
-        const authModal = document.getElementById('authModal');
-        if (authModal) authModal.style.display = 'flex';
+        document.getElementById('modalAuthError').style.display = 'none';
+        document.getElementById('authModal').style.display = 'flex';
       }
 
       window.switchAuthTab = function(mode) { openAuthModal(mode); }
 
-      const authModalForm = document.getElementById('authModalForm');
-      if(authModalForm) {
-          authModalForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('modalAuthEmail').value;
-            const pass = document.getElementById('modalAuthPassword').value;
-            const errDiv = document.getElementById('modalAuthError');
-            errDiv.style.display = 'none';
+      document.getElementById('authModalForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('modalAuthEmail').value;
+        const pass = document.getElementById('modalAuthPassword').value;
+        const errDiv = document.getElementById('modalAuthError');
+        errDiv.style.display = 'none';
 
-            try {
-              if (authMode === 'login') {
-                await signInWithEmailAndPassword(auth, email, pass);
-              } else {
-                await createUserWithEmailAndPassword(auth, email, pass);
-                alert('Реєстрація успішна!');
-              }
-              document.getElementById('authModal').style.display = 'none';
-              document.getElementById('authModalForm').reset();
-            } catch (err) {
-              errDiv.textContent = 'Помилка: ' + err.message;
-              errDiv.style.display = 'block';
-            }
+        try {
+          if (authMode === 'login') {
+            await signInWithEmailAndPassword(auth, email, pass);
+          } else {
+            await createUserWithEmailAndPassword(auth, email, pass);
+            alert('Реєстрація успішна!');
+          }
+          document.getElementById('authModal').style.display = 'none';
+          document.getElementById('authModalForm').reset();
+        } catch (err) {
+          errDiv.textContent = 'Помилка: ' + err.message;
+          errDiv.style.display = 'block';
+        }
+      });
+
+      window.openCabinetModal = async function() {
+        if (!auth.currentUser) return;
+        document.getElementById('cabinetUserEmail').textContent = auth.currentUser.email;
+        const isAdm = isAdminUser(auth.currentUser.email);
+        document.getElementById('cabinetUserRole').textContent = isAdm ? 'Адміністратор / Модератор' : 'Користувач';
+        
+        const listContainer = document.getElementById('cabinetUserAdsList');
+        listContainer.innerHTML = '<p style="font-size: 0.8rem; color: #64748b;">Завантаження ваших оголошень...</p>';
+        document.getElementById('cabinetModal').style.display = 'flex';
+
+        try {
+          const q = query(collection(db, "shop_listings"), where("userEmail", "==", auth.currentUser.email));
+          const snapshot = await getDocs(q);
+          if (snapshot.empty) {
+            listContainer.innerHTML = '<p style="font-size: 0.8rem; color: #64748b;">У вас поки немає активних оголошень.</p>';
+            return;
+          }
+
+          listContainer.innerHTML = '';
+          snapshot.forEach(docSnap => {
+            const data = docSnap.data();
+            const div = document.createElement('div');
+            div.style.cssText = "display: flex; justify-content: space-between; align-items: center; background: #f8fafc; border: 1px solid #e2e8f0; padding: 8px 12px; border-radius: 6px;";
+            div.innerHTML = `
+              <div style="overflow: hidden;">
+                <div style="font-size: 0.8rem; font-weight: bold; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 260px;">${data.title}</div>
+                <div style="font-size: 0.72rem; color: #059669; font-weight: bold;">${data.price} ₴</div>
+              </div>
+              <div style="display: flex; gap: 4px;">
+                <button onclick="document.getElementById('cabinetModal').style.display='none'; editProduct('${docSnap.id}')" style="background: #f59e0b; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; cursor: pointer; font-weight: bold;"><i class="fa-solid fa-pen"></i></button>
+                <button onclick="document.getElementById('cabinetModal').style.display='none'; deleteProduct('${docSnap.id}')" style="background: var(--danger); color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; cursor: pointer;"><i class="fa-solid fa-trash"></i></button>
+              </div>
+            `;
+            listContainer.appendChild(div);
           });
+        } catch (e) {
+          listContainer.innerHTML = '<p style="font-size: 0.8rem; color: var(--danger);">Помилка завантаження.</p>';
+        }
       }
 
-      onAuthStateChanged(auth, async (user) => {
+      document.getElementById('cabinetLogoutBtn').addEventListener('click', async () => {
+        if (confirm('Ви дійсно хочете вийти з акаунта?')) {
+          await signOut(auth);
+          document.getElementById('cabinetModal').style.display = 'none';
+        }
+      });
+
+      onAuthStateChanged(auth, (user) => {
         currentUser = user;
         const toggleBtn = document.getElementById('toggleFormBtn');
         const adminBadge = document.getElementById('adminStatusBadge');
+        const adminBannerSettingsBtn = document.getElementById('adminBannerSettingsBtn');
+        const adminRunningBannerBtn = document.getElementById('adminRunningBannerBtn');
         const headerAuthArea = document.getElementById('headerAuthArea');
 
         if (!user) {
           toggleBtn.innerHTML = `<i class="fa-solid fa-lock"></i> Увійдіть для подачі`;
           adminBadge.style.display = 'none';
+          if (adminBannerSettingsBtn) adminBannerSettingsBtn.style.display = 'none';
+          if (adminRunningBannerBtn) adminRunningBannerBtn.style.display = 'none';
+
           headerAuthArea.innerHTML = `
             <button onclick="openAuthModal('login')" style="background: #ffffff; border: 1px solid #cbd5e1; color: #1e293b; padding: 6px 12px; border-radius: 6px; font-size: 0.78rem; font-weight: bold; cursor: pointer;">
               <i class="fa-solid fa-right-to-bracket"></i> Увійти
@@ -834,15 +971,17 @@
             </button>
           `;
         } else {
-          await updateUserPresence(user);
-          setInterval(() => updateUserPresence(user), 120000);
-
           toggleBtn.innerHTML = `<i class="fa-solid fa-plus"></i> Подати оголошення`;
           if (isAdminUser(user.email)) {
             adminBadge.style.display = 'inline-block';
+            if (adminBannerSettingsBtn) adminBannerSettingsBtn.style.display = 'flex';
+            if (adminRunningBannerBtn) adminRunningBannerBtn.style.display = 'block';
           } else {
             adminBadge.style.display = 'none';
+            if (adminBannerSettingsBtn) adminBannerSettingsBtn.style.display = 'none';
+            if (adminRunningBannerBtn) adminRunningBannerBtn.style.display = 'none';
           }
+
           headerAuthArea.innerHTML = `
             <button onclick="openCabinetModal()" style="background: var(--olx-color); border: 1px solid #cbd5e1; color: white; padding: 6px 14px; border-radius: 6px; font-size: 0.78rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 6px;">
               <i class="fa-solid fa-house" style="color: white;"></i> Власний кабінет
@@ -851,13 +990,186 @@
         }
       });
 
+      // Слайдери
+      let sidebarSlides = [
+        { image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800", title: "Оцінка Нерухомості", subtitle: "Твоє місто", link: "commercial.html", btnText: "Дізнатися більше" },
+        { image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800", title: "Продаж квартир та будинків", subtitle: "Найкращі пропозиції на ринку", link: "shop.html", btnText: "Переглянути" }
+      ];
+      let currentSlideIdx = 0;
+      let slideInterval = null;
+      const bannerDocRef = doc(db, "settings", "shop_slider_banner");
+
+      window.renderSidebarSlide = function() {
+        if (!sidebarSlides || sidebarSlides.length === 0) return;
+        const slide = sidebarSlides[currentSlideIdx];
+        document.getElementById('sidebarBannerImg').src = slide.image;
+        document.getElementById('sidebarBannerTitle').textContent = slide.title;
+        document.getElementById('sidebarBannerSubtitle').textContent = slide.subtitle;
+        document.getElementById('sidebarBannerLink').href = slide.link || '#';
+        document.getElementById('sidebarBannerBtnText').innerHTML = `${slide.btnText || 'Дізнатися більше'} <i class="fa-solid fa-arrow-right text-[11px] ml-1"></i>`;
+
+        const dotsContainer = document.getElementById('sidebarBannerDots');
+        if (dotsContainer) {
+          dotsContainer.innerHTML = sidebarSlides.map((_, i) => `
+            <span onclick="goToSlide(${i}, event)" style="width: ${i === currentSlideIdx ? '16px' : '6px'}; height: 6px; background: ${i === currentSlideIdx ? '#1e3a8a' : '#cbd5e1'}; border-radius: 3px; cursor: pointer;"></span>
+          `).join('');
+        }
+      }
+
+      window.nextSidebarSlide = function(e) { if(e) e.preventDefault(); currentSlideIdx = (currentSlideIdx + 1) % sidebarSlides.length; renderSidebarSlide(); resetTimer(); }
+      window.prevSidebarSlide = function(e) { if(e) e.preventDefault(); currentSlideIdx = (currentSlideIdx - 1 + sidebarSlides.length) % sidebarSlides.length; renderSidebarSlide(); resetTimer(); }
+      window.goToSlide = function(idx, e) { if(e) e.preventDefault(); currentSlideIdx = idx; renderSidebarSlide(); resetTimer(); }
+
+      function resetTimer() {
+        clearInterval(slideInterval);
+        slideInterval = setInterval(() => {
+          currentSlideIdx = (currentSlideIdx + 1) % sidebarSlides.length;
+          renderSidebarSlide();
+        }, 5000);
+      }
+
+      onSnapshot(bannerDocRef, async (docSnap) => {
+        if (docSnap.exists() && docSnap.data().slides) sidebarSlides = docSnap.data().slides;
+        else { try { await setDoc(bannerDocRef, { slides: sidebarSlides }); } catch (e) {} }
+        currentSlideIdx = 0; renderSidebarSlide(); resetTimer();
+      });
+
+      window.openBannerModal = async function() {
+        try {
+          const docSnap = await getDoc(bannerDocRef);
+          if (docSnap.exists() && docSnap.data().slides) sidebarSlides = docSnap.data().slides;
+        } catch (err) {}
+        renderAdminSlideList();
+        document.getElementById('bannerModal').style.display = 'flex';
+      }
+
+      function renderAdminSlideList() {
+        const listContainer = document.getElementById('bannerAdminList');
+        listContainer.innerHTML = sidebarSlides.map((slide, idx) => `
+          <div style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px; background: #f8fafc; display: flex; flex-direction: column; gap: 6px;">
+            <div style="font-weight: bold; font-size: 0.78rem; color: #1e3a8a;">Слайд #${idx + 1}</div>
+            <input type="text" placeholder="URL зображення" value="${slide.image || ''}" id="slideImg_${idx}" style="padding: 5px; font-size: 0.75rem; border: 1px solid #cbd5e1; border-radius: 4px;" />
+            <input type="text" placeholder="Заголовок" value="${slide.title || ''}" id="slideTitle_${idx}" style="padding: 5px; font-size: 0.75rem; border: 1px solid #cbd5e1; border-radius: 4px;" />
+            <input type="text" placeholder="Підзаголовок" value="${slide.subtitle || ''}" id="slideSub_${idx}" style="padding: 5px; font-size: 0.75rem; border: 1px solid #cbd5e1; border-radius: 4px;" />
+            <input type="text" placeholder="Посилання" value="${slide.link || ''}" id="slideLink_${idx}" style="padding: 5px; font-size: 0.75rem; border: 1px solid #cbd5e1; border-radius: 4px;" />
+            <div style="display: flex; gap: 5px;">
+              <button type="button" onclick="saveSlideItem(${idx})" style="flex: 1; background: var(--accent); color: white; border: none; padding: 5px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; cursor: pointer;">Зберегти</button>
+              <button type="button" onclick="deleteSlideItem(${idx})" style="background: var(--danger); color: white; border: none; padding: 5px 10px; border-radius: 4px; font-size: 0.75rem; cursor: pointer;"><i class="fa-solid fa-trash"></i></button>
+            </div>
+          </div>
+        `).join('') + `
+          <button type="button" onclick="addNewSlide()" style="background: var(--olx-color); color: white; border: none; padding: 8px; border-radius: 6px; font-size: 0.78rem; font-weight: bold; cursor: pointer; margin-top: 5px;">
+            <i class="fa-solid fa-plus"></i> Додати слайд
+          </button>
+        `;
+      }
+
+      window.saveSlideItem = async function(idx) {
+        sidebarSlides[idx].image = document.getElementById(`slideImg_${idx}`).value;
+        sidebarSlides[idx].title = document.getElementById(`slideTitle_${idx}`).value;
+        sidebarSlides[idx].subtitle = document.getElementById(`slideSub_${idx}`).value;
+        sidebarSlides[idx].link = document.getElementById(`slideLink_${idx}`).value;
+        try { await setDoc(bannerDocRef, { slides: sidebarSlides }); alert('Збережено!'); renderAdminSlideList(); } catch (err) {}
+      }
+      window.deleteSlideItem = async function(idx) {
+        if (sidebarSlides.length <= 1) { alert('Мінімум 1 слайд!'); return; }
+        sidebarSlides.splice(idx, 1);
+        try { await setDoc(bannerDocRef, { slides: sidebarSlides }); renderAdminSlideList(); } catch (err) {}
+      }
+      window.addNewSlide = async function() {
+        sidebarSlides.push({ image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800", title: "Новий слайд", subtitle: "Опис", link: "#", btnText: "Детальніше" });
+        try { await setDoc(bannerDocRef, { slides: sidebarSlides }); renderAdminSlideList(); } catch (err) {}
+      }
+      document.getElementById('closeBannerModal').addEventListener('click', () => document.getElementById('bannerModal').style.display = 'none');
+      document.getElementById('cancelBannerBtn').addEventListener('click', () => document.getElementById('bannerModal').style.display = 'none');
+
+      // Бігучі банери
+      let runningBanners = [
+        { text: "Автозапчастини", image: "https://images.unsplash.com/photo-1511919884226-fd3cad34687c?w=400", link: "auto.html" },
+        { text: "Ремонт електроніки", image: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=400", link: "baza.html" },
+        { text: "Нерухомість", image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400", link: "commercial.html" }
+      ];
+      const runningBannerDocRef = doc(db, "settings", "shop_running_banners");
+
+      onSnapshot(runningBannerDocRef, async (docSnap) => {
+        if (docSnap.exists() && docSnap.data().items) runningBanners = docSnap.data().items;
+        else { try { await setDoc(runningBannerDocRef, { items: runningBanners }); } catch (e) {} }
+        renderRunningBanners();
+      });
+
+      function renderRunningBanners() {
+        const track = document.getElementById('runningBannersTrack');
+        if (!track) return;
+        const html = runningBanners.map(item => `
+          <a href="${item.link || '#'}" target="_blank" class="ticker-item">
+            <img src="${item.image || 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=200'}" alt="">
+            <div style="overflow: hidden;">
+              <div style="font-size: 0.82rem; font-weight: bold; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.text}</div>
+              <div style="font-size: 0.68rem; color: #64748b; font-weight: bold; text-transform: uppercase;">Партнер проєкту</div>
+            </div>
+          </a>
+        `).join('');
+        track.innerHTML = html + html;
+      }
+
+      window.openRunningBannerModal = function() {
+        const container = document.getElementById('runningBannerAdminList');
+        container.innerHTML = runningBanners.map((item, idx) => `
+          <div style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px; background: #f8fafc; display: flex; flex-direction: column; gap: 6px;">
+            <div style="font-weight: bold; font-size: 0.78rem; color: #1e3a8a;">Банер #${idx + 1}</div>
+            <input type="text" placeholder="Текст" value="${item.text || ''}" id="rbText_${idx}" style="padding: 5px; font-size: 0.75rem; border: 1px solid #cbd5e1; border-radius: 4px;" />
+            <input type="text" placeholder="URL зображення" value="${item.image || ''}" id="rbImg_${idx}" style="padding: 5px; font-size: 0.75rem; border: 1px solid #cbd5e1; border-radius: 4px;" />
+            <input type="text" placeholder="Посилання" value="${item.link || ''}" id="rbLink_${idx}" style="padding: 5px; font-size: 0.75rem; border: 1px solid #cbd5e1; border-radius: 4px;" />
+            <div style="display: flex; gap: 5px;">
+              <button type="button" onclick="saveRunningBannerItem(${idx})" style="flex: 1; background: var(--accent); color: white; border: none; padding: 5px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; cursor: pointer;">Зберегти</button>
+              <button type="button" onclick="deleteRunningBannerItem(${idx})" style="background: var(--danger); color: white; border: none; padding: 5px 8px; border-radius: 4px; font-size: 0.75rem; cursor: pointer;"><i class="fa-solid fa-trash"></i></button>
+            </div>
+          </div>
+        `).join('') + `
+          <button type="button" onclick="addRunningBannerItem()" style="background: var(--olx-color); color: white; border: none; padding: 8px; border-radius: 6px; font-size: 0.78rem; font-weight: bold; cursor: pointer; margin-top: 5px;">
+            <i class="fa-solid fa-plus"></i> Додати банер
+          </button>
+        `;
+        document.getElementById('runningBannerModal').style.display = 'flex';
+      }
+
+      window.saveRunningBannerItem = async function(idx) {
+        runningBanners[idx].text = document.getElementById(`rbText_${idx}`).value;
+        runningBanners[idx].image = document.getElementById(`rbImg_${idx}`).value;
+        runningBanners[idx].link = document.getElementById(`rbLink_${idx}`).value;
+        try { await setDoc(runningBannerDocRef, { items: runningBanners }); alert('Збережено!'); openRunningBannerModal(); } catch (e) {}
+      }
+      window.deleteRunningBannerItem = async function(idx) {
+        if (runningBanners.length <= 1) { alert('Мінімум 1 банер!'); return; }
+        runningBanners.splice(idx, 1);
+        try { await setDoc(runningBannerDocRef, { items: runningBanners }); openRunningBannerModal(); } catch (e) {}
+      }
+      window.addRunningBannerItem = async function() {
+        runningBanners.push({ text: "Новий банер", image: "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=400", link: "#" });
+        try { await setDoc(runningBannerDocRef, { items: runningBanners }); openRunningBannerModal(); } catch (e) {}
+      }
+
       // Каталог
       const categoriesData = [
         { name: "Краса та здоров'я", icon: "fa-heart-pulse", sub: ["Догляд за волоссям", "Догляд за обличчям", "Парфумерія", "Манікюр"] },
         { name: "Товари для дому", icon: "fa-house", sub: ["Кухонне приладдя", "Посуд", "Освітлення", "Сантехніка"] },
         { name: "Одяг та взуття", icon: "fa-shirt", sub: ["Чоловічий одяг", "Жіночий одяг", "Взуття", "Аксесуари"] },
         { name: "Техніка та електроніка", icon: "fa-laptop", sub: ["Смартфони", "Комп'ютери", "Автономна енергетика", "Роутери"] },
-        { name: "Товари для дітей", icon: "fa-child-reaching", sub: ["Іграшки", "Дитячий транспорт", "Харчування"] }
+        { name: "Товари для дітей", icon: "fa-child-reaching", sub: ["Іграшки", "Дитячий транспорт", "Харчування"] },
+        { name: "Авто-, мото", icon: "fa-car-rear", sub: ["Автозапчастини", "Автоелектроніка", "Автоінструмент", "Диски та шини"] },
+        { name: "Подарунки, хобі, книги", icon: "fa-gift", sub: ["Подарунки", "Книги", "Настільні ігри"] },
+        { name: "Аксесуари та прикраси", icon: "fa-gem", sub: ["Ювелірні вироби", "Біжутерія", "Годинники"] },
+        { name: "Матеріали для ремонту", icon: "fa-hammer", sub: ["Електроінструмент", "Сантехніка", "Будматеріали"] },
+        { name: "Спорт і відпочинок", icon: "fa-person-biking", sub: ["Велосипеди", "Туризм", "Фітнес"] },
+        { name: "Дача, сад і город", icon: "fa-seedling", sub: ["Садовий інструмент", "Рослини", "Барбекю"] },
+        { name: "Канцтовари", icon: "fa-pen-ruler", sub: ["Папір та зошити", "Ручки та олівці", "Офісне приладдя", "Шкільні товари"] },
+        { name: "Спецодяг та взуття", icon: "fa-vest", sub: ["Робочий одяг", "Захисне взуття", "ЗІЗ", "Медичний одяг"] },
+        { name: "Весільні товари", icon: "fa-ring", sub: ["Весільні сукні", "Декор та флористика", "Аксесуари", "Запрошення"] },
+        { name: "Продукти харчування, напої", icon: "fa-basket-shopping", sub: ["Фермерські продукти", "Мед", "Кава та чай", "Бакалія"] },
+        { name: "Воєнторг", icon: "fa-shield-halved", sub: ["Тактичний одяг", "Берці", "Спорядження", "Оптика"] },
+        { name: "Інструменти", icon: "fa-screwdriver-wrench", sub: ["Ручний інструмент", "Електроінструмент", "Вимірювальні прилади", "Витратні матеріали"] },
+        { name: "Антикваріат і колекціонування", icon: "fa-landmark", sub: ["Монети", "Значки та марки", "Старовинні речі", "Вініл"] },
+        { name: "Будівництво", icon: "fa-trowel-bricks", sub: ["Сухі суміші", "Пиломатеріали", "Вікна та двері", "Металопрокат"] }
       ];
 
       const categoriesSidebar = document.getElementById('categoriesSidebar');
@@ -897,9 +1209,11 @@
           btn.className = `cat-item-btn ${index === 0 ? 'active' : ''}`;
           btn.innerHTML = `<span><i class="fa-solid ${cat.icon}" style="color: var(--olx-color); margin-right: 6px;"></i> ${cat.name}</span> <i class="fa-solid fa-chevron-right" style="font-size: 0.7rem; color: #94a3b8;"></i>`;
           
+          btn.addEventListener('mouseenter', () => selectCategory(cat.name));
           btn.addEventListener('click', () => { selectCategory(cat.name); activeFilter = cat.name; filterCards(); });
           categoriesSidebar.appendChild(btn);
         });
+
         populateSubSelect(categoriesData[0].name, adSubcategorySelect);
         adCategorySelect.addEventListener('change', (e) => populateSubSelect(e.target.value, adSubcategorySelect));
         renderSubcategories(categoriesData[0].name);
@@ -913,6 +1227,7 @@
       function renderSubcategories(catName) {
         const catObj = categoriesData.find(c => c.name === catName);
         if (!catObj) return;
+
         const chipsHtml = catObj.sub.map(s => `
           <button class="sub-chip ${activeFilter === s ? 'active' : ''}" data-sub="${s}">
             <i class="fa-solid fa-angle-right" style="font-size: 0.7rem;"></i> ${s}
@@ -928,11 +1243,15 @@
           </div>
           <div class="sub-grid">${chipsHtml}</div>
         `;
+
         subcategoriesContent.querySelectorAll('.sub-chip[data-sub]').forEach(chip => {
           chip.addEventListener('click', () => { activeFilter = chip.getAttribute('data-sub'); filterCards(); });
         });
+
         const allCatBtn = subcategoriesContent.querySelector('[data-cat-filter]');
-        if (allCatBtn) allCatBtn.addEventListener('click', () => { activeFilter = catObj.name; filterCards(); });
+        if (allCatBtn) {
+          allCatBtn.addEventListener('click', () => { activeFilter = catObj.name; filterCards(); });
+        }
       }
 
       initCatalog();
@@ -943,7 +1262,17 @@
 
       document.getElementById('toggleFormBtn').addEventListener('click', async () => {
         if (!currentUser) { alert('Будь ласка, увійдіть в акаунт!'); openAuthModal('login'); return; }
+        const editingId = document.getElementById('editingDocId').value;
+        if (!editingId && !isAdminUser(currentUser.email)) {
+          try {
+            const userAdsQuery = query(collection(db, "shop_listings"), where("userEmail", "==", currentUser.email));
+            const snapshot = await getDocs(userAdsQuery);
+            if (snapshot.size >= FREE_ADS_LIMIT) { alert(`Досягнуто безкоштовний ліміт у ${FREE_ADS_LIMIT} оголошень.`); return; }
+          } catch (err) {}
+        }
         document.getElementById('editingDocId').value = '';
+        document.getElementById('formHeading').innerHTML = '<i class="fa-solid fa-rectangle-ad"></i> Створити нове оголошення';
+        document.getElementById('submitFormBtn').textContent = 'Опублікувати';
         addListingForm.reset();
         newAdFormCard.style.display = newAdFormCard.style.display === 'none' ? 'block' : 'none';
         window.scrollTo(0, newAdFormCard.offsetTop - 50);
@@ -968,8 +1297,7 @@
           contact: document.getElementById('adContact').value,
           photosArray: photosArray,
           description: document.getElementById('adDescription').value,
-          userEmail: currentUser.email,
-          userId: currentUser.uid // ДОДАНО ЗБЕРЕЖЕННЯ ID ДЛЯ ПЕРЕВІРКИ СТАТУСУ
+          userEmail: currentUser.email
         };
 
         try {
@@ -982,17 +1310,54 @@
             alert('Опубліковано!');
           }
           addListingForm.reset();
+          document.getElementById('editingDocId').value = '';
           newAdFormCard.style.display = 'none';
           loadInitialListings();
         } catch (err) { alert('Помилка: ' + err.message); }
       });
 
-      // Детальна сторінка з Динамічним статусом Онлайн
+      window.deleteProduct = async function(docId) {
+        if (confirm('Видалити це оголошення?')) {
+          try {
+            await deleteDoc(doc(db, "shop_listings", docId));
+            document.getElementById('productDetailView').style.display = 'none';
+            document.getElementById('mainCatalogWrapper').style.display = 'block';
+            history.pushState({}, '', 'shop.html');
+            alert('Видалено!');
+            loadInitialListings();
+          } catch (err) {}
+        }
+      };
+
+      window.editProduct = function(docId) {
+        const item = allProducts.find(p => p.id === docId);
+        if (!item) return;
+        document.getElementById('editingDocId').value = item.id;
+        document.getElementById('formHeading').innerHTML = '<i class="fa-solid fa-pen-to-square"></i> Редагувати оголошення';
+        document.getElementById('submitFormBtn').textContent = 'Зберегти зміни';
+        document.getElementById('adTitle').value = item.title;
+        document.getElementById('adCategory').value = item.category;
+        populateSubSelect(item.category, adSubcategorySelect);
+        if (item.subcategory) document.getElementById('adSubcategory').value = item.subcategory;
+        document.getElementById('adCondition').value = item.condition || 'Б/В';
+        document.getElementById('adPrice').value = item.price;
+        document.getElementById('adContact').value = item.contact;
+        document.getElementById('adPhotos').value = (item.photosArray || []).join(', ');
+        document.getElementById('adDescription').value = item.description;
+
+        document.getElementById('productDetailView').style.display = 'none';
+        document.getElementById('mainCatalogWrapper').style.display = 'block';
+        newAdFormCard.style.display = 'block';
+        window.scrollTo(0, newAdFormCard.offsetTop - 50);
+      };
+
       window.openProductDetail = function(id, pushHistory = true) {
         const item = allProducts.find(p => p.id === id);
         if (!item) return;
 
-        if (pushHistory) { history.pushState({ id: id }, '', `shop.html?id=${id}`); }
+        if (pushHistory) {
+            history.pushState({ id: id }, '', `shop.html?id=${id}`);
+        }
 
         document.getElementById('mainCatalogWrapper').style.display = 'none';
         newAdFormCard.style.display = 'none';
@@ -1002,21 +1367,17 @@
         const photos = (item.photosArray && item.photosArray.length > 0) ? item.photosArray : ['https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=600&q=80'];
         const mainPhoto = photos[0];
         const isOwnerOrAdmin = currentUser && (isAdminUser(currentUser.email) || currentUser.email === item.userEmail);
-        const pubDateFormatted = formatTimeAgo(item.createdAt);
 
         let galleryHtml = `<div style="border-radius: 8px; overflow: hidden; background: #f8fafc; border: 1px solid #e2e8f0; height: 320px; margin-bottom: 10px;"><img src="${mainPhoto}" style="width: 100%; height: 100%; object-fit: cover;" alt="${item.title}"></div>`;
-        
+        if (photos.length > 1) {
+          galleryHtml += `<div style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 5px;">` + photos.map(p => `<img src="${p}" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; border: 1px solid #cbd5e1; cursor: pointer;" onclick="this.closest('#productDetailContent').querySelector('img').src='${p}'">`).join('') + `</div>`;
+        }
+
         document.getElementById('productDetailContent').innerHTML = `
           <div style="border-bottom: 2px solid #e2e8f0; padding-bottom: 15px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 15px;">
             <div>
               <div style="font-size: 0.75rem; color: #64748b; font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">Категорія: ${item.category} / ${item.subcategory || ''}</div>
               <h2 style="margin: 0; color: #1e3a8a; font-size: 1.4rem; font-weight: 800;">${item.title}</h2>
-              <div style="font-size: 0.75rem; color: #64748b; display: flex; gap: 15px; margin-top: 6px; align-items: center; flex-wrap: wrap;">
-                <span><i class="fa-regular fa-clock"></i> Опубліковано: ${pubDateFormatted}</span>
-                
-                <!-- КОНТЕЙНЕР ДЛЯ ДИНАМІЧНОГО СТАТУСУ -->
-                <span id="sellerOnlineStatus"><i class="status-offline"></i> Перевірка статусу...</span>
-              </div>
             </div>
             <div style="text-align: right;">
               <div style="font-size: 1.6rem; font-weight: 900; color: #0f172a;">${item.price.toLocaleString('uk-UA')} ₴</div>
@@ -1032,12 +1393,36 @@
                   <i class="fa-solid fa-phone"></i> <b>Зв'язатися: ${item.contact}</b>
                 </a>
               </div>
+
+              <div style="margin-top: 15px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px;">
+                <div style="font-size: 0.78rem; font-weight: 800; color: #1e3a8a; text-transform: uppercase; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                  <i class="fa-solid fa-shield-halved"></i> Стандарти безпеки сервісу
+                </div>
+                <div style="font-size: 0.75rem; color: #475569; display: flex; flex-direction: column; gap: 6px;">
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-check" style="color: #059669;"></i> Прямий контакт із власником без посередників
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-check" style="color: #059669;"></i> Перевірені дані та актуальний статус позиції
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-check" style="color: #059669;"></i> Підтримка регіонального технічного порталу
+                  </div>
+                </div>
+                <div style="margin-top: 12px; display: flex; gap: 6px;">
+                  <button onclick="navigator.clipboard.writeText(window.location.href); alert('Посилання на оголошення скопійовано в буфер обміну!');" style="flex: 1; background: #ffffff; border: 1px solid #cbd5e1; padding: 6px; border-radius: 6px; font-size: 0.72rem; font-weight: bold; color: #334155; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                    <i class="fa-solid fa-share-nodes"></i> Поділитися посиланням
+                  </button>
+                </div>
+              </div>
             </div>
 
             <div>
               <h4 style="margin: 0 0 10px 0; color: #1e3a8a; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.5px;">Паспорт позиції</h4>
               <table class="resume-table-full">
                 <tr><th>Найменування</th><td>${item.title}</td></tr>
+                <tr><th>Категорія</th><td>${item.category}</td></tr>
+                <tr><th>Підкатегорія</th><td>${item.subcategory || '—'}</td></tr>
                 <tr><th>Стан товару</th><td>${item.condition || 'Б/В'}</td></tr>
                 <tr><th>Вартість</th><td>${item.price.toLocaleString('uk-UA')} UAH</td></tr>
                 <tr><th>Автор</th><td>${item.userEmail || 'Приховано'}</td></tr>
@@ -1045,46 +1430,17 @@
 
               <h4 style="margin: 20px 0 8px 0; color: #1e3a8a; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.5px;">Опис / Характеристики</h4>
               <p style="font-size: 0.85rem; color: #334155; line-height: 1.6; margin: 0; white-space: pre-line; background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0;">${item.description}</p>
+              
+              ${isOwnerOrAdmin ? `
+                <div style="margin-top: 25px; border-top: 1px solid #e2e8f0; padding-top: 15px; display: flex; gap: 10px;">
+                  <button class="btn-primary" onclick="editProduct('${item.id}')" style="background: #f59e0b;"><i class="fa-solid fa-pen"></i> Редагувати</button>
+                  <button class="btn-primary" onclick="deleteProduct('${item.id}')" style="background: var(--danger);"><i class="fa-solid fa-trash"></i> Видалити</button>
+                </div>
+              ` : ''}
             </div>
           </div>
         `;
-        
         window.scrollTo(0, 0);
-
-        // Динамічний запит до бази для перевірки статусу продавця
-        setTimeout(async () => {
-            try {
-                let userDocRef = null;
-                if (item.userId) {
-                    userDocRef = doc(db, "users", item.userId);
-                } else if (item.userEmail) {
-                    const uq = query(collection(db, "users"), where("email", "==", item.userEmail));
-                    const usnap = await getDocs(uq);
-                    if (!usnap.empty) userDocRef = usnap.docs[0].ref;
-                }
-
-                const statusContainer = document.getElementById('sellerOnlineStatus');
-                if (userDocRef && statusContainer) {
-                    const uDoc = await getDoc(userDocRef);
-                    if (uDoc.exists()) {
-                        const data = uDoc.data();
-                        const now = Date.now();
-                        const lastSeenMs = data.lastSeen ? data.lastSeen.toMillis() : 0;
-                        const diffMins = (now - lastSeenMs) / 60000;
-                        
-                        if (data.isOnline && diffMins < 5) {
-                            statusContainer.innerHTML = `<span style="color: #059669; font-weight: bold;"><i class="status-online"></i> Продавець онлайн</span>`;
-                        } else {
-                            statusContainer.innerHTML = `<span style="color: #64748b;"><i class="status-offline"></i> Був(ла) нещодавно</span>`;
-                        }
-                    } else {
-                        statusContainer.innerHTML = `<span style="color: #64748b;"><i class="status-offline"></i> Немає в мережі</span>`;
-                    }
-                }
-            } catch (e) {
-                console.error("Помилка статусу", e);
-            }
-        }, 100);
       };
 
       document.getElementById('backToCatalogBtn').addEventListener('click', () => {
@@ -1102,49 +1458,119 @@
           if (!snapshot.empty) {
             lastVisibleDoc = snapshot.docs[snapshot.docs.length - 1];
             snapshot.forEach(docSnap => { allProducts.push({ id: docSnap.id, ...docSnap.data() }); });
-            filterCards(); // Викликаємо фільтрацію та рендер
+            renderProductsGrid(allProducts);
+            if (snapshot.docs.length === PAGE_SIZE) renderLoadMoreButton();
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const targetId = urlParams.get('id');
+            if (targetId) {
+              if (allProducts.some(p => p.id === targetId)) {
+                openProductDetail(targetId, false);
+              }
+            }
+
           } else {
-            shopProductsContainer.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; padding: 30px; color: #64748b;">Оголошень поки немає.</div>`;
+            shopProductsContainer.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; padding: 30px; color: #64748b;">Оголошень поки немає. Будьте першим!</div>`;
           }
         } catch (err) {
           shopProductsContainer.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; padding: 30px; color: var(--danger);">Помилка завантаження даних.</div>`;
         }
       }
 
+      window.loadMoreListings = async function() {
+        if (isLoadingMore || !lastVisibleDoc) return;
+        isLoadingMore = true;
+        const loadMoreBtn = document.getElementById('loadMoreBtn');
+        if (loadMoreBtn) loadMoreBtn.textContent = 'Завантаження...';
+        try {
+          const nextQuery = query(collection(db, "shop_listings"), orderBy("createdAt", "desc"), startAfter(lastVisibleDoc), limit(PAGE_SIZE));
+          const snapshot = await getDocs(nextQuery);
+          if (!snapshot.empty) {
+            lastVisibleDoc = snapshot.docs[snapshot.docs.length - 1];
+            snapshot.forEach(docSnap => { allProducts.push({ id: docSnap.id, ...docSnap.data() }); });
+            renderProductsGrid(allProducts);
+            if (snapshot.docs.length < PAGE_SIZE) { if (loadMoreBtn) loadMoreBtn.remove(); }
+            else { renderLoadMoreButton(); }
+          } else { if (loadMoreBtn) loadMoreBtn.remove(); }
+        } catch (e) {} finally { isLoadingMore = false; }
+      };
+
+      function renderLoadMoreButton() {
+        let loadMoreContainer = document.getElementById('loadMoreContainer');
+        if (!loadMoreContainer) {
+          loadMoreContainer = document.createElement('div');
+          loadMoreContainer.id = 'loadMoreContainer';
+          loadMoreContainer.style.cssText = "grid-column: 1 / -1; text-align: center; margin-top: 30px; margin-bottom: 20px;";
+          shopProductsContainer.after(loadMoreContainer);
+        }
+        loadMoreContainer.innerHTML = `
+          <button id="loadMoreBtn" onclick="loadMoreListings()" class="btn-primary" style="padding: 10px 25px; font-size: 0.9rem; cursor: pointer;">
+            <i class="fa-solid fa-rotate"></i> Завантажити ще 20 оголошень
+          </button>
+        `;
+      }
+
       function renderCollageHtml(photos, productId) {
         const list = (photos && photos.length > 0) ? photos : ['https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=300&q=80'];
+        
         if (list.length === 1) {
-          return `<div class="card-collage-box single" onclick="openProductDetail('${productId}')"><img src="${list[0]}" class="collage-img" alt=""></div>`;
+          return `
+            <div class="card-collage-box single" onclick="openProductDetail('${productId}')">
+              <img src="${list[0]}" class="collage-img" alt="">
+            </div>
+          `;
         } else if (list.length === 2) {
-          return `<div class="card-collage-box double" onclick="openProductDetail('${productId}')"><img src="${list[0]}" class="collage-img collage-main" alt=""><img src="${list[1]}" class="collage-img collage-sub-top" style="grid-column: 2/3; grid-row: 1/-1;" alt=""></div>`;
+          return `
+            <div class="card-collage-box double" onclick="openProductDetail('${productId}')">
+              <img src="${list[0]}" class="collage-img collage-main" alt="">
+              <img src="${list[1]}" class="collage-img collage-sub-top" style="grid-column: 2/3; grid-row: 1/-1;" alt="">
+            </div>
+          `;
         } else {
-          return `<div class="card-collage-box triple" onclick="openProductDetail('${productId}')"><img src="${list[0]}" class="collage-img collage-main" alt=""><img src="${list[1]}" class="collage-img collage-sub-top" alt=""><img src="${list[2]}" class="collage-img collage-sub-bot" alt=""></div>`;
+          return `
+            <div class="card-collage-box triple" onclick="openProductDetail('${productId}')">
+              <img src="${list[0]}" class="collage-img collage-main" alt="">
+              <img src="${list[1]}" class="collage-img collage-sub-top" alt="">
+              <img src="${list[2]}" class="collage-img collage-sub-bot" alt="">
+            </div>
+          `;
         }
       }
 
       function renderProductsGrid(products) {
         shopProductsContainer.innerHTML = '';
-        if (products.length === 0) {
-            shopProductsContainer.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; padding: 30px; color: #64748b;">За вашим запитом нічого не знайдено.</div>`;
-            return;
-        }
-
         products.forEach(item => {
           const card = document.createElement('div');
           card.className = 'product-card';
-          const pubDateFormatted = formatTimeAgo(item.createdAt);
+          card.setAttribute('data-category', item.category);
+          card.setAttribute('data-subcategory', item.subcategory || '');
+          card.setAttribute('data-search', `${item.title} ${item.description}`.toLowerCase());
+
+          const isOwnerOrAdmin = currentUser && (isAdminUser(currentUser.email) || currentUser.email === item.userEmail);
+          const collageMarkup = renderCollageHtml(item.photosArray, item.id);
 
           card.innerHTML = `
             <div>
-              ${renderCollageHtml(item.photosArray, item.id)}
+              ${collageMarkup}
 
               <div class="card-header-row">
                 <span class="condition-badge">${item.condition || 'Б/В'}</span>
-                <span class="card-category-sub">${item.subcategory || item.category}</span>
+                <span class="card-category-sub" title="${item.subcategory || item.category}">${item.subcategory || item.category}</span>
               </div>
 
-              <div class="card-title" onclick="openProductDetail('${item.id}')">${item.title}</div>
-              <div class="card-desc-short">${item.description || 'Без опису...'}</div>
+              <div class="card-title" onclick="openProductDetail('${item.id}')" title="${item.title}">${item.title}</div>
+              <div class="card-desc-short" title="${item.description || ''}">${item.description || 'Без додаткового опису...'}</div>
+
+              <table class="card-resume-table">
+                <tr>
+                  <td class="label">Наявність</td>
+                  <td class="val" style="color: #059669;">Готово до замовлення</td>
+                </tr>
+                <tr>
+                  <td class="label">Зв'язок</td>
+                  <td class="val">${item.contact || 'В описі'}</td>
+                </tr>
+              </table>
             </div>
 
             <div>
@@ -1156,50 +1582,33 @@
               <button class="btn-view-ad" onclick="openProductDetail('${item.id}')">
                 <i class="fa-solid fa-eye"></i> Переглянути повністю
               </button>
-
-              <!-- ДАТА ПУБЛІКАЦІЇ В КАРТЦІ -->
-              <div style="font-size: 0.7rem; color: #64748b; margin-top: 8px; text-align: right; display: flex; justify-content: flex-end; align-items: center; gap: 4px;">
-                <i class="fa-regular fa-clock"></i> ${pubDateFormatted}
-              </div>
+              
+              ${isOwnerOrAdmin ? `
+                <div class="admin-actions">
+                  <button class="btn-sm-action" onclick="editProduct('${item.id}')" style="background: #f59e0b; color: white;"><i class="fa-solid fa-pen"></i> Ред.</button>
+                  <button class="btn-sm-action" onclick="deleteProduct('${item.id}')" style="background: var(--danger); color: white;"><i class="fa-solid fa-trash"></i> Вид.</button>
+                </div>
+              ` : ''}
             </div>
           `;
           shopProductsContainer.appendChild(card);
         });
+        filterCards();
       }
 
-      // ЛОГІКА СОРТУВАННЯ ТА ФІЛЬТРАЦІЇ
-      window.filterCards = function() {
+      function filterCards() {
         const searchQuery = document.getElementById('shopSearch').value.toLowerCase();
-        const sortMethod = document.getElementById('sortFilter').value;
-        
-        let filtered = allProducts.filter(item => {
-            const cat = item.category || '';
-            const sub = item.subcategory || '';
-            const text = `${item.title} ${item.description}`.toLowerCase();
-            const matchesFilter = (activeFilter === 'all' || cat === activeFilter || sub === activeFilter);
-            const matchesSearch = text.includes(searchQuery);
-            return matchesFilter && matchesSearch;
+        document.querySelectorAll('.product-card').forEach(card => {
+          const cat = card.getAttribute('data-category');
+          const sub = card.getAttribute('data-subcategory');
+          const text = card.getAttribute('data-search');
+          const matchesFilter = (activeFilter === 'all' || cat === activeFilter || sub === activeFilter);
+          const matchesSearch = text.includes(searchQuery);
+          card.style.display = (matchesFilter && matchesSearch) ? 'flex' : 'none';
         });
-        
-        if (sortMethod === 'price_asc') {
-            filtered.sort((a, b) => a.price - b.price);
-        } else if (sortMethod === 'price_desc') {
-            filtered.sort((a, b) => b.price - a.price);
-        } else {
-            // newest
-            filtered.sort((a, b) => {
-                const ta = a.createdAt?.toMillis ? a.createdAt.toMillis() : 0;
-                const tb = b.createdAt?.toMillis ? b.createdAt.toMillis() : 0;
-                return tb - ta;
-            });
-        }
-        
-        renderProductsGrid(filtered);
       }
 
       document.getElementById('shopSearch').addEventListener('input', filterCards);
-      document.getElementById('sortFilter').addEventListener('change', filterCards);
-      
       loadInitialListings();
     </script>
 </body>

@@ -15,8 +15,8 @@
     <style>
         :root {
             --primary: #1e3a8a;
-            --olx-color: #23527c;
-            --accent: #10b981;
+            --olx-color: #334155;
+            --accent: #0f172a;
             --danger: #ef4444;
             --bg: #f8fafc;
             --card-bg: #ffffff;
@@ -36,7 +36,7 @@
             justify-content: center;
             background: #0f172a;
             overflow-x: auto;
-            border-bottom: 2px solid var(--olx-color);
+            border-bottom: 2px solid #334155;
         }
         nav a {
             color: white;
@@ -47,7 +47,7 @@
             font-weight: 600;
             transition: background 0.2s;
         }
-        nav a:hover { background-color: var(--olx-color); }
+        nav a:hover { background-color: #334155; }
 
         .container {
             max-width: 1280px;
@@ -79,7 +79,7 @@
         .catalog-title {
             font-size: 1rem;
             font-weight: bold;
-            color: #1e3a8a;
+            color: #0f172a;
             display: flex;
             align-items: center;
             gap: 10px;
@@ -121,12 +121,13 @@
             transition: all 0.2s;
         }
         .cat-item-btn:hover, .cat-item-btn.active {
-            background: #e0f2fe;
-            color: var(--olx-color);
+            background: #f1f5f9;
+            color: #0f172a;
             padding-left: 20px;
         }
         .cat-item-btn.active {
-            border-left: 4px solid var(--olx-color);
+            border-left: 4px solid #0f172a;
+            font-weight: 700;
         }
 
         .subcategories-panel {
@@ -140,7 +141,7 @@
         .subcategories-header {
             font-size: 1rem;
             font-weight: bold;
-            color: #1e3a8a;
+            color: #0f172a;
             border-bottom: 2px solid #e2e8f0;
             padding-bottom: 8px;
             margin-bottom: 10px;
@@ -174,12 +175,12 @@
             gap: 6px;
         }
         .sub-chip:hover, .sub-chip.active {
-            background: var(--olx-color);
+            background: #334155;
             color: white;
-            border-color: var(--olx-color);
+            border-color: #334155;
         }
 
-        /* ЗБІЛЬШЕНІ ТА ЗРУЧНІ КАРТКИ БІГУЧОЇ СТРІЧКИ */
+        /* БІГУЧА СТРІЧКА */
         .ticker-wrapper {
             overflow: hidden;
             width: 100%;
@@ -210,27 +211,24 @@
             padding: 12px 16px;
             min-width: 280px;
             text-decoration: none;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
             transition: all 0.2s;
         }
         .ticker-item:hover {
-            border-color: var(--olx-color);
+            border-color: #94a3b8;
             transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(35, 82, 124, 0.1);
         }
         .ticker-item img {
             width: 56px;
             height: 56px;
             object-fit: cover;
-            border-radius: 10px;
+            border-radius: 8px;
             background: #f1f5f9;
             flex-shrink: 0;
         }
-        .ticker-item div {
-            min-width: 0;
-        }
+        .ticker-item div { min-width: 0; }
 
-        /* СЛАЙДЕР НА ВСЮ ШИРИНУ */
+        /* СЛАЙДЕР */
         .custom-slider-box {
             background: white;
             border: 1px solid #e2e8f0;
@@ -244,7 +242,7 @@
         .custom-slide-img-wrap {
             width: 100%;
             height: 210px;
-            background: #0f172a;
+            background: #1e293b;
             position: relative;
             display: flex;
             align-items: center;
@@ -263,7 +261,7 @@
             gap: 6px;
             width: 100%;
             box-sizing: border-box;
-            background: #db4437;
+            background: #475569;
             color: white;
             padding: 9px 14px;
             border-radius: 8px;
@@ -272,107 +270,158 @@
             text-align: center;
             transition: background 0.2s;
         }
-        .slider-cta-btn:hover {
-            background: #b9372c;
-        }
+        .slider-cta-btn:hover { background: #334155; }
 
-        /* ОСНОВНА СІТКА ОГОЛОШЕНЬ */
+        /* СУЧАСНІ КАРТКИ ТОВАРУ У СТИЛІ РЕЗЮМЕ (СІРО-БІЛІ ВІДТІНКИ) */
         .market-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 16px;
             margin-top: 25px;
         }
 
         .product-card {
-            background: var(--card-bg);
-            border-radius: 10px;
-            padding: 12px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 14px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
             border: 1px solid #e2e8f0;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            min-height: 410px;
             box-sizing: border-box;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: all 0.2s ease;
             position: relative;
         }
         .product-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
             border-color: #cbd5e1;
         }
 
         .card-img-wrap {
-            height: 140px;
-            border-radius: 6px;
+            height: 150px;
+            border-radius: 8px;
             overflow: hidden;
-            background: #f1f5f9;
+            background: #f8fafc;
+            border: 1px solid #f1f5f9;
             cursor: pointer;
             position: relative;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
         .card-img-wrap img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.2s;
+            transition: transform 0.3s;
         }
         .card-img-wrap img:hover { transform: scale(1.03); }
 
-        .card-title {
-            font-size: 0.84rem;
-            margin: 0 0 4px 0;
-            color: #1e293b;
-            font-weight: 700;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            cursor: pointer;
-        }
-        .card-title:hover { color: var(--olx-color); text-decoration: underline; }
-
-        .card-desc-short {
-            font-size: 0.75rem;
-            color: #64748b;
-            margin: 0 0 8px 0;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            line-height: 1.3;
-            height: 2.6em;
+        .card-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
         }
 
         .condition-badge {
             font-size: 0.68rem;
             background: #f1f5f9;
             color: #475569;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-weight: bold;
-            display: inline-block;
-            margin-bottom: 6px;
+            border: 1px solid #e2e8f0;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
         }
 
-        .card-price {
-            font-size: 1.1rem;
+        .card-category-sub {
+            font-size: 0.7rem;
+            color: #64748b;
+            font-weight: 600;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .card-title {
+            font-size: 0.88rem;
+            margin: 4px 0 8px 0;
+            color: #0f172a;
+            font-weight: 700;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            cursor: pointer;
+            line-height: 1.35;
+        }
+        .card-title:hover { color: #334155; text-decoration: underline; }
+
+        /* МІНІ-ТАБЛИЦЯ ХАРАКТЕРИСТИК У КАРТЦІ */
+        .resume-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.74rem;
+            margin-bottom: 12px;
+            background: #f8fafc;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+        .resume-table td {
+            padding: 5px 8px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #334155;
+        }
+        .resume-table tr:last-child td {
+            border-bottom: none;
+        }
+        .resume-table td.label {
+            color: #64748b;
+            font-weight: 600;
+            width: 40%;
+            background: #f1f5f9;
+            border-right: 1px solid #e2e8f0;
+        }
+        .resume-table td.val {
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .card-price-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f8fafc;
+            padding: 8px 10px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 10px;
+        }
+        .card-price-label {
+            font-size: 0.7rem;
+            color: #64748b;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .card-price-val {
+            font-size: 1.05rem;
             font-weight: 800;
             color: #0f172a;
-            margin-bottom: 8px;
+            letter-spacing: -0.3px;
         }
 
         .btn-view-ad {
-            background: var(--olx-color);
+            background: #334155;
             color: white;
             border: none;
             padding: 8px;
-            border-radius: 6px;
-            font-weight: bold;
+            border-radius: 8px;
+            font-weight: 700;
             cursor: pointer;
-            font-size: 0.8rem;
+            font-size: 0.78rem;
             width: 100%;
             display: inline-flex;
             align-items: center;
@@ -381,7 +430,7 @@
             transition: background 0.2s;
             text-decoration: none;
         }
-        .btn-view-ad:hover { background: #1a3c5a; }
+        .btn-view-ad:hover { background: #0f172a; }
 
         .admin-actions {
             display: flex;
@@ -392,13 +441,17 @@
             flex: 1;
             padding: 4px;
             font-size: 0.7rem;
-            border-radius: 4px;
-            border: none;
+            border-radius: 6px;
+            border: 1px solid #cbd5e1;
             cursor: pointer;
-            font-weight: bold;
+            font-weight: 700;
+            background: #f8fafc;
+            color: #334155;
+            transition: all 0.2s;
         }
+        .btn-sm-action:hover { background: #e2e8f0; }
 
-        /* БЛОК "НОВІ ОГОЛОШЕННЯ" ПІД ФУТЕРОМ */
+        /* БЛОК "НОВІ ОГОЛОШЕННЯ" */
         .sync-new-section-bottom {
             background: white;
             border: 1px solid #cbd5e1;
@@ -418,7 +471,7 @@
         .sync-new-title {
             font-size: 1.05rem;
             font-weight: 800;
-            color: #1e3a8a;
+            color: #0f172a;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             display: flex;
@@ -428,38 +481,73 @@
         .sync-live-dot {
             width: 10px;
             height: 10px;
-            background: var(--accent);
+            background: #10b981;
             border-radius: 50%;
             display: inline-block;
             box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.2);
         }
 
-        /* ПОВНОЦІННА СТОРІНКА ОГОЛОШЕННЯ */
+        /* ПОВНОЦІННА СТОРІНКА ДЕТАЛЕЙ (РЕЗЮМЕ ТОВАРУ) */
         #productDetailView {
             display: none;
             background: white;
             border-radius: 12px;
-            padding: 25px;
+            padding: 30px;
             margin-top: 20px;
             border: 1px solid #e2e8f0;
             box-shadow: 0 4px 12px rgba(0,0,0,0.04);
         }
+        .resume-profile-header {
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .resume-table-full {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 0.85rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .resume-table-full th, .resume-table-full td {
+            padding: 10px 14px;
+            border-bottom: 1px solid #e2e8f0;
+            text-align: left;
+        }
+        .resume-table-full th {
+            background: #f1f5f9;
+            color: #334155;
+            font-weight: 700;
+            width: 30%;
+        }
+        .resume-table-full td {
+            background: #ffffff;
+            color: #0f172a;
+            font-weight: 600;
+        }
 
         .btn-primary {
-            background: var(--olx-color);
+            background: #334155;
             color: white;
             border: none;
-            padding: 7px 14px;
+            padding: 8px 16px;
             border-radius: 8px;
-            font-weight: bold;
+            font-weight: 700;
             cursor: pointer;
-            font-size: 0.78rem;
+            font-size: 0.8rem;
             display: inline-flex;
             align-items: center;
             gap: 6px;
             transition: background 0.2s;
         }
-        .btn-primary:hover { background: #1a3c5a; }
+        .btn-primary:hover { background: #0f172a; }
 
         footer {
             text-align: center;
@@ -472,20 +560,19 @@
 </head>
 <body>
 
-    <!-- ШАПКА З ЛОГОТИПОМ NEOSERVICE ТА КНОПКАМИ АВТОРИЗАЦІЇ / КАБІНЕТУ -->
-    <header style="background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); color: white; padding: 14px 20px; border-bottom: 3px solid var(--olx-color);">
+    <!-- ШАПКА -->
+    <header style="background: linear-gradient(135deg, #0f172a 0%, #334155 100%); color: white; padding: 14px 20px; border-bottom: 3px solid #1e293b;">
       <div style="max-width: 1280px; margin: 0 auto; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 15px;">
         
-        <!-- ЛОГОТИП NEOSERVICE -->
         <a href="shop.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none; color: white;">
           <div style="background: rgba(255, 255, 255, 0.15); border-radius: 12px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">
             📋
           </div>
           <div>
             <div style="font-size: 1.3rem; font-weight: 900; letter-spacing: 0.8px; text-transform: uppercase; line-height: 1.1;">
-              NEO<span style="color: #60a5fa;">SERVICE</span>
+              NEO<span style="color: #cbd5e1;">SERVICE</span>
             </div>
-            <div style="font-size: 0.74rem; color: #cbd5e1; margin-top: 2px;">
+            <div style="font-size: 0.74rem; color: #94a3b8; margin-top: 2px;">
               Дошка приватних оголошень
             </div>
           </div>
@@ -501,10 +588,7 @@
           </div>
         </div>
 
-        <!-- КНОПКА КАБІНЕТУ / ВХОДУ В ШАПЦІ -->
-        <div id="headerAuthArea" style="display: flex; align-items: center; gap: 10px;">
-          <!-- Динамічно заповнюється скриптом залежно від входу -->
-        </div>
+        <div id="headerAuthArea" style="display: flex; align-items: center; gap: 10px;"></div>
 
       </div>
     </header>
@@ -514,7 +598,7 @@
         <a href="index.html"><i class="fa-solid fa-house"></i> Головна</a>
         <a href="baza.html"><i class="fa-solid fa-book-open"></i> База знань</a>
         <a href="auto.html"><i class="fa-solid fa-car"></i> Автомаркет</a>
-        <a href="shop.html" style="background-color: var(--olx-color);"><i class="fa-solid fa-rectangle-ad"></i> Дошка оголошень</a>
+        <a href="shop.html" style="background-color: #334155;"><i class="fa-solid fa-rectangle-ad"></i> Дошка оголошень</a>
         <a href="sport.html"><i class="fa-solid fa-football"></i> Спорт</a>
         <a href="chat.html"><i class="fa-solid fa-comments"></i> Чат</a>
     </nav>
@@ -523,21 +607,20 @@
       
       <!-- ГОЛОВНИЙ КАТАЛОГ -->
       <div id="mainCatalogWrapper">
-        <!-- КАТЕГОРІЇ ТА ПІДРОЗДІЛИ -->
         <div class="catalog-container">
           <div class="catalog-top-bar">
             <h3 class="catalog-title">
-              <i class="fa-solid fa-layer-group" style="color: var(--olx-color);"></i> Категорії оголошень
+              <i class="fa-solid fa-layer-group" style="color: #334155;"></i> Категорії оголошень
             </h3>
             
             <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
-              <span id="adminStatusBadge" style="display: none; background: #fef3c7; color: #b45309; padding: 5px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: bold;">
+              <span id="adminStatusBadge" style="display: none; background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 700;">
                 <i class="fa-solid fa-shield-halved"></i> Модератор
               </span>
               <button id="toggleFormBtn" class="btn-primary">
                 <i class="fa-solid fa-plus"></i> Подати оголошення
               </button>
-              <button id="resetFilterBtn" style="background: #e2e8f0; color: #334155; border: none; padding: 6px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; cursor: pointer;">
+              <button id="resetFilterBtn" style="background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; padding: 6px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; cursor: pointer;">
                 <i class="fa-solid fa-rotate-left"></i> Усі оголошення
               </button>
             </div>
@@ -547,20 +630,20 @@
             <!-- Ліва колонка: Категорії -->
             <div class="categories-sidebar" id="categoriesSidebar"></div>
             
-            <!-- Права колонка: Підкатегорії + Слайдер + Бігуча стрічка -->
+            <!-- Права колонка -->
             <div class="subcategories-panel">
               <div>
                 <div id="subcategoriesContent"></div>
               </div>
 
-              <!-- РЕКЛАМНИЙ СЛАЙДЕР -->
+              <!-- СЛАЙДЕР -->
               <div class="custom-slider-box" id="sidebarBannerContainer">
                   <a id="sidebarBannerLink" href="commercial.html" target="_blank" class="block" style="text-decoration: none; color: inherit; display: block;">
                       <div class="custom-slide-img-wrap">
                           <img id="sidebarBannerImg" src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800" alt="Рекламний банер">
                           
                           <div style="position: absolute; top: 10px; left: 10px; display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.95); padding: 3px 10px; border-radius: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); z-index: 10;">
-                              <span style="width: 6px; height: 6px; background: #db4437; border-radius: 50%;"></span>
+                              <span style="width: 6px; height: 6px; background: #334155; border-radius: 50%;"></span>
                               <span style="font-size: 10px; font-weight: 800; color: #1e293b; text-transform: uppercase;">Партнер</span>
                           </div>
 
@@ -583,21 +666,21 @@
                       </div>
                   </a>
 
-                  <button onClick="prevSidebarSlide(event)" style="position: absolute; left: 10px; top: 95px; background: rgba(255,255,255,0.9); border: 1px solid #cbd5e1; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1); z-index: 10;">
+                  <button onClick="prevSidebarSlide(event)" style="position: absolute; left: 10px; top: 95px; background: rgba(255,255,255,0.9); border: 1px solid #cbd5e1; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10;">
                       <i class="fa-solid fa-chevron-left text-xs"></i>
                   </button>
-                  <button onClick="nextSidebarSlide(event)" style="position: absolute; right: 14px; top: 95px; background: rgba(255,255,255,0.9); border: 1px solid #cbd5e1; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1); z-index: 10;">
+                  <button onClick="nextSidebarSlide(event)" style="position: absolute; right: 14px; top: 95px; background: rgba(255,255,255,0.9); border: 1px solid #cbd5e1; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10;">
                       <i class="fa-solid fa-chevron-right text-xs"></i>
                   </button>
 
-                  <button id="adminBannerSettingsBtn" style="display: none;" onClick="openBannerModal()" class="w-full py-2.5 bg-gray-50 hover:bg-gray-100 text-gray-700 hover:text-[#db4437] font-bold text-xs flex items-center justify-center gap-1.5 border-t border-gray-200 transition-colors">
+                  <button id="adminBannerSettingsBtn" style="display: none;" onClick="openBannerModal()" class="w-full py-2.5 bg-gray-50 hover:bg-gray-100 text-gray-700 font-bold text-xs flex items-center justify-center gap-1.5 border-t border-gray-200 transition-colors">
                       <i class="fa-solid fa-sliders"></i> Керувати слайдером
                   </button>
               </div>
 
-              <!-- БІГУЧА СТРІЧКА БАНЕРІВ -->
+              <!-- БІГУЧА СТРІЧКА -->
               <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px; box-shadow: 0 2px 6px rgba(0,0,0,0.03); position: relative;">
-                <button id="adminRunningBannerBtn" style="display: none; position: absolute; top: 8px; right: 8px; z-index: 10; font-size: 0.72rem; background: #f1f5f9; border: 1px solid #cbd5e1; padding: 4px 10px; border-radius: 6px; cursor: pointer; font-weight: bold; color: #1e3a8a;" onclick="openRunningBannerModal()" title="Налаштувати бігучі банери">
+                <button id="adminRunningBannerBtn" style="display: none; position: absolute; top: 8px; right: 8px; z-index: 10; font-size: 0.72rem; background: #f1f5f9; border: 1px solid #cbd5e1; padding: 4px 10px; border-radius: 6px; cursor: pointer; font-weight: bold; color: #1e3a8a;" onclick="openRunningBannerModal()" title="Налаштувати">
                   <i class="fa-solid fa-gear"></i> Налаштувати
                 </button>
                 
@@ -610,43 +693,38 @@
           </div>
         </div>
 
-        <!-- МОДАЛЬНЕ ВІКНО РЕДАГУВАННЯ СЛАЙДЕРА -->
+        <!-- МОДАЛЬНІ ВІКНА АДМІНІСТРУВАННЯ -->
         <div id="bannerModal" style="display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.7); z-index: 9999; justify-content: center; align-items: center; padding: 15px;">
-          <div style="background: white; border-radius: 12px; max-width: 500px; width: 100%; padding: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+          <div style="background: white; border-radius: 12px; max-width: 500px; width: 100%; padding: 24px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">
-              <h3 style="margin: 0; color: #1e3a8a; font-size: 1.1rem;"><i class="fa-solid fa-pen-to-square"></i> Керування слайдером</h3>
+              <h3 style="margin: 0; color: #0f172a; font-size: 1.1rem;"><i class="fa-solid fa-pen-to-square"></i> Керування слайдером</h3>
               <button id="closeBannerModal" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #64748b;">&times;</button>
             </div>
             <div id="bannerAdminList" style="max-height: 300px; overflow-y: auto; margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px;"></div>
-            <div style="display: flex; justify-content: flex-end; gap: 8px;">
-              <button type="button" id="cancelBannerBtn" style="padding: 6px 12px; border-radius: 6px; border: 1px solid #cbd5e1; background: #f1f5f9; cursor: pointer; font-size: 0.8rem;">Закрити</button>
-            </div>
+            <div style="display: flex; justify-content: flex-end;"><button type="button" id="cancelBannerBtn" style="padding: 6px 12px; border-radius: 6px; border: 1px solid #cbd5e1; background: #f1f5f9; cursor: pointer; font-size: 0.8rem;">Закрити</button></div>
           </div>
         </div>
 
-        <!-- МОДАЛЬНЕ ВІКНО РЕДАГУВАННЯ БІГУЧИХ БАНЕРІВ -->
         <div id="runningBannerModal" style="display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.7); z-index: 9999; justify-content: center; align-items: center; padding: 15px;">
-          <div style="background: white; border-radius: 12px; max-width: 500px; width: 100%; padding: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+          <div style="background: white; border-radius: 12px; max-width: 500px; width: 100%; padding: 24px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">
-              <h3 style="margin: 0; color: #1e3a8a; font-size: 1.1rem;"><i class="fa-solid fa-bullhorn"></i> Керування бігучими банерами</h3>
+              <h3 style="margin: 0; color: #0f172a; font-size: 1.1rem;"><i class="fa-solid fa-bullhorn"></i> Керування бігучими банерами</h3>
               <button onclick="document.getElementById('runningBannerModal').style.display='none'" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #64748b;">&times;</button>
             </div>
             <div id="runningBannerAdminList" style="max-height: 300px; overflow-y: auto; margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px;"></div>
-            <div style="display: flex; justify-content: flex-end; gap: 8px;">
-              <button type="button" onclick="document.getElementById('runningBannerModal').style.display='none'" style="padding: 6px 12px; border-radius: 6px; border: 1px solid #cbd5e1; background: #f1f5f9; cursor: pointer; font-size: 0.8rem;">Закрити</button>
-            </div>
+            <div style="display: flex; justify-content: flex-end;"><button type="button" onclick="document.getElementById('runningBannerModal').style.display='none'" style="padding: 6px 12px; border-radius: 6px; border: 1px solid #cbd5e1; background: #f1f5f9; cursor: pointer; font-size: 0.8rem;">Закрити</button></div>
           </div>
         </div>
 
         <!-- ФОРМА ПОДАЧІ / РЕДАГУВАННЯ ОГОЛОШЕННЯ -->
-        <div id="newAdFormCard" style="display: none; background: white; border-radius: 12px; padding: 18px; margin-top: 15px; border: 2px dashed var(--olx-color); box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
-          <h3 id="formHeading" style="margin-top: 0; color: #1e3a8a; font-size: 1rem;"><i class="fa-solid fa-rectangle-ad"></i> Створити нове оголошення</h3>
+        <div id="newAdFormCard" style="display: none; background: white; border-radius: 12px; padding: 18px; margin-top: 15px; border: 2px dashed #334155; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+          <h3 id="formHeading" style="margin-top: 0; color: #0f172a; font-size: 1rem;"><i class="fa-solid fa-rectangle-ad"></i> Створити нове оголошення</h3>
           
           <form id="addListingForm" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
             <input type="hidden" id="editingDocId" />
             <div>
               <label style="font-size: 0.75rem; font-weight: bold; color: #475569;">Заголовок оголошення:</label>
-              <input type="text" id="adTitle" maxlength="70" placeholder="Наприклад: Продам ноутбук Lenovo T14s" required style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; margin-top: 3px;" />
+              <input type="text" id="adTitle" maxlength="70" placeholder="Наприклад: Ноутбук Lenovo T14s" required style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; margin-top: 3px;" />
             </div>
 
             <div>
@@ -674,7 +752,7 @@
             </div>
 
             <div>
-              <label style="font-size: 0.75rem; font-weight: bold; color: #475569;">Телефон для зв'язку:</label>
+              <label style="font-size: 0.75rem; font-weight: bold; color: #475569;">Телефон:</label>
               <input type="tel" id="adContact" placeholder="+380971234567" required style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; margin-top: 3px;" />
             </div>
 
@@ -685,7 +763,7 @@
 
             <div style="grid-column: 1 / -1;">
               <label style="font-size: 0.75rem; font-weight: bold; color: #475569;">Детальний опис:</label>
-              <textarea id="adDescription" rows="3" maxlength="800" placeholder="Опишіть стан товару, характеристики..." required style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; margin-top: 3px; font-family: inherit;"></textarea>
+              <textarea id="adDescription" rows="3" maxlength="800" placeholder="Опишіть характеристики, стан..." required style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; margin-top: 3px; font-family: inherit;"></textarea>
             </div>
 
             <div style="grid-column: 1 / -1; display: flex; justify-content: flex-end; gap: 8px;">
@@ -701,27 +779,25 @@
         </div>
       </div>
 
-      <!-- ДЕТАЛЬНА СТОРІНКА ОГОЛОШЕННЯ -->
+      <!-- ДЕТАЛЬНА СТОРІНКА (ПРОФІЛЬ / РЕЗЮМЕ ТОВАРУ) -->
       <div id="productDetailView">
         <button id="backToCatalogBtn" style="background: #f1f5f9; border: 1px solid #cbd5e1; padding: 6px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-bottom: 20px; font-size: 0.8rem;">
           <i class="fa-solid fa-arrow-left"></i> Назад до дошки
         </button>
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; align-items: start;" id="productDetailContent"></div>
+        <div id="productDetailContent"></div>
       </div>
 
-      <!-- МОДАЛЬНЕ ВІКНО АВТОРИЗАЦІЇ ТА РЕЄСТРАЦІЇ -->
+      <!-- МОДАЛЬНІ ВІКНА АВТОРИЗАЦІЇ ТА КАБІНЕТУ -->
       <div id="authModal" style="display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.7); z-index: 9999; justify-content: center; align-items: center; padding: 15px;">
-        <div style="background: white; border-radius: 12px; max-width: 400px; width: 100%; padding: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+        <div style="background: white; border-radius: 12px; max-width: 400px; width: 100%; padding: 24px;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">
-            <h3 id="authModalTitle" style="margin: 0; color: #1e3a8a; font-size: 1.1rem;"><i class="fa-solid fa-user-lock"></i> Авторизація</h3>
+            <h3 id="authModalTitle" style="margin: 0; color: #0f172a; font-size: 1.1rem;"><i class="fa-solid fa-user-lock"></i> Авторизація</h3>
             <button onclick="document.getElementById('authModal').style.display='none'" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #64748b;">&times;</button>
           </div>
-          
           <div style="display: flex; gap: 10px; margin-bottom: 15px;">
-            <button type="button" id="tabLoginBtn" onclick="switchAuthTab('login')" style="flex: 1; padding: 8px; font-weight: bold; border-radius: 6px; border: 1px solid #cbd5e1; background: var(--olx-color); color: white; cursor: pointer; font-size: 0.8rem;">Вхід</button>
+            <button type="button" id="tabLoginBtn" onclick="switchAuthTab('login')" style="flex: 1; padding: 8px; font-weight: bold; border-radius: 6px; border: 1px solid #cbd5e1; background: #334155; color: white; cursor: pointer; font-size: 0.8rem;">Вхід</button>
             <button type="button" id="tabRegisterBtn" onclick="switchAuthTab('register')" style="flex: 1; padding: 8px; font-weight: bold; border-radius: 6px; border: 1px solid #cbd5e1; background: #f1f5f9; color: #334155; cursor: pointer; font-size: 0.8rem;">Реєстрація</button>
           </div>
-
           <form id="authModalForm" style="display: flex; flex-direction: column; gap: 10px;">
             <div>
               <label style="font-size: 0.75rem; font-weight: bold; color: #475569;">Email:</label>
@@ -732,29 +808,23 @@
               <input type="password" id="modalAuthPassword" placeholder="••••••••" required style="width: 100%; box-sizing: border-box; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.82rem; margin-top: 3px;" />
             </div>
             <div id="modalAuthError" style="color: var(--danger); font-size: 0.75rem; display: none;"></div>
-            <button type="submit" id="modalAuthSubmitBtn" class="btn-primary" style="width: 100%; justify-content: center; padding: 10px; margin-top: 5px; font-size: 0.85rem;">Увійти</button>
+            <button type="submit" id="modalAuthSubmitBtn" class="btn-primary" style="width: 100%; justify-content: center; padding: 10px; margin-top: 5px;">Увійти</button>
           </form>
         </div>
       </div>
 
-      <!-- МОДАЛЬНЕ ВІКНО "ВЛАСНИЙ КАБІНЕТ" -->
       <div id="cabinetModal" style="display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.7); z-index: 9999; justify-content: center; align-items: center; padding: 15px;">
-        <div style="background: white; border-radius: 12px; max-width: 550px; width: 100%; padding: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); max-height: 80vh; overflow-y: auto;">
+        <div style="background: white; border-radius: 12px; max-width: 550px; width: 100%; padding: 24px; max-height: 80vh; overflow-y: auto;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">
-            <h3 style="margin: 0; color: #1e3a8a; font-size: 1.1rem;"><i class="fa-solid fa-house" style="color: #23527c;"></i> Власний кабінет</h3>
+            <h3 style="margin: 0; color: #0f172a; font-size: 1.1rem;"><i class="fa-solid fa-house"></i> Власний кабінет</h3>
             <button onclick="document.getElementById('cabinetModal').style.display='none'" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #64748b;">&times;</button>
           </div>
-          
           <div style="margin-bottom: 15px; font-size: 0.85rem; color: #334155; background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0;">
-            <div><strong>Акаунт:</strong> <span id="cabinetUserEmail" style="color: var(--olx-color); font-weight: bold;"></span></div>
+            <div><strong>Акаунт:</strong> <span id="cabinetUserEmail" style="color: #334155; font-weight: bold;"></span></div>
             <div style="margin-top: 4px;">Роль: <span id="cabinetUserRole" style="font-weight: bold; color: #059669;">Користувач</span></div>
           </div>
-
-          <h4 style="font-size: 0.9rem; color: #1e3a8a; margin-bottom: 10px; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px;">Мої оголошення</h4>
-          <div id="cabinetUserAdsList" style="display: flex; flex-direction: column; gap: 8px; max-height: 250px; overflow-y: auto;">
-            <p style="font-size: 0.8rem; color: #64748b;">Завантаження вашої історії...</p>
-          </div>
-
+          <h4 style="font-size: 0.9rem; color: #0f172a; margin-bottom: 10px; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px;">Мої оголошення</h4>
+          <div id="cabinetUserAdsList" style="display: flex; flex-direction: column; gap: 8px; max-height: 250px; overflow-y: auto;"></div>
           <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px; border-top: 1px solid #e2e8f0; padding-top: 15px;">
             <button type="button" onclick="document.getElementById('cabinetModal').style.display='none'" style="padding: 6px 14px; border-radius: 6px; border: 1px solid #cbd5e1; background: #f1f5f9; cursor: pointer; font-size: 0.8rem;">Закрити</button>
             <button type="button" id="cabinetLogoutBtn" style="padding: 6px 14px; border-radius: 6px; border: none; background: var(--danger); color: white; cursor: pointer; font-size: 0.8rem; font-weight: bold;">Вийти з акаунта</button>
@@ -802,8 +872,7 @@
         return ALLOWED_ADMINS.some(admin => admin.toLowerCase() === email.trim().toLowerCase());
       }
 
-      // Управління модальним вікном авторизації/реєстрації
-      let authMode = 'login'; // 'login' або 'register'
+      let authMode = 'login';
       window.openAuthModal = function(mode = 'login') {
         authMode = mode;
         const titleEl = document.getElementById('authModalTitle');
@@ -814,14 +883,14 @@
         if (mode === 'login') {
           titleEl.innerHTML = '<i class="fa-solid fa-user-lock"></i> Авторизація';
           submitBtn.textContent = 'Увійти';
-          loginBtn.style.background = 'var(--olx-color)';
+          loginBtn.style.background = '#334155';
           loginBtn.style.color = 'white';
           regBtn.style.background = '#f1f5f9';
           regBtn.style.color = '#334155';
         } else {
-          titleEl.innerHTML = '<i class="fa-solid fa-user-plus"></i> Реєстрація нового акаунта';
+          titleEl.innerHTML = '<i class="fa-solid fa-user-plus"></i> Реєстрація акаунта';
           submitBtn.textContent = 'Зареєструватися';
-          regBtn.style.background = 'var(--olx-color)';
+          regBtn.style.background = '#334155';
           regBtn.style.color = 'white';
           loginBtn.style.background = '#f1f5f9';
           loginBtn.style.color = '#334155';
@@ -830,9 +899,7 @@
         document.getElementById('authModal').style.display = 'flex';
       }
 
-      window.switchAuthTab = function(mode) {
-        openAuthModal(mode);
-      }
+      window.switchAuthTab = function(mode) { openAuthModal(mode); }
 
       document.getElementById('authModalForm').addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -856,7 +923,6 @@
         }
       });
 
-      // Логіка Власного кабінету
       window.openCabinetModal = async function() {
         if (!auth.currentUser) return;
         document.getElementById('cabinetUserEmail').textContent = auth.currentUser.email;
@@ -904,7 +970,6 @@
         }
       });
 
-      // Відстеження стану авторизації та оновлення шапки
       onAuthStateChanged(auth, (user) => {
         currentUser = user;
         const toggleBtn = document.getElementById('toggleFormBtn');
@@ -920,10 +985,10 @@
           if (adminRunningBannerBtn) adminRunningBannerBtn.style.display = 'none';
 
           headerAuthArea.innerHTML = `
-            <button onclick="openAuthModal('login')" style="background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 6px 12px; border-radius: 6px; font-size: 0.78rem; font-weight: bold; cursor: pointer; transition: background 0.2s;">
+            <button onclick="openAuthModal('login')" style="background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 6px 12px; border-radius: 6px; font-size: 0.78rem; font-weight: bold; cursor: pointer;">
               <i class="fa-solid fa-right-to-bracket"></i> Увійти
             </button>
-            <button onclick="openAuthModal('register')" style="background: var(--olx-color); border: none; color: white; padding: 6px 12px; border-radius: 6px; font-size: 0.78rem; font-weight: bold; cursor: pointer;">
+            <button onclick="openAuthModal('register')" style="background: #334155; border: none; color: white; padding: 6px 12px; border-radius: 6px; font-size: 0.78rem; font-weight: bold; cursor: pointer;">
               Реєстрація
             </button>
           `;
@@ -940,27 +1005,25 @@
           }
 
           headerAuthArea.innerHTML = `
-            <button onclick="openCabinetModal()" style="background: var(--olx-color); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 6px 14px; border-radius: 6px; font-size: 0.78rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+            <button onclick="openCabinetModal()" style="background: #334155; border: 1px solid rgba(255,255,255,0.3); color: white; padding: 6px 14px; border-radius: 6px; font-size: 0.78rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 6px;">
               <i class="fa-solid fa-house" style="color: white;"></i> Власний кабінет
             </button>
           `;
         }
       });
 
-      // Логіка головного слайдера банера
+      // Слайдери
       let sidebarSlides = [
         { image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800", title: "Оцінка Нерухомості", subtitle: "Твоє місто", link: "commercial.html", btnText: "Дізнатися більше" },
         { image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800", title: "Продаж квартир та будинків", subtitle: "Найкращі пропозиції на ринку", link: "shop.html", btnText: "Переглянути" }
       ];
       let currentSlideIdx = 0;
       let slideInterval = null;
-
       const bannerDocRef = doc(db, "settings", "shop_slider_banner");
 
       window.renderSidebarSlide = function() {
         if (!sidebarSlides || sidebarSlides.length === 0) return;
         const slide = sidebarSlides[currentSlideIdx];
-        
         document.getElementById('sidebarBannerImg').src = slide.image;
         document.getElementById('sidebarBannerTitle').textContent = slide.title;
         document.getElementById('sidebarBannerSubtitle').textContent = slide.subtitle;
@@ -970,31 +1033,14 @@
         const dotsContainer = document.getElementById('sidebarBannerDots');
         if (dotsContainer) {
           dotsContainer.innerHTML = sidebarSlides.map((_, i) => `
-            <span onclick="goToSlide(${i}, event)" style="width: ${i === currentSlideIdx ? '16px' : '6px'}; height: 6px; background: ${i === currentSlideIdx ? 'white' : 'rgba(255,255,255,0.5)'}; border-radius: 3px; cursor: pointer; transition: all 0.2s;"></span>
+            <span onclick="goToSlide(${i}, event)" style="width: ${i === currentSlideIdx ? '16px' : '6px'}; height: 6px; background: ${i === currentSlideIdx ? 'white' : 'rgba(255,255,255,0.5)'}; border-radius: 3px; cursor: pointer;"></span>
           `).join('');
         }
       }
 
-      window.nextSidebarSlide = function(e) {
-        if(e) e.preventDefault();
-        currentSlideIdx = (currentSlideIdx + 1) % sidebarSlides.length;
-        renderSidebarSlide();
-        resetTimer();
-      }
-
-      window.prevSidebarSlide = function(e) {
-        if(e) e.preventDefault();
-        currentSlideIdx = (currentSlideIdx - 1 + sidebarSlides.length) % sidebarSlides.length;
-        renderSidebarSlide();
-        resetTimer();
-      }
-
-      window.goToSlide = function(idx, e) {
-        if(e) e.preventDefault();
-        currentSlideIdx = idx;
-        renderSidebarSlide();
-        resetTimer();
-      }
+      window.nextSidebarSlide = function(e) { if(e) e.preventDefault(); currentSlideIdx = (currentSlideIdx + 1) % sidebarSlides.length; renderSidebarSlide(); resetTimer(); }
+      window.prevSidebarSlide = function(e) { if(e) e.preventDefault(); currentSlideIdx = (currentSlideIdx - 1 + sidebarSlides.length) % sidebarSlides.length; renderSidebarSlide(); resetTimer(); }
+      window.goToSlide = function(idx, e) { if(e) e.preventDefault(); currentSlideIdx = idx; renderSidebarSlide(); resetTimer(); }
 
       function resetTimer() {
         clearInterval(slideInterval);
@@ -1005,14 +1051,9 @@
       }
 
       onSnapshot(bannerDocRef, async (docSnap) => {
-        if (docSnap.exists() && docSnap.data().slides) {
-          sidebarSlides = docSnap.data().slides;
-        } else {
-          try { await setDoc(bannerDocRef, { slides: sidebarSlides }); } catch (err) {}
-        }
-        currentSlideIdx = 0;
-        renderSidebarSlide();
-        resetTimer();
+        if (docSnap.exists() && docSnap.data().slides) sidebarSlides = docSnap.data().slides;
+        else { try { await setDoc(bannerDocRef, { slides: sidebarSlides }); } catch (e) {} }
+        currentSlideIdx = 0; renderSidebarSlide(); resetTimer();
       });
 
       window.openBannerModal = async function() {
@@ -1028,19 +1069,19 @@
         const listContainer = document.getElementById('bannerAdminList');
         listContainer.innerHTML = sidebarSlides.map((slide, idx) => `
           <div style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px; background: #f8fafc; display: flex; flex-direction: column; gap: 6px;">
-            <div style="font-weight: bold; font-size: 0.78rem; color: #1e3a8a;">Слайд #${idx + 1}</div>
+            <div style="font-weight: bold; font-size: 0.78rem; color: #0f172a;">Слайд #${idx + 1}</div>
             <input type="text" placeholder="URL зображення" value="${slide.image || ''}" id="slideImg_${idx}" style="padding: 5px; font-size: 0.75rem; border: 1px solid #cbd5e1; border-radius: 4px;" />
             <input type="text" placeholder="Заголовок" value="${slide.title || ''}" id="slideTitle_${idx}" style="padding: 5px; font-size: 0.75rem; border: 1px solid #cbd5e1; border-radius: 4px;" />
             <input type="text" placeholder="Підзаголовок" value="${slide.subtitle || ''}" id="slideSub_${idx}" style="padding: 5px; font-size: 0.75rem; border: 1px solid #cbd5e1; border-radius: 4px;" />
             <input type="text" placeholder="Посилання" value="${slide.link || ''}" id="slideLink_${idx}" style="padding: 5px; font-size: 0.75rem; border: 1px solid #cbd5e1; border-radius: 4px;" />
             <div style="display: flex; gap: 5px;">
-              <button type="button" onclick="saveSlideItem(${idx})" style="flex: 1; background: var(--accent); color: white; border: none; padding: 5px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; cursor: pointer;">Зберегти</button>
+              <button type="button" onclick="saveSlideItem(${idx})" style="flex: 1; background: #334155; color: white; border: none; padding: 5px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; cursor: pointer;">Зберегти</button>
               <button type="button" onclick="deleteSlideItem(${idx})" style="background: var(--danger); color: white; border: none; padding: 5px 10px; border-radius: 4px; font-size: 0.75rem; cursor: pointer;"><i class="fa-solid fa-trash"></i></button>
             </div>
           </div>
         `).join('') + `
-          <button type="button" onclick="addNewSlide()" style="background: var(--olx-color); color: white; border: none; padding: 8px; border-radius: 6px; font-size: 0.78rem; font-weight: bold; cursor: pointer; margin-top: 5px;">
-            <i class="fa-solid fa-plus"></i> Додати новий слайд
+          <button type="button" onclick="addNewSlide()" style="background: #334155; color: white; border: none; padding: 8px; border-radius: 6px; font-size: 0.78rem; font-weight: bold; cursor: pointer; margin-top: 5px;">
+            <i class="fa-solid fa-plus"></i> Додати слайд
           </button>
         `;
       }
@@ -1050,59 +1091,37 @@
         sidebarSlides[idx].title = document.getElementById(`slideTitle_${idx}`).value;
         sidebarSlides[idx].subtitle = document.getElementById(`slideSub_${idx}`).value;
         sidebarSlides[idx].link = document.getElementById(`slideLink_${idx}`).value;
-        try {
-          await setDoc(bannerDocRef, { slides: sidebarSlides });
-          alert('Збережено!');
-          renderAdminSlideList();
-        } catch (err) { alert('Помилка: ' + err.message); }
+        try { await setDoc(bannerDocRef, { slides: sidebarSlides }); alert('Збережено!'); renderAdminSlideList(); } catch (err) {}
       }
-
       window.deleteSlideItem = async function(idx) {
-        if (sidebarSlides.length <= 1) {
-          alert('Має залишитися хоча б один слайд!');
-          return;
-        }
+        if (sidebarSlides.length <= 1) { alert('Мінімум 1 слайд!'); return; }
         sidebarSlides.splice(idx, 1);
-        try {
-          await setDoc(bannerDocRef, { slides: sidebarSlides });
-          renderAdminSlideList();
-        } catch (err) {}
+        try { await setDoc(bannerDocRef, { slides: sidebarSlides }); renderAdminSlideList(); } catch (err) {}
       }
-
       window.addNewSlide = async function() {
-        sidebarSlides.push({ image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800", title: "Новий слайд", subtitle: "Опис слайда", link: "commercial.html", btnText: "Дізнатися більше" });
-        try {
-          await setDoc(bannerDocRef, { slides: sidebarSlides });
-          renderAdminSlideList();
-        } catch (err) {}
+        sidebarSlides.push({ image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800", title: "Новий слайд", subtitle: "Опис", link: "#", btnText: "Детальніше" });
+        try { await setDoc(bannerDocRef, { slides: sidebarSlides }); renderAdminSlideList(); } catch (err) {}
       }
-
       document.getElementById('closeBannerModal').addEventListener('click', () => document.getElementById('bannerModal').style.display = 'none');
       document.getElementById('cancelBannerBtn').addEventListener('click', () => document.getElementById('bannerModal').style.display = 'none');
 
-
-      // ЛОГІКА БІГУЧИХ БАНЕРІВ (ПАРТНЕРИ)
+      // Бігучі банери
       let runningBanners = [
         { text: "Автозапчастини", image: "https://images.unsplash.com/photo-1511919884226-fd3cad34687c?w=400", link: "auto.html" },
         { text: "Ремонт електроніки", image: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=400", link: "baza.html" },
         { text: "Нерухомість", image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400", link: "commercial.html" }
       ];
-
       const runningBannerDocRef = doc(db, "settings", "shop_running_banners");
 
       onSnapshot(runningBannerDocRef, async (docSnap) => {
-        if (docSnap.exists() && docSnap.data().items) {
-          runningBanners = docSnap.data().items;
-        } else {
-          try { await setDoc(runningBannerDocRef, { items: runningBanners }); } catch (e) {}
-        }
+        if (docSnap.exists() && docSnap.data().items) runningBanners = docSnap.data().items;
+        else { try { await setDoc(runningBannerDocRef, { items: runningBanners }); } catch (e) {} }
         renderRunningBanners();
       });
 
       function renderRunningBanners() {
         const track = document.getElementById('runningBannersTrack');
         if (!track) return;
-        
         const html = runningBanners.map(item => `
           <a href="${item.link || '#'}" target="_blank" class="ticker-item">
             <img src="${item.image || 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=200'}" alt="">
@@ -1112,7 +1131,6 @@
             </div>
           </a>
         `).join('');
-
         track.innerHTML = html + html;
       }
 
@@ -1120,17 +1138,17 @@
         const container = document.getElementById('runningBannerAdminList');
         container.innerHTML = runningBanners.map((item, idx) => `
           <div style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px; background: #f8fafc; display: flex; flex-direction: column; gap: 6px;">
-            <div style="font-weight: bold; font-size: 0.78rem; color: #1e3a8a;">Банер #${idx + 1}</div>
+            <div style="font-weight: bold; font-size: 0.78rem; color: #0f172a;">Банер #${idx + 1}</div>
             <input type="text" placeholder="Текст" value="${item.text || ''}" id="rbText_${idx}" style="padding: 5px; font-size: 0.75rem; border: 1px solid #cbd5e1; border-radius: 4px;" />
             <input type="text" placeholder="URL зображення" value="${item.image || ''}" id="rbImg_${idx}" style="padding: 5px; font-size: 0.75rem; border: 1px solid #cbd5e1; border-radius: 4px;" />
             <input type="text" placeholder="Посилання" value="${item.link || ''}" id="rbLink_${idx}" style="padding: 5px; font-size: 0.75rem; border: 1px solid #cbd5e1; border-radius: 4px;" />
             <div style="display: flex; gap: 5px;">
-              <button type="button" onclick="saveRunningBannerItem(${idx})" style="flex: 1; background: var(--accent); color: white; border: none; padding: 5px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; cursor: pointer;">Зберегти</button>
+              <button type="button" onclick="saveRunningBannerItem(${idx})" style="flex: 1; background: #334155; color: white; border: none; padding: 5px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; cursor: pointer;">Зберегти</button>
               <button type="button" onclick="deleteRunningBannerItem(${idx})" style="background: var(--danger); color: white; border: none; padding: 5px 8px; border-radius: 4px; font-size: 0.75rem; cursor: pointer;"><i class="fa-solid fa-trash"></i></button>
             </div>
           </div>
         `).join('') + `
-          <button type="button" onclick="addRunningBannerItem()" style="background: var(--olx-color); color: white; border: none; padding: 8px; border-radius: 6px; font-size: 0.78rem; font-weight: bold; cursor: pointer; margin-top: 5px;">
+          <button type="button" onclick="addRunningBannerItem()" style="background: #334155; color: white; border: none; padding: 8px; border-radius: 6px; font-size: 0.78rem; font-weight: bold; cursor: pointer; margin-top: 5px;">
             <i class="fa-solid fa-plus"></i> Додати банер
           </button>
         `;
@@ -1141,35 +1159,19 @@
         runningBanners[idx].text = document.getElementById(`rbText_${idx}`).value;
         runningBanners[idx].image = document.getElementById(`rbImg_${idx}`).value;
         runningBanners[idx].link = document.getElementById(`rbLink_${idx}`).value;
-        try {
-          await setDoc(runningBannerDocRef, { items: runningBanners });
-          alert('Збережено!');
-          openRunningBannerModal();
-        } catch (e) { alert('Помилка: ' + e.message); }
+        try { await setDoc(runningBannerDocRef, { items: runningBanners }); alert('Збережено!'); openRunningBannerModal(); } catch (e) {}
       }
-
       window.deleteRunningBannerItem = async function(idx) {
-        if (runningBanners.length <= 1) {
-          alert('Потрібен хоча б один банер!');
-          return;
-        }
+        if (runningBanners.length <= 1) { alert('Мінімум 1 банер!'); return; }
         runningBanners.splice(idx, 1);
-        try {
-          await setDoc(runningBannerDocRef, { items: runningBanners });
-          openRunningBannerModal();
-        } catch (e) {}
+        try { await setDoc(runningBannerDocRef, { items: runningBanners }); openRunningBannerModal(); } catch (e) {}
       }
-
       window.addRunningBannerItem = async function() {
         runningBanners.push({ text: "Новий банер", image: "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=400", link: "#" });
-        try {
-          await setDoc(runningBannerDocRef, { items: runningBanners });
-          openRunningBannerModal();
-        } catch (e) {}
+        try { await setDoc(runningBannerDocRef, { items: runningBanners }); openRunningBannerModal(); } catch (e) {}
       }
 
-
-      // Категорії та каталог
+      // Каталог
       const categoriesData = [
         { name: "Краса та здоров'я", icon: "fa-heart-pulse", sub: ["Догляд за волоссям", "Догляд за обличчям", "Парфумерія", "Манікюр"] },
         { name: "Товари для дому", icon: "fa-house", sub: ["Кухонне приладдя", "Посуд", "Освітлення", "Сантехніка"] },
@@ -1183,18 +1185,17 @@
         { name: "Спорт і відпочинок", icon: "fa-person-biking", sub: ["Велосипеди", "Туризм", "Фітнес"] },
         { name: "Дача, сад і город", icon: "fa-seedling", sub: ["Садовий інструмент", "Рослини", "Барбекю"] },
         { name: "Канцтовари", icon: "fa-pen-ruler", sub: ["Папір та зошити", "Ручки та олівці", "Офісне приладдя", "Шкільні товари"] },
-        { name: "Спецодяг та взуття", icon: "fa-vest", sub: ["Робочий одяг", "Захисне взуття", "Засоби індивідуального захисту", "Медичний одяг"] },
-        { name: "Весільні товари", icon: "fa-ring", sub: ["Весільні сукні та костюми", "Декор та флористика", "Аксесуари для наречених", "Запрошення та атрибутика"] },
-        { name: "Продукти харчування, напої", icon: "fa-basket-shopping", sub: ["Фермерські продукти", "Мед та солодощі", "Кава та чай", "Бакалія та напої"] },
-        { name: "Воєнторг", icon: "fa-shield-halved", sub: ["Тактичний одяг та форма", "Взуття та берці", "Спорядження та підсумки", "Оптика, ліхтарі та аксесуари"] },
+        { name: "Спецодяг та взуття", icon: "fa-vest", sub: ["Робочий одяг", "Захисне взуття", "ЗІЗ", "Медичний одяг"] },
+        { name: "Весільні товари", icon: "fa-ring", sub: ["Весільні сукні", "Декор та флористика", "Аксесуари", "Запрошення"] },
+        { name: "Продукти харчування, напої", icon: "fa-basket-shopping", sub: ["Фермерські продукти", "Мед", "Кава та чай", "Бакалія"] },
+        { name: "Воєнторг", icon: "fa-shield-halved", sub: ["Тактичний одяг", "Берці", "Спорядження", "Оптика"] },
         { name: "Інструменти", icon: "fa-screwdriver-wrench", sub: ["Ручний інструмент", "Електроінструмент", "Вимірювальні прилади", "Витратні матеріали"] },
-        { name: "Антикваріат і колекціонування", icon: "fa-landmark", sub: ["Монети та банкноти", "Значки, нагороди, марки", "Старовинні речі та декор", "Вініл та вінтажна техніка"] },
-        { name: "Будівництво", icon: "fa-trowel-bricks", sub: ["Сухі будівельні суміші", "Пиломатеріали та покрівля", "Вікна, двері, ворота", "Металопрокат та кріплення"] }
+        { name: "Антикваріат і колекціонування", icon: "fa-landmark", sub: ["Монети", "Значки та марки", "Старовинні речі", "Вініл"] },
+        { name: "Будівництво", icon: "fa-trowel-bricks", sub: ["Сухі суміші", "Пиломатеріали", "Вікна та двері", "Металопрокат"] }
       ];
 
       const categoriesSidebar = document.getElementById('categoriesSidebar');
       const subcategoriesContent = document.getElementById('subcategoriesContent');
-      const syncNewGrid = document.getElementById('syncNewGrid');
       const shopProductsContainer = document.getElementById('shopProductsContainer');
       const adCategorySelect = document.getElementById('adCategory');
       const adSubcategorySelect = document.getElementById('adSubcategory');
@@ -1211,8 +1212,7 @@
         if (catObj) {
           catObj.sub.forEach(s => {
             const opt = document.createElement('option');
-            opt.value = s;
-            opt.textContent = s;
+            opt.value = s; opt.textContent = s;
             targetSelect.appendChild(opt);
           });
         }
@@ -1224,21 +1224,15 @@
 
         categoriesData.forEach((cat, index) => {
           const opt = document.createElement('option');
-          opt.value = cat.name;
-          opt.textContent = cat.name;
+          opt.value = cat.name; opt.textContent = cat.name;
           adCategorySelect.appendChild(opt);
 
           const btn = document.createElement('button');
           btn.className = `cat-item-btn ${index === 0 ? 'active' : ''}`;
-          btn.innerHTML = `<span><i class="fa-solid ${cat.icon}" style="color: var(--olx-color); margin-right: 6px;"></i> ${cat.name}</span> <i class="fa-solid fa-chevron-right" style="font-size: 0.7rem; color: #94a3b8;"></i>`;
+          btn.innerHTML = `<span><i class="fa-solid ${cat.icon}" style="color: #334155; margin-right: 6px;"></i> ${cat.name}</span> <i class="fa-solid fa-chevron-right" style="font-size: 0.7rem; color: #94a3b8;"></i>`;
           
           btn.addEventListener('mouseenter', () => selectCategory(cat.name));
-          btn.addEventListener('click', () => {
-            selectCategory(cat.name);
-            activeFilter = cat.name;
-            filterCards();
-          });
-
+          btn.addEventListener('click', () => { selectCategory(cat.name); activeFilter = cat.name; filterCards(); });
           categoriesSidebar.appendChild(btn);
         });
 
@@ -1248,9 +1242,7 @@
       }
 
       function selectCategory(catName) {
-        document.querySelectorAll('.cat-item-btn').forEach(b => {
-          b.classList.toggle('active', b.innerText.includes(catName));
-        });
+        document.querySelectorAll('.cat-item-btn').forEach(b => { b.classList.toggle('active', b.innerText.includes(catName)); });
         renderSubcategories(catName);
       }
 
@@ -1267,7 +1259,7 @@
         subcategoriesContent.innerHTML = `
           <div class="subcategories-header">
             <span>${catObj.name}</span>
-            <button class="sub-chip" style="background: var(--olx-color); color: white; border: none; padding: 4px 10px; font-size: 0.72rem;" data-cat-filter="${catObj.name}">
+            <button class="sub-chip" style="background: #334155; color: white; border: none; padding: 4px 10px; font-size: 0.72rem;" data-cat-filter="${catObj.name}">
               Усі оголошення розділу
             </button>
           </div>
@@ -1275,50 +1267,31 @@
         `;
 
         subcategoriesContent.querySelectorAll('.sub-chip[data-sub]').forEach(chip => {
-          chip.addEventListener('click', () => {
-            activeFilter = chip.getAttribute('data-sub');
-            filterCards();
-          });
+          chip.addEventListener('click', () => { activeFilter = chip.getAttribute('data-sub'); filterCards(); });
         });
 
         const allCatBtn = subcategoriesContent.querySelector('[data-cat-filter]');
         if (allCatBtn) {
-          allCatBtn.addEventListener('click', () => {
-            activeFilter = catObj.name;
-            filterCards();
-          });
+          allCatBtn.addEventListener('click', () => { activeFilter = catObj.name; filterCards(); });
         }
       }
 
       initCatalog();
-
-      document.getElementById('resetFilterBtn').addEventListener('click', () => {
-        activeFilter = 'all';
-        filterCards();
-      });
+      document.getElementById('resetFilterBtn').addEventListener('click', () => { activeFilter = 'all'; filterCards(); });
 
       const newAdFormCard = document.getElementById('newAdFormCard');
       const addListingForm = document.getElementById('addListingForm');
 
       document.getElementById('toggleFormBtn').addEventListener('click', async () => {
-        if (!currentUser) {
-          alert('Будь ласка, увійдіть в акаунт у верхній панелі!');
-          openAuthModal('login');
-          return;
-        }
-
+        if (!currentUser) { alert('Будь ласка, увійдіть в акаунт!'); openAuthModal('login'); return; }
         const editingId = document.getElementById('editingDocId').value;
         if (!editingId && !isAdminUser(currentUser.email)) {
           try {
             const userAdsQuery = query(collection(db, "shop_listings"), where("userEmail", "==", currentUser.email));
             const snapshot = await getDocs(userAdsQuery);
-            if (snapshot.size >= FREE_ADS_LIMIT) {
-              alert(`Ви досягли безкоштовного ліміту у ${FREE_ADS_LIMIT} оголошень.`);
-              return;
-            }
+            if (snapshot.size >= FREE_ADS_LIMIT) { alert(`Досягнуто безкоштовний ліміт у ${FREE_ADS_LIMIT} оголошень.`); return; }
           } catch (err) {}
         }
-
         document.getElementById('editingDocId').value = '';
         document.getElementById('formHeading').innerHTML = '<i class="fa-solid fa-rectangle-ad"></i> Створити нове оголошення';
         document.getElementById('submitFormBtn').textContent = 'Опублікувати';
@@ -1352,13 +1325,12 @@
         try {
           if (editingId) {
             await updateDoc(doc(db, "shop_listings", editingId), adData);
-            alert('Оголошення успішно оновлено!');
+            alert('Оновлено успішно!');
           } else {
             adData.createdAt = serverTimestamp();
             await addDoc(collection(db, "shop_listings"), adData);
-            alert('Оголошення успішно опубліковано на дошці!');
+            alert('Опубліковано!');
           }
-
           addListingForm.reset();
           document.getElementById('editingDocId').value = '';
           newAdFormCard.style.display = 'none';
@@ -1372,7 +1344,7 @@
             await deleteDoc(doc(db, "shop_listings", docId));
             document.getElementById('productDetailView').style.display = 'none';
             document.getElementById('mainCatalogWrapper').style.display = 'block';
-            alert('Оголошення видалено!');
+            alert('Видалено!');
             loadInitialListings();
           } catch (err) {}
         }
@@ -1381,11 +1353,9 @@
       window.editProduct = function(docId) {
         const item = allProducts.find(p => p.id === docId);
         if (!item) return;
-
         document.getElementById('editingDocId').value = item.id;
         document.getElementById('formHeading').innerHTML = '<i class="fa-solid fa-pen-to-square"></i> Редагувати оголошення';
         document.getElementById('submitFormBtn').textContent = 'Зберегти зміни';
-
         document.getElementById('adTitle').value = item.title;
         document.getElementById('adCategory').value = item.category;
         populateSubSelect(item.category, adSubcategorySelect);
@@ -1402,6 +1372,7 @@
         window.scrollTo(0, newAdFormCard.offsetTop - 50);
       };
 
+      // Детальна сторінка (профіль/резюме товару)
       window.openProductDetail = function(id) {
         const item = allProducts.find(p => p.id === id);
         if (!item) return;
@@ -1415,36 +1386,54 @@
         const isOwnerOrAdmin = currentUser && (isAdminUser(currentUser.email) || currentUser.email === item.userEmail);
 
         document.getElementById('productDetailContent').innerHTML = `
-          <div>
-            <div style="border-radius: 8px; overflow: hidden; background: #f1f5f9; height: 320px; margin-bottom: 10px;">
-              <img src="${mainPhoto}" style="width: 100%; height: 100%; object-fit: cover;" alt="${item.title}">
+          <div class="resume-profile-header">
+            <div>
+              <div style="font-size: 0.75rem; color: #64748b; font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">Категорія: ${item.category} / ${item.subcategory || ''}</div>
+              <h2 style="margin: 0; color: #0f172a; font-size: 1.4rem; font-weight: 800;">${item.title}</h2>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-size: 1.6rem; font-weight: 900; color: #0f172a;">${item.price.toLocaleString('uk-UA')} ₴</div>
+              <span class="condition-badge" style="margin-top: 4px; display: inline-block;">Стан: ${item.condition || 'Б/В'}</span>
             </div>
           </div>
-          <div>
-            <span style="font-size: 0.72rem; background: #e0f2fe; color: #0369a1; padding: 3px 8px; border-radius: 4px; font-weight: bold;">${item.category} / ${item.subcategory || ''}</span>
-            <h2 style="margin: 10px 0; color: #1e3a8a; font-size: 1.3rem;">${item.title}</h2>
-            <div style="font-size: 0.78rem; font-weight: bold; color: #475569; margin-bottom: 10px;">Стан: ${item.condition || 'Б/В'}</div>
-            <div style="font-size: 1.5rem; font-weight: 800; color: #0f172a; margin-bottom: 15px;">${item.price.toLocaleString('uk-UA')} грн</div>
-            
-            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-              <a href="tel:${item.contact}" class="btn-primary" style="flex: 1; justify-content: center; text-decoration: none; padding: 10px;">
-                <i class="fa-solid fa-phone"></i> <b>${item.contact}</b>
-              </a>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; align-items: start;">
+            <div>
+              <div style="border-radius: 8px; overflow: hidden; background: #f8fafc; border: 1px solid #e2e8f0; height: 320px;">
+                <img src="${mainPhoto}" style="width: 100%; height: 100%; object-fit: cover;" alt="${item.title}">
+              </div>
+              <div style="margin-top: 15px; display: flex; gap: 10px;">
+                <a href="tel:${item.contact}" class="btn-primary" style="flex: 1; justify-content: center; text-decoration: none; padding: 10px;">
+                  <i class="fa-solid fa-phone"></i> <b>Зв'язатися: ${item.contact}</b>
+                </a>
+              </div>
             </div>
 
-            <h4 style="margin-bottom: 5px; color: #1e293b;">Опис оголошення:</h4>
-            <p style="font-size: 0.85rem; color: #475569; line-height: 1.6; margin: 0; white-space: pre-line;">${item.description}</p>
-            
-            ${isOwnerOrAdmin ? `
-              <div style="margin-top: 25px; border-top: 1px solid #e2e8f0; padding-top: 15px; display: flex; gap: 10px;">
-                <button class="btn-primary" onclick="editProduct('${item.id}')" style="background: #f59e0b; padding: 6px 14px; font-size: 0.78rem;">
-                  <i class="fa-solid fa-pen"></i> Редагувати
-                </button>
-                <button class="btn-primary" onclick="deleteProduct('${item.id}')" style="background: var(--danger); padding: 6px 14px; font-size: 0.78rem;">
-                  <i class="fa-solid fa-trash"></i> Видалити
-                </button>
-              </div>
-            ` : ''}
+            <div>
+              <h4 style="margin: 0 0 10px 0; color: #0f172a; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.5px;">Паспорт позиції (Резюме)</h4>
+              <table class="resume-table-full">
+                <tr><th>Найменування</th><td>${item.title}</td></tr>
+                <tr><th>Категорія</th><td>${item.category}</td></tr>
+                <tr><th>Підкатегорія</th><td>${item.subcategory || '—'}</td></tr>
+                <tr><th>Стан товару</th><td>${item.condition || 'Б/В'}</td></tr>
+                <tr><th>Вартість</th><td>${item.price.toLocaleString('uk-UA')} UAH</td></tr>
+                <tr><th>Автор оголошення</th><td>${item.userEmail || 'Приховано'}</td></tr>
+              </table>
+
+              <h4 style="margin: 20px 0 8px 0; color: #0f172a; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.5px;">Опис / Характеристики</h4>
+              <p style="font-size: 0.85rem; color: #334155; line-height: 1.6; margin: 0; white-space: pre-line; background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0;">${item.description}</p>
+              
+              ${isOwnerOrAdmin ? `
+                <div style="margin-top: 25px; border-top: 1px solid #e2e8f0; padding-top: 15px; display: flex; gap: 10px;">
+                  <button class="btn-primary" onclick="editProduct('${item.id}')" style="background: #f59e0b;">
+                    <i class="fa-solid fa-pen"></i> Редагувати
+                  </button>
+                  <button class="btn-primary" onclick="deleteProduct('${item.id}')" style="background: var(--danger);">
+                    <i class="fa-solid fa-trash"></i> Видалити
+                  </button>
+                </div>
+              ` : ''}
+            </div>
           </div>
         `;
         window.scrollTo(0, 0);
@@ -1457,27 +1446,15 @@
 
       async function loadInitialListings() {
         shopProductsContainer.innerHTML = `<p style="grid-column: 1 / -1; text-align: center; color: #64748b; padding: 30px;">Завантаження оголошень...</p>`;
-
         try {
-          const firstQuery = query(
-            collection(db, "shop_listings"),
-            orderBy("createdAt", "desc"),
-            limit(PAGE_SIZE)
-          );
-
+          const firstQuery = query(collection(db, "shop_listings"), orderBy("createdAt", "desc"), limit(PAGE_SIZE));
           const snapshot = await getDocs(firstQuery);
           allProducts = [];
-          
           if (!snapshot.empty) {
             lastVisibleDoc = snapshot.docs[snapshot.docs.length - 1];
-            snapshot.forEach(docSnap => {
-              allProducts.push({ id: docSnap.id, ...docSnap.data() });
-            });
+            snapshot.forEach(docSnap => { allProducts.push({ id: docSnap.id, ...docSnap.data() }); });
             renderProductsGrid(allProducts);
-            
-            if (snapshot.docs.length === PAGE_SIZE) {
-              renderLoadMoreButton();
-            }
+            if (snapshot.docs.length === PAGE_SIZE) renderLoadMoreButton();
           } else {
             shopProductsContainer.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; padding: 30px; color: #64748b;">Оголошень поки немає. Будьте першим!</div>`;
           }
@@ -1489,38 +1466,19 @@
       window.loadMoreListings = async function() {
         if (isLoadingMore || !lastVisibleDoc) return;
         isLoadingMore = true;
-
         const loadMoreBtn = document.getElementById('loadMoreBtn');
         if (loadMoreBtn) loadMoreBtn.textContent = 'Завантаження...';
-
         try {
-          const nextQuery = query(
-            collection(db, "shop_listings"),
-            orderBy("createdAt", "desc"),
-            startAfter(lastVisibleDoc),
-            limit(PAGE_SIZE)
-          );
-
+          const nextQuery = query(collection(db, "shop_listings"), orderBy("createdAt", "desc"), startAfter(lastVisibleDoc), limit(PAGE_SIZE));
           const snapshot = await getDocs(nextQuery);
-          
           if (!snapshot.empty) {
             lastVisibleDoc = snapshot.docs[snapshot.docs.length - 1];
-            snapshot.forEach(docSnap => {
-              allProducts.push({ id: docSnap.id, ...docSnap.data() });
-            });
+            snapshot.forEach(docSnap => { allProducts.push({ id: docSnap.id, ...docSnap.data() }); });
             renderProductsGrid(allProducts);
-
-            if (snapshot.docs.length < PAGE_SIZE) {
-              if (loadMoreBtn) loadMoreBtn.remove();
-            } else {
-              renderLoadMoreButton();
-            }
-          } else {
-            if (loadMoreBtn) loadMoreBtn.remove();
-          }
-        } catch (err) {} finally {
-          isLoadingMore = false;
-        }
+            if (snapshot.docs.length < PAGE_SIZE) { if (loadMoreBtn) loadMoreBtn.remove(); }
+            else { renderLoadMoreButton(); }
+          } else { if (loadMoreBtn) loadMoreBtn.remove(); }
+        } catch (e) {} finally { isLoadingMore = false; }
       };
 
       function renderLoadMoreButton() {
@@ -1548,7 +1506,6 @@
           card.setAttribute('data-search', `${item.title} ${item.description}`.toLowerCase());
 
           const thumb = (item.photosArray && item.photosArray[0]) ? item.photosArray[0] : 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=300&q=80';
-          const shortDesc = item.description ? item.description : 'Без опису';
           const isOwnerOrAdmin = currentUser && (isAdminUser(currentUser.email) || currentUser.email === item.userEmail);
 
           card.innerHTML = `
@@ -1556,19 +1513,41 @@
               <div class="card-img-wrap" onclick="openProductDetail('${item.id}')">
                 <img src="${thumb}" alt="${item.title}">
               </div>
-              <span class="condition-badge">${item.condition || 'Б/В'}</span>
+
+              <div class="card-header-row">
+                <span class="condition-badge">${item.condition || 'Б/В'}</span>
+                <span class="card-category-sub" title="${item.subcategory || item.category}">${item.subcategory || item.category}</span>
+              </div>
+
               <div class="card-title" onclick="openProductDetail('${item.id}')" title="${item.title}">${item.title}</div>
-              <div class="card-desc-short" title="${shortDesc}">${shortDesc}</div>
+
+              <!-- МІНІ-ТАБЛИЦЯ (РЕЗЮМЕ) -->
+              <table class="resume-table">
+                <tr>
+                  <td class="label">Категорія</td>
+                  <td class="val">${item.category}</td>
+                </tr>
+                <tr>
+                  <td class="label">Статус</td>
+                  <td class="val" style="color: #059669;">В наявності</td>
+                </tr>
+              </table>
             </div>
+
             <div>
-              <div class="card-price">${item.price.toLocaleString('uk-UA')} ₴</div>
+              <div class="card-price-row">
+                <span class="card-price-label">Ціна</span>
+                <span class="card-price-val">${item.price.toLocaleString('uk-UA')} ₴</span>
+              </div>
+
               <button class="btn-view-ad" onclick="openProductDetail('${item.id}')">
-                <i class="fa-solid fa-eye"></i> Переглянути
+                <i class="fa-solid fa-address-card"></i> Переглянути профіль
               </button>
+              
               ${isOwnerOrAdmin ? `
                 <div class="admin-actions">
-                  <button class="btn-sm-action" onclick="editProduct('${item.id}')" style="background: #f59e0b; color: white;"><i class="fa-solid fa-pen"></i> Редагувати</button>
-                  <button class="btn-sm-action" onclick="deleteProduct('${item.id}')" style="background: var(--danger); color: white;"><i class="fa-solid fa-trash"></i> Видалити</button>
+                  <button class="btn-sm-action" onclick="editProduct('${item.id}')"><i class="fa-solid fa-pen"></i> Ред.</button>
+                  <button class="btn-sm-action" onclick="deleteProduct('${item.id}')" style="color: var(--danger);"><i class="fa-solid fa-trash"></i> Вид.</button>
                 </div>
               ` : ''}
             </div>
@@ -1584,16 +1563,13 @@
           const cat = card.getAttribute('data-category');
           const sub = card.getAttribute('data-subcategory');
           const text = card.getAttribute('data-search');
-
           const matchesFilter = (activeFilter === 'all' || cat === activeFilter || sub === activeFilter);
           const matchesSearch = text.includes(searchQuery);
-
           card.style.display = (matchesFilter && matchesSearch) ? 'flex' : 'none';
         });
       }
 
       document.getElementById('shopSearch').addEventListener('input', filterCards);
-
       loadInitialListings();
     </script>
 </body>

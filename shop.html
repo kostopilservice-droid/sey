@@ -179,14 +179,10 @@
             border-color: var(--olx-color);
         }
 
-        /* СТИЛІ БІГУЧОЇ СТРІЧКИ ЗІ ЗАОКРУГЛЕНИМИ КАРТКАМИ */
+        /* ЗБІЛЬШЕНІ ТА ЗРУЧНІ КАРТКИ БІГУЧОЇ СТРІЧКИ */
         .ticker-wrapper {
             overflow: hidden;
             width: 100%;
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 10px 0;
             position: relative;
         }
         @keyframes tickerMove {
@@ -197,9 +193,9 @@
             display: flex;
             flex-wrap: nowrap;
             width: max-content;
-            animation: tickerMove 25s linear infinite;
-            gap: 12px;
-            padding: 0 6px;
+            animation: tickerMove 30s linear infinite;
+            gap: 14px;
+            padding: 4px 0;
         }
         .ticker-track:hover {
             animation-play-state: paused;
@@ -207,25 +203,28 @@
         .ticker-item {
             display: flex;
             align-items: center;
-            gap: 10px;
-            background: white;
-            border: 1px solid #cbd5e1;
-            border-radius: 10px;
-            padding: 8px 12px;
-            min-width: 220px;
+            gap: 14px;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 12px 16px;
+            min-width: 280px;
             text-decoration: none;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.03);
-            transition: border-color 0.2s;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+            transition: all 0.2s;
         }
         .ticker-item:hover {
             border-color: var(--olx-color);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(35, 82, 124, 0.1);
         }
         .ticker-item img {
-            width: 44px;
-            height: 44px;
+            width: 56px;
+            height: 56px;
             object-fit: cover;
-            border-radius: 8px;
+            border-radius: 10px;
             background: #f1f5f9;
+            flex-shrink: 0;
         }
 
         /* ІДЕАЛЬНИЙ СЛАЙДЕР БЕЗ ОБРІЗАННЯ ТА ЗМІЩЕНЬ */
@@ -585,7 +584,7 @@
             <!-- Ліва колонка: Категорії -->
             <div class="categories-sidebar" id="categoriesSidebar"></div>
             
-            <!-- Права колонка: Підкатегорії + Слайдер + Бігуча стрічка банерів -->
+            <!-- Права колонка: Підкатегорії + Слайдер + Збільшена бігуча стрічка -->
             <div class="subcategories-panel">
               <div>
                 <div id="subcategoriesContent"></div>
@@ -633,18 +632,13 @@
                   </button>
               </div>
 
-              <!-- БІГУЧА СТРІЧКА БАНЕРІВ ЗІ ЗАОКРУГЛЕНИМИ КАРТКАМИ ПІД КНОПКОЮ КЕРУВАННЯ -->
-              <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px; box-shadow: 0 2px 6px rgba(0,0,0,0.03);">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid #f1f5f9; padding-bottom: 6px;">
-                  <h4 style="margin: 0; font-size: 0.8rem; font-weight: bold; color: #1e293b; text-transform: uppercase;">
-                    <i class="fa-solid fa-bullhorn" style="color: #db4437; margin-right: 5px;"></i> Промо та партнери
-                  </h4>
-                  <button id="adminRunningBannerBtn" style="display: none; font-size: 0.72rem; background: #f1f5f9; border: 1px solid #cbd5e1; padding: 3px 8px; border-radius: 4px; cursor: pointer; font-weight: bold;" onclick="openRunningBannerModal()">
-                    <i class="fa-solid fa-gear"></i> Налаштувати
-                  </button>
-                </div>
+              <!-- БІГУЧА СТРІЧКА БАНЕРІВ -->
+              <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px; box-shadow: 0 2px 6px rgba(0,0,0,0.03); position: relative;">
+                <button id="adminRunningBannerBtn" style="display: none; position: absolute; top: 8px; right: 8px; z-index: 10; font-size: 0.72rem; background: #f1f5f9; border: 1px solid #cbd5e1; padding: 4px 10px; border-radius: 6px; cursor: pointer; font-weight: bold; color: #1e3a8a;" onclick="openRunningBannerModal()" title="Налаштувати бігучі банери">
+                  <i class="fa-solid fa-gear"></i> Налаштувати
+                </button>
                 
-                <div class="ticker-wrapper">
+                <div class="ticker-wrapper" style="margin-top: 4px;">
                   <div id="runningBannersTrack" class="ticker-track">
                     <!-- Заповнюється динамічно -->
                   </div>
@@ -944,7 +938,7 @@
       document.getElementById('cancelBannerBtn').addEventListener('click', () => document.getElementById('bannerModal').style.display = 'none');
 
 
-      // ЛОГІКА БІГУЧИХ БАНЕРІВ (ПАРТНЕРИ / ПРОМО)
+      // ЛОГІКА БІГУЧИХ БАНЕРІВ (ПАРТНЕРИ)
       let runningBanners = [
         { text: "Автозапчастини", image: "https://images.unsplash.com/photo-1511919884226-fd3cad34687c?w=400", link: "auto.html" },
         { text: "Ремонт електроніки", image: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=400", link: "baza.html" },
@@ -970,8 +964,8 @@
           <a href="${item.link || '#'}" target="_blank" class="ticker-item">
             <img src="${item.image || 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=200'}" alt="">
             <div style="overflow: hidden;">
-              <div style="font-size: 0.78rem; font-weight: bold; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.text}</div>
-              <div style="font-size: 0.65rem; color: #64748b; font-weight: bold; text-transform: uppercase;">Партнер проєкту</div>
+              <div style="font-size: 0.82rem; font-weight: bold; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.text}</div>
+              <div style="font-size: 0.68rem; color: #64748b; font-weight: bold; text-transform: uppercase;">Партнер проєкту</div>
             </div>
           </a>
         `).join('');

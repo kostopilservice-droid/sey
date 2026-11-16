@@ -534,7 +534,7 @@
 </head>
 <body>
 
-    <!-- СВІТЛА ШАПКА ЗІ ЗБАЛАНСОВАНИМ ГОРИЗОНТАЛЬНИМ РОЗМІЩЕННЯМ -->
+    <!-- СВІТЛА ШАПКА З ГОРИЗОНТАЛЬНИМ РОЗМІЩЕННЯМ ТА ПЛАВНИМ ЗАТВЕРДЖЕННЯМ СТАТУСУ -->
     <header style="background: #ffffff; color: #1e293b; padding: 12px 20px; border-bottom: 2px solid #e2e8f0; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
       <div style="max-width: 1280px; margin: 0 auto; display: flex; flex-wrap: nowrap; align-items: center; justify-content: space-between; gap: 15px;">
         
@@ -562,8 +562,8 @@
           </div>
         </div>
 
-        <!-- Кнопки входу / реєстрації (або кабінет при авторизації) -->
-        <div id="headerAuthArea" style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
+        <!-- Кнопки входу / реєстрації (або кабінет при авторизації) з плавною появою -->
+        <div id="headerAuthArea" style="display: flex; align-items: center; gap: 8px; flex-shrink: 0; opacity: 0; transition: opacity 0.2s ease;">
           <button onclick="openAuthModal('login')" style="background: #f1f5f9; border: 1px solid #cbd5e1; color: #1e293b; padding: 6px 12px; border-radius: 6px; font-size: 0.78rem; font-weight: bold; cursor: pointer;">
             <i class="fa-solid fa-right-to-bracket"></i> Увійти
           </button>
@@ -982,6 +982,8 @@
             </button>
           `;
         }
+        // Робимо область видимою після перевірки статусу авторизації
+        headerAuthArea.style.opacity = '1';
       });
 
       // Слайдери

@@ -850,6 +850,44 @@
         return ALLOWED_ADMINS.some(admin => admin.toLowerCase() === email.trim().toLowerCase());
       }
 
+      // Функція форматування дати українською
+      function formatTimeAgo(timestamp) {
+        if (!timestamp) return 'Нещодавно';
+        
+        const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+        const now = new Date();
+        const diffMs = now - date;
+        const diffMins = Math.floor(diffMs / 60000);
+        const diffHours = Math.floor(diffMs / 3600000);
+        const diffDays = Math.floor(diffMs / 86400000);
+
+        if (diffMins < 2) return 'Щойно';
+        if (diffMins < 60) return `${diffMins} хв. тому`;
+        if (diffHours < 24 && date.getDate() === now.getDate()) {
+          return `Сьогодні о ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+        }
+        if (diffDays === 1 || (diffHours < 48 && date.getDate() === now.getDate() - 1)) {
+          return `Вчора о ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+        }
+        
+        return date.toLocaleDateString('uk-UA', { day: 'numeric', month: 'long', year: 'numeric' });
+      }
+
+      // Оновлення статусу присутності користувача в базі
+      async function updateUserPresence(user) {
+        if (!user) return;
+        const userRef = doc(db, "users", user.uid);
+        try {
+          await setDoc(userRef, {
+            email: user.email,
+            lastSeen: serverTimestamp(),
+            isOnline: true
+          }, { merge: true });
+        } catch (e) {
+          console.error("Помилка оновлення присутності:", e);
+        }
+      }
+
       let authMode = 'login';
       window.openAuthModal = function(mode = 'login') {
         authMode = mode;
@@ -948,7 +986,7 @@
         }
       });
 
-      onAuthStateChanged(auth, (user) => {
+      onAuthStateChanged(auth, async (user) => {
         currentUser = user;
         const toggleBtn = document.getElementById('toggleFormBtn');
         const adminBadge = document.getElementById('adminStatusBadge');
@@ -971,6 +1009,10 @@
             </button>
           `;
         } else {
+          // Оновлюємо статус активності у базі
+          await updateUserPresence(user);
+          setInterval(() => updateUserPresence(user), 120000);
+
           toggleBtn.innerHTML = `<i class="fa-solid fa-plus"></i> Подати оголошення`;
           if (isAdminUser(user.email)) {
             adminBadge.style.display = 'inline-block';
@@ -1351,7 +1393,7 @@
         window.scrollTo(0, newAdFormCard.offsetTop - 50);
       };
 
-      // Детальна сторінка з оновленням URL (пряме посилання на товар)
+      // Детальна сторінка з оновленням URL та відображенням дати й статусу
       window.openProductDetail = function(id, pushHistory = true) {
         const item = allProducts.find(p => p.id === id);
         if (!item) return;
@@ -1368,6 +1410,7 @@
         const photos = (item.photosArray && item.photosArray.length > 0) ? item.photosArray : ['https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=600&q=80'];
         const mainPhoto = photos[0];
         const isOwnerOrAdmin = currentUser && (isAdminUser(currentUser.email) || currentUser.email === item.userEmail);
+        const pubDateFormatted = formatTimeAgo(item.createdAt);
 
         let galleryHtml = `<div style="border-radius: 8px; overflow: hidden; background: #f8fafc; border: 1px solid #e2e8f0; height: 320px; margin-bottom: 10px;"><img src="${mainPhoto}" style="width: 100%; height: 100%; object-fit: cover;" alt="${item.title}"></div>`;
         if (photos.length > 1) {
@@ -1379,6 +1422,10 @@
             <div>
               <div style="font-size: 0.75rem; color: #64748b; font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">Категорія: ${item.category} / ${item.subcategory || ''}</div>
               <h2 style="margin: 0; color: #1e3a8a; font-size: 1.4rem; font-weight: 800;">${item.title}</h2>
+              <div style="font-size: 0.75rem; color: #64748b; display: flex; gap: 15px; margin-top: 6px; align-items: center; flex-wrap: wrap;">
+                <span><i class="fa-regular fa-clock"></i> Опубліковано: ${pubDateFormatted}</span>
+                <span><i class="fa-solid fa-circle text-[8px]" style="color: #059669;"></i> Продавець на зв'язку</span>
+              </div>
             </div>
             <div style="text-align: right;">
               <div style="font-size: 1.6rem; font-weight: 900; color: #0f172a;">${item.price.toLocaleString('uk-UA')} ₴</div>

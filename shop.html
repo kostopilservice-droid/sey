@@ -30,24 +30,30 @@
             color: var(--text);
         }
         
-        /* Навігація сайту */
+        /* СИНЯ ПАНЕЛЬ НАВІГАЦІЇ САЙТУ */
         nav {
             display: flex;
             justify-content: center;
             background: #0f172a;
             overflow-x: auto;
             border-bottom: 2px solid var(--olx-color);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
         nav a {
-            color: white;
-            padding: 10px 20px;
+            color: #ffffff;
+            padding: 12px 22px;
             text-decoration: none;
             white-space: nowrap;
             font-size: 0.85rem;
             font-weight: 600;
-            transition: background 0.2s;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-        nav a:hover { background-color: var(--olx-color); }
+        nav a:hover { 
+            background-color: var(--olx-color); 
+        }
 
         .container {
             max-width: 1280px;
@@ -534,11 +540,11 @@
 </head>
 <body>
 
-    <!-- СВІТЛА ШАПКА З ГОРИЗОНТАЛЬНИМ РОЗМІЩЕННЯМ -->
+    <!-- СВІТЛА ШАПКА З ГОРИЗОНТАЛЬНИМ РОЗМІЩЕННЯМ (ЛОГО ВЕДЕ НА index.html) -->
     <header style="background: #ffffff; color: #1e293b; padding: 12px 20px; border-bottom: 2px solid #e2e8f0; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
       <div style="max-width: 1280px; margin: 0 auto; display: flex; flex-wrap: nowrap; align-items: center; justify-content: space-between; gap: 15px;">
         
-        <a href="shop.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: #0f172a; flex-shrink: 0;">
+        <a href="index.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: #0f172a; flex-shrink: 0;">
           <div style="background: #e0f2fe; border-radius: 10px; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem;">
             📋
           </div>
@@ -562,7 +568,7 @@
           </div>
         </div>
 
-        <!-- Кнопки входу та реєстрації за замовчуванням (не зникають) -->
+        <!-- Кнопки входу та реєстрації за замовчуванням -->
         <div id="headerAuthArea" style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
           <button onclick="openAuthModal('login')" style="background: #f1f5f9; border: 1px solid #cbd5e1; color: #1e293b; padding: 6px 12px; border-radius: 6px; font-size: 0.78rem; font-weight: bold; cursor: pointer;">
             <i class="fa-solid fa-right-to-bracket"></i> Увійти
@@ -575,7 +581,7 @@
       </div>
     </header>
 
-    <!-- НАВІГАЦІЯ -->
+    <!-- СИНЯ ПАНЕЛЬ НАВІГАЦІЇ -->
     <nav>
         <a href="index.html"><i class="fa-solid fa-house"></i> Головна</a>
         <a href="baza.html"><i class="fa-solid fa-book-open"></i> База знань</a>
@@ -1316,6 +1322,7 @@
             await deleteDoc(doc(db, "shop_listings", docId));
             document.getElementById('productDetailView').style.display = 'none';
             document.getElementById('mainCatalogWrapper').style.display = 'block';
+            history.pushState({}, '', 'shop.html');
             alert('Видалено!');
             loadInitialListings();
           } catch (err) {}
@@ -1344,10 +1351,14 @@
         window.scrollTo(0, newAdFormCard.offsetTop - 50);
       };
 
-      // Детальна сторінка
-      window.openProductDetail = function(id) {
+      // Детальна сторінка з оновленням URL (пряме посилання на товар)
+      window.openProductDetail = function(id, pushHistory = true) {
         const item = allProducts.find(p => p.id === id);
         if (!item) return;
+
+        if (pushHistory) {
+            history.pushState({ id: id }, '', `shop.html?id=${id}`);
+        }
 
         document.getElementById('mainCatalogWrapper').style.display = 'none';
         newAdFormCard.style.display = 'none';
@@ -1384,7 +1395,7 @@
                 </a>
               </div>
 
-              <!-- Професійний інформаційний блок для заповнення пустого простору -->
+              <!-- Професійний інформаційний блок -->
               <div style="margin-top: 15px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px;">
                 <div style="font-size: 0.78rem; font-weight: 800; color: #1e3a8a; text-transform: uppercase; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
                   <i class="fa-solid fa-shield-halved"></i> Стандарти безпеки сервісу
@@ -1435,6 +1446,7 @@
       };
 
       document.getElementById('backToCatalogBtn').addEventListener('click', () => {
+        history.pushState({}, '', 'shop.html');
         document.getElementById('productDetailView').style.display = 'none';
         document.getElementById('mainCatalogWrapper').style.display = 'block';
       });
@@ -1450,6 +1462,16 @@
             snapshot.forEach(docSnap => { allProducts.push({ id: docSnap.id, ...docSnap.data() }); });
             renderProductsGrid(allProducts);
             if (snapshot.docs.length === PAGE_SIZE) renderLoadMoreButton();
+
+            // Перевірка наявності параметра ?id= у засланні для прямого відкриття товару
+            const urlParams = new URLSearchParams(window.location.search);
+            const targetId = urlParams.get('id');
+            if (targetId) {
+              if (allProducts.some(p => p.id === targetId)) {
+                openProductDetail(targetId, false);
+              }
+            }
+
           } else {
             shopProductsContainer.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; padding: 30px; color: #64748b;">Оголошень поки немає. Будьте першим!</div>`;
           }

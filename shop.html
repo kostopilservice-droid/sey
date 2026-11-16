@@ -15,8 +15,8 @@
     <style>
         :root {
             --primary: #1e3a8a;
-            --olx-color: #334155;
-            --accent: #0f172a;
+            --olx-color: #23527c;
+            --accent: #10b981;
             --danger: #ef4444;
             --bg: #f8fafc;
             --card-bg: #ffffff;
@@ -36,7 +36,7 @@
             justify-content: center;
             background: #0f172a;
             overflow-x: auto;
-            border-bottom: 2px solid #334155;
+            border-bottom: 2px solid var(--olx-color);
         }
         nav a {
             color: white;
@@ -47,7 +47,7 @@
             font-weight: 600;
             transition: background 0.2s;
         }
-        nav a:hover { background-color: #334155; }
+        nav a:hover { background-color: var(--olx-color); }
 
         .container {
             max-width: 1280px;
@@ -79,7 +79,7 @@
         .catalog-title {
             font-size: 1rem;
             font-weight: bold;
-            color: #0f172a;
+            color: #1e3a8a;
             display: flex;
             align-items: center;
             gap: 10px;
@@ -121,13 +121,12 @@
             transition: all 0.2s;
         }
         .cat-item-btn:hover, .cat-item-btn.active {
-            background: #f1f5f9;
-            color: #0f172a;
+            background: #e0f2fe;
+            color: var(--olx-color);
             padding-left: 20px;
         }
         .cat-item-btn.active {
-            border-left: 4px solid #0f172a;
-            font-weight: 700;
+            border-left: 4px solid var(--olx-color);
         }
 
         .subcategories-panel {
@@ -141,7 +140,7 @@
         .subcategories-header {
             font-size: 1rem;
             font-weight: bold;
-            color: #0f172a;
+            color: #1e3a8a;
             border-bottom: 2px solid #e2e8f0;
             padding-bottom: 8px;
             margin-bottom: 10px;
@@ -175,9 +174,9 @@
             gap: 6px;
         }
         .sub-chip:hover, .sub-chip.active {
-            background: #334155;
+            background: var(--olx-color);
             color: white;
-            border-color: #334155;
+            border-color: var(--olx-color);
         }
 
         /* БІГУЧА СТРІЧКА */
@@ -211,18 +210,18 @@
             padding: 12px 16px;
             min-width: 280px;
             text-decoration: none;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
             transition: all 0.2s;
         }
         .ticker-item:hover {
-            border-color: #94a3b8;
+            border-color: var(--olx-color);
             transform: translateY(-1px);
         }
         .ticker-item img {
             width: 56px;
             height: 56px;
             object-fit: cover;
-            border-radius: 8px;
+            border-radius: 10px;
             background: #f1f5f9;
             flex-shrink: 0;
         }
@@ -242,7 +241,7 @@
         .custom-slide-img-wrap {
             width: 100%;
             height: 210px;
-            background: #1e293b;
+            background: #0f172a;
             position: relative;
             display: flex;
             align-items: center;
@@ -261,7 +260,7 @@
             gap: 6px;
             width: 100%;
             box-sizing: border-box;
-            background: #475569;
+            background: #db4437;
             color: white;
             padding: 9px 14px;
             border-radius: 8px;
@@ -270,52 +269,79 @@
             text-align: center;
             transition: background 0.2s;
         }
-        .slider-cta-btn:hover { background: #334155; }
+        .slider-cta-btn:hover { background: #b9372c; }
 
-        /* СУЧАСНІ КАРТКИ ТОВАРУ У СТИЛІ РЕЗЮМЕ (СІРО-БІЛІ ВІДТІНКИ) */
+        /* КАРТКИ ТОВАРУ З КОЛАЖЕМ ТА ТАБЛИЦЕЮ */
         .market-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
             gap: 16px;
             margin-top: 25px;
         }
 
         .product-card {
-            background: #ffffff;
+            background: var(--card-bg);
             border-radius: 12px;
             padding: 14px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
             border: 1px solid #e2e8f0;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             box-sizing: border-box;
-            transition: all 0.2s ease;
+            transition: transform 0.2s, box-shadow 0.2s;
             position: relative;
         }
         .product-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(35, 82, 124, 0.1);
             border-color: #cbd5e1;
         }
 
-        .card-img-wrap {
+        /* Стилі колажу фотографій у картці */
+        .card-collage-box {
+            display: grid;
+            gap: 4px;
             height: 150px;
             border-radius: 8px;
             overflow: hidden;
-            background: #f8fafc;
-            border: 1px solid #f1f5f9;
-            cursor: pointer;
-            position: relative;
+            background: #f1f5f9;
             margin-bottom: 10px;
+            cursor: pointer;
+            border: 1px solid #e2e8f0;
         }
-        .card-img-wrap img {
+        .card-collage-box.single {
+            grid-template-columns: 1fr;
+        }
+        .card-collage-box.double {
+            grid-template-columns: 2fr 1fr;
+        }
+        .card-collage-box.triple {
+            grid-template-columns: 2fr 1fr;
+            grid-template-rows: 1fr 1fr;
+        }
+        .collage-img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.3s;
+            transition: transform 0.2s;
         }
-        .card-img-wrap img:hover { transform: scale(1.03); }
+        .collage-img:hover { transform: scale(1.03); }
+        .collage-main {
+            grid-column: 1 / 2;
+            grid-row: 1 / -1;
+            height: 100%;
+        }
+        .collage-sub-top {
+            grid-column: 2 / 3;
+            grid-row: 1 / 2;
+            height: 100%;
+        }
+        .collage-sub-bot {
+            grid-column: 2 / 3;
+            grid-row: 2 / 3;
+            height: 100%;
+        }
 
         .card-header-row {
             display: flex;
@@ -326,14 +352,12 @@
 
         .condition-badge {
             font-size: 0.68rem;
-            background: #f1f5f9;
-            color: #475569;
-            border: 1px solid #e2e8f0;
+            background: #e0f2fe;
+            color: var(--olx-color);
             padding: 2px 8px;
-            border-radius: 6px;
-            font-weight: 700;
+            border-radius: 4px;
+            font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 0.3px;
         }
 
         .card-category-sub {
@@ -347,50 +371,60 @@
 
         .card-title {
             font-size: 0.88rem;
-            margin: 4px 0 8px 0;
-            color: #0f172a;
+            margin: 4px 0 6px 0;
+            color: #1e293b;
             font-weight: 700;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
             cursor: pointer;
-            line-height: 1.35;
+            line-height: 1.3;
         }
-        .card-title:hover { color: #334155; text-decoration: underline; }
+        .card-title:hover { color: var(--olx-color); text-decoration: underline; }
 
-        /* МІНІ-ТАБЛИЦЯ ХАРАКТЕРИСТИК У КАРТЦІ */
-        .resume-table {
+        .card-desc-short {
+            font-size: 0.74rem;
+            color: #64748b;
+            margin: 0 0 10px 0;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            line-height: 1.3;
+            height: 2.5em;
+        }
+
+        /* Таблиця характеристик (резюме позиції) */
+        .card-resume-table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 0.74rem;
+            font-size: 0.73rem;
             margin-bottom: 12px;
             background: #f8fafc;
             border-radius: 6px;
             overflow: hidden;
             border: 1px solid #e2e8f0;
         }
-        .resume-table td {
+        .card-resume-table td {
             padding: 5px 8px;
             border-bottom: 1px solid #e2e8f0;
             color: #334155;
         }
-        .resume-table tr:last-child td {
-            border-bottom: none;
-        }
-        .resume-table td.label {
+        .card-resume-table tr:last-child td { border-bottom: none; }
+        .card-resume-table td.label {
             color: #64748b;
             font-weight: 600;
-            width: 40%;
+            width: 45%;
             background: #f1f5f9;
             border-right: 1px solid #e2e8f0;
         }
-        .resume-table td.val {
-            font-weight: 600;
+        .card-resume-table td.val {
+            font-weight: 700;
             color: #0f172a;
         }
 
-        .card-price-row {
+        .card-price-box {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -400,26 +434,19 @@
             border: 1px solid #e2e8f0;
             margin-bottom: 10px;
         }
-        .card-price-label {
-            font-size: 0.7rem;
-            color: #64748b;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
         .card-price-val {
-            font-size: 1.05rem;
-            font-weight: 800;
+            font-size: 1.1rem;
+            font-weight: 900;
             color: #0f172a;
-            letter-spacing: -0.3px;
         }
 
         .btn-view-ad {
-            background: #334155;
+            background: var(--olx-color);
             color: white;
             border: none;
             padding: 8px;
             border-radius: 8px;
-            font-weight: 700;
+            font-weight: bold;
             cursor: pointer;
             font-size: 0.78rem;
             width: 100%;
@@ -430,7 +457,7 @@
             transition: background 0.2s;
             text-decoration: none;
         }
-        .btn-view-ad:hover { background: #0f172a; }
+        .btn-view-ad:hover { background: #1a3c5a; }
 
         .admin-actions {
             display: flex;
@@ -444,68 +471,19 @@
             border-radius: 6px;
             border: 1px solid #cbd5e1;
             cursor: pointer;
-            font-weight: 700;
+            font-weight: bold;
             background: #f8fafc;
-            color: #334155;
-            transition: all 0.2s;
-        }
-        .btn-sm-action:hover { background: #e2e8f0; }
-
-        /* БЛОК "НОВІ ОГОЛОШЕННЯ" */
-        .sync-new-section-bottom {
-            background: white;
-            border: 1px solid #cbd5e1;
-            border-radius: 12px;
-            padding: 24px;
-            margin-top: 40px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
-        }
-        .sync-new-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            border-bottom: 2px solid #e2e8f0;
-            padding-bottom: 10px;
-        }
-        .sync-new-title {
-            font-size: 1.05rem;
-            font-weight: 800;
-            color: #0f172a;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .sync-live-dot {
-            width: 10px;
-            height: 10px;
-            background: #10b981;
-            border-radius: 50%;
-            display: inline-block;
-            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.2);
         }
 
-        /* ПОВНОЦІННА СТОРІНКА ДЕТАЛЕЙ (РЕЗЮМЕ ТОВАРУ) */
+        /* ПОВНОЦІННА СТОРІНКА ДЕТАЛЕЙ */
         #productDetailView {
             display: none;
             background: white;
             border-radius: 12px;
-            padding: 30px;
+            padding: 25px;
             margin-top: 20px;
             border: 1px solid #e2e8f0;
             box-shadow: 0 4px 12px rgba(0,0,0,0.04);
-        }
-        .resume-profile-header {
-            border-bottom: 2px solid #e2e8f0;
-            padding-bottom: 15px;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            flex-wrap: wrap;
-            gap: 15px;
         }
         .resume-table-full {
             width: 100%;
@@ -534,20 +512,20 @@
         }
 
         .btn-primary {
-            background: #334155;
+            background: var(--olx-color);
             color: white;
             border: none;
-            padding: 8px 16px;
+            padding: 7px 14px;
             border-radius: 8px;
-            font-weight: 700;
+            font-weight: bold;
             cursor: pointer;
-            font-size: 0.8rem;
+            font-size: 0.78rem;
             display: inline-flex;
             align-items: center;
             gap: 6px;
             transition: background 0.2s;
         }
-        .btn-primary:hover { background: #0f172a; }
+        .btn-primary:hover { background: #1a3c5a; }
 
         footer {
             text-align: center;
@@ -560,8 +538,8 @@
 </head>
 <body>
 
-    <!-- ШАПКА -->
-    <header style="background: linear-gradient(135deg, #0f172a 0%, #334155 100%); color: white; padding: 14px 20px; border-bottom: 3px solid #1e293b;">
+    <!-- ШАПКА З ЛОГОТИПОМ NEOSERVICE ТА КНОПКАМИ -->
+    <header style="background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); color: white; padding: 14px 20px; border-bottom: 3px solid var(--olx-color);">
       <div style="max-width: 1280px; margin: 0 auto; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 15px;">
         
         <a href="shop.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none; color: white;">
@@ -570,9 +548,9 @@
           </div>
           <div>
             <div style="font-size: 1.3rem; font-weight: 900; letter-spacing: 0.8px; text-transform: uppercase; line-height: 1.1;">
-              NEO<span style="color: #cbd5e1;">SERVICE</span>
+              NEO<span style="color: #60a5fa;">SERVICE</span>
             </div>
-            <div style="font-size: 0.74rem; color: #94a3b8; margin-top: 2px;">
+            <div style="font-size: 0.74rem; color: #cbd5e1; margin-top: 2px;">
               Дошка приватних оголошень
             </div>
           </div>
@@ -598,7 +576,7 @@
         <a href="index.html"><i class="fa-solid fa-house"></i> Головна</a>
         <a href="baza.html"><i class="fa-solid fa-book-open"></i> База знань</a>
         <a href="auto.html"><i class="fa-solid fa-car"></i> Автомаркет</a>
-        <a href="shop.html" style="background-color: #334155;"><i class="fa-solid fa-rectangle-ad"></i> Дошка оголошень</a>
+        <a href="shop.html" style="background-color: var(--olx-color);"><i class="fa-solid fa-rectangle-ad"></i> Дошка оголошень</a>
         <a href="sport.html"><i class="fa-solid fa-football"></i> Спорт</a>
         <a href="chat.html"><i class="fa-solid fa-comments"></i> Чат</a>
     </nav>
@@ -610,27 +588,25 @@
         <div class="catalog-container">
           <div class="catalog-top-bar">
             <h3 class="catalog-title">
-              <i class="fa-solid fa-layer-group" style="color: #334155;"></i> Категорії оголошень
+              <i class="fa-solid fa-layer-group" style="color: var(--olx-color);"></i> Категорії оголошень
             </h3>
             
             <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
-              <span id="adminStatusBadge" style="display: none; background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 700;">
+              <span id="adminStatusBadge" style="display: none; background: #fef3c7; color: #b45309; padding: 5px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: bold;">
                 <i class="fa-solid fa-shield-halved"></i> Модератор
               </span>
               <button id="toggleFormBtn" class="btn-primary">
                 <i class="fa-solid fa-plus"></i> Подати оголошення
               </button>
-              <button id="resetFilterBtn" style="background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; padding: 6px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; cursor: pointer;">
+              <button id="resetFilterBtn" style="background: #e2e8f0; color: #334155; border: none; padding: 6px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; cursor: pointer;">
                 <i class="fa-solid fa-rotate-left"></i> Усі оголошення
               </button>
             </div>
           </div>
 
           <div class="catalog-layout">
-            <!-- Ліва колонка: Категорії -->
             <div class="categories-sidebar" id="categoriesSidebar"></div>
             
-            <!-- Права колонка -->
             <div class="subcategories-panel">
               <div>
                 <div id="subcategoriesContent"></div>
@@ -642,8 +618,8 @@
                       <div class="custom-slide-img-wrap">
                           <img id="sidebarBannerImg" src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800" alt="Рекламний банер">
                           
-                          <div style="position: absolute; top: 10px; left: 10px; display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.95); padding: 3px 10px; border-radius: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); z-index: 10;">
-                              <span style="width: 6px; height: 6px; background: #334155; border-radius: 50%;"></span>
+                          <div style="position: absolute; top: 10px; left: 10px; display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.95); padding: 3px 10px; border-radius: 20px; z-index: 10;">
+                              <span style="width: 6px; height: 6px; background: #db4437; border-radius: 50%;"></span>
                               <span style="font-size: 10px; font-weight: 800; color: #1e293b; text-transform: uppercase;">Партнер</span>
                           </div>
 
@@ -651,17 +627,10 @@
                       </div>
 
                       <div style="padding: 16px; background: white;">
-                          <h4 id="sidebarBannerTitle" style="font-weight: 800; font-size: 1rem; color: #1e293b; margin: 0 0 4px 0;">
-                              Оцінка Нерухомості
-                          </h4>
-                          <p id="sidebarBannerSubtitle" style="font-size: 0.8rem; color: #64748b; margin: 0; font-weight: 500;">
-                              Твоє місто
-                          </p>
-                          
+                          <h4 id="sidebarBannerTitle" style="font-weight: 800; font-size: 1rem; color: #1e293b; margin: 0 0 4px 0;">Оцінка Нерухомості</h4>
+                          <p id="sidebarBannerSubtitle" style="font-size: 0.8rem; color: #64748b; margin: 0; font-weight: 500;">Твоє місто</p>
                           <div style="margin-top: 12px;">
-                              <span id="sidebarBannerBtnText" class="slider-cta-btn">
-                                  Дізнатися більше <i class="fa-solid fa-arrow-right text-[11px] ml-1"></i>
-                              </span>
+                              <span id="sidebarBannerBtnText" class="slider-cta-btn">Дізнатися більше <i class="fa-solid fa-arrow-right text-[11px] ml-1"></i></span>
                           </div>
                       </div>
                   </a>
@@ -680,10 +649,9 @@
 
               <!-- БІГУЧА СТРІЧКА -->
               <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px; box-shadow: 0 2px 6px rgba(0,0,0,0.03); position: relative;">
-                <button id="adminRunningBannerBtn" style="display: none; position: absolute; top: 8px; right: 8px; z-index: 10; font-size: 0.72rem; background: #f1f5f9; border: 1px solid #cbd5e1; padding: 4px 10px; border-radius: 6px; cursor: pointer; font-weight: bold; color: #1e3a8a;" onclick="openRunningBannerModal()" title="Налаштувати">
+                <button id="adminRunningBannerBtn" style="display: none; position: absolute; top: 8px; right: 8px; z-index: 10; font-size: 0.72rem; background: #f1f5f9; border: 1px solid #cbd5e1; padding: 4px 10px; border-radius: 6px; cursor: pointer; font-weight: bold; color: #1e3a8a;" onclick="openRunningBannerModal()">
                   <i class="fa-solid fa-gear"></i> Налаштувати
                 </button>
-                
                 <div class="ticker-wrapper" style="margin-top: 4px;">
                   <div id="runningBannersTrack" class="ticker-track"></div>
                 </div>
@@ -697,7 +665,7 @@
         <div id="bannerModal" style="display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.7); z-index: 9999; justify-content: center; align-items: center; padding: 15px;">
           <div style="background: white; border-radius: 12px; max-width: 500px; width: 100%; padding: 24px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">
-              <h3 style="margin: 0; color: #0f172a; font-size: 1.1rem;"><i class="fa-solid fa-pen-to-square"></i> Керування слайдером</h3>
+              <h3 style="margin: 0; color: #1e3a8a; font-size: 1.1rem;"><i class="fa-solid fa-pen-to-square"></i> Керування слайдером</h3>
               <button id="closeBannerModal" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #64748b;">&times;</button>
             </div>
             <div id="bannerAdminList" style="max-height: 300px; overflow-y: auto; margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px;"></div>
@@ -708,7 +676,7 @@
         <div id="runningBannerModal" style="display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.7); z-index: 9999; justify-content: center; align-items: center; padding: 15px;">
           <div style="background: white; border-radius: 12px; max-width: 500px; width: 100%; padding: 24px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">
-              <h3 style="margin: 0; color: #0f172a; font-size: 1.1rem;"><i class="fa-solid fa-bullhorn"></i> Керування бігучими банерами</h3>
+              <h3 style="margin: 0; color: #1e3a8a; font-size: 1.1rem;"><i class="fa-solid fa-bullhorn"></i> Керування бігучими банерами</h3>
               <button onclick="document.getElementById('runningBannerModal').style.display='none'" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #64748b;">&times;</button>
             </div>
             <div id="runningBannerAdminList" style="max-height: 300px; overflow-y: auto; margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px;"></div>
@@ -717,8 +685,8 @@
         </div>
 
         <!-- ФОРМА ПОДАЧІ / РЕДАГУВАННЯ ОГОЛОШЕННЯ -->
-        <div id="newAdFormCard" style="display: none; background: white; border-radius: 12px; padding: 18px; margin-top: 15px; border: 2px dashed #334155; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
-          <h3 id="formHeading" style="margin-top: 0; color: #0f172a; font-size: 1rem;"><i class="fa-solid fa-rectangle-ad"></i> Створити нове оголошення</h3>
+        <div id="newAdFormCard" style="display: none; background: white; border-radius: 12px; padding: 18px; margin-top: 15px; border: 2px dashed var(--olx-color); box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+          <h3 id="formHeading" style="margin-top: 0; color: #1e3a8a; font-size: 1rem;"><i class="fa-solid fa-rectangle-ad"></i> Створити нове оголошення</h3>
           
           <form id="addListingForm" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
             <input type="hidden" id="editingDocId" />
@@ -757,8 +725,8 @@
             </div>
 
             <div style="grid-column: 1 / -1;">
-              <label style="font-size: 0.75rem; font-weight: bold; color: #475569;">Фотографії (посилання через кому):</label>
-              <input type="text" id="adPhotos" placeholder="https://image1.jpg, https://image2.jpg" required style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; margin-top: 3px;" />
+              <label style="font-size: 0.75rem; font-weight: bold; color: #475569;">Фотографії (посилання через кому для колажу):</label>
+              <input type="text" id="adPhotos" placeholder="https://img1.jpg, https://img2.jpg, https://img3.jpg" required style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; margin-top: 3px;" />
             </div>
 
             <div style="grid-column: 1 / -1;">
@@ -779,7 +747,7 @@
         </div>
       </div>
 
-      <!-- ДЕТАЛЬНА СТОРІНКА (ПРОФІЛЬ / РЕЗЮМЕ ТОВАРУ) -->
+      <!-- ДЕТАЛЬНА СТОРІНКА -->
       <div id="productDetailView">
         <button id="backToCatalogBtn" style="background: #f1f5f9; border: 1px solid #cbd5e1; padding: 6px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-bottom: 20px; font-size: 0.8rem;">
           <i class="fa-solid fa-arrow-left"></i> Назад до дошки
@@ -791,11 +759,11 @@
       <div id="authModal" style="display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.7); z-index: 9999; justify-content: center; align-items: center; padding: 15px;">
         <div style="background: white; border-radius: 12px; max-width: 400px; width: 100%; padding: 24px;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">
-            <h3 id="authModalTitle" style="margin: 0; color: #0f172a; font-size: 1.1rem;"><i class="fa-solid fa-user-lock"></i> Авторизація</h3>
+            <h3 id="authModalTitle" style="margin: 0; color: #1e3a8a; font-size: 1.1rem;"><i class="fa-solid fa-user-lock"></i> Авторизація</h3>
             <button onclick="document.getElementById('authModal').style.display='none'" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #64748b;">&times;</button>
           </div>
           <div style="display: flex; gap: 10px; margin-bottom: 15px;">
-            <button type="button" id="tabLoginBtn" onclick="switchAuthTab('login')" style="flex: 1; padding: 8px; font-weight: bold; border-radius: 6px; border: 1px solid #cbd5e1; background: #334155; color: white; cursor: pointer; font-size: 0.8rem;">Вхід</button>
+            <button type="button" id="tabLoginBtn" onclick="switchAuthTab('login')" style="flex: 1; padding: 8px; font-weight: bold; border-radius: 6px; border: 1px solid #cbd5e1; background: var(--olx-color); color: white; cursor: pointer; font-size: 0.8rem;">Вхід</button>
             <button type="button" id="tabRegisterBtn" onclick="switchAuthTab('register')" style="flex: 1; padding: 8px; font-weight: bold; border-radius: 6px; border: 1px solid #cbd5e1; background: #f1f5f9; color: #334155; cursor: pointer; font-size: 0.8rem;">Реєстрація</button>
           </div>
           <form id="authModalForm" style="display: flex; flex-direction: column; gap: 10px;">
@@ -816,14 +784,14 @@
       <div id="cabinetModal" style="display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.7); z-index: 9999; justify-content: center; align-items: center; padding: 15px;">
         <div style="background: white; border-radius: 12px; max-width: 550px; width: 100%; padding: 24px; max-height: 80vh; overflow-y: auto;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">
-            <h3 style="margin: 0; color: #0f172a; font-size: 1.1rem;"><i class="fa-solid fa-house"></i> Власний кабінет</h3>
+            <h3 style="margin: 0; color: #1e3a8a; font-size: 1.1rem;"><i class="fa-solid fa-house" style="color: #23527c;"></i> Власний кабінет</h3>
             <button onclick="document.getElementById('cabinetModal').style.display='none'" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #64748b;">&times;</button>
           </div>
           <div style="margin-bottom: 15px; font-size: 0.85rem; color: #334155; background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0;">
-            <div><strong>Акаунт:</strong> <span id="cabinetUserEmail" style="color: #334155; font-weight: bold;"></span></div>
+            <div><strong>Акаунт:</strong> <span id="cabinetUserEmail" style="color: var(--olx-color); font-weight: bold;"></span></div>
             <div style="margin-top: 4px;">Роль: <span id="cabinetUserRole" style="font-weight: bold; color: #059669;">Користувач</span></div>
           </div>
-          <h4 style="font-size: 0.9rem; color: #0f172a; margin-bottom: 10px; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px;">Мої оголошення</h4>
+          <h4 style="font-size: 0.9rem; color: #1e3a8a; margin-bottom: 10px; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px;">Мої оголошення</h4>
           <div id="cabinetUserAdsList" style="display: flex; flex-direction: column; gap: 8px; max-height: 250px; overflow-y: auto;"></div>
           <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px; border-top: 1px solid #e2e8f0; padding-top: 15px;">
             <button type="button" onclick="document.getElementById('cabinetModal').style.display='none'" style="padding: 6px 14px; border-radius: 6px; border: 1px solid #cbd5e1; background: #f1f5f9; cursor: pointer; font-size: 0.8rem;">Закрити</button>
@@ -883,14 +851,14 @@
         if (mode === 'login') {
           titleEl.innerHTML = '<i class="fa-solid fa-user-lock"></i> Авторизація';
           submitBtn.textContent = 'Увійти';
-          loginBtn.style.background = '#334155';
+          loginBtn.style.background = 'var(--olx-color)';
           loginBtn.style.color = 'white';
           regBtn.style.background = '#f1f5f9';
           regBtn.style.color = '#334155';
         } else {
           titleEl.innerHTML = '<i class="fa-solid fa-user-plus"></i> Реєстрація акаунта';
           submitBtn.textContent = 'Зареєструватися';
-          regBtn.style.background = '#334155';
+          regBtn.style.background = 'var(--olx-color)';
           regBtn.style.color = 'white';
           loginBtn.style.background = '#f1f5f9';
           loginBtn.style.color = '#334155';
@@ -988,7 +956,7 @@
             <button onclick="openAuthModal('login')" style="background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 6px 12px; border-radius: 6px; font-size: 0.78rem; font-weight: bold; cursor: pointer;">
               <i class="fa-solid fa-right-to-bracket"></i> Увійти
             </button>
-            <button onclick="openAuthModal('register')" style="background: #334155; border: none; color: white; padding: 6px 12px; border-radius: 6px; font-size: 0.78rem; font-weight: bold; cursor: pointer;">
+            <button onclick="openAuthModal('register')" style="background: var(--olx-color); border: none; color: white; padding: 6px 12px; border-radius: 6px; font-size: 0.78rem; font-weight: bold; cursor: pointer;">
               Реєстрація
             </button>
           `;
@@ -1005,7 +973,7 @@
           }
 
           headerAuthArea.innerHTML = `
-            <button onclick="openCabinetModal()" style="background: #334155; border: 1px solid rgba(255,255,255,0.3); color: white; padding: 6px 14px; border-radius: 6px; font-size: 0.78rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+            <button onclick="openCabinetModal()" style="background: var(--olx-color); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 6px 14px; border-radius: 6px; font-size: 0.78rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 6px;">
               <i class="fa-solid fa-house" style="color: white;"></i> Власний кабінет
             </button>
           `;
@@ -1069,18 +1037,18 @@
         const listContainer = document.getElementById('bannerAdminList');
         listContainer.innerHTML = sidebarSlides.map((slide, idx) => `
           <div style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px; background: #f8fafc; display: flex; flex-direction: column; gap: 6px;">
-            <div style="font-weight: bold; font-size: 0.78rem; color: #0f172a;">Слайд #${idx + 1}</div>
+            <div style="font-weight: bold; font-size: 0.78rem; color: #1e3a8a;">Слайд #${idx + 1}</div>
             <input type="text" placeholder="URL зображення" value="${slide.image || ''}" id="slideImg_${idx}" style="padding: 5px; font-size: 0.75rem; border: 1px solid #cbd5e1; border-radius: 4px;" />
             <input type="text" placeholder="Заголовок" value="${slide.title || ''}" id="slideTitle_${idx}" style="padding: 5px; font-size: 0.75rem; border: 1px solid #cbd5e1; border-radius: 4px;" />
             <input type="text" placeholder="Підзаголовок" value="${slide.subtitle || ''}" id="slideSub_${idx}" style="padding: 5px; font-size: 0.75rem; border: 1px solid #cbd5e1; border-radius: 4px;" />
             <input type="text" placeholder="Посилання" value="${slide.link || ''}" id="slideLink_${idx}" style="padding: 5px; font-size: 0.75rem; border: 1px solid #cbd5e1; border-radius: 4px;" />
             <div style="display: flex; gap: 5px;">
-              <button type="button" onclick="saveSlideItem(${idx})" style="flex: 1; background: #334155; color: white; border: none; padding: 5px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; cursor: pointer;">Зберегти</button>
+              <button type="button" onclick="saveSlideItem(${idx})" style="flex: 1; background: var(--accent); color: white; border: none; padding: 5px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; cursor: pointer;">Зберегти</button>
               <button type="button" onclick="deleteSlideItem(${idx})" style="background: var(--danger); color: white; border: none; padding: 5px 10px; border-radius: 4px; font-size: 0.75rem; cursor: pointer;"><i class="fa-solid fa-trash"></i></button>
             </div>
           </div>
         `).join('') + `
-          <button type="button" onclick="addNewSlide()" style="background: #334155; color: white; border: none; padding: 8px; border-radius: 6px; font-size: 0.78rem; font-weight: bold; cursor: pointer; margin-top: 5px;">
+          <button type="button" onclick="addNewSlide()" style="background: var(--olx-color); color: white; border: none; padding: 8px; border-radius: 6px; font-size: 0.78rem; font-weight: bold; cursor: pointer; margin-top: 5px;">
             <i class="fa-solid fa-plus"></i> Додати слайд
           </button>
         `;
@@ -1138,17 +1106,17 @@
         const container = document.getElementById('runningBannerAdminList');
         container.innerHTML = runningBanners.map((item, idx) => `
           <div style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px; background: #f8fafc; display: flex; flex-direction: column; gap: 6px;">
-            <div style="font-weight: bold; font-size: 0.78rem; color: #0f172a;">Банер #${idx + 1}</div>
+            <div style="font-weight: bold; font-size: 0.78rem; color: #1e3a8a;">Банер #${idx + 1}</div>
             <input type="text" placeholder="Текст" value="${item.text || ''}" id="rbText_${idx}" style="padding: 5px; font-size: 0.75rem; border: 1px solid #cbd5e1; border-radius: 4px;" />
             <input type="text" placeholder="URL зображення" value="${item.image || ''}" id="rbImg_${idx}" style="padding: 5px; font-size: 0.75rem; border: 1px solid #cbd5e1; border-radius: 4px;" />
             <input type="text" placeholder="Посилання" value="${item.link || ''}" id="rbLink_${idx}" style="padding: 5px; font-size: 0.75rem; border: 1px solid #cbd5e1; border-radius: 4px;" />
             <div style="display: flex; gap: 5px;">
-              <button type="button" onclick="saveRunningBannerItem(${idx})" style="flex: 1; background: #334155; color: white; border: none; padding: 5px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; cursor: pointer;">Зберегти</button>
+              <button type="button" onclick="saveRunningBannerItem(${idx})" style="flex: 1; background: var(--accent); color: white; border: none; padding: 5px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; cursor: pointer;">Зберегти</button>
               <button type="button" onclick="deleteRunningBannerItem(${idx})" style="background: var(--danger); color: white; border: none; padding: 5px 8px; border-radius: 4px; font-size: 0.75rem; cursor: pointer;"><i class="fa-solid fa-trash"></i></button>
             </div>
           </div>
         `).join('') + `
-          <button type="button" onclick="addRunningBannerItem()" style="background: #334155; color: white; border: none; padding: 8px; border-radius: 6px; font-size: 0.78rem; font-weight: bold; cursor: pointer; margin-top: 5px;">
+          <button type="button" onclick="addRunningBannerItem()" style="background: var(--olx-color); color: white; border: none; padding: 8px; border-radius: 6px; font-size: 0.78rem; font-weight: bold; cursor: pointer; margin-top: 5px;">
             <i class="fa-solid fa-plus"></i> Додати банер
           </button>
         `;
@@ -1229,7 +1197,7 @@
 
           const btn = document.createElement('button');
           btn.className = `cat-item-btn ${index === 0 ? 'active' : ''}`;
-          btn.innerHTML = `<span><i class="fa-solid ${cat.icon}" style="color: #334155; margin-right: 6px;"></i> ${cat.name}</span> <i class="fa-solid fa-chevron-right" style="font-size: 0.7rem; color: #94a3b8;"></i>`;
+          btn.innerHTML = `<span><i class="fa-solid ${cat.icon}" style="color: var(--olx-color); margin-right: 6px;"></i> ${cat.name}</span> <i class="fa-solid fa-chevron-right" style="font-size: 0.7rem; color: #94a3b8;"></i>`;
           
           btn.addEventListener('mouseenter', () => selectCategory(cat.name));
           btn.addEventListener('click', () => { selectCategory(cat.name); activeFilter = cat.name; filterCards(); });
@@ -1259,7 +1227,7 @@
         subcategoriesContent.innerHTML = `
           <div class="subcategories-header">
             <span>${catObj.name}</span>
-            <button class="sub-chip" style="background: #334155; color: white; border: none; padding: 4px 10px; font-size: 0.72rem;" data-cat-filter="${catObj.name}">
+            <button class="sub-chip" style="background: var(--olx-color); color: white; border: none; padding: 4px 10px; font-size: 0.72rem;" data-cat-filter="${catObj.name}">
               Усі оголошення розділу
             </button>
           </div>
@@ -1372,7 +1340,7 @@
         window.scrollTo(0, newAdFormCard.offsetTop - 50);
       };
 
-      // Детальна сторінка (профіль/резюме товару)
+      // Детальна сторінка
       window.openProductDetail = function(id) {
         const item = allProducts.find(p => p.id === id);
         if (!item) return;
@@ -1382,14 +1350,20 @@
         const detailView = document.getElementById('productDetailView');
         detailView.style.display = 'block';
 
-        const mainPhoto = (item.photosArray && item.photosArray[0]) ? item.photosArray[0] : 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=600&q=80';
+        const photos = (item.photosArray && item.photosArray.length > 0) ? item.photosArray : ['https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=600&q=80'];
+        const mainPhoto = photos[0];
         const isOwnerOrAdmin = currentUser && (isAdminUser(currentUser.email) || currentUser.email === item.userEmail);
 
+        let galleryHtml = `<div style="border-radius: 8px; overflow: hidden; background: #f8fafc; border: 1px solid #e2e8f0; height: 320px; margin-bottom: 10px;"><img src="${mainPhoto}" style="width: 100%; height: 100%; object-fit: cover;" alt="${item.title}"></div>`;
+        if (photos.length > 1) {
+          galleryHtml += `<div style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 5px;">` + photos.map(p => `<img src="${p}" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; border: 1px solid #cbd5e1; cursor: pointer;" onclick="this.closest('#productDetailContent').querySelector('img').src='${p}'">`).join('') + `</div>`;
+        }
+
         document.getElementById('productDetailContent').innerHTML = `
-          <div class="resume-profile-header">
+          <div style="border-bottom: 2px solid #e2e8f0; padding-bottom: 15px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 15px;">
             <div>
               <div style="font-size: 0.75rem; color: #64748b; font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">Категорія: ${item.category} / ${item.subcategory || ''}</div>
-              <h2 style="margin: 0; color: #0f172a; font-size: 1.4rem; font-weight: 800;">${item.title}</h2>
+              <h2 style="margin: 0; color: #1e3a8a; font-size: 1.4rem; font-weight: 800;">${item.title}</h2>
             </div>
             <div style="text-align: right;">
               <div style="font-size: 1.6rem; font-weight: 900; color: #0f172a;">${item.price.toLocaleString('uk-UA')} ₴</div>
@@ -1399,9 +1373,7 @@
 
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; align-items: start;">
             <div>
-              <div style="border-radius: 8px; overflow: hidden; background: #f8fafc; border: 1px solid #e2e8f0; height: 320px;">
-                <img src="${mainPhoto}" style="width: 100%; height: 100%; object-fit: cover;" alt="${item.title}">
-              </div>
+              ${galleryHtml}
               <div style="margin-top: 15px; display: flex; gap: 10px;">
                 <a href="tel:${item.contact}" class="btn-primary" style="flex: 1; justify-content: center; text-decoration: none; padding: 10px;">
                   <i class="fa-solid fa-phone"></i> <b>Зв'язатися: ${item.contact}</b>
@@ -1410,27 +1382,23 @@
             </div>
 
             <div>
-              <h4 style="margin: 0 0 10px 0; color: #0f172a; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.5px;">Паспорт позиції (Резюме)</h4>
+              <h4 style="margin: 0 0 10px 0; color: #1e3a8a; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.5px;">Паспорт позиції</h4>
               <table class="resume-table-full">
                 <tr><th>Найменування</th><td>${item.title}</td></tr>
                 <tr><th>Категорія</th><td>${item.category}</td></tr>
                 <tr><th>Підкатегорія</th><td>${item.subcategory || '—'}</td></tr>
                 <tr><th>Стан товару</th><td>${item.condition || 'Б/В'}</td></tr>
                 <tr><th>Вартість</th><td>${item.price.toLocaleString('uk-UA')} UAH</td></tr>
-                <tr><th>Автор оголошення</th><td>${item.userEmail || 'Приховано'}</td></tr>
+                <tr><th>Автор</th><td>${item.userEmail || 'Приховано'}</td></tr>
               </table>
 
-              <h4 style="margin: 20px 0 8px 0; color: #0f172a; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.5px;">Опис / Характеристики</h4>
+              <h4 style="margin: 20px 0 8px 0; color: #1e3a8a; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.5px;">Опис / Характеристики</h4>
               <p style="font-size: 0.85rem; color: #334155; line-height: 1.6; margin: 0; white-space: pre-line; background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0;">${item.description}</p>
               
               ${isOwnerOrAdmin ? `
                 <div style="margin-top: 25px; border-top: 1px solid #e2e8f0; padding-top: 15px; display: flex; gap: 10px;">
-                  <button class="btn-primary" onclick="editProduct('${item.id}')" style="background: #f59e0b;">
-                    <i class="fa-solid fa-pen"></i> Редагувати
-                  </button>
-                  <button class="btn-primary" onclick="deleteProduct('${item.id}')" style="background: var(--danger);">
-                    <i class="fa-solid fa-trash"></i> Видалити
-                  </button>
+                  <button class="btn-primary" onclick="editProduct('${item.id}')" style="background: #f59e0b;"><i class="fa-solid fa-pen"></i> Редагувати</button>
+                  <button class="btn-primary" onclick="deleteProduct('${item.id}')" style="background: var(--danger);"><i class="fa-solid fa-trash"></i> Видалити</button>
                 </div>
               ` : ''}
             </div>
@@ -1496,6 +1464,35 @@
         `;
       }
 
+      // Генерація колажу фотографій у картці товару
+      function renderCollageHtml(photos, productId) {
+        const list = (photos && photos.length > 0) ? photos : ['https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=300&q=80'];
+        
+        if (list.length === 1) {
+          return `
+            <div class="card-collage-box single" onclick="openProductDetail('${productId}')">
+              <img src="${list[0]}" class="collage-img" alt="">
+            </div>
+          `;
+        } else if (list.length === 2) {
+          return `
+            <div class="card-collage-box double" onclick="openProductDetail('${productId}')">
+              <img src="${list[0]}" class="collage-img collage-main" alt="">
+              <img src="${list[1]}" class="collage-img collage-sub-top" style="grid-column: 2/3; grid-row: 1/-1;" alt="">
+            </div>
+          `;
+        } else {
+          // 3 і більше фото (колаж з головним великим фото та двома мініатюрами справа)
+          return `
+            <div class="card-collage-box triple" onclick="openProductDetail('${productId}')">
+              <img src="${list[0]}" class="collage-img collage-main" alt="">
+              <img src="${list[1]}" class="collage-img collage-sub-top" alt="">
+              <img src="${list[2]}" class="collage-img collage-sub-bot" alt="">
+            </div>
+          `;
+        }
+      }
+
       function renderProductsGrid(products) {
         shopProductsContainer.innerHTML = '';
         products.forEach(item => {
@@ -1505,14 +1502,12 @@
           card.setAttribute('data-subcategory', item.subcategory || '');
           card.setAttribute('data-search', `${item.title} ${item.description}`.toLowerCase());
 
-          const thumb = (item.photosArray && item.photosArray[0]) ? item.photosArray[0] : 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=300&q=80';
           const isOwnerOrAdmin = currentUser && (isAdminUser(currentUser.email) || currentUser.email === item.userEmail);
+          const collageMarkup = renderCollageHtml(item.photosArray, item.id);
 
           card.innerHTML = `
             <div>
-              <div class="card-img-wrap" onclick="openProductDetail('${item.id}')">
-                <img src="${thumb}" alt="${item.title}">
-              </div>
+              ${collageMarkup}
 
               <div class="card-header-row">
                 <span class="condition-badge">${item.condition || 'Б/В'}</span>
@@ -1520,34 +1515,35 @@
               </div>
 
               <div class="card-title" onclick="openProductDetail('${item.id}')" title="${item.title}">${item.title}</div>
+              <div class="card-desc-short" title="${item.description || ''}">${item.description || 'Без додаткового опису...'}</div>
 
-              <!-- МІНІ-ТАБЛИЦЯ (РЕЗЮМЕ) -->
-              <table class="resume-table">
+              <!-- Заповнена таблиця характеристик для професійного вигляду -->
+              <table class="card-resume-table">
                 <tr>
-                  <td class="label">Категорія</td>
-                  <td class="val">${item.category}</td>
+                  <td class="label">Наявність</td>
+                  <td class="val" style="color: #059669;">Готово до замовлення</td>
                 </tr>
                 <tr>
-                  <td class="label">Статус</td>
-                  <td class="val" style="color: #059669;">В наявності</td>
+                  <td class="label">Зв'язок</td>
+                  <td class="val">${item.contact || 'В описі'}</td>
                 </tr>
               </table>
             </div>
 
             <div>
-              <div class="card-price-row">
-                <span class="card-price-label">Ціна</span>
+              <div class="card-price-box">
+                <span style="font-size: 0.72rem; color: #64748b; font-weight: bold; text-transform: uppercase;">Вартість</span>
                 <span class="card-price-val">${item.price.toLocaleString('uk-UA')} ₴</span>
               </div>
 
               <button class="btn-view-ad" onclick="openProductDetail('${item.id}')">
-                <i class="fa-solid fa-address-card"></i> Переглянути профіль
+                <i class="fa-solid fa-eye"></i> Переглянути повністю
               </button>
               
               ${isOwnerOrAdmin ? `
                 <div class="admin-actions">
-                  <button class="btn-sm-action" onclick="editProduct('${item.id}')"><i class="fa-solid fa-pen"></i> Ред.</button>
-                  <button class="btn-sm-action" onclick="deleteProduct('${item.id}')" style="color: var(--danger);"><i class="fa-solid fa-trash"></i> Вид.</button>
+                  <button class="btn-sm-action" onclick="editProduct('${item.id}')" style="background: #f59e0b; color: white;"><i class="fa-solid fa-pen"></i> Ред.</button>
+                  <button class="btn-sm-action" onclick="deleteProduct('${item.id}')" style="background: var(--danger); color: white;"><i class="fa-solid fa-trash"></i> Вид.</button>
                 </div>
               ` : ''}
             </div>

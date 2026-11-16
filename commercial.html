@@ -169,7 +169,7 @@
             <p class="text-xs sm:text-sm text-gray-700 max-w-2xl font-medium">Офіси, магазини, склади, виробничі бази та земельні ділянки сільськогосподарського й комерційного призначення в Костополі, Рівненській області та всій Україні.</p>
         </div>
 
-        <!-- ЧЕРВОНИЙ БЛОК ФІЛЬТРІВ -->
+        <!-- ЧЕРВОНИЙ БЛОК ФІЛЬТРІВ ТА СОРТУВАННЯ -->
         <div class="search-box-red p-4 text-white">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 
@@ -197,8 +197,7 @@
                     </select>
                 </div>
 
-                <div class="space-y-3 pt-6 md:pt-7">
-                    <!-- ВИБІР ОБЛАСТІ ТА МІСТА ДЛЯ ПОШУКУ -->
+                <div class="space-y-3 pt-2 md:pt-7">
                     <select id="filterRegion" onChange="updateFilterCities(); filterCards();" class="w-full px-3 py-2 text-xs bg-white text-gray-800 rounded border-none outline-none font-semibold">
                         <option value="">Регіон: Всі області України</option>
                         <option value="Рівненська область">Рівненська область</option>
@@ -238,7 +237,16 @@
                     </div>
                 </div>
 
-                <div class="flex items-end pt-2 md:pt-0">
+                <div class="space-y-3 flex flex-col justify-end pt-2 md:pt-0">
+                    <div>
+                        <label class="block text-[10px] font-bold uppercase tracking-wider mb-1 text-red-100">Сортування оголошень:</label>
+                        <select id="filterSort" onChange="filterCards()" class="w-full px-3 py-2 text-xs bg-white text-gray-800 rounded border-none outline-none font-semibold">
+                            <option value="newest">Свіжіші спочатку</option>
+                            <option value="price_asc">Від дешевших до дорожчих</option>
+                            <option value="price_desc">Від дорожчих до дешевших</option>
+                        </select>
+                    </div>
+
                     <button onClick="filterCards()" class="w-full py-3 btn-blue-search text-white font-black text-sm rounded shadow flex items-center justify-center gap-2">
                         <i class="fa-solid fa-magnifying-glass"></i> Знайти об'єкт
                     </button>
@@ -389,11 +397,11 @@
 
                 <!-- ПАГІНАЦІЯ -->
                 <div id="paginationControls" class="flex justify-center items-center gap-3 pt-4 border-t border-gray-300 text-xs">
-                    <button id="prevPageBtn" onclick="changePage(-1)" class="px-4 py-2 bg-white border border-gray-300 text-gray-700 font-bold rounded shadow-sm disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50">
+                    <button id="prevPageBtn" onClick="changePage(-1)" class="px-4 py-2 bg-white border border-gray-300 text-gray-700 font-bold rounded shadow-sm disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50">
                         ‹ Попередня
                     </button>
                     <span id="pageIndicator" class="font-bold text-gray-700">Сторінка 1</span>
-                    <button id="nextPageBtn" onclick="changePage(1)" class="px-4 py-2 bg-white border border-gray-300 text-gray-700 font-bold rounded shadow-sm disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50">
+                    <button id="nextPageBtn" onClick="changePage(1)" class="px-4 py-2 bg-white border border-gray-300 text-gray-700 font-bold rounded shadow-sm disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50">
                         Наступна ›
                     </button>
                 </div>
@@ -748,6 +756,8 @@
             const photosJSON = JSON.stringify(photos).replace(/"/g, '&quot;');
             const pubDateFormatted = formatTimeAgo(item.createdAt);
 
+            const timestampVal = item.createdAt?.toMillis ? item.createdAt.toMillis() : (item.createdAt?.seconds ? item.createdAt.seconds * 1000 : Date.now());
+
             const rawCity = (item.city || 'Костопіль').replace(/,/g, '').trim();
             const formattedCity = rawCity.charAt(0).toUpperCase() + rawCity.slice(1);
 
@@ -758,7 +768,8 @@
                      data-subtype="${(item.subtype || '').toLowerCase()}"
                      data-region="${(item.region || '').toLowerCase()}"
                      data-city="${rawCity.toLowerCase()}"
-                     data-price="${priceUsd}">
+                     data-price="${priceUsd}"
+                     data-timestamp="${timestampVal}">
                     
                     <div class="w-full sm:w-64 h-40 bg-gray-900 rounded overflow-hidden relative flex-shrink-0 cursor-pointer group" onclick="openGallery(${photosJSON})">
                         <img src="${mainPhoto}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
@@ -951,7 +962,9 @@
             const cityVal = (document.getElementById('filterCity')?.value || '').replace(/,/g, '').trim().toLowerCase();
             const minPrice = parseFloat(document.getElementById('filterPriceMin')?.value) || 0;
             const maxPrice = parseFloat(document.getElementById('filterPriceMax')?.value) || Infinity;
+            const sortVal = document.getElementById('filterSort')?.value || 'newest';
 
+            const container = document.getElementById('commercialProductsContainer');
             const cards = Array.from(document.querySelectorAll('.product-card'));
             let matchingCards = [];
 
@@ -981,6 +994,18 @@
                 }
             });
 
+            // Сортування карток
+            matchingCards.sort((a, b) => {
+                const priceA = parseFloat(a.getAttribute('data-price')) || 0;
+                const priceB = parseFloat(b.getAttribute('data-price')) || 0;
+                const timeA = parseFloat(a.getAttribute('data-timestamp')) || 0;
+                const timeB = parseFloat(b.getAttribute('data-timestamp')) || 0;
+
+                if (sortVal === 'price_asc') return priceA - priceB;
+                if (sortVal === 'price_desc') return priceB - priceA;
+                return timeB - timeA; // 'newest'
+            });
+
             const totalPages = Math.ceil(matchingCards.length / ITEMS_PER_PAGE) || 1;
             if (currentPage > totalPages) currentPage = totalPages;
             if (currentPage < 1) currentPage = 1;
@@ -988,7 +1013,9 @@
             const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
             const endIndex = startIndex + ITEMS_PER_PAGE;
 
+            cards.forEach(c => c.style.display = 'none');
             matchingCards.forEach((card, index) => {
+                container.appendChild(card);
                 if (index >= startIndex && index < endIndex) {
                     card.style.display = 'flex';
                 } else {

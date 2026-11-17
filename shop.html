@@ -544,7 +544,7 @@
             background: #f8fafc;
         }
 
-        /* ПОВНОЦІННА СТОРІНКА ДЕТАЛЕЙ ТА ПРОФЕСІЙНИЙ ПАСПОРТ */
+        /* ПОВНОЦІННА СТОРІНКА ДЕТАЛЕЙ ТА SERVICE MANUAL */
         #productDetailView {
             display: none;
             background: white;
@@ -555,14 +555,14 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.04);
         }
 
-        /* Стилі для професійного паспорта позиції */
+        /* Стилі для Service manual */
         .pro-passport-card {
             background: #ffffff;
             border: 1px solid #cbd5e1;
             border-radius: 10px;
             overflow: hidden;
             box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-            margin-bottom: 20px;
+            margin-bottom: 0;
         }
         .pro-passport-header {
             background: linear-gradient(135deg, #1e3a8a, #23527c);
@@ -1744,7 +1744,7 @@
         }
       }
 
-      // ГАРМОНІЙНА 2-КОЛОНОЧНА СТРУКТУРА СТОРІНКИ ТОВАРУ
+      // ГАРМОНІЙНА 2-КОЛОНОЧНА СТРУКТУРА ІЗ SERVICE MANUAL ТА СКРОЛІНГОМ КОМЕНТАРІВ ЗЛІВА
       window.openProductDetail = async function(id, pushHistory = true) {
         let item = allProducts.find(p => p.id === id);
 
@@ -1812,28 +1812,16 @@
           <!-- Головна сітка: рівні ліва та права колонки -->
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; align-items: start;">
             
-            <!-- ЛІВА КОЛОНКА: Галерея, кнопки зв'язку, паспорт позиції -->
+            <!-- ЛІВА КОЛОНКА: Галерея, Service manual, а під ним — скролінг коментарів -->
             <div style="display: flex; flex-direction: column; gap: 20px;">
               <div>
                 ${galleryHtml}
               </div>
 
-              <div id="detailContactBox" style="display: flex; gap: 10px; flex-wrap: wrap;">
-                <button onclick="document.getElementById('detailContactBox').innerHTML = '<a href=\'tel:${item.contact}\' style=\'white-space: nowrap; display: inline-block; flex: 1; text-align: center; text-decoration: none; padding: 10px; background: #059669; color: white; border-radius: 8px; font-weight: bold;\'>${item.contact}</a><button onclick=\'navigator.clipboard.writeText(\'${item.contact}\'); alert(\'Номер скопійовано!\');\' style=\'background: #f1f5f9; border: 1px solid #cbd5e1; padding: 0 14px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 0.78rem;\'><i class=\'fa-regular fa-copy\'></i></button>'" class="btn-primary" style="flex: 1; justify-content: center; padding: 10px;">
-                  <i class="fa-solid fa-phone"></i> <b>Показати телефон продавця</b>
-                </button>
-              </div>
-
-              <div>
-                <button onclick="shareProductPage()" class="btn-primary" style="background: #475569; width: 100%; justify-content: center; padding: 9px;">
-                  <i class="fa-solid fa-share-nodes"></i> Поділитися сторінкою товару
-                </button>
-              </div>
-
-              <!-- Професійний паспорт позиції під галереєю зліва -->
+              <!-- Service manual (колишній Професійний паспорт позиції) -->
               <div class="pro-passport-card" style="margin-bottom: 0;">
                 <div class="pro-passport-header">
-                  <span><i class="fa-solid fa-id-card-clip mr-1.5"></i> Професійний паспорт позиції</span>
+                  <span><i class="fa-solid fa-id-card-clip mr-1.5"></i> Service manual</span>
                   <span style="font-size: 0.7rem; background: rgba(255,255,255,0.2); padding: 2px 8px; border-radius: 4px;">ID: ${item.id.substring(0, 8)}...</span>
                 </div>
                 <table class="pro-passport-table">
@@ -1868,9 +1856,19 @@
                   </tr>
                 </table>
               </div>
+
+              <!-- Блок коментарів/відгуків із вертикальним скролінгом під Service manual -->
+              <div style="background: white; border: 1px solid #e2e8f0; border-radius: 10px; padding: 15px; box-shadow: 0 2px 6px rgba(0,0,0,0.03);">
+                <h4 style="margin: 0 0 10px 0; color: #1e3a8a; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 6px;">
+                  <i class="fa-solid fa-comments"></i> Відгуки та історія угоди
+                </h4>
+                <div id="reviewsListContainer" style="display: flex; flex-direction: column; gap: 8px; max-height: 350px; overflow-y: auto; padding-right: 4px; scrollbar-width: thin;">
+                  ${reviewsHtml}
+                </div>
+              </div>
             </div>
 
-            <!-- ПРАВА КОЛОНКА: Ціна, опис, стандарти безпеки та відгуки -->
+            <!-- ПРАВА КОЛОНКА: Ціна, Кнопки зв'язку, Поділитися, Опис, Стандарти безпеки, Форма оцінки -->
             <div style="display: flex; flex-direction: column; gap: 20px;">
               
               <!-- Ціна та бейджі вгорі правої колонки -->
@@ -1885,6 +1883,19 @@
                     <i class="fa-${isFav ? 'solid' : 'regular'} fa-heart"></i> ${isFav ? 'В обраному' : 'В обране'}
                   </button>
                 </div>
+              </div>
+
+              <!-- Кнопки зв'язку та Поділитися -->
+              <div id="detailContactBox" style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <button onclick="document.getElementById('detailContactBox').innerHTML = '<a href=\'tel:${item.contact}\' style=\'white-space: nowrap; display: inline-block; flex: 1; text-align: center; text-decoration: none; padding: 10px; background: #059669; color: white; border-radius: 8px; font-weight: bold;\'>${item.contact}</a><button onclick=\'navigator.clipboard.writeText(\'${item.contact}\'); alert(\'Номер скопійовано!\');\' style=\'background: #f1f5f9; border: 1px solid #cbd5e1; padding: 0 14px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 0.78rem;\'><i class=\'fa-regular fa-copy\'></i></button>'" class="btn-primary" style="flex: 1; justify-content: center; padding: 10px;">
+                  <i class="fa-solid fa-phone"></i> <b>Показати телефон продавця</b>
+                </button>
+              </div>
+
+              <div>
+                <button onclick="shareProductPage()" class="btn-primary" style="background: #475569; width: 100%; justify-content: center; padding: 9px;">
+                  <i class="fa-solid fa-share-nodes"></i> Поділитися сторінкою товару
+                </button>
               </div>
 
               <!-- Опис -->
@@ -1906,7 +1917,7 @@
                 </div>
               </div>
 
-              <!-- Блок залишення відгуку -->
+              <!-- Блок залишення відгуку / оцінки угоди -->
               <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 10px; padding: 15px;">
                 <h4 style="margin: 0 0 10px 0; color: #1e3a8a; font-size: 0.9rem;"><i class="fa-solid fa-handshake"></i> Угода пройшла успішно? Оцініть продавця:</h4>
                 <div style="display: flex; gap: 15px; margin-bottom: 10px; flex-wrap: wrap; font-size: 0.8rem; font-weight: bold;">
@@ -1918,14 +1929,6 @@
                 <button onclick="submitSellerReview('${item.id}', '${item.userEmail}')" class="btn-primary" style="font-size: 0.78rem; padding: 6px 14px; width: 100%; justify-content: center;">
                   <i class="fa-solid fa-paper-plane"></i> Надіслати відгук та завершити угоду
                 </button>
-              </div>
-
-              <!-- Список відгуків -->
-              <div>
-                <h4 style="margin: 0 0 10px 0; color: #1e3a8a; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px;">Відгуки та рейтинг угоди</h4>
-                <div id="reviewsListContainer" style="display: flex; flex-direction: column; gap: 8px; max-height: 280px; overflow-y: auto;">
-                  ${reviewsHtml}
-                </div>
               </div>
               
               ${isOwnerOrAdmin ? `
@@ -1941,7 +1944,7 @@
         `;
         window.scrollTo(0, 0);
 
-        // Завантаження та сіро-біле чергування фону відгуків
+        // Завантаження та сіро-біле чергування фону коментарів у прокручуваному вікні зліва
         try {
           const revQuery = query(collection(db, "shop_reviews"), where("listingId", "==", id));
           const revSnap = await getDocs(revQuery);

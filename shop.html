@@ -489,6 +489,7 @@
             font-size: 0.68rem;
             font-weight: bold;
             cursor: pointer;
+            white-space: nowrap;
         }
         .reveal-phone-inline:hover { background: #bae6fd; }
 
@@ -1228,6 +1229,20 @@
         filterCards();
       });
 
+      // Функція шерингу сторінки товару
+      window.shareProductPage = function() {
+        if (navigator.share) {
+          navigator.share({
+            title: document.title,
+            url: window.location.href
+          }).catch(() => {});
+        } else {
+          navigator.clipboard.writeText(window.location.href).then(() => {
+            alert('Посилання на сторінку товару скопійовано в буфер обміну!');
+          });
+        }
+      };
+
       // Слайдери та бігучі стрічки
       let sidebarSlides = [
         { image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800", title: "Оцінка Нерухомості", subtitle: "Твоє місто", link: "commercial.html", btnText: "Дізнатися більше" },
@@ -1420,7 +1435,6 @@
       let lastVisibleDoc = null;
       let isLoadingMore = false;
 
-      // Глобальні змінні для лайтбокса галереї з автопереключенням
       let currentLightboxPhotos = [];
       let currentLightboxIndex = 0;
       let lightboxInterval = null;
@@ -1643,7 +1657,6 @@
         window.scrollTo(0, newAdFormCard.offsetTop - 50);
       };
 
-      // ФУНКЦІЇ ВІДГУКІВ ТА УГОД
       window.submitSellerReview = async function(listingId, sellerEmail) {
         if (!currentUser) {
           alert('Будь ласка, увійдіть в акаунт для залишення відгуку!');
@@ -1692,14 +1705,12 @@
         }
       };
 
-      // ФУНКЦІЇ ЛАЙТБОКСА ГАЛЕРЕЇ З АВТОПЕРЕКЛЮЧЕННЯМ
       window.openLightbox = function(index = 0) {
         if (!currentLightboxPhotos || currentLightboxPhotos.length === 0) return;
         currentLightboxIndex = index;
         updateLightboxView();
         document.getElementById('imageLightboxModal').style.display = 'flex';
         
-        // Автопереключення зображень кожні 4 секунди
         clearInterval(lightboxInterval);
         lightboxInterval = setInterval(() => {
           currentLightboxIndex = (currentLightboxIndex + 1) % currentLightboxPhotos.length;
@@ -1735,7 +1746,7 @@
         }
       }
 
-      // ДЕТАЛЬНА СТОРІНКА ТОВАРУ ТА ПРОФЕСІЙНИЙ ПАСПОРТ
+      // ДЕТАЛЬНА СТОРІНКА ТОВАРУ ТА ПРОФЕСІЙНИЙ ПАСПОРТ (Таблиця під галереєю)
       window.openProductDetail = async function(id, pushHistory = true) {
         let item = allProducts.find(p => p.id === id);
 
@@ -1772,7 +1783,7 @@
         detailView.style.display = 'block';
 
         const photos = (item.photosArray && item.photosArray.length > 0) ? item.photosArray : ['https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=600&q=80'];
-        currentLightboxPhotos = photos; // Зберігаємо для лайтбокса
+        currentLightboxPhotos = photos;
         const mainPhoto = photos[0];
         const isOwnerOrAdmin = currentUser && (isAdminUser(currentUser.email) || currentUser.email === item.userEmail);
         const pubDateFormatted = formatTimeAgo(item.createdAt);
@@ -1807,21 +1818,14 @@
             </div>
           </div>
 
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; align-items: start;">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; align-items: start;">
             
-            <!-- ЛІВА КОЛОНКА: Галерея та Контакти -->
+            <!-- ЛІВА КОЛОНКА: Галерея + ТАБЛИЦЯ ПАСПОРТА ПІД НЕЮ -->
             <div>
               ${galleryHtml}
-              <div id="detailContactBox" style="margin-top: 15px; display: flex; gap: 10px;">
-                <button onclick="document.getElementById('detailContactBox').innerHTML = '<a href=\'tel:${item.contact}\' class=\'btn-primary\' style=\'flex: 1; justify-content: center; text-decoration: none; padding: 10px; background: #059669;\'><i class=\'fa-solid fa-phone\'></i> <b>${item.contact}</b></a><button onclick=\'navigator.clipboard.writeText(\'${item.contact}\'); alert(\'Номер скопійовано!\');\' style=\'background: #f1f5f9; border: 1px solid #cbd5e1; padding: 0 14px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 0.78rem;\'><i class=\'fa-regular fa-copy\'></i></button>'" class="btn-primary" style="flex: 1; justify-content: center; padding: 10px;">
-                  <i class="fa-solid fa-phone"></i> <b>Показати телефон продавця</b>
-                </button>
-              </div>
-            </div>
-
-            <!-- ПРАВА КОЛОНКА: ПРОФЕСІЙНИЙ ПАСПОРТ, ОПИС, СТАНДАРТИ БЕЗПЕКИ ТА ВІДГУКИ -->
-            <div>
-              <div class="pro-passport-card">
+              
+              <!-- Професійний паспорт позиції розміщено чітко під галереєю -->
+              <div class="pro-passport-card" style="margin-top: 20px;">
                 <div class="pro-passport-header">
                   <span><i class="fa-solid fa-id-card-clip mr-1.5"></i> Професійний паспорт позиції</span>
                   <span style="font-size: 0.7rem; background: rgba(255,255,255,0.2); padding: 2px 8px; border-radius: 4px;">ID: ${item.id.substring(0, 8)}...</span>
@@ -1853,10 +1857,26 @@
                     <td><strong style="color: #059669; font-size: 1rem;">${item.price.toLocaleString('uk-UA')} UAH</strong></td>
                   </tr>
                   <tr>
-                    <th><i class="fa-solid fa-user-shield text-blue-800"></i> Продавец (Автор)</th>
+                    <th><i class="fa-solid fa-user-shield text-blue-800"></i> Продавець</th>
                     <td>${item.userEmail || 'Приховано'}</td>
                   </tr>
                 </table>
+              </div>
+            </div>
+
+            <!-- ПРАВА КОЛОНКА: Контакти, Поділитися, Опис, Відгуки -->
+            <div>
+              <div id="detailContactBox" style="margin-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
+                <button onclick="document.getElementById('detailContactBox').innerHTML = '<a href=\'tel:${item.contact}\' style=\'white-space: nowrap; display: inline-block; flex: 1; text-align: center; text-decoration: none; padding: 10px; background: #059669; color: white; border-radius: 8px; font-weight: bold;\'>${item.contact}</a><button onclick=\'navigator.clipboard.writeText(\'${item.contact}\'); alert(\'Номер скопійовано!\');\' style=\'background: #f1f5f9; border: 1px solid #cbd5e1; padding: 0 14px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 0.78rem;\'><i class=\'fa-regular fa-copy\'></i></button>'" class="btn-primary" style="flex: 1; justify-content: center; padding: 10px;">
+                  <i class="fa-solid fa-phone"></i> <b>Показати телефон продавця</b>
+                </button>
+              </div>
+
+              <!-- Відновлена кнопка «Поділитися сторінкою товару» -->
+              <div style="margin-bottom: 20px;">
+                <button onclick="shareProductPage()" class="btn-primary" style="background: #475569; width: 100%; justify-content: center; padding: 9px;">
+                  <i class="fa-solid fa-share-nodes"></i> Поділитися сторінкою товару
+                </button>
               </div>
 
               <div style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 10px; padding: 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
@@ -1866,7 +1886,6 @@
                 <p style="font-size: 0.85rem; color: #334155; line-height: 1.6; margin: 0; white-space: pre-line; background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0;">${item.description}</p>
               </div>
 
-              <!-- Стандарти безпеки сервісу (переміщено під опис) -->
               <div style="margin-top: 20px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px;">
                 <div style="font-size: 0.78rem; font-weight: 800; color: #1e3a8a; text-transform: uppercase; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
                   <i class="fa-solid fa-shield-halved"></i> Стандарти безпеки сервісу
@@ -1891,7 +1910,7 @@
                 </button>
               </div>
 
-              <!-- Список відгуків під формою -->
+              <!-- Список відгуків -->
               <h4 style="margin: 20px 0 10px 0; color: #1e3a8a; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px;">Відгуки та рейтинг угоди</h4>
               <div id="reviewsListContainer" style="display: flex; flex-direction: column; gap: 8px; max-height: 250px; overflow-y: auto;">
                 ${reviewsHtml}
@@ -1908,7 +1927,7 @@
         `;
         window.scrollTo(0, 0);
 
-        // Безпечне завантаження та сортування відгуків у JS із можливістю видалення
+        // Безпечне завантаження та чергування кольорів відгуків (сірий — білий — сірий)
         try {
           const revQuery = query(collection(db, "shop_reviews"), where("listingId", "==", id));
           const revSnap = await getDocs(revQuery);
@@ -1929,7 +1948,7 @@
             });
 
             revContainer.innerHTML = '';
-            reviews.forEach(r => {
+            reviews.forEach((r, idx) => {
               let badgeColor = '#64748b';
               let badgeText = 'Утримався';
               if (r.rating === 'satisfactory') { badgeColor = '#059669'; badgeText = 'Задовільно'; }
@@ -1937,8 +1956,11 @@
 
               const canDeleteReview = currentUser && (isAdminUser(currentUser.email) || r.reviewerEmail === currentUser.email);
 
+              // Чергування фону відгуків (сірий - білий)
+              const reviewBg = (idx % 2 === 0) ? '#f8fafc' : '#ffffff';
+
               const div = document.createElement('div');
-              div.style.cssText = "background: #f8fafc; border: 1px solid #e2e8f0; padding: 10px 12px; border-radius: 8px; font-size: 0.78rem;";
+              div.style.cssText = `background: ${reviewBg}; border: 1px solid #e2e8f0; padding: 10px 12px; border-radius: 8px; font-size: 0.78rem;`;
               div.innerHTML = `
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
                   <strong style="color: #1e293b;"><i class="fa-regular fa-user mr-1 text-blue-800"></i> ${r.reviewerEmail || 'Користувач'}</strong>
@@ -2123,7 +2145,7 @@
                 <tr>
                   <td class="label">Зв'язок</td>
                   <td class="val" id="phoneCell_${item.id}">
-                    ${item.contact ? `<button class="reveal-phone-inline" onclick="document.getElementById('phoneCell_${item.id}').innerHTML='<a href=\'tel:${item.contact}\' style=\'color: var(--olx-color); text-decoration: none;\'>${item.contact}</a>'">Показати номер</button>` : 'В описі'}
+                    ${item.contact ? `<button class="reveal-phone-inline" onclick="document.getElementById('phoneCell_${item.id}').innerHTML='<a href=\'tel:${item.contact}\' style=\'color: var(--olx-color); text-decoration: none; white-space: nowrap;\'>${item.contact}</a>'">Показати номер</button>` : 'В описі'}
                   </td>
                 </tr>
               </table>

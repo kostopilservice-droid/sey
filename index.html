@@ -812,21 +812,33 @@
       <div id="bing-aligned-box" style="width: 100%; box-sizing: border-box;">
         
         <!-- Заголовок та фільтри стрічки -->
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4 pb-3 border-b border-slate-200 w-full bg-white rounded-[10px] shadow-[0_4px_6px_rgba(0,0,0,0.05)] border-t-4 border-t-[#1e3a8a] px-5 py-3.5 box-border">
-          <div class="flex items-center gap-2.5">
+        <div class="flex flex-col md:flex-row justify-between items-stretch md:items-center gap-3 mb-4 pb-3 border-b border-slate-200 w-full bg-white rounded-[10px] shadow-[0_4px_6px_rgba(0,0,0,0.05)] border-t-4 border-t-[#1e3a8a] px-4 py-3 box-border">
+          <div class="flex items-center gap-2.5 shrink-0">
             <div class="w-8 h-8 rounded-lg bg-[#1e3a8a] text-white flex items-center justify-center shadow-sm shrink-0">
               <i class="fa-solid fa-newspaper text-sm"></i>
             </div>
             <div>
-              <h2 class="text-lg font-extrabold text-slate-800 leading-tight m-0">Стрічка публікацій та оглядів</h2>
-              <p class="text-xs text-slate-500 m-0">Актуальні статті, технічні розбори та відеодайджест</p>
+              <h2 class="text-base sm:text-lg font-extrabold text-slate-800 leading-tight m-0 whitespace-nowrap">Стрічка публікацій та оглядів</h2>
+              <p class="text-[11px] text-slate-500 m-0">Актуальні статті, розбори та відео</p>
             </div>
           </div>
 
-          <!-- Вкладки категорій (розширені з бази знань) -->
-          <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar max-w-full pb-1 sm:pb-0" id="discoverTabs">
-            <button type="button" onclick="filterDiscoverFeed('all', this)" class="discover-tab active px-3 py-1.5 rounded-full text-xs font-bold bg-[#1e3a8a] text-white transition-all cursor-pointer whitespace-nowrap border-0">
-              Усі категорії (15)
+          <!-- Вкладки категорій з горизонтальною прокруткою та кнопками -->
+          <div class="relative flex items-center gap-1 flex-1 min-w-0">
+            <button type="button" onclick="scrollDiscoverTabs(-240)" aria-label="Прокрутити категорії вліво"
+              class="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 flex items-center justify-center shrink-0 cursor-pointer transition-colors">
+              <i class="fa-solid fa-chevron-left text-[10px]"></i>
+            </button>
+
+            <div class="flex items-center gap-1.5 overflow-x-auto scroll-smooth no-scrollbar flex-1 min-w-0 py-1 px-0.5" id="discoverTabs">
+              <button type="button" onclick="filterDiscoverFeed('all', this)" class="discover-tab active px-3 py-1.5 rounded-full text-xs font-bold bg-[#1e3a8a] text-white transition-all cursor-pointer whitespace-nowrap border-0 shrink-0">
+                Усі категорії (15)
+              </button>
+            </div>
+
+            <button type="button" onclick="scrollDiscoverTabs(240)" aria-label="Прокрутити категорії вправо"
+              class="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 flex items-center justify-center shrink-0 cursor-pointer transition-colors">
+              <i class="fa-solid fa-chevron-right text-[10px]"></i>
             </button>
           </div>
         </div>
@@ -1015,26 +1027,50 @@
         return [...firestoreDiscoverArticles, ...staticDiscoverArticles];
       }
 
+      function scrollDiscoverTabs(offset) {
+        const tabsContainer = document.getElementById('discoverTabs');
+        if (!tabsContainer) return;
+        tabsContainer.scrollBy({ left: offset, behavior: 'smooth' });
+      }
+
+      function enableDiscoverTabsWheelScroll() {
+        const tabsContainer = document.getElementById('discoverTabs');
+        if (!tabsContainer || tabsContainer.dataset.wheelBound === '1') return;
+        tabsContainer.dataset.wheelBound = '1';
+        tabsContainer.addEventListener('wheel', (e) => {
+          if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+            e.preventDefault();
+            tabsContainer.scrollLeft += e.deltaY;
+          }
+        }, { passive: false });
+      }
+
       function renderDiscoverTabs() {
         const tabsContainer = document.getElementById('discoverTabs');
         if (!tabsContainer) return;
 
         const totalCount = getCombinedDiscoverArticles().length;
         const allBtnClass = currentDiscoverFilter === 'all'
-          ? 'discover-tab active px-3 py-1.5 rounded-full text-xs font-bold bg-[#1e3a8a] text-white transition-all cursor-pointer whitespace-nowrap border-0'
-          : 'discover-tab px-3 py-1.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200 hover:bg-slate-200 transition-all cursor-pointer whitespace-nowrap';
+          ? 'discover-tab active px-3 py-1.5 rounded-full text-xs font-bold bg-[#1e3a8a] text-white transition-all cursor-pointer whitespace-nowrap border-0 shrink-0'
+          : 'discover-tab px-3 py-1.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200 hover:bg-slate-200 transition-all cursor-pointer whitespace-nowrap shrink-0';
 
         let html = `<button type="button" data-filter="all" onclick="filterDiscoverFeed('all', this)" class="${allBtnClass}">Усі категорії (${totalCount})</button>`;
 
         ALL_CATEGORIES.forEach(cat => {
           const isActive = currentDiscoverFilter === cat.key;
           const cls = isActive
-            ? 'discover-tab active px-3 py-1.5 rounded-full text-xs font-bold bg-[#1e3a8a] text-white transition-all cursor-pointer whitespace-nowrap border-0'
-            : 'discover-tab px-3 py-1.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200 hover:bg-slate-200 transition-all cursor-pointer whitespace-nowrap';
+            ? 'discover-tab active px-3 py-1.5 rounded-full text-xs font-bold bg-[#1e3a8a] text-white transition-all cursor-pointer whitespace-nowrap border-0 shrink-0'
+            : 'discover-tab px-3 py-1.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200 hover:bg-slate-200 transition-all cursor-pointer whitespace-nowrap shrink-0';
           html += `<button type="button" data-filter="${cat.key}" onclick="filterDiscoverFeed('${cat.key}', this)" class="${cls}">${cat.shortLabel}</button>`;
         });
 
         tabsContainer.innerHTML = html;
+        enableDiscoverTabsWheelScroll();
+
+        const activeTab = tabsContainer.querySelector('.discover-tab.active');
+        if (activeTab) {
+          activeTab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        }
       }
 
       function renderDiscoverGrid(filter = 'all') {

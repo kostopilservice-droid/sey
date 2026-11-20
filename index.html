@@ -1197,13 +1197,8 @@
         document.getElementById('modalArticleContent').textContent = article.content;
         const linkEl = document.getElementById('modalArticleLink');
         linkEl.href = article.link || 'baza.html';
-        if (linkEl.href.startsWith('http')) {
-          linkEl.target = '_blank';
-          linkEl.rel = 'noopener noreferrer';
-        } else {
-          linkEl.removeAttribute('target');
-          linkEl.removeAttribute('rel');
-        }
+        linkEl.removeAttribute('target');
+        linkEl.removeAttribute('rel');
         document.getElementById('discoverArticleModal').style.display = 'flex';
       }
 

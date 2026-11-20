@@ -1,763 +1,1779 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>База знань — Neoservice.ks.ua</title>
-  
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  
-  <!-- Font Awesome Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-  
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            brand: {
-              dark: '#0c192c',
-              header: '#11223f',
-              accent: '#1d4ed8'
-            }
-          }
-        }
-      }
-    }
-  </script>
-  <style>
-    .no-scrollbar::-webkit-scrollbar { display: none; }
-    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#1a365d">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neoservice — Міський інформаційно-рекламний портал та сервіс</title>
     
-    .article-formatted-text p { margin-bottom: 0.5rem; }
-    .article-formatted-text b, .article-formatted-text strong { font-weight: 700; }
-    .article-formatted-text i, .article-formatted-text em { font-style: italic; }
-    .article-formatted-text u { text-decoration: underline; }
-    .article-formatted-text ul { list-style-type: disc; padding-left: 1.25rem; margin-bottom: 0.5rem; }
-    .article-formatted-text ol { list-style-type: decimal; padding-left: 1.25rem; margin-bottom: 0.5rem; }
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            navy: '#0f2b5c',
+                            blue: '#1d4ed8',
+                            lightBlue: '#eff6ff',
+                            accent: '#2563eb',
+                            hover: '#3b82f6',
+                            textDark: '#1e293b'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
 
-    .editor-content {
-      min-height: 180px;
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
-  </style>
-</head>
-<body class="bg-slate-100 text-slate-800 font-sans antialiased min-h-screen flex flex-col justify-between">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-  <!-- ========================================== -->
-  <!-- HEADER                                     -->
-  <!-- ========================================== -->
-  <header class="bg-brand-header text-white shadow-lg sticky top-0 z-40">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-16">
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --accent: #d97706;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg);
+            color: var(--text);
+        }
         
-        <!-- Логотип -->
-        <a href="index.html" class="flex items-center space-x-3 group">
-          <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center font-bold text-xl shadow-md">
-            🧙‍♂️
+        /* Навігація одразу під шапкою */
+        nav {
+            display: flex;
+            justify-content: center;
+            background: #0f172a;
+            overflow-x: auto;
+            border-bottom: 2px solid #1e3a8a;
+        }
+        nav a {
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            white-space: nowrap;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        nav a:hover { background-color: var(--accent); }
+
+        .container {
+            max-width: 1100px;
+            width: 100%;
+            margin: 20px auto;
+            padding: 0 15px;
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 20px;
+            box-sizing: border-box;
+        }
+        @media (max-width: 900px) {
+            .container {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+        @media (max-width: 640px) {
+            .container {
+                grid-template-columns: minmax(0, 1fr);
+            }
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-top: 4px solid var(--primary);
+            box-sizing: border-box;
+        }
+        .card h2 { margin-top: 0; font-size: 18px; }
+
+        /* Стилі кнопок та форм авторизації */
+        .btn { width: 100%; padding: 10px; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; margin-top: 8px; font-weight: bold; color: white; }
+        .btn-primary { background: var(--primary); }
+        .btn-success { background: #16a34a; }
+        .btn-danger { background: #dc2626; }
+        .btn-google { background: #ea4335; }
+        
+        /* Стилі для слайдера (колаж зі шторкою) з повним збереженням пропорцій */
+        .banner-slide {
+            position: absolute; inset: 0;
+            opacity: 0; transform: translateY(10px);
+            transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: none;
+            background-color: #0b1329;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+        .banner-slide.active {
+            opacity: 1; transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        /* SVG Map Custom Styling for integration */
+        .region-path {
+            fill: #e2e8f0;
+            stroke: #ffffff;
+            stroke-width: 1.5;
+            stroke-linejoin: round;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+        .region-path:hover, .region-path.active {
+            fill: #2563eb;
+            stroke: #1d4ed8;
+            stroke-width: 2;
+            filter: drop-shadow(0px 4px 10px rgba(37, 99, 235, 0.45));
+        }
+        .city-marker {
+            fill: #0f2b5c;
+            transition: all 0.2s ease;
+            pointer-events: none;
+        }
+        .city-text {
+            font-size: 11px;
+            font-weight: 600;
+            fill: #1e293b;
+            pointer-events: none;
+            user-select: none;
+            text-anchor: middle;
+            transition: all 0.2s ease;
+            text-shadow: 0px 0px 3px rgba(255, 255, 255, 0.9), 0px 0px 5px rgba(255, 255, 255, 0.9);
+        }
+        .region-group:hover .city-marker { fill: #ffffff; }
+        .region-group:hover .city-text {
+            fill: #ffffff;
+            text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.8);
+            font-weight: 700;
+            font-size: 12px;
+        }
+        #map-tooltip {
+            position: absolute;
+            display: none;
+            pointer-events: none;
+            z-index: 50;
+            transition: transform 0.08s ease-out, opacity 0.15s ease;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: #0f172a;
+            color: white;
+            margin-top: 40px;
+        }
+
+        @keyframes marquee {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* CSS стилі для циклічної анімації тексту у віджеті */
+        .ticker-wrapper {
+            position: relative;
+            height: 20px;
+        }
+        .ticker-item {
+            position: absolute;
+            width: 100%;
+            opacity: 0;
+            transform: translateY(6px);
+            animation: fadeTicker 9s infinite;
+        }
+        .ticker-item:nth-child(1) { animation-delay: 0s; }
+        .ticker-item:nth-child(2) { animation-delay: 3s; }
+        .ticker-item:nth-child(3) { animation-delay: 6s; }
+
+        @keyframes fadeTicker {
+            0% { opacity: 0; transform: translateY(6px); }
+            8% { opacity: 1; transform: translateY(0); }
+            33% { opacity: 1; transform: translateY(0); }
+            41% { opacity: 0; transform: translateY(-6px); }
+            100% { opacity: 0; transform: translateY(-6px); }
+        }
+
+        @media(max-width: 768px) {
+            .banner-trust-grid { grid-template-columns: 1fr !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ================= ШАПКА МІСЬКОГО ПОРТАЛУ ================= -->
+    <header style="background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); color: white; padding: 15px 20px; border-bottom: 3px solid #3b82f6; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+      <div style="max-width: 1100px; margin: 0 auto; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 15px;">
+        
+        <!-- Логотип + Міський Заголовок -->
+        <a href="index.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none; color: white;">
+          <div style="background: linear-gradient(135deg, #2563eb, #38bdf8); border: 1px solid rgba(255,255,255,0.2); border-radius: 14px; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">
+            🏙️
           </div>
           <div>
-            <div class="font-extrabold text-base tracking-tight text-white">NEOSERVICE.KS.UA</div>
-            <div class="text-[9px] text-blue-200">Служба технічної підтримки та База Знань</div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 1.4rem; font-weight: 900; letter-spacing: 0.8px; text-transform: uppercase; line-height: 1.1;">
+                NEOSERVICE<span style="color: #60a5fa;">.KS.UA</span>
+              </span>
+              <span style="background: rgba(56, 189, 248, 0.2); color: #7dd3fc; border: 1px solid rgba(56, 189, 248, 0.4); font-size: 0.65rem; font-weight: 800; padding: 2px 8px; border-radius: 10px; text-transform: uppercase;">
+                UA PORTAL
+              </span>
+            </div>
+            <div style="font-size: 0.78rem; color: #cbd5e1; font-style: italic; margin-top: 2px;">
+              Національний інформаційно-сервісний хаб
+            </div>
           </div>
         </a>
 
-        <!-- Пошук в шапці -->
-        <div class="hidden md:flex items-center flex-1 max-w-md mx-8">
-          <div class="relative w-full">
-            <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
-              <i class="fa-solid fa-magnifying-glass text-xs"></i>
+        <!-- Пошук та інструменти адміністратора / монетизації -->
+        <div style="display: flex; align-items: center; gap: 10px; flex: 1; max-width: 580px; min-width: 260px; justify-content: flex-end; flex-wrap: wrap;">
+          
+          <!-- Кнопки резервного копіювання сайту (тільки для адміністраторів) -->
+          <div id="globalAdminBackupTools" style="display: none; align-items: center; gap: 6px;">
+            <button onClick="exportEntireWebsiteData()" style="background: rgba(245, 158, 11, 0.2); border: 1px solid rgba(245, 158, 11, 0.5); color: #fde047; padding: 6px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 4px;" title="Експортувати повну базу даних сайту у JSON">
+              <i class="fa-solid fa-download"></i> Бекап
+            </button>
+            <label style="background: rgba(245, 158, 11, 0.2); border: 1px solid rgba(245, 158, 11, 0.5); color: #fde047; padding: 6px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 4px;" title="Відновити базу даних сайту з JSON">
+              <i class="fa-solid fa-upload"></i> Відновлення
+              <input type="file" accept=".json" onChange="importEntireWebsiteData(event)" style="display: none;">
+            </label>
+          </div>
+
+          <div style="position: relative; flex: 1; max-width: 240px;">
+            <span style="position: absolute; inset-y: 0; left: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8; pointer-events: none; font-size: 0.85rem;">
+              <i class="fa-solid fa-magnifying-glass"></i>
             </span>
-            <input type="text" id="searchInput" oninput="filterArticles()" placeholder="Пошук у базі знань (теми, закони, ECU, прикладки)..." class="w-full pl-9 pr-4 py-1.5 text-xs bg-slate-800 text-white placeholder-slate-400 border border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <input type="text" id="mainSearch" placeholder="Пошук послуг... (Enter)" style="width: 100%; box-sizing: border-box; padding: 8px 12px 8px 34px; font-size: 0.82rem; background: rgba(255, 255, 255, 0.08); color: white; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 10px; outline: none;" />
+          </div>
+
+          <a href="service.html" style="background: #d97706; color: white; padding: 8px 14px; border-radius: 10px; text-decoration: none; font-weight: bold; font-size: 0.8rem; white-space: nowrap; box-shadow: 0 2px 6px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 6px;">
+            <i class="fa-solid fa-bullhorn"></i> <span class="hidden sm:inline">Реклама & support</span>
+          </a>
+        </div>
+
+      </div>
+    </header>
+
+    <!-- НАВІГАЦІЯ -->
+    <nav>
+        <a href="baza.html"><i class="fa-solid fa-book-open mr-1"></i> База знань</a>
+        <a href="service.html"><i class="fa-solid fa-screwdriver-wrench mr-1"></i> Сервіс - Service</a>
+        <a href="chat.html"><i class="fa-solid fa-comments mr-1"></i> Чат спільноти</a>
+        <a href="account.html"><i class="fa-solid fa-user-lock mr-1"></i> Особистий</a> 
+    </nav>
+
+    <!-- ОСНОВНІ КАРТКИ -->
+    <div class="container" id="top-three-cards">
+      
+      <!-- Картка 1: Слово на сьогодні -->
+      <div class="card" id="card-word-today">
+        <h2>📖 Слово на сьогодні</h2>
+        <p>«Благодать вам і мир від Бога Отця нашого й Господа Ісуса Христа!»</p>
+        
+        <div style="background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 8px; padding: 15px; margin-top: 15px; text-align: center;">
+          <h3 style="margin-top: 0; font-size: 0.95rem; color: #1e3a8a;">▶ Наш YouTube-канал</h3>
+          <p style="font-size: 0.8rem; color: #64748b; margin-bottom: 12px;">Дивіться нові випуски та духовні роздуми щодня.</p>
+          <a href="https://www.youtube.com/@NeoService-3" target="_blank" style="display: inline-block; padding: 8px 20px; background-color: #dc2626; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 0.85rem;">
+            Дивитися YouTube
+          </a>
+        </div>
+      </div>
+
+      <!-- Картка 2: Сервіс Мої Дари -->
+      <div class="card" id="services">
+        <h2>🛠️ Сервіс</h2>
+        <ul style="padding-left: 20px; font-size: 0.9rem; line-height: 1.6; color: #334155;">
+          <li>💻 Ремонт комп'ютерів та оргтехніки</li>
+          <li>🖨️ Обслуговування принтерів та друк</li>
+          <li>🚗 Автоелектрика та діагностика</li>
+          <li>⚡ Ремонт та збірка електротранспорту</li>
+          <li>🌐 Веброзробка та дизайн</li>
+          <li>📄 Поліграфічні послуги</li>
+          <li>🖼️ Виготовлення макетів реклами, стенди</li>
+        </ul>
+        <p style="font-size: 0.85rem; color: #64748b; margin-top: 15px; font-style: italic;">Можливий виїзд до замовника</p>
+      </div>
+
+      <!-- Картка 3: Особистий кабінет -->
+      <div class="card" id="auth-section">
+        <h2>🔒 Особистий кабінет</h2>
+
+        <!-- Стан 1: Не авторизований -->
+        <div id="loggedOutView">
+          <form id="emailAuthForm" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">
+            <input type="email" id="authEmail" placeholder="Електронна пошта" style="padding: 8px; border-radius: 4px; border: 1px solid #cbd5e1; outline: none; font-size: 0.85rem;" required />
+            <input type="password" id="authPassword" placeholder="Пароль" style="padding: 8px; border-radius: 4px; border: 1px solid #cbd5e1; outline: none; font-size: 0.85rem;" required />
+            
+            <div style="display: flex; gap: 8px;">
+              <button type="button" id="loginEmailBtn" class="btn btn-primary" style="flex: 1; padding: 8px; font-size: 0.85rem;">Увійти</button>
+              <button type="button" id="registerEmailBtn" class="btn btn-success" style="flex: 1; padding: 8px; font-size: 0.85rem;">Реєстрація</button>
+            </div>
+          </form>
+          <button id="googleLoginBtn" class="btn btn-google" style="width: 100%; padding: 8px; font-size: 0.85rem;">Увійти через Google</button>
+        </div>
+
+        <!-- Стан 2: Увійшов -->
+        <div id="loggedInView" style="display: none;">
+          <div style="display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 8px 10px; border-radius: 6px; border: 1px solid #e2e8f0; margin-bottom: 12px;">
+            <div>
+              <span style="font-size: 0.75rem; color: #64748b;">Вітаємо,</span>
+              <div id="userEmailDisplay" style="font-weight: bold; color: #16a34a; font-size: 0.85rem; word-break: break-all;"></div>
+            </div>
+            <button id="logoutBtn" class="btn btn-danger" style="padding: 4px 8px; font-size: 0.75rem;">Вийти</button>
+          </div>
+
+          <details style="margin-bottom: 12px; background: #f1f5f9; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1;">
+            <summary style="font-weight: bold; color: #1e3a8a; cursor: pointer; font-size: 0.85rem;">➕ Подати нову заявку</summary>
+            <form id="newRequestForm" style="margin-top: 8px; display: flex; flex-direction: column; gap: 6px;">
+              <select id="reqCategory" style="padding: 6px; border-radius: 4px; border: 1px solid #cbd5e1; outline: none; background: white; font-size: 0.8rem;" required>
+                <option value="Сервіс ПК/Оргтехніки">💻 Ремонт ПК / Оргтехніки</option>
+                <option value="Автоелектрика">🚗 Автоелектрика та діагностика</option>
+                <option value="Поліграфія/Реклама">📐 Веб, Поліграфія, Реклама</option>
+                <option value="Скарга/Пропозиція">💬 Скарга або пропозиція</option>
+              </select>
+              <textarea id="reqDescription" placeholder="Опишіть проблему..." rows="2" style="padding: 6px; border-radius: 4px; border: 1px solid #cbd5e1; outline: none; font-family: inherit; font-size: 0.8rem;" required></textarea>
+              <button type="submit" class="btn btn-primary" style="padding: 6px; font-size: 0.8rem;">Надіслати</button>
+            </form>
+          </details>
+
+          <h3 style="font-size: 0.85rem; color: #1e3a8a; margin-bottom: 6px;">📋 Історія замовлень</h3>
+          <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; font-size: 0.75rem; text-align: left;">
+              <thead>
+                <tr style="background: #e2e8f0; color: #334155;">
+                  <th style="padding: 4px;">Дата</th>
+                  <th style="padding: 4px;">Опис</th>
+                  <th style="padding: 4px;">Статус</th>
+                  <th style="padding: 4px;">Коментар</th>
+                </tr>
+              </thead>
+              <tbody id="ordersTableBody">
+                <tr><td colspan="4" style="text-align: center; padding: 10px; color: #64748b;">Завантаження...</td></tr>
+              </tbody>
+            </table>
           </div>
         </div>
 
-        <!-- Навігаційні кнопки -->
-        <div class="flex items-center gap-2 text-xs">
-          <a href="index.html" class="px-3 py-1.5 hover:bg-slate-800 text-slate-300 rounded-lg transition-colors flex items-center gap-1.5">
-            <i class="fa-solid fa-house"></i> Головна
-          </a>
-          <a href="baza.html" class="px-3 py-1.5 bg-blue-600 text-white font-bold rounded-lg transition-colors flex items-center gap-1.5">
-            <i class="fa-solid fa-book-open"></i> База знань
-          </a>
-          <a href="admin.html" class="px-3 py-1.5 hover:bg-slate-800 text-slate-300 rounded-lg transition-colors flex items-center gap-1.5">
-            <i class="fa-solid fa-gear"></i> Адмінка
-          </a>
-        </div>
+      </div>
 
+    </div>
+
+    <!-- ================= БІЖУЧИЙ РЯДОК ================= -->
+    <div style="width: 100%; background: linear-gradient(90deg, #1e3a8a, #3b82f6, #1e3a8a); color: white; padding: 12px 0; overflow: hidden; white-space: nowrap; box-shadow: inset 0 2px 5px rgba(0,0,0,0.2); margin: 20px 0; border-top: 2px solid #60a5fa; border-bottom: 2px solid #60a5fa;">
+      <div style="display: inline-block; animation: marquee 25s linear infinite; font-size: 1rem; font-style: italic; letter-spacing: 0.5px;">
+        ✨ «Світильник нозі моїй — слово Твоє, і світло для стежки моєї» &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 🕊️ «Ісус — дорога, істина і життя» &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 🙏 «Блаженні миротворці, бо вони синами Божими назвуться» &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
       </div>
     </div>
-  </header>
 
-  <!-- ========================================== -->
-  <!-- MAIN CONTAINER                             -->
-  <!-- ========================================== -->
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow w-full space-y-6">
-    
-    <!-- ГОЛОВНИЙ БАНЕР-КАРУСЕЛЬ (Hero Banner) -->
-    <section class="relative bg-brand-header rounded-3xl overflow-hidden shadow-xl text-white">
-      <div class="absolute inset-0 z-0">
-        <img src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1400&q=80" alt="Hero Background" class="w-full h-full object-cover opacity-30">
-        <div class="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-900/80 to-transparent"></div>
-      </div>
-      
-      <div class="relative z-10 p-6 sm:p-10 max-w-2xl flex flex-col justify-center min-h-[280px]">
-        <div class="flex items-center gap-2 mb-3">
-          <span class="bg-amber-500 text-slate-950 text-[10px] font-extrabold px-2.5 py-1 rounded-full uppercase tracking-wider">
-            🔥 ТОП ТЕМА: Автодіагностика
-          </span>
-          <span class="text-[11px] text-slate-300">Оновлено сьогодні</span>
-        </div>
+    <!-- ================= 5 SEO-ТЕМАТИЧНИХ РОЗДІЛІВ В РЯД ================= -->
+    <section style="max-width: 1100px; margin: 20px auto; padding: 0 15px; box-sizing: border-box;">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 15px;">
         
-        <h1 class="text-xl sm:text-2xl lg:text-3xl font-black leading-tight mb-3">
-          Пошук витоку струму акумулятора: Повний посібник для автовласників (Hantek)
-        </h1>
-        
-        <p class="text-xs sm:text-sm text-slate-300 mb-5 line-clamp-2">
-          Як правильно використовувати осцилограф та мультиметр для виявлення прихованих споживачів в бортовій мережі. Покрокова інструкція.
-        </p>
+        <!-- Розділ 1: Автокомерція & Автобазар -->
+        <a href="auto.html" style="text-decoration: none; color: inherit;">
+          <div style="background: white; border-radius: 12px; padding: 15px; border-top: 4px solid #d97706; box-shadow: 0 4px 6px rgba(0,0,0,0.04); height: 100%; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s;" onMouseOver="this.style.transform='translateY(-3px)'" onMouseOut="this.style.transform='translateY(0)'">
+            <div>
+              <div style="font-size: 1.5rem; margin-bottom: 8px;">🚘</div>
+              <h3 style="font-size: 0.95rem; font-weight: bold; color: #1e3a8a; margin: 0 0 6px 0;">Автокомерція & Запчастини</h3>
+              <p style="font-size: 0.75rem; color: #64748b; margin: 0; line-height: 1.4;">Автобазар, Купівля продаж автомобілів, автозапчастини.</p>
+            </div>
+            <span style="font-size: 0.75rem; color: #d97706; font-weight: bold; margin-top: 12px; display: inline-block;">Авторинок &rarr;</span>
+          </div>
+        </a>
 
-        <div class="flex items-center gap-4">
-          <button onclick="openHeroModal()" class="px-5 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs rounded-xl shadow transition-colors flex items-center gap-2">
-            Читати повністю <i class="fa-solid fa-arrow-right text-[10px]"></i>
-          </button>
-          <span class="text-[11px] text-slate-400"><i class="fa-regular fa-clock mr-1"></i> 20 жовтня, 2026</span>
-        </div>
+        <!-- Розділ 2: Спорт та аналітика --> 
+        <a href="sport.html" style="text-decoration: none; color: inherit;">
+          <div style="background: white; border-radius: 12px; padding: 15px; border-top: 4px solid #16a34a; box-shadow: 0 4px 6px rgba(0,0,0,0.04); height: 100%; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s;" onMouseOver="this.style.transform='translateY(-3px)'" onMouseOut="this.style.transform='translateY(0)'">
+            <div>
+              <div style="font-size: 1.5rem; margin-bottom: 8px;">⚽</div>
+              <h3 style="font-size: 0.95rem; font-weight: bold; color: #1e3a8a; margin: 0 0 6px 0;">Спорт та Аналітика</h3>
+              <p style="font-size: 0.75rem; color: #64748b; margin: 0; line-height: 1.4;">Статистика матчів, європейські футбольні ліги, аналіз та прогнози.</p>
+            </div>
+            <span style="font-size: 0.75rem; color: #16a34a; font-weight: bold; margin-top: 12px; display: inline-block;">Огляд &rarr;</span>
+          </div>
+        </a>
+
+        <!-- Розділ 3: Комп'ютери та IT -->
+        <a href="shop.html" style="text-decoration: none; color: inherit;">
+          <div style="background: white; border-radius: 12px; padding: 15px; border-top: 4px solid #2563eb; box-shadow: 0 4px 6px rgba(0,0,0,0.04); height: 100%; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s;" onMouseOver="this.style.transform='translateY(-3px)'" onMouseOut="this.style.transform='translateY(0)'">
+            <div>
+              <div style="font-size: 1.5rem; margin-bottom: 8px;">💻</div>
+              <h3 style="font-size: 0.95rem; font-weight: bold; color: #1e3a8a; margin: 0 0 6px 0;">Дошка Оголошень</h3>
+              <p style="font-size: 0.75rem; color: #64748b; margin: 0; line-height: 1.4;">Купівля, Продаж, Бізнес пропозія, подарую, акція.</p>
+            </div>
+            <span style="font-size: 0.75rem; color: #2563eb; font-weight: bold; margin-top: 12px; display: inline-block;">Читати &rarr;</span>
+          </div>
+        </a>
+
+        <!-- Розділ 4: Інженерія та схемотехніка --> 
+        <a href="engineering.html" style="text-decoration: none; color: inherit;">
+          <div style="background: white; border-radius: 12px; padding: 15px; border-top: 4px solid #7c3aed; box-shadow: 0 4px 6px rgba(0,0,0,0.04); height: 100%; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s;" onMouseOver="this.style.transform='translateY(-3px)'" onMouseOut="this.style.transform='translateY(0)'">
+            <div>
+              <div style="font-size: 1.5rem; margin-bottom: 8px;">⚙️</div>
+              <h3 style="font-size: 0.95rem; font-weight: bold; color: #1e3a8a; margin: 0 0 6px 0;">Інженерія & Схеми</h3>
+              <p style="font-size: 0.75rem; color: #64748b; margin: 0; line-height: 1.4;">Схеми плати (PCB), радіокомпоненти, охоронні системи, креслення та технічні мануали.</p>
+            </div>
+            <span style="font-size: 0.75rem; color: #7c3aed; font-weight: bold; margin-top: 12px; display: inline-block;">Схеми &rarr;</span>
+          </div>
+        </a>
+
+        <!-- Розділ 5: Духовне слово -->
+        <a href="duhovne.html" style="text-decoration: none; color: inherit;">
+          <div style="background: white; border-radius: 12px; padding: 15px; border-top: 4px solid #dc2626; box-shadow: 0 4px 6px rgba(0,0,0,0.04); height: 100%; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s;" onMouseOver="this.style.transform='translateY(-3px)'" onMouseOut="this.style.transform='translateY(0)'">
+            <div>
+              <div style="font-size: 1.5rem; margin-bottom: 8px;">🕊️</div>
+              <h3 style="font-size: 0.95rem; font-weight: bold; color: #1e3a8a; margin: 0 0 6px 0;">Духовне Слово</h3>
+              <p style="font-size: 0.75rem; color: #64748b; margin: 0; line-height: 1.4;">Щоденні надихаючі цитати зі Святого Письма та відео на YouTube.</p>
+            </div>
+            <span style="font-size: 0.75rem; color: #dc2626; font-weight: bold; margin-top: 12px; display: inline-block;">Дізнатись &rarr;</span>
+          </div>
+        </a>
+
       </div>
     </section>
 
-    <!-- ЗАГОЛОВОК СТРІЧКИ ТА КНОПКА ДОДАВАННЯ -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-2">
-      <div>
-        <div class="flex items-center gap-2">
-          <h2 class="text-lg font-black text-slate-900 flex items-center gap-2">
-            <i class="fa-solid fa-book-open text-blue-600"></i> База знань та технічні мануали
-          </h2>
-          <span id="adminBadge" class="hidden text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 border border-emerald-300">
-            <i class="fa-solid fa-shield-halved mr-1"></i> Режим Адміна активний
-          </span>
+    <!-- ================= БЛОК: КОЛАЖ БАНЕРІВ + ФОТО/ТЕКСТ МЕРА (ПІД 5 КАРТКАМИ) ================= -->
+    <section style="max-width: 1100px; margin: 25px auto; padding: 0 15px; box-sizing: border-box;">
+      <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px; align-items: stretch;" class="banner-trust-grid">
+        
+        <!-- 1. ЛІВА ЧАСТИНА: КОЛАЖ БАНЕРІВ З АВТОПЕРЕКЛЮЧЕННЯМ (ШТОРКА) -->
+        <div style="background: white; border-radius: 12px; border-top: 4px solid #1e3a8a; box-shadow: 0 4px 6px rgba(0,0,0,0.05); padding: 20px; position: relative; height: 320px; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; box-sizing: border-box;">
+          
+          <!-- Динамічні або базові слайди колажу -->
+          <div id="bannerSliderContainer" style="position: absolute; inset: 0; width: 100%; height: 100%;">
+            
+            <div class="banner-slide active" style="background-image: url('https://lh3.googleusercontent.com/d/11vet7U2ImXj8dZ2yHRRnh_oVjm6SCItG'); background-size: contain; padding: 25px; display: flex; flex-direction: column; justify-content: flex-end; height: 100%; box-sizing: border-box;">
+              <span style="background: rgba(217,119,6,0.8); color: white; font-size: 0.7rem; font-weight: bold; padding: 3px 10px; border-radius: 20px; width: max-content; margin-bottom: 8px;">📢 Підтримка Web-ресурсу</span>
+              <h3 style="color: white; margin: 0 0 5px 0; font-size: 1.25rem; text-shadow: 0 2px 4px rgba(0,0,0,0.8);">Інвестиція і інувація</h3>
+              <p style="color: #cbd5e1; margin: 0; font-size: 0.8rem; text-shadow: 0 1px 3px rgba(0,0,0,0.8);">«Поділись теплом, підтримай проєкт добровільним внеском!»</p>
+            </div>
+
+          </div>
+
+          <!-- Крапки-індикатори переключення -->
+          <div id="sliderDotsContainer" style="position: absolute; bottom: 12px; right: 20px; display: flex; gap: 6px; z-index: 10;">
+            <button onClick="setSlide(0)" class="slider-dot" style="width: 10px; height: 10px; border-radius: 50%; border: none; background: #d97706; cursor: pointer;"></button>
+          </div>
         </div>
-        <p class="text-xs text-slate-500">Діагностика, закони, діловодство, посібники, інструкції з ремонту та корисні матеріали.</p>
+
+        <!-- 2. ПРАВА ЧАСТИНА: ФОТО + ТЕКСТ ДЛЯ ДОВІРИ -->
+        <div style="display: flex; flex-direction: column; gap: 12px; height: 320px;">
+          
+          <!-- Під-блок з фото та кнопкою виклику адмінки -->
+          <div style="background: white; border-radius: 12px; border-top: 4px solid #d97706; box-shadow: 0 4px 6px rgba(0,0,0,0.05); padding: 12px; display: flex; align-items: center; gap: 12px; height: 135px; box-sizing: border-box;">
+            <div style="width: 65px; height: 85px; border-radius: 8px; overflow: hidden; border: 2px solid #d97706; flex-shrink: 0; background: #e2e8f0;">
+              <img src="valeriy.png" alt="Помічник депутата / Мер" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+            <div style="display: flex; flex-direction: column; justify-content: space-between; width: 100%; height: 100%;">
+              <div>
+                <div style="font-size: 0.6rem; text-transform: uppercase; font-weight: bold; color: #d97706;">ОСОБИСТИЙ КОНТРОЛЬ</div>
+                <h4 style="font-size: 0.75rem; margin: 2px 0 0 0; color: #1e3a8a; line-height: 1.1;">Технічний контроль і підтримка • Експертний нагляд:</h4>
+                <h4 style="font-size: 0.75rem; margin: 2px 0 0 0; color: #1e3a8a; line-height: 1.1;"> <a href="https://www.facebook.com/profile.php?id=100002258565875" target="_blank">Facebook </a></h4>
+                <h4 style="font-size: 0.75rem; margin: 2px 0 0 0; color: #1e3a8a; line-height: 1.1;">Valeriy Anatolievich kostopilservice@gmail.com</h4>
+              </div>
+              <button id="adminCollageBtn" onClick="openCollageAdmin()" style="display: none; background: #1e3a8a; color: white; border: none; padding: 6px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: bold; cursor: pointer; text-align: center; width: 100%;">
+                Керувати колажем &rarr;
+              </button>
+            </div>
+          </div>
+
+          <!-- Під-блок з текстом та посиланням для довіри -->
+          <div style="background: white; border-radius: 12px; border-top: 4px solid #16a34a; box-shadow: 0 4px 6px rgba(0,0,0,0.05); padding: 12px; display: flex; flex-direction: column; justify-content: space-between; height: 173px; box-sizing: border-box;">
+            <div>
+              <div style="font-size: 0.65rem; text-transform: uppercase; font-weight: bold; color: #16a34a; margin-bottom: 3px;">
+                <i class="fa-solid fa-shield-halved"></i> Статус & Довіра
+              </div>
+              <p style="font-size: 0.75rem; color: #475569; margin: 0; line-height: 1.3;">
+                Neoservice — «Спільна робота на благо громади вимагає не слів, а рішучих кроків. Відкритий до звернень, ініціатив та конструктивного діалогу. Забезпечую підтримку проєктів, які покращують життя кожного мешканця. Працюємо на результат!»
+              </p>
+            </div>
+            <a href="service.html" style="background: #f1f5f9; color: #1e3a8a; border: 1px solid #cbd5e1; padding: 6px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; text-decoration: none; text-align: center; display: block; box-sizing: border-box;">
+              Продовжити &rarr;
+            </a>
+          </div>
+
+        </div>
+
       </div>
+    </section>
 
-      <a href="admin.html" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-sm transition-colors flex items-center justify-center gap-1.5 shrink-0">
-        <i class="fa-solid fa-plus"></i> Опублікувати матеріал
-      </a>
-    </div>
+    <!-- ================= ІНТЕРАКТИВНА КАРТА УКРАЇНИ (ПІД БАНЕРОМ) ================= -->
+    <section id="ukraine-map-section" style="max-width: 1100px; margin: 20px auto; padding: 0 15px; box-sizing: border-box;">
+      <div class="bg-white rounded-[10px] shadow-[0_4px_6px_rgba(0,0,0,0.05)] border-t-4 border-[#1e3a8a] border-x border-b border-slate-100 overflow-hidden">
+          
+          <!-- Header -->
+          <div class="bg-gradient-to-r from-[#0f2b5c] to-[#1e40af] px-6 py-5 text-white flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+              <div>
+                  <span class="inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-500/30 text-blue-200 mb-1 border border-blue-400/30">
+                      УКРАЇНА • СЕРВІСНІ ЦЕНТРИ
+                  </span>
+                  <h2 class="text-xl md:text-2xl font-bold tracking-tight">Оберіть ваш регіон обслуговування</h2>
+              </div>
+              <div id="selected-badge" class="bg-white/10 backdrop-blur-md px-4 py-2 rounded-xl border border-white/20 text-sm font-medium">
+                  📍 Наведіть на область
+              </div>
+          </div>
 
-    <!-- КАТЕГОРІЇ -->
-    <div class="flex flex-wrap items-center gap-2 pb-2">
-      <button onclick="filterCategory('all', this)" class="cat-btn px-3.5 py-1.5 bg-blue-600 text-white text-xs font-bold rounded-xl shadow-sm transition-colors">
-        🔥 Всі
-      </button>
-      <button onclick="filterCategory('auto', this)" class="cat-btn px-3.5 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl transition-colors">
-        🚗 Автодіагностика & ECU
-      </button>
-      <button onclick="filterCategory('computers', this)" class="cat-btn px-3.5 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl transition-colors">
-        💻 Комп'ютери
-      </button>
-      <button onclick="filterCategory('printers', this)" class="cat-btn px-3.5 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl transition-colors">
-        🖨️ Оргтехніка
-      </button>
-      <button onclick="filterCategory('engineering', this)" class="cat-btn px-3.5 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl transition-colors">
-        ⚙️ Інженерія & Схеми
-      </button>
-      <button onclick="filterCategory('radio', this)" class="cat-btn px-3.5 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl transition-colors">
-        📻 Радіозв'язок
-      </button>
-      <button onclick="filterCategory('ev_battery', this)" class="cat-btn px-3.5 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl transition-colors">
-        🔋 Електротранспорт & АКБ
-      </button>
-      <button onclick="filterCategory('law', this)" class="cat-btn px-3.5 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl transition-colors">
-        ⚖️ Законодавство & Юриспруденція
-      </button>
-      <button onclick="filterCategory('paperwork', this)" class="cat-btn px-3.5 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl transition-colors">
-        📑 Діловодство & Документи
-      </button>
-      <button onclick="filterCategory('local_biz', this)" class="cat-btn px-3.5 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl transition-colors">
-        🏪 Місцевий бізнес & Послуги
-      </button>
-      <button onclick="filterCategory('construction', this)" class="cat-btn px-3.5 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl transition-colors">
-        🏗️ Будівництво & Ремонт
-      </button>
-      <button onclick="filterCategory('cybersecurity', this)" class="cat-btn px-3.5 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl transition-colors">
-        🛡️ Цифрова безпека & IT
-      </button>
-      <button onclick="filterCategory('education', this)" class="cat-btn px-3.5 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl transition-colors">
-        🎓 Навчання & Освіта
-      </button>
-      <button onclick="filterCategory('energy', this)" class="cat-btn px-3.5 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl transition-colors">
-        💡 Енергонезалежність & ДБЖ
-      </button>
-      <button onclick="filterCategory('youtube', this)" class="cat-btn px-3.5 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl transition-colors">
-        ▶️ YouTube Відео
-      </button>
-      <button onclick="filterCategory('sponsored', this)" class="cat-btn px-3.5 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl transition-colors">
-        📢 Спонсоровано
-      </button>
-    </div>
+          <!-- Main Content Area -->
+          <div class="p-4 md:p-8 grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
+              
+              <!-- Map Column (Takes 2 Cols) -->
+              <div class="lg:col-span-2 relative bg-slate-50/70 rounded-xl p-4 border border-slate-200/80 shadow-inner flex items-center justify-center">
+                  
+                  <!-- Floating Tooltip -->
+                  <div id="map-tooltip" class="bg-slate-900/90 text-white px-3 py-2 rounded-lg shadow-xl text-xs font-medium border border-slate-700 backdrop-blur-sm">
+                      <div id="tooltip-title" class="font-bold text-blue-300"></div>
+                      <div id="tooltip-sub" class="text-slate-300"></div>
+                  </div>
 
-    <!-- СІТКА СТАТЕЙ -->
-    <div id="articlesGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-      <!-- Картки генеруються автоматично -->
-    </div>
+                  <!-- SVG Map of Ukraine -->
+                  <svg id="ukraine-svg" viewBox="0 0 950 620" class="w-full h-auto max-h-[520px] drop-shadow-sm" xmlns="http://www.w3.org/2000/svg">
+                      <defs>
+                          <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                              <feGaussianBlur stdDeviation="4" result="blur" />
+                              <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                          </filter>
+                      </defs>
 
-  </main>
+                      <!-- REGIONS GROUP -->
+                      <g id="regions">
+                          <!-- Волинська -->
+                          <g class="region-group" data-name="Волинська область" data-city="Луцьк" data-code="volyn">
+                              <path class="region-path" d="M 160 80 L 220 75 L 240 130 L 210 170 L 150 160 L 130 110 Z" />
+                              <circle class="city-marker" cx="185" cy="120" r="3.5"/>
+                              <text class="city-text" x="185" y="136">Луцьк</text>
+                          </g>
 
-  <!-- ========================================== -->
-  <!-- МОДАЛЬНЕ ВІКНО ПЕРЕГЛЯДУ СТАТТІ / YOUTUBE  -->
-  <!-- ========================================== -->
-  <div id="articleModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
-    <div class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm" onclick="closeModal()"></div>
-    <div class="relative bg-white rounded-2xl shadow-2xl max-w-2xl w-full z-10 overflow-hidden max-h-[90vh] flex flex-col">
-      <div class="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
-        <span id="modalCategory" class="text-[10px] font-bold px-2.5 py-1 rounded-full bg-blue-100 text-blue-700">Категорія</span>
-        <div class="flex items-center gap-2">
-          <!-- Кнопки швидкого керування у вікні перегляду (тільки для Адміна) -->
-          <button id="modalEditBtn" class="hidden px-3 py-1 bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold rounded-lg transition-colors">
-            <i class="fa-solid fa-pen mr-1"></i> Редагувати
+                          <!-- Рівненська -->
+                          <g class="region-group" data-name="Рівненська область" data-city="Рівне" data-code="rivne">
+                              <path class="region-path" d="M 220 75 L 310 70 L 300 145 L 240 155 L 240 130 Z" />
+                              <circle class="city-marker" cx="265" cy="115" r="3.5"/>
+                              <text class="city-text" x="265" y="131">Рівне</text>
+                          </g>
+
+                          <!-- Житомирська -->
+                          <g class="region-group" data-name="Житомирська область" data-city="Житомир" data-code="zhytomyr">
+                              <path class="region-path" d="M 310 70 L 410 70 L 420 160 L 360 180 L 300 145 Z" />
+                              <circle class="city-marker" cx="360" cy="125" r="3.5"/>
+                              <text class="city-text" x="360" y="141">Житомир</text>
+                          </g>
+
+                          <!-- Київська -->
+                          <g class="region-group" data-name="Київська область" data-city="Київ" data-code="kyiv">
+                              <path class="region-path" d="M 410 70 L 510 80 L 500 190 L 430 200 L 420 160 Z" />
+                              <circle class="city-marker" cx="460" cy="130" r="5" fill="#dc2626"/>
+                              <text class="city-text" x="460" y="148" font-weight="bold">Київ</text>
+                          </g>
+
+                          <!-- Чернігівська -->
+                          <g class="region-group" data-name="Чернігівська область" data-city="Чернігів" data-code="chernihiv">
+                              <path class="region-path" d="M 480 20 L 590 30 L 580 120 L 510 80 Z" />
+                              <circle class="city-marker" cx="530" cy="65" r="3.5"/>
+                              <text class="city-text" x="530" y="81">Чернігів</text>
+                          </g>
+
+                          <!-- Сумська -->
+                          <g class="region-group" data-name="Сумська область" data-city="Суми" data-code="sumy">
+                              <path class="region-path" d="M 590 30 L 680 50 L 660 140 L 580 120 Z" />
+                              <circle class="city-marker" cx="630" cy="85" r="3.5"/>
+                              <text class="city-text" x="630" y="101">Суми</text>
+                          </g>
+
+                          <!-- Львівська -->
+                          <g class="region-group" data-name="Львівська область" data-city="Львів" data-code="lviv">
+                              <path class="region-path" d="M 80 150 L 150 160 L 180 230 L 110 240 L 70 190 Z" />
+                              <circle class="city-marker" cx="125" cy="190" r="3.5"/>
+                              <text class="city-text" x="125" y="206">Львів</text>
+                          </g>
+
+                          <!-- Тернопільська -->
+                          <g class="region-group" data-name="Тернопільська область" data-city="Тернопіль" data-code="ternopil">
+                              <path class="region-path" d="M 180 230 L 230 170 L 260 230 L 210 270 Z" />
+                              <circle class="city-marker" cx="215" cy="220" r="3.5"/>
+                              <text class="city-text" x="215" y="236">Тернопіль</text>
+                          </g>
+
+                          <!-- Хмельницька -->
+                          <g class="region-group" data-name="Хмельницька область" data-city="Хмельницький" data-code="khmelnytskyi">
+                              <path class="region-path" d="M 240 155 L 300 145 L 310 240 L 260 230 Z" />
+                              <circle class="city-marker" cx="275" cy="190" r="3.5"/>
+                              <text class="city-text" x="275" y="206">Хмельницький</text>
+                          </g>
+
+                          <!-- Вінницька -->
+                          <g class="region-group" data-name="Вінницька область" data-city="Вінниця" data-code="vinnytsia">
+                              <path class="region-path" d="M 300 145 L 360 180 L 410 260 L 320 280 L 310 240 Z" />
+                              <circle class="city-marker" cx="355" cy="220" r="3.5"/>
+                              <text class="city-text" x="355" y="236">Вінниця</text>
+                          </g>
+
+                          <!-- Черкаська -->
+                          <g class="region-group" data-name="Черкаська область" data-city="Черкаси" data-code="cherkasy">
+                              <path class="region-path" d="M 430 200 L 520 190 L 540 270 L 450 270 L 410 260 Z" />
+                              <circle class="city-marker" cx="475" cy="230" r="3.5"/>
+                              <text class="city-text" x="475" y="246">Черкаси</text>
+                          </g>
+
+                          <!-- Полтавська -->
+                          <g class="region-group" data-name="Полтавська область" data-city="Полтава" data-code="poltava">
+                              <path class="region-path" d="M 520 190 L 630 180 L 640 260 L 540 270 Z" />
+                              <circle class="city-marker" cx="575" cy="220" r="3.5"/>
+                              <text class="city-text" x="575" y="236">Полтава</text>
+                          </g>
+
+                          <!-- Харківська -->
+                          <g class="region-group" data-name="Харківська область" data-city="Харків" data-code="kharkiv">
+                              <path class="region-path" d="M 660 140 L 780 150 L 770 260 L 640 260 L 630 180 Z" />
+                              <circle class="city-marker" cx="710" cy="195" r="3.5"/>
+                              <text class="city-text" x="710" y="211">Харків</text>
+                          </g>
+
+                          <!-- Закарпатська -->
+                          <g class="region-group" data-name="Закарпатська область" data-city="Ужгород" data-code="uzhhorod">
+                              <path class="region-path" d="M 30 230 L 80 230 L 110 280 L 50 290 Z" />
+                              <circle class="city-marker" cx="65" cy="260" r="3.5"/>
+                              <text class="city-text" x="65" y="276">Ужгород</text>
+                          </g>
+
+                          <!-- Івано-Франківська -->
+                          <g class="region-group" data-name="Івано-Франківська область" data-city="Івано-Франківськ" data-code="frankivsk">
+                              <path class="region-path" d="M 110 240 L 180 230 L 190 300 L 130 300 Z" />
+                              <circle class="city-marker" cx="150" cy="265" r="3.5"/>
+                              <text class="city-text" x="150" y="281">Ів.-Франківськ</text>
+                          </g>
+
+                          <!-- Чернівецька -->
+                          <g class="region-group" data-name="Чернівецька область" data-city="Чернівці" data-code="chernivtsi">
+                              <path class="region-path" d="M 190 300 L 260 280 L 270 320 L 190 330 Z" />
+                              <circle class="city-marker" cx="225" cy="305" r="3.5"/>
+                              <text class="city-text" x="225" y="321">Чернівці</text>
+                          </g>
+
+                          <!-- Кіровоградська -->
+                          <g class="region-group" data-name="Кіровоградська область" data-city="Кропивницький" data-code="kropyvnytskyi">
+                              <path class="region-path" d="M 450 270 L 560 270 L 570 350 L 460 350 Z" />
+                              <circle class="city-marker" cx="510" cy="310" r="3.5"/>
+                              <text class="city-text" x="510" y="326">Кропивницький</text>
+                          </g>
+
+                          <!-- Дніпропетровська -->
+                          <g class="region-group" data-name="Дніпропетровська область" data-city="Дніпро" data-code="dnipro">
+                              <path class="region-path" d="M 560 270 L 680 260 L 690 350 L 570 350 Z" />
+                              <circle class="city-marker" cx="625" cy="305" r="3.5"/>
+                              <text class="city-text" x="625" y="321">Дніпро</text>
+                          </g>
+
+                          <!-- Луганська -->
+                          <g class="region-group" data-name="Луганська область" data-city="Луганськ" data-code="lugansk">
+                              <path class="region-path" d="M 780 150 L 870 180 L 860 290 L 790 280 Z" />
+                              <circle class="city-marker" cx="825" cy="230" r="3.5"/>
+                              <text class="city-text" x="825" y="246">Луганськ</text>
+                          </g>
+
+                          <!-- Донецька -->
+                          <g class="region-group" data-name="Донецька область" data-city="Донецьк" data-code="donetsk">
+                              <path class="region-path" d="M 690 280 L 790 280 L 780 390 L 690 370 Z" />
+                              <circle class="city-marker" cx="735" cy="330" r="3.5"/>
+                              <text class="city-text" x="735" y="346">Донецьк</text>
+                          </g>
+
+                          <!-- Одеська -->
+                          <g class="region-group" data-name="Одеська область" data-city="Одеса" data-code="odesa">
+                              <path class="region-path" d="M 320 280 L 410 260 L 450 350 L 410 450 L 340 430 Z" />
+                              <circle class="city-marker" cx="390" cy="380" r="3.5"/>
+                              <text class="city-text" x="390" y="396">Одеса</text>
+                          </g>
+
+                          <!-- Миколаївська -->
+                          <g class="region-group" data-name="Миколаївська область" data-city="Миколаїв" data-code="mykolaiv">
+                              <path class="region-path" d="M 450 350 L 530 350 L 520 430 L 440 410 Z" />
+                              <circle class="city-marker" cx="480" cy="385" r="3.5"/>
+                              <text class="city-text" x="480" y="401">Миколаїв</text>
+                          </g>
+
+                          <!-- Херсонська -->
+                          <g class="region-group" data-name="Херсонська область" data-city="Херсон" data-code="kherson">
+                              <path class="region-path" d="M 520 380 L 630 360 L 620 450 L 520 430 Z" />
+                              <circle class="city-marker" cx="560" cy="415" r="3.5"/>
+                              <text class="city-text" x="560" y="431">Херсон</text>
+                          </g>
+
+                          <!-- Запорізька -->
+                          <g class="region-group" data-name="Запорізька область" data-city="Запоріжжя" data-code="zaporizhzhia">
+                              <path class="region-path" d="M 570 350 L 690 350 L 680 430 L 610 430 Z" />
+                              <circle class="city-marker" cx="630" cy="380" r="3.5"/>
+                              <text class="city-text" x="630" y="396">Запоріжжя</text>
+                          </g>
+
+                          <!-- Автономна Республіка Крим -->
+                          <g class="region-group" data-name="Автономна Республіка Крим" data-city="Сімферополь" data-code="crimea">
+                              <path class="region-path" d="M 520 460 L 630 450 L 640 530 L 540 540 Z" />
+                              <circle class="city-marker" cx="580" cy="500" r="3.5"/>
+                              <text class="city-text" x="580" y="516">Сімферополь</text>
+                          </g>
+                      </g>
+                  </svg>
+              </div>
+
+              <!-- Regional Details & Action Panel -->
+              <div class="flex flex-col justify-between h-full bg-slate-50 p-6 rounded-xl border border-slate-200">
+                  <div>
+                      <div class="flex items-center gap-2 mb-3">
+                          <span class="w-3 h-3 rounded-full bg-blue-600 animate-pulse"></span>
+                          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Обраний регіон</span>
+                      </div>
+
+                      <h3 id="panel-title" class="text-2xl font-bold text-slate-800 mb-1">Україна</h3>
+                      <p id="panel-city" class="text-blue-600 font-semibold text-base mb-4">Оберіть область на карті</p>
+                      
+                      <div class="h-px bg-slate-200 w-full my-4"></div>
+
+                      <div class="space-y-3 text-sm text-slate-600">
+                          <div class="flex items-center gap-2">
+                              <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                              <span>Обслуговування та виїзд майстра</span>
+                          </div>
+                          <div class="flex items-center gap-2">
+                              <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                              <span>Доставка та комп'ютерний сервіс</span>
+                          </div>
+                          <div class="flex items-center gap-2">
+                              <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                              <span>Регіональні відділення</span>
+                          </div>
+                      </div>
+                  </div>
+
+                  <div class="mt-8">
+                    <!-- Суперкомпактний анімований банер-віджет -->
+                    <div class="bg-white rounded-xl p-3 shadow-sm border border-slate-100 w-full text-slate-900 relative overflow-hidden">
+                        
+                        <!-- Верхній рядок: Іконка + Заголовок + Індикатор -->
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="flex items-center space-x-2">
+                                <div class="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-xs shadow-inner">
+                                    <i class="fa-solid fa-city"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-[11px] font-bold uppercase tracking-wider text-blue-600 leading-none">Регіональне відділення</h4>
+                                    <span class="text-[10px] text-slate-400 font-medium">NEOSERVICE.KS.UA</span>
+                                </div>
+                            </div>
+                            <!-- Індикатор активності -->
+                            <span class="relative flex h-2 w-2" title="Мережа активна">
+                              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                              <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                            </span>
+                        </div>
+
+                        <!-- Анімований рядок тексту (зміна слоганів) -->
+                        <div class="h-7 flex items-center mb-2 relative overflow-hidden px-1">
+                            <div class="ticker-wrapper w-full">
+                                <div class="ticker-item text-xs font-bold text-slate-800">Твори історію твого міста</div>
+                                <div class="ticker-item text-xs font-bold text-blue-600">Координаційні центри підтримки</div>
+                                <div class="ticker-item text-xs font-bold text-slate-800">Актуальні довідники та сервіси</div>
+                            </div>
+                        </div>
+
+                        <!-- Нижній рядок: Статус і кнопка -->
+                        <div class="pt-2 border-t border-slate-100 flex items-center justify-between">
+                            <span class="text-[10px] text-slate-500 font-medium">Статус: <strong class="text-emerald-600">Активно</strong></span>
+                            <a id="regionDetailsLink" href="city.html?region=rivne&name=%D0%A0%D1%96%D0%B2%D0%BD%D0%B5%D0%BD%D1%81%D1%8C%D0%BA%D0%B0%20%D0%BE%D0%B1%D0%BB%D0%B0%D1%81%D1%82%D1%8C&city=%D0%A0%D1%96%D0%B2%D0%BD%D0%B5" class="bg-blue-600 hover:bg-blue-700 text-white text-[11px] px-3 py-1 rounded-md font-semibold transition-all shadow-sm flex items-center space-x-1 no-underline">
+                                <span>Деталі</span>
+                                <i class="fa-solid fa-arrow-right text-[9px]"></i>
+                            </a>
+                        </div>
+                    </div>
+                  </div>
+              </div>
+
+          </div>
+
+          <!-- Footer Bar -->
+          <div class="bg-slate-100 px-6 py-3 border-t border-slate-200 text-xs text-slate-500 flex justify-between items-center">
+              <span>© NEOSERVICE.KS.UA — Національний інформаційно-сервісний хаб</span>
+              <span class="font-medium text-blue-600">Всі 24 області + АР Крим</span>
+          </div>
+
+      </div>
+    </section>
+
+    <!-- ================= БЛОК MICROSOFT BING / СТРІЧКА ================= -->
+    <section id="bing-discover-block" style="max-width: 1100px; width: 100%; margin: 20px auto; padding: 0 15px; box-sizing: border-box;">
+      <div id="bing-aligned-box" style="width: 100%; box-sizing: border-box;">
+        
+        <!-- Заголовок та фільтри стрічки -->
+        <div class="flex flex-col md:flex-row justify-between items-stretch md:items-center gap-3 mb-4 pb-3 border-b border-slate-200 w-full bg-white rounded-[10px] shadow-[0_4px_6px_rgba(0,0,0,0.05)] border-t-4 border-t-[#1e3a8a] px-4 py-3 box-border">
+          <div class="flex items-center gap-2.5 shrink-0">
+            <div class="w-8 h-8 rounded-lg bg-[#1e3a8a] text-white flex items-center justify-center shadow-sm shrink-0">
+              <i class="fa-solid fa-newspaper text-sm"></i>
+            </div>
+            <div>
+              <h2 class="text-base sm:text-lg font-extrabold text-slate-800 leading-tight m-0 whitespace-nowrap">Стрічка публікацій та оглядів</h2>
+              <p class="text-[11px] text-slate-500 m-0">Актуальні статті, розбори та відео</p>
+            </div>
+          </div>
+
+          <!-- Вкладки категорій з горизонтальною прокруткою та кнопками -->
+          <div class="relative flex items-center gap-1 flex-1 min-w-0">
+            <button type="button" onclick="scrollDiscoverTabs(-240)" aria-label="Прокрутити категорії вліво"
+              class="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 flex items-center justify-center shrink-0 cursor-pointer transition-colors">
+              <i class="fa-solid fa-chevron-left text-[10px]"></i>
+            </button>
+
+            <div class="flex items-center gap-1.5 overflow-x-auto scroll-smooth no-scrollbar flex-1 min-w-0 py-1 px-0.5" id="discoverTabs">
+              <button type="button" onclick="filterDiscoverFeed('all', this)" class="discover-tab active px-3 py-1.5 rounded-full text-xs font-bold bg-[#1e3a8a] text-white transition-all cursor-pointer whitespace-nowrap border-0 shrink-0">
+                Усі категорії (15)
+              </button>
+            </div>
+
+            <button type="button" onclick="scrollDiscoverTabs(240)" aria-label="Прокрутити категорії вправо"
+              class="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 flex items-center justify-center shrink-0 cursor-pointer transition-colors">
+              <i class="fa-solid fa-chevron-right text-[10px]"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- 3-колонкова сітка: рівно від лівого краю «Слово на сьогодні» до правого краю «Особистий кабінет» -->
+        <div id="discoverGridContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 w-full">
+          <!-- Картки рендеряться динамічно через JS -->
+        </div>
+
+        <!-- Кнопка завантаження додаткових публікацій -->
+        <div class="mt-5 text-center w-full">
+          <button type="button" onclick="loadMoreDiscoverItems()" id="loadMoreDiscoverBtn" class="bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 px-5 py-2 rounded-full text-xs font-bold shadow-sm transition-all cursor-pointer inline-flex items-center gap-2">
+            <i class="fa-solid fa-rotate-right text-[#1e3a8a]"></i> Показати всі категорії
           </button>
-          <button id="modalDeleteBtn" class="hidden px-3 py-1 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-lg transition-colors">
-            <i class="fa-solid fa-trash-can mr-1"></i> Видалити
-          </button>
-          <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-slate-200 hover:bg-slate-300 text-slate-700 flex items-center justify-center transition-colors">
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ================= МОДАЛЬНЕ ВІКНО ПЕРЕГЛЯДУ ПУБЛІКАЦІЇ ================= -->
+    <div id="discoverArticleModal" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(6px); z-index: 9999; align-items: center; justify-content: center; padding: 15px;">
+      <div class="bg-white rounded-2xl max-w-2xl w-full overflow-hidden shadow-2xl border border-slate-200 flex flex-col max-h-[90vh]">
+        <div class="relative h-56 sm:h-64 bg-slate-900">
+          <img id="modalArticleImg" src="" alt="" class="w-full h-full object-cover">
+          <button onclick="closeDiscoverModal()" class="absolute top-3 right-3 w-8 h-8 rounded-full bg-slate-900/70 text-white hover:bg-slate-900 flex items-center justify-center cursor-pointer border-none">
             <i class="fa-solid fa-xmark"></i>
           </button>
+          <span id="modalArticleSource" class="absolute bottom-3 left-4 bg-blue-600 text-white text-[11px] font-bold px-2.5 py-1 rounded-md shadow"></span>
         </div>
-      </div>
-      <div class="p-6 overflow-y-auto space-y-4">
-        <h2 id="modalTitle" class="text-xl font-black text-slate-900 leading-tight">Заголовок</h2>
-        <div class="text-[11px] text-slate-400 flex items-center gap-3">
-          <span><i class="fa-regular fa-clock mr-1"></i> <span id="modalDate">Дата</span></span>
-          <span><i class="fa-regular fa-user mr-1"></i> <span id="modalAuthor">Автор</span></span>
+        <div class="p-5 overflow-y-auto">
+          <div id="modalArticleDate" class="text-xs text-slate-400 mb-1"></div>
+          <h3 id="modalArticleTitle" class="text-xl font-extrabold text-slate-800 mb-3 leading-snug"></h3>
+          <p id="modalArticleContent" class="text-sm text-slate-600 leading-relaxed whitespace-pre-line"></p>
         </div>
-        
-        <div id="modalYouTubeContainer" class="w-full aspect-video rounded-xl overflow-hidden bg-black hidden">
-          <iframe id="modalYouTubeIframe" class="w-full h-full" src="" frameborder="0" allowfullscreen></iframe>
-        </div>
-
-        <!-- Галерея або зображення у модалці -->
-        <div id="modalImageContainer" class="w-full rounded-xl overflow-hidden bg-slate-900 hidden space-y-2">
-          <div class="w-full h-64 bg-slate-950 flex items-center justify-center">
-            <img id="modalImage" src="" alt="" class="w-full h-full object-contain">
-          </div>
-          <div id="modalThumbnails" class="flex gap-2 p-2 overflow-x-auto bg-slate-900"></div>
-        </div>
-
-        <div id="modalText" class="text-xs text-slate-700 leading-relaxed space-y-2 article-formatted-text">
-          Текст статті...
+        <div class="px-5 py-3 bg-slate-50 border-t border-slate-200 flex justify-between items-center">
+          <a id="modalArticleLink" href="baza.html" class="text-xs font-bold text-blue-600 hover:underline no-underline">Перейти до розділу &rarr;</a>
+          <button onclick="closeDiscoverModal()" class="bg-slate-800 text-white text-xs font-bold px-4 py-2 rounded-lg cursor-pointer border-none">Закрити</button>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- ========================================== -->
-  <!-- МОДАЛЬНЕ ВІКНО ШВИДКОГО РЕДАГУВАННЯ (АДМІН)-->
-  <!-- ========================================== -->
-  <div id="editModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
-    <div class="fixed inset-0 bg-slate-950/75 backdrop-blur-sm" onclick="closeEditModal()"></div>
-    <div class="relative bg-white rounded-2xl shadow-2xl max-w-2xl w-full z-10 overflow-hidden max-h-[90vh] flex flex-col">
-      <div class="p-4 border-b border-slate-200 flex items-center justify-between bg-slate-900 text-white">
-        <span class="text-xs font-extrabold flex items-center gap-2">
-          <i class="fa-solid fa-pen-to-square text-amber-400"></i> Швидке редагування картки знань
-        </span>
-        <button onclick="closeEditModal()" class="w-7 h-7 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-      </div>
-      
-      <form onsubmit="saveEditedArticle(event)" class="p-6 overflow-y-auto space-y-4">
-        <input type="hidden" id="editArticleId">
-
-        <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">Заголовок *</label>
-          <input type="text" id="editTitle" required class="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600">
+    <!-- ================= МОДАЛЬНЕ ВІКНО АДМІНІСТРУВАННЯ КОЛАЖУ ================= -->
+    <div id="adminCollageModal" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(8px); z-index: 9999; align-items: center; justify-content: center; padding: 15px;">
+      <div style="background: white; border-radius: 12px; border-top: 5px solid #1e3a8a; max-width: 480px; width: 100%; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); box-sizing: border-box; max-height: 90vh; overflow-y: auto;">
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px; margin-bottom: 15px;">
+          <h3 style="margin: 0; color: #1e3a8a; font-size: 1.1rem;">🖼️ Керування колажем банерів</h3>
+          <button onClick="closeCollageAdmin()" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #64748b;">✕</button>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <form id="collageAdminForm" style="display: flex; flex-direction: column; gap: 10px;">
           <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">Категорія *</label>
-            <select id="editCategory" required class="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-600">
-              <option value="auto">🚗 Автодіагностика & ECU</option>
-              <option value="computers">💻 Комп'ютери</option>
-              <option value="printers">🖨️ Оргтехніка</option>
-              <option value="engineering">⚙️ Інженерія & Схеми</option>
-              <option value="radio">📻 Радіозв'язок</option>
-              <option value="ev_battery">🔋 Електротранспорт & АКБ</option>
-              <option value="law">⚖️ Законодавство & Юриспруденція</option>
-              <option value="paperwork">📑 Діловодство & Документи</option>
-              <option value="local_biz">🏪 Місцевий бізнес & Послуги</option>
-              <option value="construction">🏗️ Будівництво & Ремонт</option>
-              <option value="cybersecurity">🛡️ Цифрова безпека & IT</option>
-              <option value="education">🎓 Навчання & Освіта</option>
-              <option value="energy">💡 Енергонезалежність & ДБЖ</option>
-              <option value="youtube">▶️ YouTube Відео</option>
-              <option value="sponsored">📢 Спонсоровано</option>
+            <label style="font-size: 0.8rem; font-weight: bold; color: #334155;">Категорія / Тег банера:</label>
+            <input type="text" id="slideTag" placeholder="наприклад: 📢 Підтримка Web-ресурсу" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-size: 0.85rem;" required>
+          </div>
+
+          <div>
+            <label style="font-size: 0.8rem; font-weight: bold; color: #334155;">Заголовок банера:</label>
+            <input type="text" id="slideTitle" placeholder="Заголовок банера..." style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-size: 0.85rem;" required>
+          </div>
+
+          <div>
+            <label style="font-size: 0.8rem; font-weight: bold; color: #334155;">Опис (короткий текст):</label>
+            <textarea id="slideDesc" rows="2" placeholder="Опис пропозиції..." style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-size: 0.85rem;" required></textarea>
+          </div>
+
+          <div>
+            <label style="font-size: 0.8rem; font-weight: bold; color: #334155;">Посилання на фонове фото (URL або Google Drive ID шлях):</label>
+            <input type="url" id="slideImage" placeholder="https://lh3.googleusercontent.com/d/..." style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-size: 0.85rem;" required>
+          </div>
+
+          <div>
+            <label style="font-size: 0.8rem; font-weight: bold; color: #334155;">Режим відображення банера:</label>
+            <select id="slideFitMode" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-size: 0.85rem; background: white;">
+              <option value="contain">Вмістити повністю (ідеально для готових банерів з QR-кодом)</option>
+              <option value="cover">Заповнити весь блок (з обрізанням країв)</option>
             </select>
           </div>
 
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">URL обкладинки</label>
-            <input type="url" id="editImageUrl" class="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600">
+          <div style="display: flex; gap: 10px; margin-top: 10px;">
+            <button type="button" onClick="closeCollageAdmin()" style="flex: 1; padding: 10px; background: #94a3b8; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">Скасувати</button>
+            <button type="submit" style="flex: 1; padding: 10px; background: #d97706; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">Опублікувати</button>
+          </div>
+        </form>
+
+        <div style="margin-top: 20px; border-top: 1px solid #e2e8f0; padding-top: 15px;">
+          <h4 style="font-size: 0.9rem; color: #1e3a8a; margin: 0 0 10px 0;">📋 Активні банери в базі:</h4>
+          <div id="adminBannersList" style="display: flex; flex-direction: column; gap: 8px; max-height: 150px; overflow-y: auto;">
+            <span style="font-size: 0.75rem; color: #64748b;">Завантаження списку...</span>
           </div>
         </div>
 
-        <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">YouTube посилання (опціонально)</label>
-          <input type="url" id="editYoutubeUrl" placeholder="https://www.youtube.com/watch?v=..." class="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500">
-        </div>
-
-        <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">Короткий анонс *</label>
-          <textarea id="editSummary" rows="2" required class="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600"></textarea>
-        </div>
-
-        <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">Повний текст статті *</label>
-          <div class="flex flex-wrap items-center gap-1 p-1.5 bg-slate-100 border border-slate-300 border-b-0 rounded-t-xl text-xs">
-            <button type="button" onclick="execEditCmd('bold')" class="px-2 py-1 hover:bg-slate-200 rounded font-bold">B</button>
-            <button type="button" onclick="execEditCmd('italic')" class="px-2 py-1 hover:bg-slate-200 rounded italic">I</button>
-            <button type="button" onclick="execEditCmd('underline')" class="px-2 py-1 hover:bg-slate-200 rounded underline">U</button>
-            <button type="button" onclick="execEditCmd('insertUnorderedList')" class="px-2 py-1 hover:bg-slate-200 rounded"><i class="fa-solid fa-list-ul"></i></button>
-            <button type="button" onclick="execEditCmd('insertHTML', '<br><br>')" class="px-2 py-1 hover:bg-slate-200 rounded text-[10px] font-bold">⏎ Рядок</button>
-          </div>
-          <div id="editEditor" contenteditable="true" class="editor-content w-full p-3 text-xs border border-slate-300 rounded-b-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-600"></div>
-        </div>
-
-        <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
-          <button type="button" onclick="closeEditModal()" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-xs rounded-xl">
-            Скасувати
-          </button>
-          <button type="submit" id="saveEditBtn" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow flex items-center gap-1.5">
-            <i class="fa-solid fa-floppy-disk"></i> Зберегти зміни
-          </button>
-        </div>
-      </form>
+      </div>
     </div>
-  </div>
 
-  <!-- ========================================== -->
-  <!-- FOOTER                                     -->
-  <!-- ========================================== -->
-  <footer class="bg-brand-header text-slate-400 text-xs py-6 text-center border-t border-slate-800 mt-12">
-    <p>© 2026 Neoservice.ks.ua — Всі права захищені.</p>
-  </footer>
+    <footer>
+        <p>&copy; 2026 Neoservice.ks.ua — Міський інформаційно-рекламний портал.</p>
+    </footer>
 
-  <!-- ========================================== -->
-  <!-- SCRIPTS                                    -->
-  <!-- ========================================== -->
-  <script>
-    // СПИСОК ДОЗВОЛЕНИХ АДМІНІСТРАТОРІВ
-    const ALLOWED_ADMINS = [
-      "kostopilservice@gmail.com",
-      "olegdriganec@gmail.com"
-    ];
+    <!-- СКРИПТ СТРІЧКИ DISCOVER ТА БАЗОВИХ ДАНИХ -->
+    <script>
+      let currentSlideIdx = 0;
 
-    function isAdminEmail(email) {
-      if (!email) return false;
-      return ALLOWED_ADMINS.some(adminEmail => adminEmail.toLowerCase() === email.trim().toLowerCase());
-    }
+      function setSlide(idx) {
+        const slides = document.querySelectorAll('.banner-slide');
+        const dots = document.querySelectorAll('.slider-dot');
+        if(!slides.length) return;
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyBlKoP6-M8tdrKq88bSdnWSnak5Gpddnpk",
-      authDomain: "neoservice-ks-ua.firebaseapp.com",
-      projectId: "neoservice-ks-ua",
-      storageBucket: "neoservice-ks-ua.firebasestorage.app",
-      messagingSenderId: "528941827813",
-      appId: "1:528941827813:web:354ef989d200087634b60c",
-      measurementId: "G-BYGHEHVYY3"
-    }; 
-
-    if (!firebase.apps.length) {
-      firebase.initializeApp(firebaseConfig);
-    }
-    const db = firebase.firestore();
-    const auth = firebase.auth();
-
-    let isAdmin = false;
-
-    const staticArticles = [
-      {
-        id: 'static-1',
-        isStatic: true,
-        category: 'auto',
-        title: 'Пошук витоку струму акумулятора: Повний посібник для автовласників (Hantek)',
-        summary: 'Детальний покроковий посібник із пошуку прихованих споживачів в електриці автомобіля за допомогою осцилографа Hantek та мультиметра.',
-        text: 'Комплексна перевірка бортової мережі на наявність витоків струму. Використання кліщів та осцилографа для діагностики.',
-        imageUrl: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80',
-        date: '20 жовтня, 2026 р.',
-        author: 'Admin Neoservice'
-      },
-      {
-        id: 'static-2',
-        isStatic: true,
-        category: 'sponsored',
-        title: 'Надійний хмарний хостинг та сервери для бізнесу',
-        summary: 'Швидкі віртуальні сервери для розміщення сайтів і баз даних із захистом від DDoS. Спеціальні умови для наших користувачів.',
-        text: 'Оренда надійних серверів для корпоративних клієнтів з повною підтримкою та високим аптаймом.',
-        imageUrl: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=600&q=80',
-        date: '15 жовтня, 2026 р.',
-        author: 'Партнер'
-      },
-      {
-        id: 'static-3',
-        isStatic: true,
-        category: 'computers',
-        title: 'Чому гріється ноутбук і коли пора його обслуговувати?',
-        summary: 'Ознаки забивання системи охолодження та алгоритм повної чистки з заміною термопасти.',
-        text: 'Правильний догляд за ноутбуком подовжує термін служби компонентів материнської плати та процесора.',
-        imageUrl: 'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?auto=format&fit=crop&w=600&q=80',
-        date: '12 жовтня, 2026 р.',
-        author: 'Admin Neoservice'
-      },
-      {
-        id: 'static-4',
-        isStatic: true,
-        category: 'printers',
-        title: 'Як відновити картридж лазерного принтера',
-        summary: 'Покрокові правила заправки тонером при друці на виходах із прасуванням.',
-        text: 'Інструкція щодо очищення бункера та заміни фотобарабана для збереження якості друку.',
-        imageUrl: 'https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?auto=format&fit=crop&w=600&q=80',
-        date: '10 жовтня, 2026 р.',
-        author: 'Сервіс-центр'
-      },
-      {
-        id: 'static-5',
-        isStatic: true,
-        category: 'ev_battery',
-        title: 'Збереження акумулятора електротранспорту взимку',
-        summary: 'Правила експлуатації батарей на холодний період року.',
-        text: 'Як правильно заряджати та зберігати тягові акумулятори електровелосипедів та самокатів.',
-        imageUrl: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=600&q=80',
-        date: '5 жовтня, 2026 р.',
-        author: 'Admin'
-      }
-    ];
-
-    let allArticles = [...staticArticles];
-    let activeCategory = 'all';
-
-    // Перевірка прав адміністратора при вході
-    auth.onAuthStateChanged(user => {
-      const adminBadge = document.getElementById('adminBadge');
-      if (user && user.email && isAdminEmail(user.email)) {
-        isAdmin = true;
-        adminBadge.classList.remove('hidden');
-      } else {
-        isAdmin = false;
-        adminBadge.classList.add('hidden');
-      }
-      filterArticles();
-    });
-
-    function execEditCmd(command, value = null) {
-      document.execCommand(command, false, value);
-      document.getElementById('editEditor').focus();
-    }
-
-    function extractYouTubeID(url) {
-      if (!url) return null;
-      const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-      const match = url.match(regExp);
-      return (match && match[2].length === 11) ? match[2] : null;
-    }
-
-    // Реальне оновлення з Firebase
-    function listenToArticles() {
-      db.collection('articles').orderBy('createdAt', 'desc').onSnapshot(snapshot => {
-        const firebaseArticles = [];
-        snapshot.forEach(doc => {
-          firebaseArticles.push({ id: doc.id, isStatic: false, ...doc.data() });
+        slides.forEach((s, i) => {
+          s.classList.toggle('active', i === idx);
         });
-        allArticles = [...firebaseArticles, ...staticArticles];
-        filterArticles();
-      }, err => {
-        console.error("Помилка завантаження з Firebase:", err);
-        renderGrid(allArticles);
-      });
-    }
-
-    function renderGrid(data) {
-      const grid = document.getElementById('articlesGrid');
-      grid.innerHTML = '';
-
-      if (data.length === 0) {
-        grid.innerHTML = '<div class="col-span-full py-12 text-center text-slate-400 text-xs">Матеріалів у цій категорії поки немає.</div>';
-        return;
-      }
-
-      data.forEach(art => {
-        let catName = art.category;
-        let badgeColor = "bg-blue-600 text-white";
-
-        if (art.category === 'auto') { catName = 'Автодіагностика'; badgeColor = "bg-amber-500 text-slate-950"; }
-        else if (art.category === 'computers') { catName = "Комп'ютери"; badgeColor = "bg-blue-600 text-white"; }
-        else if (art.category === 'printers') { catName = 'Оргтехніка'; badgeColor = "bg-indigo-600 text-white"; }
-        else if (art.category === 'engineering') { catName = 'Інженерія & Схеми'; badgeColor = "bg-purple-600 text-white"; }
-        else if (art.category === 'radio') { catName = "Радіозв'язок"; badgeColor = "bg-emerald-600 text-white"; }
-        else if (art.category === 'ev_battery') { catName = 'Електротранспорт & АКБ'; badgeColor = "bg-red-600 text-white"; }
-        else if (art.category === 'law') { catName = 'Законодавство'; badgeColor = "bg-sky-700 text-white"; }
-        else if (art.category === 'paperwork') { catName = 'Діловодство'; badgeColor = "bg-teal-600 text-white"; }
-        else if (art.category === 'local_biz') { catName = 'Місцевий бізнес'; badgeColor = "bg-orange-600 text-white"; }
-        else if (art.category === 'construction') { catName = 'Будівництво'; badgeColor = "bg-yellow-600 text-white"; }
-        else if (art.category === 'cybersecurity') { catName = 'Цифрова безпека'; badgeColor = "bg-rose-700 text-white"; }
-        else if (art.category === 'education') { catName = 'Освіта & Курси'; badgeColor = "bg-violet-600 text-white"; }
-        else if (art.category === 'energy') { catName = 'Енергонезалежність'; badgeColor = "bg-green-600 text-white"; }
-        else if (art.category === 'youtube') { catName = 'YouTube'; badgeColor = "bg-red-600 text-white"; }
-        else if (art.category === 'sponsored') { catName = 'Спонсоровано'; badgeColor = "bg-amber-500 text-slate-950"; }
-
-        // Перевірка наявності YouTube (якщо є youtubeId або youtubeUrl)
-        const hasYoutube = (art.youtubeId && art.youtubeId.trim() !== '') || (art.youtubeUrl && art.youtubeUrl.trim() !== '');
-
-        const adminControls = (isAdmin && !art.isStatic) ? `
-          <div class="absolute top-3 right-3 flex items-center gap-1.5 z-10">
-            <button onclick="event.stopPropagation(); openEditModal('${art.id}')" class="w-7 h-7 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-lg shadow flex items-center justify-center transition-colors" title="Редагувати картку">
-              <i class="fa-solid fa-pen text-[11px]"></i>
-            </button>
-            <button onclick="event.stopPropagation(); deleteArticle('${art.id}')" class="w-7 h-7 bg-rose-600 hover:bg-rose-500 text-white rounded-lg shadow flex items-center justify-center transition-colors" title="Видалити картку">
-              <i class="fa-solid fa-trash-can text-[11px]"></i>
-            </button>
-          </div>
-        ` : '';
-
-        // Зображення картки (пріоритет imageUrl, потім images[0], потім прев'ю YouTube, потім дефолтне)
-        const coverImg = art.imageUrl || (art.images && art.images.length > 0 ? art.images[0] : (art.youtubeId ? `https://img.youtube.com/vi/${art.youtubeId}/hqdefault.jpg` : 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80'));
-
-        const card = `
-          <article class="bg-white rounded-2xl border border-slate-200 overflow-hidden flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow">
-            <div>
-              <div class="h-40 w-full overflow-hidden relative bg-slate-900 cursor-pointer" onclick="openModal('${art.id}')">
-                <img src="${coverImg}" alt="" class="w-full h-full object-cover">
-                <span class="absolute top-3 left-3 ${badgeColor} text-[10px] font-bold px-2.5 py-0.5 rounded-full shadow">
-                  ${catName}
-                </span>
-                ${adminControls}
-                <!-- Відображаємо кнопку YouTube ТІЛЬКИ якщо це реальний YouTube пост -->
-                ${hasYoutube ? `<div class="absolute inset-0 flex items-center justify-center bg-black/30 pointer-events-none"><div class="w-12 h-12 bg-red-600 text-white rounded-xl flex items-center justify-center shadow-lg"><i class="fa-solid fa-play text-base pl-0.5"></i></div></div>` : ''}
-              </div>
-              <div class="p-4">
-                <span class="text-[10px] text-slate-400 block mb-1"><i class="fa-regular fa-clock mr-1"></i> ${art.date || 'Нещодавно'}</span>
-                <h3 class="font-bold text-slate-900 text-sm leading-snug hover:text-blue-600 cursor-pointer mb-1.5 line-clamp-2" onclick="openModal('${art.id}')">
-                  ${art.title}
-                </h3>
-                <p class="text-slate-600 text-xs line-clamp-2">
-                  ${art.summary}
-                </p>
-              </div>
-            </div>
-
-            <div class="p-4 pt-0 border-t border-slate-100 mt-2 flex items-center justify-between">
-              <span class="text-[10px] text-slate-400"><i class="fa-regular fa-user mr-1"></i> ${art.author || 'Admin'}</span>
-              <button onclick="openModal('${art.id}')" class="text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1">
-                Читати <i class="fa-solid fa-chevron-right text-[10px]"></i>
-              </button>
-            </div>
-          </article>
-        `;
-        grid.insertAdjacentHTML('beforeend', card);
-      });
-    }
-
-    function filterCategory(cat, btn) {
-      activeCategory = cat;
-      document.querySelectorAll('.cat-btn').forEach(b => {
-        b.className = "cat-btn px-3.5 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl transition-colors";
-      });
-      btn.className = "cat-btn px-3.5 py-1.5 bg-blue-600 text-white text-xs font-bold rounded-xl shadow-sm transition-colors";
-      filterArticles();
-    }
-
-    function filterArticles() {
-      const query = document.getElementById('searchInput').value.toLowerCase();
-      const filtered = allArticles.filter(art => {
-        const matchesCat = (activeCategory === 'all' || art.category === activeCategory);
-        const matchesQuery = art.title.toLowerCase().includes(query) || art.summary.toLowerCase().includes(query);
-        return matchesCat && matchesQuery;
-      });
-      renderGrid(filtered);
-    }
-
-    // ВИДАЛЕННЯ КАРТКИ З FIREBASE
-    async function deleteArticle(id) {
-      if (!isAdmin) return;
-      if (!confirm("Ви дійсно хочете видалити цю картку назавжди?")) return;
-
-      try {
-        await db.collection('articles').doc(id).delete();
-        closeModal();
-      } catch (err) {
-        alert("Помилка при видаленні: " + err.message);
-      }
-    }
-
-    // ВІДКРИТТЯ МОДАЛЬНОГО ВІКНА РЕДАГУВАННЯ
-    function openEditModal(id) {
-      if (!isAdmin) return;
-      const art = allArticles.find(a => a.id === id);
-      if (!art || art.isStatic) return;
-
-      closeModal();
-
-      document.getElementById('editArticleId').value = art.id;
-      document.getElementById('editTitle').value = art.title || '';
-      document.getElementById('editCategory').value = art.category || 'auto';
-      document.getElementById('editImageUrl').value = art.imageUrl || '';
-      document.getElementById('editYoutubeUrl').value = art.youtubeUrl || '';
-      document.getElementById('editSummary').value = art.summary || '';
-      document.getElementById('editEditor').innerHTML = art.text || '';
-
-      const modal = document.getElementById('editModal');
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
-    }
-
-    function closeEditModal() {
-      const modal = document.getElementById('editModal');
-      modal.classList.remove('flex');
-      modal.classList.add('hidden');
-    }
-
-    // ЗБЕРЕЖЕННЯ ЗМІН ПІСЛЯ РЕДАГУВАННЯ
-    async function saveEditedArticle(event) {
-      event.preventDefault();
-      if (!isAdmin) return;
-
-      const id = document.getElementById('editArticleId').value;
-      const btn = document.getElementById('saveEditBtn');
-      btn.disabled = true;
-      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Збереження...';
-
-      const youtubeUrl = document.getElementById('editYoutubeUrl').value.trim();
-      const youtubeId = extractYouTubeID(youtubeUrl);
-
-      try {
-        await db.collection('articles').doc(id).update({
-          title: document.getElementById('editTitle').value,
-          category: document.getElementById('editCategory').value,
-          imageUrl: document.getElementById('editImageUrl').value.trim(),
-          youtubeUrl: youtubeUrl,
-          youtubeId: youtubeId || '',
-          summary: document.getElementById('editSummary').value,
-          text: document.getElementById('editEditor').innerHTML
+        dots.forEach((d, i) => {
+          d.style.background = i === idx ? '#d97706' : '#cbd5e1';
         });
-        closeEditModal();
-      } catch (err) {
-        alert("Помилка при оновленні: " + err.message);
-      } finally {
-        btn.disabled = false;
-        btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Зберегти зміни';
-      }
-    }
-
-    function openHeroModal() {
-      document.getElementById('modalTitle').textContent = "Пошук витоку струму акумулятора: Повний посібник для автовласників (Hantek)";
-      document.getElementById('modalDate').textContent = "20 жовтня, 2026 р.";
-      document.getElementById('modalAuthor').textContent = "Admin Neoservice";
-      document.getElementById('modalCategory').textContent = "АВТОДІАГНОСТИКА";
-      document.getElementById('modalText').innerHTML = "Детальний посібник з використання осцилографа Hantek та мультиметра для виявлення прихованих витоків струму в автомобільній проводці. Покрокова інструкція діагностики запобіжників та блоків управління.";
-      
-      document.getElementById('modalEditBtn').classList.add('hidden');
-      document.getElementById('modalDeleteBtn').classList.add('hidden');
-      document.getElementById('modalYouTubeContainer').classList.add('hidden');
-      document.getElementById('modalYouTubeIframe').src = "";
-
-      const imgContainer = document.getElementById('modalImageContainer');
-      const modalImg = document.getElementById('modalImage');
-      modalImg.src = "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1400&q=80";
-      document.getElementById('modalThumbnails').innerHTML = '';
-      imgContainer.classList.remove('hidden');
-
-      const modal = document.getElementById('articleModal');
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
-    }
-
-    function openModal(id) {
-      const art = allArticles.find(a => a.id === id);
-      if (!art) return;
-
-      document.getElementById('modalTitle').textContent = art.title;
-      document.getElementById('modalDate').textContent = art.date || 'Нещодавно';
-      document.getElementById('modalAuthor').textContent = art.author || 'Admin';
-      document.getElementById('modalCategory').textContent = (art.category || '').toUpperCase();
-      document.getElementById('modalText').innerHTML = art.text ? art.text : art.summary;
-
-      const editBtn = document.getElementById('modalEditBtn');
-      const deleteBtn = document.getElementById('modalDeleteBtn');
-
-      if (isAdmin && !art.isStatic) {
-        editBtn.classList.remove('hidden');
-        deleteBtn.classList.remove('hidden');
-        editBtn.onclick = () => openEditModal(art.id);
-        deleteBtn.onclick = () => deleteArticle(art.id);
-      } else {
-        editBtn.classList.add('hidden');
-        deleteBtn.classList.add('hidden');
+        currentSlideIdx = idx;
       }
 
-      const ytContainer = document.getElementById('modalYouTubeContainer');
-      const ytIframe = document.getElementById('modalYouTubeIframe');
-      const imgContainer = document.getElementById('modalImageContainer');
-      const modalImg = document.getElementById('modalImage');
-      const thumbsContainer = document.getElementById('modalThumbnails');
+      setInterval(() => {
+        const slides = document.querySelectorAll('.banner-slide');
+        if(slides.length > 1) {
+          currentSlideIdx = (currentSlideIdx + 1) % slides.length;
+          setSlide(currentSlideIdx);
+        }
+      }, 5000);
 
-      const ytId = art.youtubeId || (art.youtubeUrl ? extractYouTubeID(art.youtubeUrl) : null);
+      function openCollageAdmin() {
+        document.getElementById('adminCollageModal').style.display = 'flex';
+      }
 
-      if (ytId) {
-        ytIframe.src = `https://www.youtube.com/embed/${ytId}?autoplay=1`;
-        ytContainer.classList.remove('hidden');
-        imgContainer.classList.add('hidden');
-      } else {
-        ytIframe.src = "";
-        ytContainer.classList.add('hidden');
-        
-        // Перевіряємо наявність галереї images або одиночного imageUrl
-        const imagesList = art.images && art.images.length > 0 ? art.images : (art.imageUrl ? [art.imageUrl] : []);
+      function closeCollageAdmin() {
+        document.getElementById('adminCollageModal').style.display = 'none';
+      }
 
-        if (imagesList.length > 0) {
-          modalImg.src = imagesList[0];
-          imgContainer.classList.remove('hidden');
-          thumbsContainer.innerHTML = '';
+      const FALLBACK_GENERAL_IMG = "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(`
+        <svg xmlns="http://www.w3.org/2000/svg" width="600" height="360" viewBox="0 0 600 360">
+          <defs>
+            <linearGradient id="g2" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#0f172a"/>
+              <stop offset="100%" stop-color="#1e3a8a"/>
+            </linearGradient>
+          </defs>
+          <rect width="600" height="360" fill="url(#g2)"/>
+          <text x="300" y="165" font-size="44" text-anchor="middle" fill="#ffffff">⚡</text>
+          <text x="300" y="225" font-family="Segoe UI, Arial, sans-serif" font-size="20" font-weight="bold" text-anchor="middle" fill="#ffffff">NEOSERVICE.KS.UA</text>
+        </svg>
+      `);
 
-          if (imagesList.length > 1) {
-            imagesList.forEach((imgUrl, idx) => {
-              const thumb = document.createElement('button');
-              thumb.className = `w-14 h-14 rounded-lg overflow-hidden border-2 flex-shrink-0 transition-all ${idx === 0 ? 'border-blue-600 opacity-100' : 'border-transparent opacity-60 hover:opacity-100'}`;
-              thumb.innerHTML = `<img src="${imgUrl}" alt="" class="w-full h-full object-cover">`;
-              thumb.onclick = () => {
-                modalImg.src = imgUrl;
-                Array.from(thumbsContainer.children).forEach((t, i) => {
-                  t.className = `w-14 h-14 rounded-lg overflow-hidden border-2 flex-shrink-0 transition-all ${i === idx ? 'border-blue-600 opacity-100' : 'border-transparent opacity-60 hover:opacity-100'}`;
-                });
-              };
-              thumbsContainer.appendChild(thumb);
-            });
+      const ALL_CATEGORIES = [
+        { key: 'auto', emoji: '🚗', label: 'Автодіагностика & ECU', shortLabel: '🚗 Автодіагностика & ECU', link: 'auto.html', image: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?auto=format&fit=crop&w=800&q=80', isVideo: false, title: 'Автодіагностика & ECU: сканування, осцилографія та відновлення блоків керування', content: 'Професійна комп’ютерна діагностика, перевірка датчиків і виконавчих механізмів, зчитування та запис прошивок ECU/EEPROM, аналіз CAN/LIN шин та локалізація несправностей.' },
+        { key: 'pc', emoji: '💻', label: "Комп'ютери", shortLabel: "💻 Комп'ютери", link: 'service.html', image: 'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?auto=format&fit=crop&w=800&q=80', isVideo: false, title: "Комп'ютери: збірка, апгрейд, діагностика та відновлення стабільної роботи ПК", content: 'Налаштування операційних систем, усунення перегріву, заміна накопичувачів та оперативної пам’яті, тестування під навантаженням і підбір конфігурацій під конкретні задачі.' },
+        { key: 'office', emoji: '🖨️', label: 'Оргтехніка', shortLabel: '🖨️ Оргтехніка', link: 'baza.html', image: 'https://images.unsplash.com/photo-1612815154858-ac3c4e4a1f3f?auto=format&fit=crop&w=800&q=80', isVideo: false, title: 'Оргтехніка: обслуговування принтерів, МФУ, сканерів та вузлів подачі паперу', content: 'Регламентне обслуговування друкуючих пристроїв, очищення тракту подачі, заміна роликів захоплення та термоплівок, усунення застрягань і дефектів друку.' },
+        { key: 'engineering', emoji: '⚙️', label: 'Інженерія & Схеми', shortLabel: '⚙️ Інженерія & Схеми', link: 'engineering.html', image: 'https://images.unsplash.com/photo-1555664424-778a1e5e1b48?auto=format&fit=crop&w=800&q=80', isVideo: false, title: 'Інженерія & Схеми: принципові схеми, друковані плати (PCB) та радіокомпоненти', content: 'Аналіз принципових схем, розводка та ремонт друкованих плат, підбір аналогів радіоелектронних компонентів, вимірювання сигналів та технічна документація.' },
+        { key: 'radio', emoji: '📻', label: "Радіозв'язок", shortLabel: "📻 Радіозв'язок", link: 'baza.html', image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80', isVideo: false, title: "Радіозв'язок: налаштування станцій, ретрансляторів, антенних систем та діапазонів", content: 'Практичні нотатки з радіозв’язку, КСВ/антенно-фідерних трактів, конфігурації зв’язку, сканування частот та підвищення надійності передачі сигналу.' },
+        { key: 'ev', emoji: '🔋', label: 'Електротранспорт & АКБ', shortLabel: '🔋 Електротранспорт & АКБ', link: 'auto.html', image: 'https://images.unsplash.com/photo-1593941707882-a5bba14938c7?auto=format&fit=crop&w=800&q=80', isVideo: false, title: 'Електротранспорт & АКБ: діагностика батарей, BMS, контролерів та тягових систем', content: 'Перевірка стану комірок (SOH/IR), балансування акумуляторних збірок, діагностика контролерів і мотор-коліс, безпечна експлуатація та відновлення ємності.' },
+        { key: 'law', emoji: '⚖️', label: 'Законодавство & Юриспруденція', shortLabel: '⚖️ Законодавство & Юриспруденція', link: 'baza.html', image: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=800&q=80', isVideo: false, title: 'Законодавство & Юриспруденція: нормативні акти, права громадян та правові роз’яснення', content: 'Довідкові матеріали з чинного законодавства, практичні орієнтири щодо оформлення звернень, захисту прав і дотримання юридичних вимог.' },
+        { key: 'docs', emoji: '📑', label: 'Діловодство & Документи', shortLabel: '📑 Діловодство & Документи', link: 'service.html', image: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=800&q=80', isVideo: false, title: 'Діловодство & Документи: шаблони заяв, актів, договорів та електронний документообіг', content: 'Структура та оформлення службових і комерційних документів, актів виконаних робіт, заяв, чек-листів та ведення архіву.' },
+        { key: 'business', emoji: '🏪', label: 'Місцевий бізнес & Послуги', shortLabel: '🏪 Місцевий бізнес & Послуги', link: 'shop.html', image: 'https://images.unsplash.com/photo-1556740738-b6a63e27c4df?auto=format&fit=crop&w=800&q=80', isVideo: false, title: 'Місцевий бізнес & Послуги: локальні сервіси, комерційні пропозиції та клієнтська підтримка', content: 'Каталог місцевих послуг, пропозиції для підприємців і майстерень, сервісне обслуговування та взаємодія з клієнтами в регіоні.' },
+        { key: 'construction', emoji: '🏗️', label: 'Будівництво & Ремонт', shortLabel: '🏗️ Будівництво & Ремонт', link: 'service.html', image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=800&q=80', isVideo: false, title: 'Будівництво & Ремонт: матеріали, інженерні комунікації, монтаж та оздоблювальні роботи', content: 'Рекомендації щодо вибору будівельних і оздоблювальних матеріалів, прокладання кабелів та комунікацій, підготовки поверхонь і контролю якості робіт.' },
+        { key: 'security', emoji: '🛡️', label: 'Цифрова безпека & IT', shortLabel: '🛡️ Цифрова безпека & IT', link: 'baza.html', image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80', isVideo: false, title: 'Цифрова безпека & IT: захист акаунтів, резервне копіювання, мережі та кібергігієна', content: 'Практики захисту даних від фішингу та шкідливого ПЗ, налаштування двофакторної автентифікації, регулярні бекапи та безпечна робота в мережі.' },
+        { key: 'education', emoji: '🎓', label: 'Навчання & Освіта', shortLabel: '🎓 Навчання & Освіта', link: 'baza.html', image: 'https://images.unsplash.com/photo-1513258496099-48168024aec0?auto=format&fit=crop&w=800&q=80', isVideo: false, title: 'Навчання & Освіта: навчальні посібники, конспекти, інструкції та розвиток навичок', content: 'Систематизовані навчальні матеріали, покрокові інструкції, технічні шпаргалки та корисні ресурси для самоосвіти й підвищення кваліфікації.' },
+        { key: 'energy', emoji: '💡', label: 'Енергонезалежність & ДБЖ', shortLabel: '💡 Енергонезалежність & ДБЖ', link: 'engineering.html', image: 'https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=800&q=80', isVideo: false, title: 'Енергонезалежність & ДБЖ: зарядні станції, інвертори, ДБЖ та резервне живлення', content: 'Підбір потужності ДБЖ, інверторів і портативних електростанцій, розрахунок автономності навантаження, стабілізація напруги та безпечне підключення.' },
+        { key: 'youtube', emoji: '▶️', label: 'YouTube Відео', shortLabel: '▶️ YouTube Відео', link: 'https://www.youtube.com/@NeoService-3', isVideo: true, title: 'YouTube Відео: практичні відеоогляди, діагностика, майстер-класи та випуски каналу', content: 'Відеоматеріали з реальними прикладами ремонту, діагностики, тестування обладнання та корисними порадами на каналі NeoService.' },
+        { key: 'sponsored', emoji: '📢', label: 'Спонсоровано', shortLabel: '📢 Спонсоровано', link: 'service.html', image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80', isVideo: false, title: 'Спонсоровано: партнерські пропозиції, підтримка проєкту та рекламні розміщення', content: 'Спеціальні пропозиції партнерів, підтримка розвитку порталу та можливості розміщення інформаційних і рекламних матеріалів.' }
+      ];
+
+      function resolveCategoryKey(rawCategory, title = '', source = '') {
+        const normalized = String(rawCategory || '').toLowerCase().trim();
+        const combined = `${normalized} ${String(title).toLowerCase()} ${String(source).toLowerCase()}`;
+
+        const exactMatch = ALL_CATEGORIES.find(c =>
+          c.key.toLowerCase() === normalized ||
+          c.label.toLowerCase() === normalized ||
+          c.shortLabel.toLowerCase() === normalized
+        );
+        if (exactMatch) return exactMatch.key;
+
+        if (combined.includes('навчання') || combined.includes('освіт') || combined.includes('посібник') || combined.includes('конспект') || combined.includes('education')) return 'education';
+        if (combined.includes('авто') || combined.includes('ecu') || combined.includes('діагност')) return 'auto';
+        if (combined.includes("комп'ютер") || combined.includes('компютер') || combined.includes('пк')) return 'pc';
+        if (combined.includes('оргтехнік') || combined.includes('принтер') || combined.includes('мфу')) return 'office';
+        if (combined.includes('інженер') || combined.includes('схем') || combined.includes('pcb')) return 'engineering';
+        if (combined.includes('радіозв') || combined.includes('радіо') || combined.includes('ретранслятор')) return 'radio';
+        if (combined.includes('електротранспорт') || combined.includes('акб') || combined.includes('bms')) return 'ev';
+        if (combined.includes('законодавств') || combined.includes('юрист') || combined.includes('право')) return 'law';
+        if (combined.includes('діловодств') || combined.includes('документ')) return 'docs';
+        if (combined.includes('будівництв') || combined.includes('ремонт')) return 'construction';
+        if (combined.includes('безпек') || combined.includes('кібер')) return 'security';
+        if (combined.includes('енергонезалежн') || combined.includes('дбж') || combined.includes('інвертор')) return 'energy';
+        if (combined.includes('youtube') || combined.includes('відео')) return 'youtube';
+        if (combined.includes('спонсор') || combined.includes('реклам')) return 'sponsored';
+        if (combined.includes('бізнес') || combined.includes('послуг')) return 'business';
+
+        return 'business';
+      }
+
+      function getCategorySectionUrl(categoryKey) {
+        const catObj = ALL_CATEGORIES.find(c => c.key === categoryKey);
+        if (!catObj) return `baza.html?category=${encodeURIComponent(categoryKey || 'all')}`;
+        if (catObj.link && catObj.link.startsWith('http')) return catObj.link;
+        return `baza.html?category=${encodeURIComponent(catObj.key)}`;
+      }
+
+      const staticDiscoverArticles = ALL_CATEGORIES.map((cat, idx) => ({
+        id: `static-${idx + 1}`,
+        isFirestore: false,
+        category: cat.key,
+        isVideo: cat.isVideo,
+        source: `${cat.emoji} ${cat.label}`,
+        time: idx === 0 ? 'Щойно' : (idx < 6 ? `${idx * 2} год тому` : `${idx - 5} дн тому`),
+        title: cat.title,
+        image: cat.image,
+        fallback: FALLBACK_GENERAL_IMG,
+        likes: 35 + idx * 9,
+        link: getCategorySectionUrl(cat.key),
+        content: cat.content
+      }));
+
+      let firestoreDiscoverArticles = [];
+      let currentDiscoverFilter = 'all';
+      let showAllDiscoverCards = false;
+
+      function getCombinedDiscoverArticles() {
+        return [...firestoreDiscoverArticles, ...staticDiscoverArticles];
+      }
+
+      function scrollDiscoverTabs(offset) {
+        const tabsContainer = document.getElementById('discoverTabs');
+        if (!tabsContainer) return;
+        tabsContainer.scrollBy({ left: offset, behavior: 'smooth' });
+      }
+
+      function enableDiscoverTabsWheelScroll() {
+        const tabsContainer = document.getElementById('discoverTabs');
+        if (!tabsContainer || tabsContainer.dataset.wheelBound === '1') return;
+        tabsContainer.dataset.wheelBound = '1';
+        tabsContainer.addEventListener('wheel', (e) => {
+          if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+            e.preventDefault();
+            tabsContainer.scrollLeft += e.deltaY;
           }
-        } else {
-          imgContainer.classList.add('hidden');
+        }, { passive: false });
+      }
+
+      function activateCategoryButtonsOnPage(categoryKey) {
+        const targetKey = categoryKey ? resolveCategoryKey(categoryKey) : 'all';
+        const selectors = [
+          '#discoverTabs .discover-tab',
+          '[data-category]',
+          '.category-btn',
+          '.filter-btn',
+          'button'
+        ];
+
+        const allBtns = Array.from(document.querySelectorAll(selectors.join(',')));
+        const catObj = ALL_CATEGORIES.find(c => c.key === targetKey);
+        const matchTexts = [
+          targetKey.toLowerCase(),
+          catObj ? catObj.label.toLowerCase() : '',
+          catObj ? catObj.shortLabel.toLowerCase() : '',
+          catObj ? catObj.label.replace(/^[^\s]+\s*/, '').toLowerCase() : ''
+        ].filter(Boolean);
+
+        let matchedBtn = null;
+        allBtns.forEach(btn => {
+          const btnCat = (btn.getAttribute('data-category') || btn.getAttribute('data-filter') || '').toLowerCase().trim();
+          const btnText = (btn.textContent || '').toLowerCase().trim();
+          const isMatch =
+            (btnCat && btnCat === targetKey.toLowerCase()) ||
+            matchTexts.some(m => btnText === m || btnText.includes(m));
+
+          if (isMatch && !matchedBtn) {
+            matchedBtn = btn;
+          }
+        });
+
+        if (matchedBtn) {
+          matchedBtn.classList.add('active', 'bg-[#1e3a8a]', 'bg-blue-600', 'text-white');
+          matchedBtn.classList.remove('bg-slate-100', 'text-slate-700');
+          matchedBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+          if (typeof matchedBtn.onclick === 'function' && matchedBtn.closest('#discoverTabs')) {
+            // Вже синхронізовано через filterDiscoverFeed
+          } else if (typeof matchedBtn.click === 'function' && !matchedBtn.closest('#discoverTabs')) {
+            matchedBtn.click();
+          }
         }
       }
 
-      const modal = document.getElementById('articleModal');
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
-    }
+      window.activateBazaCategory = function(categoryKey) {
+        const resolved = categoryKey && categoryKey !== 'all' ? resolveCategoryKey(categoryKey) : 'all';
+        currentDiscoverFilter = resolved;
+        renderDiscoverTabs();
+        renderDiscoverGrid(resolved);
+        activateCategoryButtonsOnPage(resolved);
+      };
 
-    function closeModal() {
-      const modal = document.getElementById('articleModal');
-      modal.classList.remove('flex');
-      modal.classList.add('hidden');
-      document.getElementById('modalYouTubeIframe').src = "";
-    }
+      function renderDiscoverTabs() {
+        const tabsContainer = document.getElementById('discoverTabs');
+        if (!tabsContainer) return;
 
-    window.addEventListener('DOMContentLoaded', listenToArticles);
-  </script>
+        const totalCount = getCombinedDiscoverArticles().length;
+        const allBtnClass = currentDiscoverFilter === 'all'
+          ? 'discover-tab active px-3 py-1.5 rounded-full text-xs font-bold bg-[#1e3a8a] text-white transition-all cursor-pointer whitespace-nowrap border-0 shrink-0'
+          : 'discover-tab px-3 py-1.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200 hover:bg-slate-200 transition-all cursor-pointer whitespace-nowrap shrink-0';
+
+        let html = `<button type="button" data-filter="all" data-category="all" onclick="filterDiscoverFeed('all', this)" class="${allBtnClass}">Усі категорії (${totalCount})</button>`;
+
+        ALL_CATEGORIES.forEach(cat => {
+          const isActive = currentDiscoverFilter === cat.key;
+          const cls = isActive
+            ? 'discover-tab active px-3 py-1.5 rounded-full text-xs font-bold bg-[#1e3a8a] text-white transition-all cursor-pointer whitespace-nowrap border-0 shrink-0'
+            : 'discover-tab px-3 py-1.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200 hover:bg-slate-200 transition-all cursor-pointer whitespace-nowrap shrink-0';
+          html += `<button type="button" data-filter="${cat.key}" data-category="${cat.key}" onclick="filterDiscoverFeed('${cat.key}', this)" class="${cls}">${cat.shortLabel}</button>`;
+        });
+
+        tabsContainer.innerHTML = html;
+        enableDiscoverTabsWheelScroll();
+
+        const activeTab = tabsContainer.querySelector('.discover-tab.active');
+        if (activeTab) {
+          activeTab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        }
+      }
+
+      function renderDiscoverGrid(filter = 'all') {
+        const container = document.getElementById('discoverGridContainer');
+        const loadMoreBtn = document.getElementById('loadMoreDiscoverBtn');
+        if (!container) return;
+
+        const allItems = getCombinedDiscoverArticles();
+        const filtered = filter === 'all'
+          ? (showAllDiscoverCards ? allItems : allItems.slice(0, 9))
+          : allItems.filter(item => item.category === filter);
+
+        if (loadMoreBtn) {
+          if (filter === 'all' && !showAllDiscoverCards && allItems.length > 9) {
+            loadMoreBtn.style.display = 'inline-flex';
+            loadMoreBtn.disabled = false;
+            loadMoreBtn.classList.remove('opacity-70');
+            loadMoreBtn.innerHTML = `<i class="fa-solid fa-rotate-right text-[#1e3a8a]"></i> Показати всі ${allItems.length} публікацій`;
+          } else if (filter === 'all' && showAllDiscoverCards) {
+            loadMoreBtn.style.display = 'inline-flex';
+            loadMoreBtn.innerHTML = `<i class="fa-solid fa-check text-emerald-600"></i> Показано всі ${allItems.length} публікацій`;
+            loadMoreBtn.disabled = true;
+            loadMoreBtn.classList.add('opacity-70');
+          } else {
+            loadMoreBtn.style.display = 'none';
+          }
+        }
+
+        container.innerHTML = '';
+
+        filtered.forEach((item) => {
+          const fallbackSrc = item.fallback || FALLBACK_GENERAL_IMG;
+          const cardEl = document.createElement('article');
+          cardEl.className = 'bg-white rounded-[10px] overflow-hidden shadow-[0_4px_6px_rgba(0,0,0,0.05)] border-t-4 border-t-[#1e3a8a] border-x border-b border-slate-200 flex flex-col justify-between group cursor-pointer transition-all';
+          cardEl.onclick = () => openDiscoverModal(item.id);
+
+          cardEl.innerHTML = `
+            <div>
+              <div class="relative h-44 bg-slate-100 overflow-hidden">
+                <img
+                  src="${item.image}"
+                  alt="${item.title}"
+                  onerror="if(this.dataset.fbApplied!=='1'){this.dataset.fbApplied='1';this.src='${fallbackSrc}';}"
+                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                >
+                ${item.isVideo ? `
+                  <div class="absolute inset-0 flex items-center justify-center bg-black/25">
+                    <div class="w-10 h-10 rounded-full bg-white/90 text-[#1e3a8a] flex items-center justify-center shadow-lg">
+                      <i class="fa-solid fa-play ml-0.5 text-sm"></i>
+                    </div>
+                  </div>
+                ` : ''}
+              </div>
+              <div class="p-3.5">
+                <div class="flex items-center gap-1.5 text-[11px] text-slate-500 font-medium mb-1.5">
+                  <span class="w-2 h-2 rounded-full bg-[#1e3a8a]"></span>
+                  <span class="truncate font-semibold text-slate-700">${item.source}</span>
+                  <span class="shrink-0">• ${item.time}</span>
+                </div>
+                <h3 class="text-sm font-bold text-slate-800 leading-snug group-hover:text-[#1e3a8a] transition-colors m-0">
+                  ${item.title}
+                </h3>
+              </div>
+            </div>
+            <div class="px-3.5 py-2.5 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+              <div class="flex items-center gap-3">
+                <button type="button" onclick="event.stopPropagation(); toggleDiscoverLike(this, '${String(item.id).replace(/'/g, "\\'")}', ${item.likes}, ${item.isFirestore ? 'true' : 'false'})" class="hover:text-[#1e3a8a] flex items-center gap-1 bg-transparent border-none text-slate-500 cursor-pointer p-0">
+                  <i class="fa-regular fa-thumbs-up"></i> <span>${item.likes}</span>
+                </button>
+                <button type="button" onclick="event.stopPropagation()" class="hover:text-red-500 bg-transparent border-none text-slate-400 cursor-pointer p-0" title="Не цікавить">
+                  <i class="fa-regular fa-thumbs-down"></i>
+                </button>
+              </div>
+              <span class="text-[11px] font-bold text-[#1e3a8a]">Детальніше</span>
+            </div>
+          `;
+
+          container.appendChild(cardEl);
+        });
+      }
+
+      function filterDiscoverFeed(category, btnEl) {
+        currentDiscoverFilter = category;
+        renderDiscoverTabs();
+        renderDiscoverGrid(category);
+      }
+
+      async function toggleDiscoverLike(btn, itemId, baseCount, isFirestore) {
+        const span = btn.querySelector('span');
+        const icon = btn.querySelector('i');
+        const liked = btn.dataset.liked === 'true';
+        const nextLiked = !liked;
+        const delta = nextLiked ? 1 : -1;
+
+        btn.dataset.liked = nextLiked ? 'true' : 'false';
+        if (nextLiked) {
+          icon.className = 'fa-solid fa-thumbs-up text-blue-500';
+          if (!isFirestore) span.textContent = Number(baseCount) + 1;
+        } else {
+          icon.className = 'fa-regular fa-thumbs-up';
+          if (!isFirestore) span.textContent = Number(baseCount);
+        }
+
+        if (isFirestore && typeof window.syncDiscoverLikeToFirestore === 'function') {
+          await window.syncDiscoverLikeToFirestore(itemId, delta);
+        }
+      }
+
+      function openDiscoverModal(id) {
+        const article = getCombinedDiscoverArticles().find(a => String(a.id) === String(id));
+        if (!article) return;
+        const modalImg = document.getElementById('modalArticleImg');
+        modalImg.dataset.fbApplied = '0';
+        modalImg.onerror = function() {
+          if (this.dataset.fbApplied !== '1') {
+            this.dataset.fbApplied = '1';
+            this.src = article.fallback || FALLBACK_GENERAL_IMG;
+          }
+        };
+        modalImg.src = article.image;
+        document.getElementById('modalArticleSource').textContent = article.source;
+        document.getElementById('modalArticleDate').textContent = article.time;
+        document.getElementById('modalArticleTitle').textContent = article.title;
+        document.getElementById('modalArticleContent').textContent = article.content;
+        const linkEl = document.getElementById('modalArticleLink');
+        const catObj = ALL_CATEGORIES.find(c => c.key === article.category);
+        const sectionUrl = article.link || getCategorySectionUrl(article.category);
+        linkEl.href = sectionUrl;
+        linkEl.textContent = catObj ? `Перейти до розділу: ${catObj.label} →` : 'Перейти до розділу →';
+        linkEl.removeAttribute('target');
+        linkEl.removeAttribute('rel');
+        document.getElementById('discoverArticleModal').style.display = 'flex';
+      }
+
+      function closeDiscoverModal() {
+        document.getElementById('discoverArticleModal').style.display = 'none';
+      }
+
+      function loadMoreDiscoverItems() {
+        showAllDiscoverCards = true;
+        renderDiscoverGrid(currentDiscoverFilter);
+      }
+
+      window.updateFirestoreDiscoverArticles = function(items) {
+        firestoreDiscoverArticles = Array.isArray(items) ? items : [];
+        renderDiscoverTabs();
+        renderDiscoverGrid(currentDiscoverFilter);
+      };
+
+      // Безпечна реєстрація Service Worker з примусовим оновленням
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('./sw.js')
+            .then((reg) => {
+              reg.update();
+            })
+            .catch(() => {});
+        });
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+          const urlParams = new URLSearchParams(window.location.search);
+          const urlCategory = urlParams.get('category');
+          if (urlCategory) {
+            currentDiscoverFilter = resolveCategoryKey(urlCategory);
+          }
+
+          renderDiscoverTabs();
+          renderDiscoverGrid(currentDiscoverFilter);
+          if (urlCategory) {
+            activateCategoryButtonsOnPage(currentDiscoverFilter);
+          }
+
+          const regionGroups = document.querySelectorAll('.region-group');
+          const tooltip = document.getElementById('map-tooltip');
+          const tooltipTitle = document.getElementById('tooltip-title');
+          const tooltipSub = document.getElementById('tooltip-sub');
+          
+          const panelTitle = document.getElementById('panel-title');
+          const panelCity = document.getElementById('panel-city');
+          const selectedBadge = document.getElementById('selected-badge');
+          const regionDetailsLink = document.getElementById('regionDetailsLink');
+
+          regionGroups.forEach(group => {
+              group.addEventListener('mouseenter', (e) => {
+                  const regionCode = group.getAttribute('data-code');
+                  const regionName = group.getAttribute('data-name');
+                  const cityName = group.getAttribute('data-city');
+
+                  tooltipTitle.textContent = regionName;
+                  tooltipSub.textContent = `Центр: м. ${cityName}`;
+                  tooltip.style.display = 'block';
+
+                  panelTitle.textContent = regionName;
+                  panelCity.textContent = `Обласний центр: м. ${cityName}`;
+                  selectedBadge.innerHTML = `📍 <b>${cityName}</b> (${regionName})`;
+
+                  if (regionDetailsLink) {
+                      regionDetailsLink.href = `city.html?region=${regionCode}&name=${encodeURIComponent(regionName)}&city=${encodeURIComponent(cityName)}`;
+                  }
+              });
+
+              group.addEventListener('mousemove', (e) => {
+                  tooltip.style.left = `${e.clientX + 15}px`;
+                  tooltip.style.top = `${e.clientY + 15}px`;
+              });
+
+              group.addEventListener('mouseleave', () => {
+                  tooltip.style.display = 'none';
+              });
+
+              group.addEventListener('click', () => {
+                  const regionCode = group.getAttribute('data-code');
+                  const regionName = group.getAttribute('data-name');
+                  const cityName = group.getAttribute('data-city');
+                  
+                  window.location.href = `city.html?region=${regionCode}&name=${encodeURIComponent(regionName)}&city=${encodeURIComponent(cityName)}`;
+              });
+          });
+      });
+    </script>
+
+    <!-- СКРИПТИ FIREBASE ТА ОСНОВНОЇ ЛОГІКИ -->
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+      import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+      import { getFirestore, collection, addDoc, deleteDoc, doc, getDocs, setDoc, updateDoc, increment, query, where, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+      const firebaseConfig = {
+          apiKey: "AIzaSyBlKoP6-M8tdrKq88bSdnWSnak5Gpddnpk",
+          authDomain: "neoservice-ks-ua.firebaseapp.com",
+          projectId: "neoservice-ks-ua",
+          storageBucket: "neoservice-ks-ua.firebasestorage.app",
+          messagingSenderId: "528941827813",
+          appId: "1:528941827813:web:354ef989d200087634b60c",
+          measurementId: "G-BYGHEHVYY3"
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      const db = getFirestore(app);
+
+      // Список адміністраторів з правами керування банерами та бекапами
+      const ADMIN_EMAILS = [
+          'kostopilservice@gmail.com',
+          'olegdriganec@gmail.com'
+      ];
+
+      function isAdminUser(user) {
+          return user && user.email && ADMIN_EMAILS.includes(user.email.toLowerCase().trim());
+      }
+
+      // Жива синхронізація публікацій з колекції baza_posts у реальному часі
+      function listenToBazaPostsFeed() {
+          const postsQuery = query(collection(db, "baza_posts"), orderBy("createdAt", "desc"));
+          onSnapshot(postsQuery, (snapshot) => {
+              const items = [];
+              snapshot.forEach((docSnap) => {
+                  const data = docSnap.data() || {};
+                  const titleText = data.title || 'Без заголовка';
+                  const sourceText = data.source || '';
+                  const catKey = resolveCategoryKey(data.category, titleText, sourceText);
+                  const catObj = ALL_CATEGORIES.find(c => c.key === catKey);
+                  const createdDate = data.createdAt && typeof data.createdAt.toDate === 'function'
+                      ? data.createdAt.toDate().toLocaleDateString('uk-UA')
+                      : 'Щойно';
+
+                  items.push({
+                      id: docSnap.id,
+                      isFirestore: true,
+                      category: catKey,
+                      isVideo: Boolean(data.isVideo || data.videoUrl || catKey === 'youtube'),
+                      source: sourceText || (catObj ? `${catObj.emoji} ${catObj.label}` : '📌 База знань'),
+                      time: createdDate,
+                      title: titleText,
+                      image: data.image || (catObj ? catObj.image : FALLBACK_GENERAL_IMG),
+                      fallback: FALLBACK_GENERAL_IMG,
+                      likes: typeof data.likes === 'number' ? data.likes : 0,
+                      link: data.link || getCategorySectionUrl(catKey),
+                      content: data.content || data.description || ''
+                  });
+              });
+
+              if (typeof window.updateFirestoreDiscoverArticles === 'function') {
+                  window.updateFirestoreDiscoverArticles(items);
+              }
+          }, (err) => {
+              console.warn("Помилка синхронізації baza_posts:", err.message);
+          });
+      }
+
+      window.syncDiscoverLikeToFirestore = async function(docId, delta) {
+          try {
+              await updateDoc(doc(db, "baza_posts", docId), {
+                  likes: increment(delta)
+              });
+          } catch (err) {
+              console.warn("Не вдалося оновити лайк у Firestore:", err.message);
+          }
+      };
+
+      listenToBazaPostsFeed();
+
+      const loggedOutView = document.getElementById('loggedOutView');
+      const loggedInView = document.getElementById('loggedInView');
+      const userEmailDisplay = document.getElementById('userEmailDisplay');
+      const googleLoginBtn = document.getElementById('googleLoginBtn');
+      const loginEmailBtn = document.getElementById('loginEmailBtn');
+      const registerEmailBtn = document.getElementById('registerEmailBtn');
+      const logoutBtn = document.getElementById('logoutBtn');
+      const newRequestForm = document.getElementById('newRequestForm');
+      const ordersTableBody = document.getElementById('ordersTableBody');
+      const adminCollageBtn = document.getElementById('adminCollageBtn');
+      const globalAdminBackupTools = document.getElementById('globalAdminBackupTools');
+
+      // Глобальний експорт всієї бази сайту з Firebase та localStorage
+      window.exportEntireWebsiteData = async function() {
+          const user = auth.currentUser;
+          if (!isAdminUser(user)) {
+              alert("Помилка доступу: експорт доступний лише адміністратору!");
+              return;
+          }
+
+          try {
+              let localData = {};
+              try {
+                  localData = JSON.parse(localStorage.getItem('neoservice_ukraine_custom_v5') || '{}');
+              } catch(e) {}
+
+              const collectionsToBackup = ['city_portals', 'collage_banners', 'requests', 'baza_posts', 'auto_listings', 'sport_news', 'shop_listings', 'spiritual_words', 'real_estate_listings', 'real_estate_sidebar_banner'];
+              let firestoreData = {};
+
+              for (let colName of collectionsToBackup) {
+                  try {
+                      const querySnapshot = await getDocs(collection(db, colName));
+                      firestoreData[colName] = {};
+                      querySnapshot.forEach((docSnap) => {
+                          firestoreData[colName][docSnap.id] = docSnap.data();
+                      });
+                  } catch (err) {
+                      console.warn(`Не вдалося експортувати колекцію ${colName}:`, err);
+                  }
+              }
+
+              const fullBackupPackage = {
+                  app: "Neoservice.ks.ua",
+                  exportDate: new Date().toISOString(),
+                  version: "5.4",
+                  localStorage: localData,
+                  firestore: firestoreData
+              };
+
+              const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(fullBackupPackage, null, 2));
+              const downloadAnchor = document.createElement('a');
+              downloadAnchor.setAttribute("href", dataStr);
+              downloadAnchor.setAttribute("download", `neoservice_full_firebase_backup_${new Date().toISOString().slice(0,10)}.json`);
+              document.body.appendChild(downloadAnchor);
+              downloadAnchor.click();
+              downloadAnchor.remove();
+              alert("✅ Повний бекап бази даних успішно створено та завантажено!");
+          } catch (err) {
+              alert("❌ Помилка при створенні бекапу: " + err.message);
+          }
+      };
+
+      // Глобальний імпорт та відновлення бази сайту
+      window.importEntireWebsiteData = function(event) {
+          const user = auth.currentUser;
+          if (!isAdminUser(user)) {
+              alert("Помилка доступу: імпорт доступний лише адміністратору!");
+              return;
+          }
+          const file = event.target.files[0];
+          if (!file) return;
+
+          const reader = new FileReader();
+          reader.onload = async function(e) {
+              try {
+                  const importedData = JSON.parse(e.target.result);
+                  
+                  if (confirm(`Увага! Відновити дані порталу від ${importedData.exportDate || 'невідомої дати'}?`)) {
+                      if (importedData.localStorage) {
+                          localStorage.setItem('neoservice_ukraine_custom_v5', JSON.stringify(importedData.localStorage));
+                      }
+
+                      if (importedData.firestore) {
+                          for (let colName in importedData.firestore) {
+                              const colDocs = importedData.firestore[colName];
+                              for (let docId in colDocs) {
+                                  await setDoc(doc(db, colName, docId), colDocs[docId]);
+                              }
+                          }
+                      }
+
+                      alert("✅ Всі дані сайту та хмарної бази успішно відновлено!");
+                      window.location.reload();
+                  }
+              } catch(err) {
+                  alert("❌ Помилка розбору JSON: " + err.message);
+              }
+              event.target.value = '';
+          };
+          reader.readAsText(file);
+      };
+
+      // Перенаправлення з пошуку у Базу Знань
+      const mainSearchInput = document.getElementById('mainSearch');
+      mainSearchInput?.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          const queryVal = this.value.trim();
+          if (queryVal.length > 0) {
+            window.location.href = `baza.html?search=${encodeURIComponent(queryVal)}`;
+          }
+        }
+      });
+
+      // Вхід / Реєстрація
+      loginEmailBtn?.addEventListener('click', async () => {
+        const email = document.getElementById('authEmail').value;
+        const password = document.getElementById('authPassword').value;
+        if (!email || !password) return alert('Заповніть email та пароль!');
+        try { await signInWithEmailAndPassword(auth, email, password); } catch (err) { alert('Помилка входу: ' + err.message); }
+      });
+
+      registerEmailBtn?.addEventListener('click', async () => {
+        const email = document.getElementById('authEmail').value;
+        const password = document.getElementById('authPassword').value;
+        if (!email || !password) return alert('Заповніть email та пароль!');
+        try { await createUserWithEmailAndPassword(auth, email, password); alert('Реєстрація успішна!'); } catch (err) { alert('Помилка реєстрації: ' + err.message); }
+      });
+
+      googleLoginBtn?.addEventListener('click', async () => {
+        const provider = new GoogleAuthProvider();
+        try { await signInWithPopup(auth, provider); } catch (err) { alert('Помилка входу: ' + err.message); }
+      });
+
+      logoutBtn?.addEventListener('click', () => signOut(auth));
+
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          if (loggedOutView) loggedOutView.style.display = 'none';
+          if (loggedInView) loggedInView.style.display = 'block';
+          if (userEmailDisplay) userEmailDisplay.innerText = user.email;
+          loadUserOrders(user.email);
+
+          // ПЕРЕВІРКА АДМІНІСТРАТОРІВ (kostopilservice@gmail.com та olegdriganec@gmail.com)
+          if (isAdminUser(user)) {
+            if (adminCollageBtn) adminCollageBtn.style.display = 'block';
+            if (globalAdminBackupTools) globalAdminBackupTools.style.display = 'flex';
+          } else {
+            if (adminCollageBtn) adminCollageBtn.style.display = 'none';
+            if (globalAdminBackupTools) globalAdminBackupTools.style.display = 'none';
+          }
+
+        } else {
+          if (loggedOutView) loggedOutView.style.display = 'block';
+          if (loggedInView) loggedInView.style.display = 'none';
+          if (adminCollageBtn) adminCollageBtn.style.display = 'none';
+          if (globalAdminBackupTools) globalAdminBackupTools.style.display = 'none';
+        }
+      });
+
+      newRequestForm?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const user = auth.currentUser;
+        if (!user) return;
+        try {
+          await addDoc(collection(db, "requests"), {
+            userEmail: user.email,
+            category: document.getElementById('reqCategory').value,
+            description: document.getElementById('reqDescription').value,
+            status: "В обробці",
+            adminNote: "Заявку прийнято",
+            createdAt: serverTimestamp()
+          });
+          newRequestForm.reset();
+          alert('Вашу заявку створено!');
+        } catch (err) { alert('Помилка: ' + err.message); }
+      });
+
+      function loadUserOrders(email) {
+        const q = query(collection(db, "requests"), where("userEmail", "==", email));
+        onSnapshot(q, (snapshot) => {
+          if (!ordersTableBody) return;
+          ordersTableBody.innerHTML = '';
+          if (snapshot.empty) {
+            ordersTableBody.innerHTML = `<tr><td colspan="4" style="text-align: center; padding: 10px; color: #64748b;">У вас поки немає замовлень.</td></tr>`;
+            return;
+          }
+          snapshot.forEach((doc) => {
+            const data = doc.data();
+            const cat = data.category || 'Заявка';
+            const desc = data.description || '';
+            const stat = data.status || 'В обробці';
+            const note = data.adminNote || '—';
+            const timeField = data.createdAt;
+            const dateStr = timeField && timeField.toDate ? new Date(timeField.toDate()).toLocaleDateString('uk-UA') : 'Щойно';
+
+            const row = document.createElement('tr');
+            row.style.borderBottom = '1px solid #e2e8f0';
+            row.innerHTML = `
+              <td style="padding: 4px; color: #64748b; white-space: nowrap;">${dateStr}</td>
+              <td style="padding: 4px;"><b>${cat}</b><br><span style="color: #475569;">${desc}</span></td>
+              <td style="padding: 4px;"><span style="background: #fef08a; color: #854d0e; padding: 2px 6px; border-radius: 4px; font-weight: bold; font-size: 0.75rem;">${stat}</span></td>
+              <td style="padding: 4px; color: #334155;">${note}</td>
+            `;
+            ordersTableBody.appendChild(row);
+          });
+        }, (err) => {
+          console.warn("Помилка завантаження замовлень:", err.message);
+        });
+      }
+
+      // АДМІНІСТРУВАННЯ КОЛАЖУ БАНЕРІВ
+      document.getElementById('collageAdminForm')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const user = auth.currentUser;
+        
+        if (!isAdminUser(user)) {
+          alert("Помилка доступу: додавати банери можуть лише адміністратори!");
+          return;
+        }
+
+        try {
+          await addDoc(collection(db, "collage_banners"), {
+            tag: document.getElementById('slideTag').value,
+            title: document.getElementById('slideTitle').value,
+            desc: document.getElementById('slideDesc').value,
+            imageUrl: document.getElementById('slideImage').value,
+            fitMode: document.getElementById('slideFitMode').value,
+            addedBy: user.email,
+            createdAt: serverTimestamp()
+          });
+
+          alert("Новий банер успішно додано до колажу!");
+          document.getElementById('collageAdminForm').reset();
+          closeCollageAdmin();
+        } catch (err) {
+          alert("Помилка при додаванні банера: " + err.message);
+        }
+      });
+
+      window.deleteBanner = async function(id) {
+        const user = auth.currentUser;
+        if (!isAdminUser(user)) {
+          alert("Помилка доступу: видаляти банери можуть лише адміністратори!");
+          return;
+        }
+
+        if (confirm("Ви дійсно хочете видалити цей банер з колажу?")) {
+          try {
+            await deleteDoc(doc(db, "collage_banners", id));
+            alert("Банер успішно видалено!");
+          } catch(err) {
+            alert("Помилка при видаленні: " + err.message);
+          }
+        }
+      };
+
+      function listenToBanners() {
+        const sliderContainer = document.getElementById('bannerSliderContainer');
+        const dotsContainer = document.getElementById('sliderDotsContainer');
+        const adminBannersList = document.getElementById('adminBannersList');
+
+        onSnapshot(collection(db, "collage_banners"), (snapshot) => {
+          if (snapshot.empty) return;
+
+          sliderContainer.innerHTML = '';
+          dotsContainer.innerHTML = '';
+          if (adminBannersList) adminBannersList.innerHTML = '';
+          let count = 0;
+
+          snapshot.forEach((docSnap) => {
+            const data = docSnap.data();
+            const docId = docSnap.id;
+            const isActive = count === 0 ? 'active' : '';
+            const fitMode = data.fitMode || 'contain';
+
+            const slideElement = document.createElement('div');
+            slideElement.className = `banner-slide ${isActive}`;
+            slideElement.style.cssText = `background-image: url('${data.imageUrl}'); background-size: ${fitMode}; padding: 25px; display: flex; flex-direction: column; justify-content: flex-end; height: 100%; box-sizing: border-box;`;
+            slideElement.innerHTML = `
+              <span style="background: rgba(217,119,6,0.9); color: white; font-size: 0.7rem; font-weight: bold; padding: 3px 10px; border-radius: 20px; width: max-content; margin-bottom: 8px;">${data.tag}</span>
+              <h3 style="color: white; margin: 0 0 5px 0; font-size: 1.25rem; text-shadow: 0 2px 4px rgba(0,0,0,0.8);">${data.title}</h3>
+              <p style="color: #cbd5e1; margin: 0; font-size: 0.8rem; text-shadow: 0 1px 3px rgba(0,0,0,0.8);">${data.desc}</p>
+            `;
+            sliderContainer.appendChild(slideElement);
+
+            const dotBtn = document.createElement('button');
+            dotBtn.className = 'slider-dot';
+            dotBtn.style.cssText = `width: 10px; height: 10px; border-radius: 50%; border: none; background: ${count === 0 ? '#d97706' : '#cbd5e1'}; cursor: pointer;`;
+            const index = count;
+            dotBtn.onclick = () => setSlide(index);
+            dotsContainer.appendChild(dotBtn);
+
+            if (adminBannersList) {
+              const itemDiv = document.createElement('div');
+              itemDiv.style.cssText = "display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 6px 10px; border-radius: 6px; border: 1px solid #e2e8f0; font-size: 0.75rem;";
+              itemDiv.innerHTML = `
+                <span style="font-weight: bold; color: #1e3a8a; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 260px;">${data.title}</span>
+                <button type="button" onclick="deleteBanner('${docId}')" style="background: #dc2626; color: white; border: none; padding: 3px 8px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 0.7rem;">Видалити</button>
+              `;
+              adminBannersList.appendChild(itemDiv);
+            }
+
+            count++;
+          });
+        }, (err) => {
+          console.warn("Помилка завантаження колажу банерів:", err.message);
+        });
+      }
+
+      listenToBanners();
+    </script>
 </body>
 </html>

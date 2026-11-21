@@ -9,6 +9,8 @@
     
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Синхронізація категорій порталу -->
+    <script src="categories-sync.js"></script>
 
     <style>
         :root {
@@ -139,6 +141,10 @@
             box-shadow: 0 12px 25px rgba(56, 189, 248, 0.2);
             border-color: var(--accent);
         }
+        .eng-card.highlighted-eng {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.35), 0 12px 25px rgba(56, 189, 248, 0.25);
+        }
 
         .eng-card-img {
             width: 100%;
@@ -158,6 +164,7 @@
             align-items: center;
             gap: 10px;
             margin: 40px 0;
+            flex-wrap: wrap;
         }
         .page-btn {
             background: var(--card-bg);
@@ -213,6 +220,8 @@
             display: flex;
             gap: 15px;
             align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
         }
         .p-btn {
             background: var(--accent);
@@ -233,6 +242,7 @@
             border-radius: 14px;
             padding: 20px;
             border: 1px solid var(--border);
+            overflow-x: auto;
         }
         .file-table {
             width: 100%;
@@ -265,6 +275,7 @@
             align-items: center;
             gap: 6px;
             transition: background 0.2s;
+            white-space: nowrap;
         }
         .btn-download:hover { background: #059669; }
 
@@ -346,7 +357,7 @@
       <!-- ========================================== -->
       <!-- СТОРІНКА 1: Базові схеми та креслення      -->
       <!-- ========================================== -->
-      <div id="page1" class="page-section active-page">
+      <div id="page1" class="page-section active-page" data-eng-keys="schemes,circuits,pcb,bim,iot,схеми,креслення,електроніка,архітектура,мережі">
         <div style="display: flex; justify-content: space-between; align-items: center; border-left: 4px solid var(--accent); padding-left: 15px; margin-bottom: 20px;">
           <div>
             <h1 style="margin: 0; font-size: 1.4rem;">📐 Стор. 1: Інтерактивні Схеми та Креслення</h1>
@@ -355,7 +366,7 @@
         </div>
 
         <div class="eng-grid">
-          <div class="eng-card" onclick="openPanorama('https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=2000&q=90', 'Принципова електрична схема силового модулю EcuX')">
+          <div class="eng-card" data-eng-keys="pcb,ecu,electronics,схема,електроніка" onclick="openPanorama('https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=2000&q=90', 'Принципова електрична схема силового модулю EcuX')">
             <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=600&q=80" alt="Схема" class="eng-card-img">
             <div class="eng-card-body">
               <span style="font-size: 0.7rem; color: var(--accent); font-weight: bold; text-transform: uppercase;">Електроніка • PCB</span>
@@ -364,7 +375,7 @@
             </div>
           </div>
 
-          <div class="eng-card" onclick="openPanorama('https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=2000&q=90', 'Архітектурний план комплексу автоматизації гаражів та СТО')">
+          <div class="eng-card" data-eng-keys="bim,architecture,sto,архітектура,план" onclick="openPanorama('https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=2000&q=90', 'Архітектурний план комплексу автоматизації гаражів та СТО')">
             <img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=600&q=80" alt="План" class="eng-card-img">
             <div class="eng-card-body">
               <span style="font-size: 0.7rem; color: #10b981; font-weight: bold; text-transform: uppercase;">Архітектура • BIM</span>
@@ -373,7 +384,7 @@
             </div>
           </div>
 
-          <div class="eng-card" onclick="openPanorama('https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=2000&q=90', 'Мережева топологія промислового IoT комплексу')">
+          <div class="eng-card" data-eng-keys="iot,radio,repeaters,мережі,репітери" onclick="openPanorama('https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=2000&q=90', 'Мережева топологія промислового IoT комплексу')">
             <img src="https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=600&q=80" alt="Топологія" class="eng-card-img">
             <div class="eng-card-body">
               <span style="font-size: 0.7rem; color: #f59e0b; font-weight: bold; text-transform: uppercase;">Мережі • IoT</span>
@@ -388,7 +399,7 @@
       <!-- ========================================== -->
       <!-- СТОРІНКА 2: НОВИЙ КОНТЕНТ (Технології майбутнього) -->
       <!-- ========================================== -->
-      <div id="page2" class="page-section">
+      <div id="page2" class="page-section" data-eng-keys="future,tech,quantum,bci,energy,майбутнє,технології,квантові,нейро,енергетика">
         <div style="display: flex; justify-content: space-between; align-items: center; border-left: 4px solid #10b981; padding-left: 15px; margin-bottom: 20px;">
           <div>
             <h1 style="margin: 0; font-size: 1.4rem;">🚀 Стор. 2: Технології майбутнього (Суспільство & Інновації)</h1>
@@ -397,16 +408,16 @@
         </div>
 
         <div class="eng-grid">
-          <div class="eng-card" onclick="openPanorama('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=2000&q=90', 'Нейрокомп’ютерні інтерфейси та BCI чипи')">
+          <div class="eng-card" data-eng-keys="bci,neuro,біоінженерія,нейро" onclick="openPanorama('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=2000&q=90', 'Нейрокомп’ютерні інтерфейси та BCI чипи')">
             <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=600&q=80" alt="Нейро" class="eng-card-img">
             <div class="eng-card-body">
               <span style="font-size: 0.7rem; color: #10b981; font-weight: bold; text-transform: uppercase;">Біоінженерія • BCI</span>
-              <h3 style="margin: 6px 0; font-size: 1rem;">Архітектура нейрокомп’ютерних інтерфейсів прякре підключення</h3>
+              <h3 style="margin: 6px 0; font-size: 1rem;">Архітектура нейрокомп’ютерних інтерфейсів прямого підключення</h3>
               <p style="margin: 0; font-size: 0.8rem; color: #94a3b8;">Схема імплантованих нейрочипів для обробки сигналів головного мозку.</p>
             </div>
           </div>
 
-          <div class="eng-card" onclick="openPanorama('https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&w=2000&q=90', 'Квантові процесори та кріогенні магістралі')">
+          <div class="eng-card" data-eng-keys="quantum,qubits,квантові,кубіти" onclick="openPanorama('https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&w=2000&q=90', 'Квантові процесори та кріогенні магістралі')">
             <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&w=600&q=80" alt="Квант" class="eng-card-img">
             <div class="eng-card-body">
               <span style="font-size: 0.7rem; color: var(--accent); font-weight: bold; text-transform: uppercase;">Квантові обчислення</span>
@@ -415,7 +426,7 @@
             </div>
           </div>
 
-          <div class="eng-card" onclick="openPanorama('https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=2000&q=90', 'Автономні мікромережі та водневі генератори')">
+          <div class="eng-card" data-eng-keys="hydrogen,energy,водневі,енергетика" onclick="openPanorama('https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=2000&q=90', 'Автономні мікромережі та водневі генератори')">
             <img src="https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=600&q=80" alt="Енергія" class="eng-card-img">
             <div class="eng-card-body">
               <span style="font-size: 0.7rem; color: #f59e0b; font-weight: bold; text-transform: uppercase;">Зелена Енергетика</span>
@@ -430,7 +441,7 @@
       <!-- ========================================== -->
       <!-- СТОРІНКА 3: Космічні системи та Нанотехнології -->
       <!-- ========================================== -->
-      <div id="page3" class="page-section">
+      <div id="page3" class="page-section" data-eng-keys="space,nano,ion,космос,нанотехнології,графен">
         <div style="display: flex; justify-content: space-between; align-items: center; border-left: 4px solid #f59e0b; padding-left: 15px; margin-bottom: 20px;">
           <div>
             <h1 style="margin: 0; font-size: 1.4rem;">🛰️ Стор. 3: Космічна інженерія & Наноматеріали</h1>
@@ -439,7 +450,7 @@
         </div>
 
         <div class="eng-grid">
-          <div class="eng-card" onclick="openPanorama('https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=2000&q=90', 'Схема іонного двигуна космічних апаратів глибокого космосу')">
+          <div class="eng-card" data-eng-keys="space,ion,космос,двигун" onclick="openPanorama('https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=2000&q=90', 'Схема іонного двигуна космічних апаратів глибокого космосу')">
             <img src="https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=600&q=80" alt="Космос" class="eng-card-img">
             <div class="eng-card-body">
               <span style="font-size: 0.7rem; color: #f59e0b; font-weight: bold; text-transform: uppercase;">Космос • Двигуни</span>
@@ -448,7 +459,7 @@
             </div>
           </div>
 
-          <div class="eng-card" onclick="openPanorama('https://images.unsplash.com/photo-1507668077129-56e32842fceb?auto=format&fit=crop&w=2000&q=90', 'Наноструктури графену для надміцних каркасів')">
+          <div class="eng-card" data-eng-keys="nano,graphene,нано,графен" onclick="openPanorama('https://images.unsplash.com/photo-1507668077129-56e32842fceb?auto=format&fit=crop&w=2000&q=90', 'Наноструктури графену для надміцних каркасів')">
             <img src="https://images.unsplash.com/photo-1507668077129-56e32842fceb?auto=format&fit=crop&w=600&q=80" alt="Нано" class="eng-card-img">
             <div class="eng-card-body">
               <span style="font-size: 0.7rem; color: var(--accent); font-weight: bold; text-transform: uppercase;">Нанотехнології</span>
@@ -462,14 +473,14 @@
 
       <!-- ПАНЕЛЬ ПАГІНАЦІЇ (КНОПКИ СТОРІНОК 1, 2, 3) -->
       <div class="pagination-bar">
-        <button class="page-btn active" onclick="switchPage(1, this)">1</button>
-        <button class="page-btn" onclick="switchPage(2, this)">2 (Технології майбутнього)</button>
-        <button class="page-btn" onclick="switchPage(3, this)">3 (Космос & Нано)</button>
+        <button class="page-btn active" data-page="1" onclick="switchPage(1, this)">1</button>
+        <button class="page-btn" data-page="2" onclick="switchPage(2, this)">2 (Технології майбутнього)</button>
+        <button class="page-btn" data-page="3" onclick="switchPage(3, this)">3 (Космос & Нано)</button>
       </div>
 
 
       <!-- ТАБЛИЦЯ ФАЙЛІВ (EX.UA Стиль) -->
-      <div class="files-section">
+      <div class="files-section" id="filesArchive">
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
           <h2 style="margin: 0; font-size: 1.1rem;"><i class="fa-solid fa-box-archive" style="color: var(--accent);"></i> Архів Технічної Документації та ПО</h2>
           <span style="font-size: 0.78rem; color: #94a3b8;">Пряме завантаження з захищених хмарних сховищ (Google Drive, Dropbox)</span>
@@ -540,14 +551,110 @@
     <script>
       // Перемикання сторінок (1, 2, 3)
       window.switchPage = function(pageNum, btnElement) {
-        document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove('active-page'));
-        document.getElementById(`page${pageNum}`).classList.add('active-page');
+        const targetNum = Number(pageNum) || 1;
+        const targetSection = document.getElementById(`page${targetNum}`) || document.getElementById('page1');
 
-        document.querySelectorAll('.page-btn').forEach(b => b.classList.remove('active'));
-        btnElement.classList.add('active');
+        document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove('active-page'));
+        if (targetSection) targetSection.classList.add('active-page');
+
+        document.querySelectorAll('.page-btn').forEach(b => {
+          b.classList.toggle('active', Number(b.getAttribute('data-page')) === targetNum);
+        });
+        if (btnElement) btnElement.classList.add('active');
 
         window.scrollTo({ top: 300, behavior: 'smooth' });
-      }
+      };
+
+      // Синхронізація категорій та розділів з categories-sync.js / URL / хешем
+      (function syncEngineeringCategory() {
+        function resolveTargetFromInput(rawInput) {
+          const val = String(rawInput || '').replace(/^#/, '').trim().toLowerCase();
+          if (!val) return null;
+
+          if (val === 'page1' || val === '1' || val === 'schemes' || val === 'схеми') {
+            return { page: 1, query: '' };
+          }
+          if (val === 'page2' || val === '2' || val === 'future' || val === 'технології майбутнього') {
+            return { page: 2, query: '' };
+          }
+          if (val === 'page3' || val === '3' || val === 'space' || val === 'nano' || val === 'космос') {
+            return { page: 3, query: '' };
+          }
+
+          if (typeof window.resolvePortalCategoryKey === 'function') {
+            const mapped = String(window.resolvePortalCategoryKey(val) || '').toLowerCase().trim();
+            if (mapped === 'page1' || mapped === '1') return { page: 1, query: '' };
+            if (mapped === 'page2' || mapped === '2' || mapped === 'future') return { page: 2, query: '' };
+            if (mapped === 'page3' || mapped === '3' || mapped === 'space') return { page: 3, query: '' };
+            if (mapped && mapped !== 'engineering' && mapped !== 'all') {
+              return { page: null, query: mapped };
+            }
+          }
+
+          if (val !== 'engineering' && val !== 'all') {
+            return { page: null, query: val };
+          }
+          return null;
+        }
+
+        function applyEngineeringState(explicitVal) {
+          const params = new URLSearchParams(window.location.search);
+          const rawParam = explicitVal || params.get('page') || params.get('category') || params.get('cat') || params.get('tab') || window.location.hash || '';
+          const decoded = decodeURIComponent(String(rawParam)).trim();
+
+          document.querySelectorAll('.eng-card').forEach(card => card.classList.remove('highlighted-eng'));
+
+          if (decoded.toLowerCase().replace(/^#/, '') === 'filesarchive' || decoded.toLowerCase().includes('архів')) {
+            document.getElementById('filesArchive')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            return;
+          }
+
+          const target = resolveTargetFromInput(decoded);
+          if (!target) return;
+
+          if (target.page) {
+            const btn = document.querySelector(`.page-btn[data-page="${target.page}"]`);
+            window.switchPage(target.page, btn);
+          }
+
+          if (target.query) {
+            const cards = Array.from(document.querySelectorAll('.eng-card'));
+            const matchedCard = cards.find(card => {
+              const title = (card.querySelector('h3')?.textContent || '').toLowerCase();
+              const desc = (card.querySelector('p')?.textContent || '').toLowerCase();
+              const keys = (card.getAttribute('data-eng-keys') || '').toLowerCase();
+              return title.includes(target.query) || desc.includes(target.query) || keys.split(',').some(k => k.trim() && (target.query.includes(k.trim()) || k.trim().includes(target.query)));
+            });
+
+            if (matchedCard) {
+              const parentPage = matchedCard.closest('.page-section');
+              if (parentPage && parentPage.id) {
+                const pageNum = parseInt(parentPage.id.replace('page', ''), 10);
+                if (pageNum) {
+                  const btn = document.querySelector(`.page-btn[data-page="${pageNum}"]`);
+                  window.switchPage(pageNum, btn);
+                }
+              }
+              matchedCard.classList.add('highlighted-eng');
+              matchedCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+          }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+          if (typeof window.applyPortalCategoryFromUrl === 'function') {
+            window.applyPortalCategoryFromUrl((resolved) => {
+              applyEngineeringState(resolved);
+            });
+          } else {
+            applyEngineeringState();
+          }
+        });
+
+        window.addEventListener('hashchange', () => {
+          applyEngineeringState(window.location.hash);
+        });
+      })();
 
       // Авто-перемикання банерів організацій (Слайдер)
       let currentSlide = 0;
@@ -621,4 +728,4 @@
       });
     </script>
 </body>
-</html> 
+</html>

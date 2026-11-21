@@ -178,6 +178,7 @@
             border-color: #29b6f6;
         }
     </style>
+    <script src="categories-sync.js"></script>
 </head>
 <body class="min-h-screen flex flex-col justify-between">
 
@@ -785,15 +786,34 @@
 
         let currentGalleryPhotos = [];
         let currentPhotoIndex = 0;
-        
-        let activeCategoryFilter = 'auto';
-        if (window.location.hash === '#parts') {
-            activeCategoryFilter = 'parts';
-        } else if (window.location.hash === '#auto') {
-            activeCategoryFilter = 'auto';
-        } else if (window.location.hash === '#all') {
-            activeCategoryFilter = 'all';
+
+        function normalizeAutoTabFromSource(rawSource) {
+            const val = String(rawSource || '').toLowerCase().trim();
+            if (!val) return null;
+
+            const syncedKey = typeof window.resolvePortalCategoryKey === 'function'
+                ? window.resolvePortalCategoryKey(val)
+                : val;
+
+            if (syncedKey === 'parts' || val === 'parts' || val === '#parts' || val.includes('запчаст')) {
+                return 'parts';
+            }
+            if (syncedKey === 'all' || val === 'all' || val === '#all' || val === 'всі') {
+                return 'all';
+            }
+            if (syncedKey === 'auto' || val === 'auto' || val === '#auto' || val.includes('авто')) {
+                return 'auto';
+            }
+            return null;
         }
+
+        function getInitialAutoTab() {
+            const params = new URLSearchParams(window.location.search);
+            const paramCat = params.get('category') || params.get('cat') || params.get('tab');
+            return normalizeAutoTabFromSource(paramCat) || normalizeAutoTabFromSource(window.location.hash) || 'auto';
+        }
+        
+        let activeCategoryFilter = getInitialAutoTab();
 
         function escapeHTML(str) {
             if (!str) return '';
@@ -937,39 +957,39 @@
         };
 
         window.setMainCategory = function(cat) {
-            activeCategoryFilter = cat;
+            activeCategoryFilter = normalizeAutoTabFromSource(cat) || 'auto';
             currentPage = 1;
             
-            if (cat === 'parts') window.location.hash = 'parts';
-            else if (cat === 'auto') window.location.hash = 'auto';
-            else window.location.hash = 'all';
+            if (activeCategoryFilter === 'parts') window.location.hash = 'parts';
+            else if (activeCategoryFilter === 'all') window.location.hash = 'all';
+            else window.location.hash = 'auto';
 
             const btnAll = document.getElementById('btnCatAll');
             const btnAuto = document.getElementById('btnCatAuto');
             const btnParts = document.getElementById('btnCatParts');
 
             if (btnAll && btnAuto && btnParts) {
-                btnAll.className = "px-3 py-1 rounded-t " + (cat === 'all' ? "bg-white text-red-600 font-bold" : "bg-red-700 text-white hover:bg-red-800");
-                btnAuto.className = "px-3 py-1 rounded-t " + (cat === 'auto' ? "bg-white text-red-600 font-bold" : "bg-red-700 text-white hover:bg-red-800");
-                btnParts.className = "px-3 py-1 rounded-t " + (cat === 'parts' ? "bg-white text-red-600 font-bold" : "bg-red-700 text-white hover:bg-red-800");
+                btnAll.className = "px-3 py-1 rounded-t " + (activeCategoryFilter === 'all' ? "bg-white text-red-600 font-bold" : "bg-red-700 text-white hover:bg-red-800");
+                btnAuto.className = "px-3 py-1 rounded-t " + (activeCategoryFilter === 'auto' ? "bg-white text-red-600 font-bold" : "bg-red-700 text-white hover:bg-red-800");
+                btnParts.className = "px-3 py-1 rounded-t " + (activeCategoryFilter === 'parts' ? "bg-white text-red-600 font-bold" : "bg-red-700 text-white hover:bg-red-800");
             }
 
             const mainHeaderTitle = document.getElementById('mainHeaderTitle');
             const feedTitle = document.getElementById('feedTitle');
             const breadcrumbCategory = document.getElementById('breadcrumbCategory');
 
-            if (cat === 'parts') {
+            if (activeCategoryFilter === 'parts') {
                 if (mainHeaderTitle) mainHeaderTitle.textContent = "Продаж автозапчастин та комплектуючих";
                 if (feedTitle) feedTitle.textContent = "Пропозиції автозапчастин";
                 if (breadcrumbCategory) breadcrumbCategory.textContent = "Автозапчастини";
-            } else if (cat === 'auto') {
-                if (mainHeaderTitle) mainHeaderTitle.textContent = "Продаж автомобілів в Україні";
-                if (feedTitle) feedTitle.textContent = "Пропозиції з продажу авто";
-                if (breadcrumbCategory) breadcrumbCategory.textContent = "Автобазар";
-            } else {
+            } else if (activeCategoryFilter === 'all') {
                 if (mainHeaderTitle) mainHeaderTitle.textContent = "Всі оголошення (Авто та Запчастини)";
                 if (feedTitle) feedTitle.textContent = "Всі пропозиції у каталозі";
                 if (breadcrumbCategory) breadcrumbCategory.textContent = "Авто & Запчастини";
+            } else {
+                if (mainHeaderTitle) mainHeaderTitle.textContent = "Продаж автомобілів в Україні";
+                if (feedTitle) feedTitle.textContent = "Пропозиції з продажу авто";
+                if (breadcrumbCategory) breadcrumbCategory.textContent = "Автобазар";
             }
 
             window.filterCards();
@@ -980,9 +1000,17 @@
         };
 
         window.addEventListener('hashchange', () => {
-            if (window.location.hash === '#parts') setMainCategory('parts');
-            else if (window.location.hash === '#auto') setMainCategory('auto');
-            else if (window.location.hash === '#all') setMainCategory('all');
+            const nextTab = normalizeAutoTabFromSource(window.location.hash);
+            if (nextTab) setMainCategory(nextTab);
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof window.applyPortalCategoryFromUrl === 'function') {
+                window.applyPortalCategoryFromUrl((resolvedKey) => {
+                    const nextTab = normalizeAutoTabFromSource(resolvedKey);
+                    if (nextTab) setMainCategory(nextTab);
+                });
+            }
         });
 
         window.toggleAdminBannerForm = function() {
@@ -1290,14 +1318,11 @@
                 return;
             }
 
-            if (window.location.hash === '#parts') setMainCategory('parts');
-            else if (window.location.hash === '#auto') setMainCategory('auto');
-            else if (window.location.hash === '#all') setMainCategory('all');
-            else setMainCategory('auto');
+            setMainCategory(getInitialAutoTab());
         });
 
         /* =====================================================================
-           ДЕТАЛЬНА СТОРІНКА ОГОЛОШЕННЯ + ТАБЛИЦЯ + ВІКНО ПОВІДОМЛЕНЬ + КОМЕНТАРІ
+           ДЕТАЛЬНА СТОРІНКА ОГОЛОШЕННЯ + ТАБЛИЦЯ + ВІКНО ЗВ'ЯЗКУ + КОМЕНТАРІ В РЕАЛЬНОМУ ЧАСІ
         ===================================================================== */
         window.openAutoDetail = function(docId, pushHistory = true) {
             const item = allListingsData.find(p => p.id === docId);

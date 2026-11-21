@@ -862,17 +862,20 @@
     <!-- ================= МОДАЛЬНЕ ВІКНО ПЕРЕГЛЯДУ ПУБЛІКАЦІЇ ================= -->
     <div id="discoverArticleModal" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(6px); z-index: 9999; align-items: center; justify-content: center; padding: 15px;">
       <div class="bg-white rounded-2xl max-w-2xl w-full overflow-hidden shadow-2xl border border-slate-200 flex flex-col max-h-[90vh]">
-        <div class="relative h-56 sm:h-64 bg-slate-900">
+        <div id="modalMediaHeader" class="relative h-56 sm:h-64 bg-slate-900">
           <img id="modalArticleImg" src="" alt="" class="w-full h-full object-cover">
-          <button onclick="closeDiscoverModal()" class="absolute top-3 right-3 w-8 h-8 rounded-full bg-slate-900/70 text-white hover:bg-slate-900 flex items-center justify-center cursor-pointer border-none">
+          <div id="modalYouTubeWrapper" class="hidden w-full h-full bg-black">
+            <iframe id="modalYouTubeIframe" class="w-full h-full" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </div>
+          <button onclick="closeDiscoverModal()" class="absolute top-3 right-3 w-8 h-8 rounded-full bg-slate-900/70 text-white hover:bg-slate-900 flex items-center justify-center cursor-pointer border-none z-10">
             <i class="fa-solid fa-xmark"></i>
           </button>
-          <span id="modalArticleSource" class="absolute bottom-3 left-4 bg-blue-600 text-white text-[11px] font-bold px-2.5 py-1 rounded-md shadow"></span>
+          <span id="modalArticleSource" class="absolute bottom-3 left-4 bg-blue-600 text-white text-[11px] font-bold px-2.5 py-1 rounded-md shadow z-10"></span>
         </div>
         <div class="p-5 overflow-y-auto">
           <div id="modalArticleDate" class="text-xs text-slate-400 mb-1"></div>
           <h3 id="modalArticleTitle" class="text-xl font-extrabold text-slate-800 mb-3 leading-snug"></h3>
-          <p id="modalArticleContent" class="text-sm text-slate-600 leading-relaxed whitespace-pre-line"></p>
+          <div id="modalArticleContent" class="text-sm text-slate-600 leading-relaxed"></div>
         </div>
         <div class="px-5 py-3 bg-slate-50 border-t border-slate-200 flex justify-between items-center">
           <a id="modalArticleLink" href="baza.html" class="text-xs font-bold text-blue-600 hover:underline no-underline">Перейти до розділу &rarr;</a>
@@ -973,6 +976,20 @@
         document.getElementById('adminCollageModal').style.display = 'none';
       }
 
+      function extractYouTubeID(url) {
+        if (!url) return null;
+        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|shorts\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+        const match = String(url).match(regExp);
+        return (match && match[2].length === 11) ? match[2] : null;
+      }
+
+      function stripHtmlTags(html) {
+        if (!html) return '';
+        const tmp = document.createElement('div');
+        tmp.innerHTML = String(html);
+        return (tmp.textContent || tmp.innerText || '').trim();
+      }
+
       const FALLBACK_GENERAL_IMG = "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(`
         <svg xmlns="http://www.w3.org/2000/svg" width="600" height="360" viewBox="0 0 600 360">
           <defs>
@@ -1006,14 +1023,27 @@
       ];
 
       function normalizeCategoryKey(rawCategory, title = '', source = '') {
+        const rawLower = String(rawCategory || '').toLowerCase().trim();
+        const directAliasMap = {
+          'computers': 'pc',
+          'printers': 'office',
+          'ev_battery': 'ev',
+          'paperwork': 'docs',
+          'local_biz': 'business',
+          'cybersecurity': 'security'
+        };
+        if (directAliasMap[rawLower]) return directAliasMap[rawLower];
+
         if (typeof window.resolvePortalCategoryKey === 'function') {
           const resolved = window.resolvePortalCategoryKey(rawCategory, `${title} ${source}`);
-          if (resolved && resolved !== 'all') return resolved;
+          if (resolved && resolved !== 'all') {
+            return directAliasMap[resolved] || resolved;
+          }
         }
 
-        const combined = `${String(rawCategory || '')} ${String(title || '')} ${String(source || '')}`.toLowerCase().trim();
+        const combined = `${rawLower} ${String(title || '')} ${String(source || '')}`.toLowerCase().trim();
         const exact = ALL_CATEGORIES.find(
-          c => c.key === String(rawCategory || '').toLowerCase().trim() || c.label.toLowerCase() === String(rawCategory || '').toLowerCase().trim()
+          c => c.key === rawLower || c.label.toLowerCase() === rawLower
         );
         if (exact) return exact.key;
 
@@ -1051,8 +1081,10 @@
       const staticDiscoverArticles = ALL_CATEGORIES.map((cat, idx) => ({
         id: `static-${idx + 1}`,
         isFirestore: false,
+        collectionName: '',
         category: cat.key,
         isVideo: cat.isVideo,
+        youtubeId: '',
         source: `${cat.emoji} ${cat.label}`,
         time: idx === 0 ? 'Щойно' : (idx < 6 ? `${idx * 2} год тому` : `${idx - 5} дн тому`),
         title: cat.title,
@@ -1063,12 +1095,15 @@
         content: cat.content
       }));
 
-      let firestoreDiscoverArticles = [];
+      let firestoreArticlesCollectionItems = [];
+      let firestoreBazaPostsCollectionItems = [];
       let currentDiscoverFilter = 'all';
       let showAllDiscoverCards = false;
 
       function getCombinedDiscoverArticles() {
-        return [...firestoreDiscoverArticles, ...staticDiscoverArticles];
+        const combinedFirestore = [...firestoreArticlesCollectionItems, ...firestoreBazaPostsCollectionItems];
+        combinedFirestore.sort((a, b) => (b.sortTimestamp || 0) - (a.sortTimestamp || 0));
+        return [...combinedFirestore, ...staticDiscoverArticles];
       }
 
       function scrollDiscoverTabs(offset) {
@@ -1162,7 +1197,7 @@
                 >
                 ${item.isVideo ? `
                   <div class="absolute inset-0 flex items-center justify-center bg-black/25">
-                    <div class="w-10 h-10 rounded-full bg-white/90 text-[#1e3a8a] flex items-center justify-center shadow-lg">
+                    <div class="w-10 h-10 rounded-full bg-red-600/95 text-white flex items-center justify-center shadow-lg">
                       <i class="fa-solid fa-play ml-0.5 text-sm"></i>
                     </div>
                   </div>
@@ -1177,11 +1212,12 @@
                 <h3 class="text-sm font-bold text-slate-800 leading-snug group-hover:text-[#1e3a8a] transition-colors m-0">
                   ${item.title}
                 </h3>
+                ${item.summaryText ? `<p class="text-xs text-slate-500 mt-1.5 line-clamp-2 m-0">${item.summaryText}</p>` : ''}
               </div>
             </div>
             <div class="px-3.5 py-2.5 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
               <div class="flex items-center gap-3">
-                <button type="button" onclick="event.stopPropagation(); toggleDiscoverLike(this, '${String(item.id).replace(/'/g, "\\'")}', ${item.likes}, ${item.isFirestore ? 'true' : 'false'})" class="hover:text-[#1e3a8a] flex items-center gap-1 bg-transparent border-none text-slate-500 cursor-pointer p-0">
+                <button type="button" onclick="event.stopPropagation(); toggleDiscoverLike(this, '${String(item.id).replace(/'/g, "\\'")}', ${item.likes}, ${item.isFirestore ? 'true' : 'false'}, '${item.collectionName || ''}')" class="hover:text-[#1e3a8a] flex items-center gap-1 bg-transparent border-none text-slate-500 cursor-pointer p-0">
                   <i class="fa-regular fa-thumbs-up"></i> <span>${item.likes}</span>
                 </button>
                 <button type="button" onclick="event.stopPropagation()" class="hover:text-red-500 bg-transparent border-none text-slate-400 cursor-pointer p-0" title="Не цікавить">
@@ -1202,7 +1238,7 @@
         renderDiscoverGrid(category);
       }
 
-      async function toggleDiscoverLike(btn, itemId, baseCount, isFirestore) {
+      async function toggleDiscoverLike(btn, itemId, baseCount, isFirestore, collectionName) {
         const span = btn.querySelector('span');
         const icon = btn.querySelector('i');
         const liked = btn.dataset.liked === 'true';
@@ -1219,26 +1255,47 @@
         }
 
         if (isFirestore && typeof window.syncDiscoverLikeToFirestore === 'function') {
-          await window.syncDiscoverLikeToFirestore(itemId, delta);
+          await window.syncDiscoverLikeToFirestore(itemId, delta, collectionName);
         }
       }
 
       function openDiscoverModal(id) {
         const article = getCombinedDiscoverArticles().find(a => String(a.id) === String(id));
         if (!article) return;
+
         const modalImg = document.getElementById('modalArticleImg');
-        modalImg.dataset.fbApplied = '0';
-        modalImg.onerror = function() {
-          if (this.dataset.fbApplied !== '1') {
-            this.dataset.fbApplied = '1';
-            this.src = article.fallback || FALLBACK_GENERAL_IMG;
-          }
-        };
-        modalImg.src = article.image;
+        const ytWrapper = document.getElementById('modalYouTubeWrapper');
+        const ytIframe = document.getElementById('modalYouTubeIframe');
+
+        if (article.youtubeId) {
+          modalImg.classList.add('hidden');
+          ytWrapper.classList.remove('hidden');
+          ytIframe.src = `https://www.youtube.com/embed/${article.youtubeId}?autoplay=1`;
+        } else {
+          ytIframe.src = '';
+          ytWrapper.classList.add('hidden');
+          modalImg.classList.remove('hidden');
+          modalImg.dataset.fbApplied = '0';
+          modalImg.onerror = function() {
+            if (this.dataset.fbApplied !== '1') {
+              this.dataset.fbApplied = '1';
+              this.src = article.fallback || FALLBACK_GENERAL_IMG;
+            }
+          };
+          modalImg.src = article.image;
+        }
+
         document.getElementById('modalArticleSource').textContent = article.source;
         document.getElementById('modalArticleDate').textContent = article.time;
         document.getElementById('modalArticleTitle').textContent = article.title;
-        document.getElementById('modalArticleContent').textContent = article.content;
+
+        const contentContainer = document.getElementById('modalArticleContent');
+        if (article.isHtmlContent) {
+          contentContainer.innerHTML = article.content;
+        } else {
+          contentContainer.textContent = article.content;
+        }
+
         const linkEl = document.getElementById('modalArticleLink');
         const catKey = normalizeCategoryKey(article.category, article.title, article.source);
         const catObj = ALL_CATEGORIES.find(c => c.key === catKey);
@@ -1251,6 +1308,8 @@
 
       function closeDiscoverModal() {
         document.getElementById('discoverArticleModal').style.display = 'none';
+        const ytIframe = document.getElementById('modalYouTubeIframe');
+        if (ytIframe) ytIframe.src = '';
       }
 
       function loadMoreDiscoverItems() {
@@ -1258,8 +1317,12 @@
         renderDiscoverGrid(currentDiscoverFilter);
       }
 
-      window.updateFirestoreDiscoverArticles = function(items) {
-        firestoreDiscoverArticles = Array.isArray(items) ? items : [];
+      window.updateFirestoreDiscoverArticles = function(items, sourceCollection = 'baza_posts') {
+        if (sourceCollection === 'articles') {
+          firestoreArticlesCollectionItems = Array.isArray(items) ? items : [];
+        } else {
+          firestoreBazaPostsCollectionItems = Array.isArray(items) ? items : [];
+        }
         renderDiscoverTabs();
         renderDiscoverGrid(currentDiscoverFilter);
       };
@@ -1358,48 +1421,91 @@
           return user && user.email && ADMIN_EMAILS.includes(user.email.toLowerCase().trim());
       }
 
-      // Жива синхронізація публікацій з колекції baza_posts у реальному часі
+      function mapFirestoreDocToFeedItem(docSnap, collectionName) {
+          const data = docSnap.data() || {};
+          const titleText = data.title || 'Без заголовка';
+          const sourceText = data.source || '';
+          const rawVideoUrl = data.youtubeUrl || data.videoUrl || '';
+          const ytId = (data.youtubeId && String(data.youtubeId).trim()) || extractYouTubeID(rawVideoUrl) || extractYouTubeID(titleText) || extractYouTubeID(data.summary || '');
+          const rawCategory = ytId && (!data.category || data.category === 'all') ? 'youtube' : data.category;
+          const catKey = normalizeCategoryKey(rawCategory, titleText, sourceText);
+          const catObj = ALL_CATEGORIES.find(c => c.key === catKey);
+
+          let sortTimestamp = 0;
+          let createdDate = data.date || 'Щойно';
+          if (data.createdAt && typeof data.createdAt.toDate === 'function') {
+              const d = data.createdAt.toDate();
+              sortTimestamp = d.getTime();
+              if (!data.date) {
+                  createdDate = d.toLocaleDateString('uk-UA');
+              }
+          }
+
+          const imageFromGallery = Array.isArray(data.images) && data.images.length > 0 ? data.images[0] : '';
+          const ytThumb = ytId ? `https://img.youtube.com/vi/${ytId}/hqdefault.jpg` : '';
+          const resolvedImage = data.imageUrl || data.image || imageFromGallery || ytThumb || (catObj ? catObj.image : FALLBACK_GENERAL_IMG);
+
+          const rawHtmlContent = data.text || data.content || data.description || data.summary || '';
+          const plainSummary = stripHtmlTags(data.summary || data.description || rawHtmlContent);
+
+          return {
+              id: `${collectionName}:${docSnap.id}`,
+              rawDocId: docSnap.id,
+              collectionName: collectionName,
+              sortTimestamp: sortTimestamp,
+              isFirestore: true,
+              category: catKey,
+              isVideo: Boolean(ytId || data.isVideo || rawVideoUrl || catKey === 'youtube'),
+              youtubeId: ytId || '',
+              source: sourceText || (catObj ? `${catObj.emoji} ${catObj.label}` : '📌 База знань'),
+              time: createdDate,
+              title: titleText,
+              summaryText: plainSummary,
+              image: resolvedImage,
+              fallback: FALLBACK_GENERAL_IMG,
+              likes: typeof data.likes === 'number' ? data.likes : 0,
+              link: getTargetCategoryUrl(catKey, data.link || 'baza.html'),
+              content: rawHtmlContent,
+              isHtmlContent: Boolean(data.text)
+          };
+      }
+
+      // Жива синхронізація публікацій з колекції articles (baza.html) та baza_posts у реальному часі
+      function listenToBazaArticlesFeed() {
+          const articlesQuery = query(collection(db, "articles"), orderBy("createdAt", "desc"));
+          onSnapshot(articlesQuery, (snapshot) => {
+              const items = [];
+              snapshot.forEach((docSnap) => {
+                  items.push(mapFirestoreDocToFeedItem(docSnap, "articles"));
+              });
+              if (typeof window.updateFirestoreDiscoverArticles === 'function') {
+                  window.updateFirestoreDiscoverArticles(items, "articles");
+              }
+          }, (err) => {
+              console.warn("Помилка синхронізації articles:", err.message);
+          });
+      }
+
       function listenToBazaPostsFeed() {
           const postsQuery = query(collection(db, "baza_posts"), orderBy("createdAt", "desc"));
           onSnapshot(postsQuery, (snapshot) => {
               const items = [];
               snapshot.forEach((docSnap) => {
-                  const data = docSnap.data() || {};
-                  const titleText = data.title || 'Без заголовка';
-                  const sourceText = data.source || '';
-                  const catKey = normalizeCategoryKey(data.category, titleText, sourceText);
-                  const catObj = ALL_CATEGORIES.find(c => c.key === catKey);
-                  const createdDate = data.createdAt && typeof data.createdAt.toDate === 'function'
-                      ? data.createdAt.toDate().toLocaleDateString('uk-UA')
-                      : 'Щойно';
-
-                  items.push({
-                      id: docSnap.id,
-                      isFirestore: true,
-                      category: catKey,
-                      isVideo: Boolean(data.isVideo || data.videoUrl || catKey === 'youtube'),
-                      source: sourceText || (catObj ? `${catObj.emoji} ${catObj.label}` : '📌 База знань'),
-                      time: createdDate,
-                      title: titleText,
-                      image: data.image || (catObj ? catObj.image : FALLBACK_GENERAL_IMG),
-                      fallback: FALLBACK_GENERAL_IMG,
-                      likes: typeof data.likes === 'number' ? data.likes : 0,
-                      link: getTargetCategoryUrl(catKey, data.link || (catObj ? catObj.link : 'baza.html')),
-                      content: data.content || data.description || ''
-                  });
+                  items.push(mapFirestoreDocToFeedItem(docSnap, "baza_posts"));
               });
-
               if (typeof window.updateFirestoreDiscoverArticles === 'function') {
-                  window.updateFirestoreDiscoverArticles(items);
+                  window.updateFirestoreDiscoverArticles(items, "baza_posts");
               }
           }, (err) => {
               console.warn("Помилка синхронізації baza_posts:", err.message);
           });
       }
 
-      window.syncDiscoverLikeToFirestore = async function(docId, delta) {
+      window.syncDiscoverLikeToFirestore = async function(compositeId, delta, collectionName) {
+          const targetCol = collectionName || (String(compositeId).includes(':') ? String(compositeId).split(':')[0] : 'articles');
+          const rawId = String(compositeId).includes(':') ? String(compositeId).split(':')[1] : String(compositeId);
           try {
-              await updateDoc(doc(db, "baza_posts", docId), {
+              await updateDoc(doc(db, targetCol, rawId), {
                   likes: increment(delta)
               });
           } catch (err) {
@@ -1407,6 +1513,7 @@
           }
       };
 
+      listenToBazaArticlesFeed();
       listenToBazaPostsFeed();
 
       const loggedOutView = document.getElementById('loggedOutView');
@@ -1435,7 +1542,7 @@
                   localData = JSON.parse(localStorage.getItem('neoservice_ukraine_custom_v5') || '{}');
               } catch(e) {}
 
-              const collectionsToBackup = ['city_portals', 'collage_banners', 'requests', 'baza_posts', 'auto_listings', 'sport_news', 'shop_listings', 'spiritual_words', 'real_estate_listings', 'real_estate_sidebar_banner'];
+              const collectionsToBackup = ['city_portals', 'collage_banners', 'requests', 'articles', 'baza_posts', 'auto_listings', 'sport_news', 'shop_listings', 'spiritual_words', 'real_estate_listings', 'real_estate_sidebar_banner'];
               let firestoreData = {};
 
               for (let colName of collectionsToBackup) {
@@ -1453,7 +1560,7 @@
               const fullBackupPackage = {
                   app: "Neoservice.ks.ua",
                   exportDate: new Date().toISOString(),
-                  version: "5.4",
+                  version: "5.5",
                   localStorage: localData,
                   firestore: firestoreData
               };

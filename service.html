@@ -9,6 +9,8 @@
     
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Синхронізація категорій порталу -->
+    <script src="categories-sync.js"></script>
 
     <style>
         :root {
@@ -105,6 +107,11 @@
             border-color: rgba(2, 132, 199, 0.4);
         }
 
+        .service-card.highlighted-service {
+            border-color: #0284c7;
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.25), 0 20px 30px -10px rgba(2, 132, 199, 0.22);
+        }
+
         .service-icon {
             width: 52px;
             height: 52px;
@@ -193,9 +200,9 @@
       </div>
 
       <!-- СІТКА ПОСЛУГ -->
-      <div class="services-grid">
+      <div class="services-grid" id="servicesGrid">
         
-        <div class="service-card">
+        <div class="service-card" data-service-keys="pc,computer,repair,техніка,ремонт пк">
           <div>
             <div class="service-icon"><i class="fa-solid fa-laptop-medical"></i></div>
             <h3 style="margin: 0 0 10px 0; color: #0f172a; font-size: 1.1rem;">Ремонт ПК та Оргтехніки</h3>
@@ -204,7 +211,7 @@
           <button class="btn-order" onclick="openOrderModal('Ремонт ПК та Оргтехніки')">Замовити послугу</button>
         </div>
 
-        <div class="service-card">
+        <div class="service-card" data-service-keys="printer,print,друк,принтери">
           <div>
             <div class="service-icon"><i class="fa-solid fa-print"></i></div>
             <h3 style="margin: 0 0 10px 0; color: #0f172a; font-size: 1.1rem;">Принтери та Друк</h3>
@@ -213,7 +220,7 @@
           <button class="btn-order" onclick="openOrderModal('Принтери та Друк')">Замовити послугу</button>
         </div>
 
-        <div class="service-card">
+        <div class="service-card" data-service-keys="auto,ecu,autoelectrics,автоелектрика,ебу">
           <div>
             <div class="service-icon"><i class="fa-solid fa-car-battery"></i></div>
             <h3 style="margin: 0 0 10px 0; color: #0f172a; font-size: 1.1rem;">Автоелектрика & ЕБУ</h3>
@@ -222,7 +229,7 @@
           <button class="btn-order" onclick="openOrderModal('Автоелектрика & ЕБУ')">Замовити послугу</button>
         </div>
 
-        <div class="service-card">
+        <div class="service-card" data-service-keys="electro,scooter,електротранспорт,самокати">
           <div>
             <div class="service-icon"><i class="fa-solid fa-bolt"></i></div>
             <h3 style="margin: 0 0 10px 0; color: #0f172a; font-size: 1.1rem;">Електротранспорт</h3>
@@ -231,7 +238,7 @@
           <button class="btn-order" onclick="openOrderModal('Електротранспорт')">Замовити послугу</button>
         </div>
 
-        <div class="service-card">
+        <div class="service-card" data-service-keys="web,design,dev,веб-розробка,дизайн">
           <div>
             <div class="service-icon"><i class="fa-solid fa-code"></i></div>
             <h3 style="margin: 0 0 10px 0; color: #0f172a; font-size: 1.1rem;">Веб-розробка та Дизайн</h3>
@@ -240,7 +247,7 @@
           <button class="btn-order" onclick="openOrderModal('Веб-розробка та Дизайн')">Замовити послугу</button>
         </div>
 
-        <div class="service-card">
+        <div class="service-card" data-service-keys="print-ads,polygraphy,ads,поліграфія,реклама">
           <div>
             <div class="service-icon"><i class="fa-solid fa-palette"></i></div>
             <h3 style="margin: 0 0 10px 0; color: #0f172a; font-size: 1.1rem;">Поліграфія та Реклама</h3>
@@ -286,6 +293,61 @@
     <footer>
         <p>&copy; 2026 Neoservice.ks.ua — Міський інформаційний портал та технічний сервіс.</p>
     </footer>
+
+    <!-- Синхронізація вибраної категорії/послуги зі сторінкою -->
+    <script>
+      (function syncServicePageCategory() {
+        function readRequestedService() {
+          const params = new URLSearchParams(window.location.search);
+          const rawParam = params.get('service') || params.get('category') || params.get('cat') || params.get('tab') || '';
+          const rawHash = (window.location.hash || '').replace(/^#/, '');
+          const candidate = decodeURIComponent(rawParam || rawHash).trim();
+
+          if (!candidate) return '';
+          if (typeof window.resolvePortalCategoryKey === 'function') {
+            const resolved = window.resolvePortalCategoryKey(candidate);
+            if (resolved && resolved !== 'service' && resolved !== 'services') {
+              return String(resolved);
+            }
+          }
+          return candidate;
+        }
+
+        function applyServiceSelection(value) {
+          const query = String(value || '').toLowerCase().trim();
+          const cards = Array.from(document.querySelectorAll('.service-card'));
+          cards.forEach((card) => card.classList.remove('highlighted-service'));
+
+          if (!query || query === 'service' || query === 'services' || query === 'all') return;
+
+          const matchedCard = cards.find((card) => {
+            const title = (card.querySelector('h3')?.textContent || '').toLowerCase();
+            const keys = (card.getAttribute('data-service-keys') || '').toLowerCase();
+            return title.includes(query) || query.includes(title) || keys.split(',').some((k) => k.trim() && (query.includes(k.trim()) || k.trim().includes(query)));
+          });
+
+          if (matchedCard) {
+            matchedCard.classList.add('highlighted-service');
+            matchedCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+          const initial = readRequestedService();
+          if (typeof window.applyPortalCategoryFromUrl === 'function') {
+            window.applyPortalCategoryFromUrl((resolved) => {
+              applyServiceSelection(resolved || initial);
+            });
+          } else {
+            applyServiceSelection(initial);
+          }
+        });
+
+        window.addEventListener('hashchange', () => {
+          applyServiceSelection(readRequestedService());
+        });
+      })();
+    </script>
 
     <!-- Firebase модуль -->
     <script type="module">

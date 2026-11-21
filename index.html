@@ -207,6 +207,7 @@
             .banner-trust-grid { grid-template-columns: 1fr !important; }
         }
     </style>
+    <script src="categories-sync.js"></script>
 </head>
 <body>
 
@@ -1004,6 +1005,49 @@
         { key: 'sponsored', emoji: '📢', label: 'Спонсоровано', shortLabel: '📢 Спонсоровано', link: 'service.html', image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80', isVideo: false, title: 'Спонсоровано: партнерські пропозиції, підтримка проєкту та рекламні розміщення', content: 'Спеціальні пропозиції партнерів, підтримка розвитку порталу та можливості розміщення інформаційних і рекламних матеріалів.' }
       ];
 
+      function normalizeCategoryKey(rawCategory, title = '', source = '') {
+        if (typeof window.resolvePortalCategoryKey === 'function') {
+          const resolved = window.resolvePortalCategoryKey(rawCategory, `${title} ${source}`);
+          if (resolved && resolved !== 'all') return resolved;
+        }
+
+        const combined = `${String(rawCategory || '')} ${String(title || '')} ${String(source || '')}`.toLowerCase().trim();
+        const exact = ALL_CATEGORIES.find(
+          c => c.key === String(rawCategory || '').toLowerCase().trim() || c.label.toLowerCase() === String(rawCategory || '').toLowerCase().trim()
+        );
+        if (exact) return exact.key;
+
+        if (combined.includes('навчання') || combined.includes('освіт') || combined.includes('education')) return 'education';
+        if (combined.includes('законодавств') || combined.includes('юрист') || combined.includes('право') || combined.includes('law')) return 'law';
+        if (combined.includes('електротранспорт') || combined.includes('акб') || combined.includes('bms') || combined.includes('ev')) return 'ev';
+        if (combined.includes('авто') || combined.includes('ecu') || combined.includes('діагност')) return 'auto';
+        if (combined.includes("комп'ютер") || combined.includes('компютер') || combined.includes('пк') || combined === 'pc') return 'pc';
+        if (combined.includes('оргтехнік') || combined.includes('принтер') || combined.includes('office')) return 'office';
+        if (combined.includes('інженер') || combined.includes('схем') || combined.includes('pcb') || combined.includes('engineering')) return 'engineering';
+        if (combined.includes('радіозв') || combined.includes('радіо') || combined.includes('radio')) return 'radio';
+        if (combined.includes('діловодств') || combined.includes('документ') || combined.includes('docs')) return 'docs';
+        if (combined.includes('будівництв') || combined.includes('ремонт') || combined.includes('construction')) return 'construction';
+        if (combined.includes('безпек') || combined.includes('кібер') || combined.includes('security')) return 'security';
+        if (combined.includes('енергонезалежн') || combined.includes('дбж') || combined.includes('інвертор') || combined.includes('energy')) return 'energy';
+        if (combined.includes('youtube') || combined.includes('відео')) return 'youtube';
+        if (combined.includes('спонсор') || combined.includes('реклам') || combined.includes('sponsored')) return 'sponsored';
+        if (combined.includes('бізнес') || combined.includes('послуг') || combined.includes('business')) return 'business';
+
+        return 'business';
+      }
+
+      function getTargetCategoryUrl(categoryKey, fallbackLink = '') {
+        const key = normalizeCategoryKey(categoryKey);
+        if (typeof window.buildCategoryTargetUrl === 'function') {
+          return window.buildCategoryTargetUrl(key);
+        }
+        const catObj = ALL_CATEGORIES.find(c => c.key === key);
+        const basePage = fallbackLink || (catObj ? catObj.link : 'baza.html');
+        if (basePage.startsWith('http')) return basePage;
+        const cleanPage = basePage.split('?')[0];
+        return `${cleanPage}?category=${encodeURIComponent(key)}`;
+      }
+
       const staticDiscoverArticles = ALL_CATEGORIES.map((cat, idx) => ({
         id: `static-${idx + 1}`,
         isFirestore: false,
@@ -1015,7 +1059,7 @@
         image: cat.image,
         fallback: FALLBACK_GENERAL_IMG,
         likes: 35 + idx * 9,
-        link: cat.link,
+        link: getTargetCategoryUrl(cat.key, cat.link),
         content: cat.content
       }));
 
@@ -1196,7 +1240,10 @@
         document.getElementById('modalArticleTitle').textContent = article.title;
         document.getElementById('modalArticleContent').textContent = article.content;
         const linkEl = document.getElementById('modalArticleLink');
-        linkEl.href = article.link || 'baza.html';
+        const catKey = normalizeCategoryKey(article.category, article.title, article.source);
+        const catObj = ALL_CATEGORIES.find(c => c.key === catKey);
+        linkEl.href = getTargetCategoryUrl(catKey, article.link);
+        linkEl.textContent = catObj ? `Перейти до розділу: ${catObj.label} →` : 'Перейти до розділу →';
         linkEl.removeAttribute('target');
         linkEl.removeAttribute('rel');
         document.getElementById('discoverArticleModal').style.display = 'flex';
@@ -1318,7 +1365,9 @@
               const items = [];
               snapshot.forEach((docSnap) => {
                   const data = docSnap.data() || {};
-                  const catKey = data.category || 'business';
+                  const titleText = data.title || 'Без заголовка';
+                  const sourceText = data.source || '';
+                  const catKey = normalizeCategoryKey(data.category, titleText, sourceText);
                   const catObj = ALL_CATEGORIES.find(c => c.key === catKey);
                   const createdDate = data.createdAt && typeof data.createdAt.toDate === 'function'
                       ? data.createdAt.toDate().toLocaleDateString('uk-UA')
@@ -1329,13 +1378,13 @@
                       isFirestore: true,
                       category: catKey,
                       isVideo: Boolean(data.isVideo || data.videoUrl || catKey === 'youtube'),
-                      source: data.source || (catObj ? `${catObj.emoji} ${catObj.label}` : '📌 База знань'),
+                      source: sourceText || (catObj ? `${catObj.emoji} ${catObj.label}` : '📌 База знань'),
                       time: createdDate,
-                      title: data.title || 'Без заголовка',
+                      title: titleText,
                       image: data.image || (catObj ? catObj.image : FALLBACK_GENERAL_IMG),
                       fallback: FALLBACK_GENERAL_IMG,
                       likes: typeof data.likes === 'number' ? data.likes : 0,
-                      link: data.link || (catObj ? catObj.link : 'baza.html'),
+                      link: getTargetCategoryUrl(catKey, data.link || (catObj ? catObj.link : 'baza.html')),
                       content: data.content || data.description || ''
                   });
               });

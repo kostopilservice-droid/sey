@@ -236,11 +236,14 @@
         </a>
 
         <!-- Пошук та інструменти адміністратора / монетизації -->
-        <div style="display: flex; align-items: center; gap: 10px; flex: 1; max-width: 580px; min-width: 260px; justify-content: flex-end; flex-wrap: wrap;">
+        <div style="display: flex; align-items: center; gap: 10px; flex: 1; max-width: 680px; min-width: 260px; justify-content: flex-end; flex-wrap: wrap;">
           
-          <!-- Кнопки резервного копіювання сайту (тільки для адміністраторів) -->
-          <div id="globalAdminBackupTools" style="display: none; align-items: center; gap: 6px;">
-            <button onClick="exportEntireWebsiteData()" style="background: rgba(245, 158, 11, 0.2); border: 1px solid rgba(245, 158, 11, 0.5); color: #fde047; padding: 6px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 4px;" title="Експортувати повну базу даних сайту у JSON">
+          <!-- Кнопки керування адміністратора (тільки для адміністраторів) -->
+          <div id="globalAdminBackupTools" style="display: none; align-items: center; gap: 6px; flex-wrap: wrap;">
+            <button type="button" id="adminHiddenPostsBtn" onclick="openHiddenPostsModal()" style="background: rgba(59, 130, 246, 0.25); border: 1px solid rgba(96, 165, 250, 0.6); color: #bfdbfe; padding: 6px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;" title="Список публікацій, прихованих з головної сторінки (відновлення одним кліком)">
+              <i class="fa-solid fa-eye"></i> Приховані з головної <span id="hiddenPostsBadge" style="background: #2563eb; color: #ffffff; padding: 1px 6px; border-radius: 999px; font-size: 0.7rem;">0</span>
+            </button>
+            <button type="button" onClick="exportEntireWebsiteData()" style="background: rgba(245, 158, 11, 0.2); border: 1px solid rgba(245, 158, 11, 0.5); color: #fde047; padding: 6px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 4px;" title="Експортувати повну базу даних сайту у JSON">
               <i class="fa-solid fa-download"></i> Бекап
             </button>
             <label style="background: rgba(245, 158, 11, 0.2); border: 1px solid rgba(245, 158, 11, 0.5); color: #fde047; padding: 6px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 4px;" title="Відновити базу даних сайту з JSON">
@@ -859,6 +862,58 @@
       </div>
     </section>
 
+    <!-- ================= МОДАЛЬНЕ ВІКНО «ПРИХОВАНІ З ГОЛОВНОЇ» (МАСШТАБОВАНЕ ДЛЯ 1 000 000+ ПУБЛІКАЦІЙ) ================= -->
+    <div id="hiddenPostsAdminModal" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(6px); z-index: 9999; align-items: center; justify-content: center; padding: 15px;">
+      <div class="bg-white rounded-2xl max-w-2xl w-full overflow-hidden shadow-2xl border border-slate-200 flex flex-col max-h-[90vh]">
+        <div class="bg-gradient-to-r from-[#0f172a] to-[#1e3a8a] text-white px-5 py-4 flex items-center justify-between gap-3">
+          <div>
+            <h3 class="text-base sm:text-lg font-extrabold m-0 flex items-center gap-2">
+              <i class="fa-solid fa-eye-slash text-blue-300"></i> Приховані з головної
+            </h3>
+            <p id="hiddenPostsScaleMeta" class="text-[11px] text-blue-200 m-0 mt-0.5">
+              Індексний запит Firestore по hideOnHome == true (безпечно для 1 000 000+ документів)
+            </p>
+          </div>
+          <button type="button" onclick="closeHiddenPostsModal()" class="w-8 h-8 rounded-full bg-white/15 hover:bg-white/25 text-white flex items-center justify-center cursor-pointer border-0">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <div class="px-5 py-3 bg-slate-50 border-b border-slate-200 flex flex-col sm:flex-row gap-2.5 items-stretch sm:items-center justify-between">
+          <div class="relative flex-1">
+            <i class="fa-solid fa-magnifying-glass text-slate-400 text-xs absolute left-3 top-1/2 -translate-y-1/2"></i>
+            <input type="text" id="hiddenPostsSearchInput" oninput="renderHiddenPostsModalList()" placeholder="Фільтр серед завантажених прихованих (назва, ID, категорія)..." class="w-full pl-8 pr-3 py-1.5 text-xs border border-slate-300 rounded-lg bg-white text-slate-800 outline-none focus:border-blue-600">
+          </div>
+          <div class="flex items-center gap-2 shrink-0">
+            <select id="hiddenPostsCollectionFilter" onchange="refreshHiddenPostsModal(true)" class="text-xs border border-slate-300 rounded-lg px-2.5 py-1.5 bg-white text-slate-700 font-semibold outline-none">
+              <option value="all">Усі колекції</option>
+              <option value="articles">articles</option>
+              <option value="baza_posts">baza_posts</option>
+            </select>
+            <button type="button" onclick="refreshHiddenPostsModal(true)" class="bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-bold px-3 py-1.5 rounded-lg border-0 cursor-pointer flex items-center gap-1" title="Оновити вибірку з сервера">
+              <i class="fa-solid fa-rotate"></i> Оновити
+            </button>
+          </div>
+        </div>
+
+        <div id="hiddenPostsListContainer" class="p-4 overflow-y-auto flex-1 space-y-2.5">
+          <div class="text-center py-8 text-xs text-slate-500">Завантаження списку прихованих публікацій...</div>
+        </div>
+
+        <div class="px-5 py-3 bg-slate-50 border-t border-slate-200 flex items-center justify-between gap-2 flex-wrap">
+          <div id="hiddenPostsPaginationInfo" class="text-[11px] text-slate-500 font-medium"></div>
+          <div class="flex items-center gap-2">
+            <button type="button" id="loadMoreHiddenPostsBtn" onclick="refreshHiddenPostsModal(false)" style="display: none;" class="bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 text-xs font-bold px-3 py-1.5 rounded-lg cursor-pointer">
+              Завантажити ще 50
+            </button>
+            <button type="button" onclick="closeHiddenPostsModal()" class="bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold px-4 py-1.5 rounded-lg border-0 cursor-pointer">
+              Закрити
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- ================= МОДАЛЬНЕ ВІКНО ПЕРЕГЛЯДУ ПУБЛІКАЦІЇ ================= -->
     <div id="discoverArticleModal" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(6px); z-index: 9999; align-items: center; justify-content: center; padding: 15px;">
       <div class="bg-white rounded-2xl max-w-2xl w-full overflow-hidden shadow-2xl border border-slate-200 flex flex-col max-h-[90vh]">
@@ -1251,7 +1306,7 @@
             </div>
             <div class="px-3.5 py-2.5 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
               <div class="flex items-center gap-3">
-                <button type="button" onclick="event.stopPropagation(); toggleDiscoverLike(this, '${String(item.id).replace(/'/g, "\\'")}', ${item.likes}, ${item.isFirestore ? 'true' : 'false'}, '${item.collectionName || ''}')" class="hover:text-[#1e3a8a] flex items-center gap-1 bg-transparent border-none text-slate-500 cursor-pointer p-0">
+                <button type="button" onclick="event.stopPropagation(); toggleDiscoverLike(this, '${String(item.id).replace(/'/g, "\'")}', ${item.likes}, ${item.isFirestore ? 'true' : 'false'}, '${item.collectionName || ''}')" class="hover:text-[#1e3a8a] flex items-center gap-1 bg-transparent border-none text-slate-500 cursor-pointer p-0">
                   <i class="fa-regular fa-thumbs-up"></i> <span>${item.likes}</span>
                 </button>
                 <button type="button" onclick="event.stopPropagation()" class="hover:text-red-500 bg-transparent border-none text-slate-400 cursor-pointer p-0" title="Не цікавить">
@@ -1260,7 +1315,7 @@
               </div>
               <div class="flex items-center gap-2">
                 ${item.isFirestore ? `
-                  <button type="button" data-admin-hide-btn="1" style="display: none;" onclick="event.stopPropagation(); hidePostFromHome('${String(item.id).replace(/'/g, "\\'")}', '${item.collectionName || ''}', '${String(item.rawDocId || '').replace(/'/g, "\\'")}')" class="bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 px-2 py-0.5 rounded text-[10px] font-bold cursor-pointer transition-colors" title="Приховати публікацію лише з головної сторінки">
+                  <button type="button" data-admin-hide-btn="1" style="display: none;" onclick="event.stopPropagation(); hidePostFromHome('${String(item.id).replace(/'/g, "\'")}', '${item.collectionName || ''}', '${String(item.rawDocId || '').replace(/'/g, "\'")}')" class="bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 px-2 py-0.5 rounded text-[10px] font-bold cursor-pointer transition-colors" title="Приховати публікацію лише з головної сторінки">
                     <i class="fa-solid fa-eye-slash"></i> Скрити
                   </button>
                 ` : ''}
@@ -1394,6 +1449,9 @@
         }
         renderDiscoverTabs();
         renderDiscoverGrid(currentDiscoverFilter);
+        if (typeof window.onFeedUpdatedForHiddenBadge === 'function') {
+          window.onFeedUpdatedForHiddenBadge();
+        }
       };
 
       // Безпечна реєстрація Service Worker з примусовим оновленням
@@ -1460,11 +1518,11 @@
       });
     </script>
 
-    <!-- СКРИПТИ FIREBASE ТА ОСНОВНОЇ ЛОГІКИ -->
+    <!-- СКРИПТИ FIREBASE ТА ОСНОВНОЇ ЛОГІКИ (МАСШТАБОВАНІ ДЛЯ 1 000 000+ ПУБЛІКАЦІЙ) -->
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
       import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-      import { getFirestore, collection, addDoc, deleteDoc, doc, getDocs, setDoc, updateDoc, increment, query, where, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+      import { getFirestore, collection, addDoc, deleteDoc, doc, getDoc, getDocs, setDoc, updateDoc, increment, query, where, orderBy, limit, startAfter, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
       const firebaseConfig = {
           apiKey: "AIzaSyBlKoP6-M8tdrKq88bSdnWSnak5Gpddnpk",
@@ -1480,7 +1538,7 @@
       const auth = getAuth(app);
       const db = getFirestore(app);
 
-      // Список адміністраторів з правами керування банерами та бекапами
+      // Список адміністраторів з правами керування банерами, прихованими публікаціями та бекапами
       const ADMIN_EMAILS = [
           'kostopilservice@gmail.com',
           'olegdriganec@gmail.com'
@@ -1494,18 +1552,34 @@
           return isAdminUser(auth.currentUser);
       };
 
-      function mapFirestoreDocToFeedItem(docSnap, collectionName) {
+      // --- Масштабування для 1 000 000+ публікацій ---
+      // 1. Головна стрічка читає лише свіжу вибірку через limit(HOME_FEED_LIMIT), щоб не тягнути мільйони документів у клієнтську пам'ять.
+      // 2. Приховані публікації запитуються точковим індексним фільтром where('hideOnHome', '==', true) + limit(HIDDEN_PAGE_SIZE) + курсором startAfter(lastDoc).
+      // 3. Локальний список localStorage використовується лише як миттєвий запасний кеш, якщо запис у Firestore недоступний через правила безпеки.
+      const HOME_FEED_LIMIT = 45;
+      const HIDDEN_PAGE_SIZE = 50;
+
+      let hiddenPostsCursorMap = {
+          articles: null,
+          baza_posts: null,
+          articlesExhausted: false,
+          bazaExhausted: false
+      };
+      let loadedHiddenPostsCache = [];
+
+      function mapFirestoreDocToFeedItem(docSnap, collectionName, ignoreHiddenFilter = false) {
           const data = docSnap.data() || {};
           const compositeId = `${collectionName}:${docSnap.id}`;
           const localHidden = getLocalHiddenDiscoverIds();
 
-          if (
+          const isHidden =
               data.hideOnHome === true ||
               data.hiddenOnHome === true ||
               data.showOnHome === false ||
               localHidden.includes(compositeId) ||
-              localHidden.includes(String(docSnap.id))
-          ) {
+              localHidden.includes(String(docSnap.id));
+
+          if (!ignoreHiddenFilter && isHidden) {
               return null;
           }
 
@@ -1540,6 +1614,7 @@
               collectionName: collectionName,
               sortTimestamp: sortTimestamp,
               isFirestore: true,
+              isHiddenOnHome: isHidden,
               category: catKey,
               isVideo: Boolean(ytId || data.isVideo || rawVideoUrl || catKey === 'youtube'),
               youtubeId: ytId || '',
@@ -1556,13 +1631,30 @@
           };
       }
 
-      // Жива синхронізація публікацій з колекції articles (baza.html) та baza_posts у реальному часі
+      function updateHiddenBadgeCount() {
+          const badge = document.getElementById('hiddenPostsBadge');
+          if (!badge) return;
+          const localCount = getLocalHiddenDiscoverIds().length;
+          const cachedHiddenCount = loadedHiddenPostsCache.length;
+          const totalDisplay = Math.max(cachedHiddenCount, localCount);
+          badge.textContent = cachedHiddenCount >= HIDDEN_PAGE_SIZE ? `${cachedHiddenCount}+` : String(totalDisplay);
+      }
+
+      window.onFeedUpdatedForHiddenBadge = function() {
+          updateHiddenBadgeCount();
+      };
+
+      // Жива синхронізація лише обмеженої свіжої вибірки для головної сторінки (оптимізовано під 1M+ записів)
       function listenToBazaArticlesFeed() {
-          const articlesQuery = query(collection(db, "articles"), orderBy("createdAt", "desc"));
+          const articlesQuery = query(
+              collection(db, "articles"),
+              orderBy("createdAt", "desc"),
+              limit(HOME_FEED_LIMIT)
+          );
           onSnapshot(articlesQuery, (snapshot) => {
               const items = [];
               snapshot.forEach((docSnap) => {
-                  const mapped = mapFirestoreDocToFeedItem(docSnap, "articles");
+                  const mapped = mapFirestoreDocToFeedItem(docSnap, "articles", false);
                   if (mapped) items.push(mapped);
               });
               if (typeof window.updateFirestoreDiscoverArticles === 'function') {
@@ -1574,11 +1666,15 @@
       }
 
       function listenToBazaPostsFeed() {
-          const postsQuery = query(collection(db, "baza_posts"), orderBy("createdAt", "desc"));
+          const postsQuery = query(
+              collection(db, "baza_posts"),
+              orderBy("createdAt", "desc"),
+              limit(HOME_FEED_LIMIT)
+          );
           onSnapshot(postsQuery, (snapshot) => {
               const items = [];
               snapshot.forEach((docSnap) => {
-                  const mapped = mapFirestoreDocToFeedItem(docSnap, "baza_posts");
+                  const mapped = mapFirestoreDocToFeedItem(docSnap, "baza_posts", false);
                   if (mapped) items.push(mapped);
               });
               if (typeof window.updateFirestoreDiscoverArticles === 'function') {
@@ -1588,6 +1684,260 @@
               console.warn("Помилка синхронізації baza_posts:", err.message);
           });
       }
+
+      // Точковий запит прихованих публікацій з пагінацією (працює навіть при мільйонах публікацій у базі)
+      async function fetchHiddenPageFromCollection(colName, resetCursor = false) {
+          if (resetCursor) {
+              if (colName === 'articles') {
+                  hiddenPostsCursorMap.articles = null;
+                  hiddenPostsCursorMap.articlesExhausted = false;
+              } else {
+                  hiddenPostsCursorMap.baza_posts = null;
+                  hiddenPostsCursorMap.bazaExhausted = false;
+              }
+          }
+
+          if (colName === 'articles' && hiddenPostsCursorMap.articlesExhausted) return [];
+          if (colName === 'baza_posts' && hiddenPostsCursorMap.bazaExhausted) return [];
+
+          const cursor = colName === 'articles' ? hiddenPostsCursorMap.articles : hiddenPostsCursorMap.baza_posts;
+          const constraints = [
+              where("hideOnHome", "==", true),
+              orderBy("createdAt", "desc"),
+              limit(HIDDEN_PAGE_SIZE)
+          ];
+          if (cursor) {
+              constraints.push(startAfter(cursor));
+          }
+
+          try {
+              const q = query(collection(db, colName), ...constraints);
+              const snap = await getDocs(q);
+              const items = [];
+              snap.forEach((docSnap) => {
+                  const mapped = mapFirestoreDocToFeedItem(docSnap, colName, true);
+                  if (mapped) items.push(mapped);
+              });
+
+              if (snap.docs.length > 0) {
+                  const lastDoc = snap.docs[snap.docs.length - 1];
+                  if (colName === 'articles') hiddenPostsCursorMap.articles = lastDoc;
+                  else hiddenPostsCursorMap.baza_posts = lastDoc;
+              }
+              if (snap.docs.length < HIDDEN_PAGE_SIZE) {
+                  if (colName === 'articles') hiddenPostsCursorMap.articlesExhausted = true;
+                  else hiddenPostsCursorMap.bazaExhausted = true;
+              }
+              return items;
+          } catch (err) {
+              // Запасний шлях без складеного індексу (якщо індекс ще не створено у Firestore Console)
+              try {
+                  const fallbackQ = query(
+                      collection(db, colName),
+                      where("hideOnHome", "==", true),
+                      limit(HIDDEN_PAGE_SIZE)
+                  );
+                  const snap = await getDocs(fallbackQ);
+                  const items = [];
+                  snap.forEach((docSnap) => {
+                      const mapped = mapFirestoreDocToFeedItem(docSnap, colName, true);
+                      if (mapped) items.push(mapped);
+                  });
+                  if (colName === 'articles') hiddenPostsCursorMap.articlesExhausted = true;
+                  else hiddenPostsCursorMap.bazaExhausted = true;
+                  return items;
+              } catch (fallbackErr) {
+                  console.warn(`Не вдалося отримати приховані з ${colName}:`, fallbackErr.message);
+                  return [];
+              }
+          }
+      }
+
+      // Додає локально приховані ID (якщо оновлення поля hideOnHome в Firestore було заблоковано правилами)
+      async function hydrateLocalOnlyHiddenItems() {
+          const localIds = getLocalHiddenDiscoverIds();
+          const extra = [];
+          for (const rawComposite of localIds) {
+              const str = String(rawComposite);
+              const colName = str.includes(':') ? str.split(':')[0] : 'articles';
+              const docId = str.includes(':') ? str.split(':')[1] : str;
+              if (loadedHiddenPostsCache.some(x => x.id === `${colName}:${docId}`)) continue;
+              try {
+                  const dSnap = await getDoc(doc(db, colName, docId));
+                  if (dSnap.exists()) {
+                      const mapped = mapFirestoreDocToFeedItem(dSnap, colName, true);
+                      if (mapped) {
+                          mapped.isHiddenOnHome = true;
+                          extra.push(mapped);
+                      }
+                  }
+              } catch (e) {}
+          }
+          return extra;
+      }
+
+      window.refreshHiddenPostsModal = async function(reset = true) {
+          const user = auth.currentUser;
+          if (!isAdminUser(user)) return;
+
+          const colFilter = document.getElementById('hiddenPostsCollectionFilter')?.value || 'all';
+          const listContainer = document.getElementById('hiddenPostsListContainer');
+          if (reset && listContainer) {
+              listContainer.innerHTML = `<div class="text-center py-8 text-xs text-slate-500"><i class="fa-solid fa-spinner fa-spin mr-1"></i> Пошук прихованих публікацій...</div>`;
+          }
+
+          let fetched = [];
+          if (colFilter === 'all' || colFilter === 'articles') {
+              const aItems = await fetchHiddenPageFromCollection('articles', reset);
+              fetched = fetched.concat(aItems);
+          }
+          if (colFilter === 'all' || colFilter === 'baza_posts') {
+              const bItems = await fetchHiddenPageFromCollection('baza_posts', reset);
+              fetched = fetched.concat(bItems);
+          }
+
+          if (reset) {
+              const localExtra = await hydrateLocalOnlyHiddenItems();
+              fetched = fetched.concat(localExtra);
+              const uniqueMap = new Map();
+              fetched.forEach(item => uniqueMap.set(item.id, item));
+              loadedHiddenPostsCache = Array.from(uniqueMap.values());
+          } else {
+              const uniqueMap = new Map(loadedHiddenPostsCache.map(item => [item.id, item]));
+              fetched.forEach(item => uniqueMap.set(item.id, item));
+              loadedHiddenPostsCache = Array.from(uniqueMap.values());
+          }
+
+          loadedHiddenPostsCache.sort((a, b) => (b.sortTimestamp || 0) - (a.sortTimestamp || 0));
+          updateHiddenBadgeCount();
+          window.renderHiddenPostsModalList();
+      };
+
+      window.renderHiddenPostsModalList = function() {
+          const container = document.getElementById('hiddenPostsListContainer');
+          const searchInput = document.getElementById('hiddenPostsSearchInput');
+          const loadMoreBtn = document.getElementById('loadMoreHiddenPostsBtn');
+          const paginationInfo = document.getElementById('hiddenPostsPaginationInfo');
+          if (!container) return;
+
+          const qText = (searchInput?.value || '').trim().toLowerCase();
+          const filtered = loadedHiddenPostsCache.filter(item => {
+              if (!qText) return true;
+              return (
+                  String(item.title || '').toLowerCase().includes(qText) ||
+                  String(item.source || '').toLowerCase().includes(qText) ||
+                  String(item.rawDocId || '').toLowerCase().includes(qText) ||
+                  String(item.collectionName || '').toLowerCase().includes(qText)
+              );
+          });
+
+          if (paginationInfo) {
+              paginationInfo.textContent = `Показано: ${filtered.length} з ${loadedHiddenPostsCache.length} завантажених прихованих записів`;
+          }
+
+          const hasMore = !(hiddenPostsCursorMap.articlesExhausted && hiddenPostsCursorMap.bazaExhausted);
+          if (loadMoreBtn) {
+              loadMoreBtn.style.display = hasMore ? 'inline-flex' : 'none';
+          }
+
+          if (filtered.length === 0) {
+              container.innerHTML = `
+                <div class="text-center py-8 px-4 bg-slate-50 rounded-xl border border-dashed border-slate-300">
+                  <div class="text-2xl mb-2">✨</div>
+                  <div class="text-xs font-bold text-slate-700">Прихованих публікацій за поточним фільтром не знайдено</div>
+                  <div class="text-[11px] text-slate-500 mt-1">Усі відфільтровані матеріали відображаються на головній сторінці.</div>
+                </div>
+              `;
+              return;
+          }
+
+          container.innerHTML = '';
+          filtered.forEach(item => {
+              const safeCompositeId = String(item.id).replace(/'/g, "\'");
+              const safeCol = String(item.collectionName || 'articles').replace(/'/g, "\'");
+              const safeDocId = String(item.rawDocId || '').replace(/'/g, "\'");
+
+              const row = document.createElement('div');
+              row.className = 'flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 rounded-xl border border-slate-200 bg-slate-50/70 hover:bg-white transition-colors';
+              row.innerHTML = `
+                <div class="min-w-0 flex-1">
+                  <div class="flex items-center gap-1.5 text-[10px] font-bold text-slate-500 uppercase mb-0.5 flex-wrap">
+                    <span class="bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded">Скритий</span>
+                    <span class="bg-slate-200 text-slate-700 px-1.5 py-0.5 rounded">${safeCol}</span>
+                    <span>• ${item.time || '—'}</span>
+                    <span class="text-slate-400">ID: ${safeDocId}</span>
+                  </div>
+                  <div class="text-xs sm:text-sm font-bold text-slate-800 truncate">${item.title}</div>
+                  <div class="text-[11px] text-slate-500 truncate">${item.source || ''}</div>
+                </div>
+                <div class="flex items-center gap-2 shrink-0">
+                  <button type="button" onclick="previewHiddenPost('${safeCompositeId}')" class="bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-bold px-3 py-1.5 rounded-lg border-0 cursor-pointer transition-colors">
+                    <i class="fa-solid fa-up-right-from-square mr-1"></i> Відкрити
+                  </button>
+                  <button type="button" onclick="restorePostToHome('${safeCompositeId}', '${safeCol}', '${safeDocId}')" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3 py-1.5 rounded-lg border-0 cursor-pointer shadow-sm transition-colors">
+                    <i class="fa-solid fa-eye mr-1"></i> Відновити
+                  </button>
+                </div>
+              `;
+              container.appendChild(row);
+          });
+      };
+
+      window.openHiddenPostsModal = function() {
+          if (!isAdminUser(auth.currentUser)) {
+              alert("Помилка доступу: розділ доступний лише адміністраторам!");
+              return;
+          }
+          document.getElementById('hiddenPostsAdminModal').style.display = 'flex';
+          window.refreshHiddenPostsModal(true);
+      };
+
+      window.closeHiddenPostsModal = function() {
+          document.getElementById('hiddenPostsAdminModal').style.display = 'none';
+      };
+
+      window.previewHiddenPost = function(compositeId) {
+          const found = loadedHiddenPostsCache.find(x => String(x.id) === String(compositeId));
+          if (!found) return;
+          window.closeHiddenPostsModal();
+          // Тимчасово підкладаємо об'єкт у локальний перегляд модального вікна
+          const tempList = getCombinedDiscoverArticles();
+          if (!tempList.some(x => x.id === found.id)) {
+              if (found.collectionName === 'articles') {
+                  firestoreArticlesCollectionItems = [found, ...firestoreArticlesCollectionItems];
+              } else {
+                  firestoreBazaPostsCollectionItems = [found, ...firestoreBazaPostsCollectionItems];
+              }
+          }
+          openDiscoverModal(found.id);
+      };
+
+      window.restorePostToHome = async function(compositeId, collectionName, rawDocId) {
+          if (!isAdminUser(auth.currentUser)) {
+              alert("Помилка доступу: відновлювати публікації можуть лише адміністратори!");
+              return;
+          }
+          const strId = String(compositeId);
+          const targetCol = collectionName || (strId.includes(':') ? strId.split(':')[0] : 'articles');
+          const docId = rawDocId || (strId.includes(':') ? strId.split(':')[1] : strId);
+
+          removeLocalHiddenDiscoverId(`${targetCol}:${docId}`);
+          try {
+              await updateDoc(doc(db, targetCol, docId), {
+                  hideOnHome: false,
+                  hiddenOnHome: false,
+                  showOnHome: true
+              });
+          } catch (err) {
+              console.warn("Оновлення поля у Firestore не виконано, знято локальне приховування:", err.message);
+          }
+
+          loadedHiddenPostsCache = loadedHiddenPostsCache.filter(x => String(x.id) !== `${targetCol}:${docId}`);
+          updateHiddenBadgeCount();
+          window.renderHiddenPostsModalList();
+          listenToBazaArticlesFeed();
+          listenToBazaPostsFeed();
+      };
 
       window.hidePostFromHome = async function(compositeId, collectionName, rawDocId) {
           const user = auth.currentUser;
@@ -1604,36 +1954,20 @@
                   hideOnHome: true
               });
               removeLocalHiddenDiscoverId(`${targetCol}:${docId}`);
-              alert("Публікацію приховано з головної сторінки (вона залишається в базі).");
           } catch (err) {
               const currentHidden = getLocalHiddenDiscoverIds();
               currentHidden.push(`${targetCol}:${docId}`);
               setLocalHiddenDiscoverIds(currentHidden);
-              listenToBazaArticlesFeed();
-              listenToBazaPostsFeed();
-              alert("Публікацію приховано з головної сторінки у цьому браузері.");
           }
+
+          updateHiddenBadgeCount();
+          listenToBazaArticlesFeed();
+          listenToBazaPostsFeed();
+          alert("Публікацію приховано з головної сторінки. Відновити можна у меню «Приховані з головної».");
       };
 
       window.unhidePostOnHome = async function(compositeId) {
-          const user = auth.currentUser;
-          if (!isAdminUser(user)) return;
-
-          const strId = String(compositeId);
-          const targetCol = strId.includes(':') ? strId.split(':')[0] : 'articles';
-          const docId = strId.includes(':') ? strId.split(':')[1] : strId;
-
-          removeLocalHiddenDiscoverId(`${targetCol}:${docId}`);
-          try {
-              await updateDoc(doc(db, targetCol, docId), {
-                  hideOnHome: false,
-                  hiddenOnHome: false,
-                  showOnHome: true
-              });
-          } catch (err) {
-              listenToBazaArticlesFeed();
-              listenToBazaPostsFeed();
-          }
+          await window.restorePostToHome(compositeId);
       };
 
       window.syncDiscoverLikeToFirestore = async function(compositeId, delta, collectionName) {
@@ -1799,9 +2133,11 @@
           if (adminActive) {
             if (adminCollageBtn) adminCollageBtn.style.display = 'block';
             if (globalAdminBackupTools) globalAdminBackupTools.style.display = 'flex';
+            updateHiddenBadgeCount();
           } else {
             if (adminCollageBtn) adminCollageBtn.style.display = 'none';
             if (globalAdminBackupTools) globalAdminBackupTools.style.display = 'none';
+            window.closeHiddenPostsModal();
           }
           if (typeof window.syncAdminHideButtonsVisibility === 'function') {
             window.syncAdminHideButtonsVisibility(adminActive);
@@ -1812,6 +2148,7 @@
           if (loggedInView) loggedInView.style.display = 'none';
           if (adminCollageBtn) adminCollageBtn.style.display = 'none';
           if (globalAdminBackupTools) globalAdminBackupTools.style.display = 'none';
+          window.closeHiddenPostsModal();
           if (typeof window.syncAdminHideButtonsVisibility === 'function') {
             window.syncAdminHideButtonsVisibility(false);
           }

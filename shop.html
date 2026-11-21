@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Tailwind CSS -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Синхронізація категорій порталу -->
+    <script src="categories-sync.js"></script>
 
     <style>
         :root {
@@ -1507,7 +1509,74 @@
         }
       }
 
+      function findMatchingCategoryOrSub(rawValue) {
+        const val = String(rawValue || '').replace(/^#/, '').trim();
+        if (!val || val === 'all' || val === 'shop') return { type: 'all', value: 'all' };
+
+        let resolved = val;
+        if (typeof window.resolvePortalCategoryKey === 'function') {
+          const mapped = window.resolvePortalCategoryKey(val);
+          if (mapped && String(mapped).trim()) resolved = String(mapped).trim();
+        }
+
+        const lower = resolved.toLowerCase();
+
+        for (const cat of categoriesData) {
+          if (cat.name.toLowerCase() === lower || cat.name.toLowerCase().includes(lower)) {
+            return { type: 'category', value: cat.name };
+          }
+          for (const sub of cat.sub) {
+            if (sub.toLowerCase() === lower || sub.toLowerCase().includes(lower)) {
+              return { type: 'subcategory', category: cat.name, value: sub };
+            }
+          }
+        }
+
+        return { type: 'search', value: resolved };
+      }
+
+      function applyShopCategorySync(explicitCandidate) {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('id')) return;
+
+        const candidate = explicitCandidate || params.get('category') || params.get('cat') || params.get('sub') || params.get('tab') || window.location.hash || '';
+        const decoded = decodeURIComponent(String(candidate)).trim();
+        if (!decoded) return;
+
+        const match = findMatchingCategoryOrSub(decoded);
+        if (match.type === 'category') {
+          activeFilter = match.value;
+          selectCategory(match.value);
+          filterCards();
+        } else if (match.type === 'subcategory') {
+          activeFilter = match.value;
+          selectCategory(match.category);
+          filterCards();
+        } else if (match.type === 'search') {
+          const searchInput = document.getElementById('shopSearch');
+          if (searchInput) {
+            searchInput.value = match.value;
+            document.getElementById('clearSearchBtn').style.display = 'block';
+          }
+          filterCards();
+        }
+      }
+
       initCatalog();
+
+      document.addEventListener('DOMContentLoaded', () => {
+        if (typeof window.applyPortalCategoryFromUrl === 'function') {
+          window.applyPortalCategoryFromUrl((resolved) => {
+            applyShopCategorySync(resolved);
+          });
+        } else {
+          applyShopCategorySync();
+        }
+      });
+
+      window.addEventListener('hashchange', () => {
+        applyShopCategorySync(window.location.hash);
+      });
 
       document.getElementById('resetFilterBtn').addEventListener('click', () => {
         activeFilter = 'all';
@@ -2065,6 +2134,8 @@
           const targetId = urlParams.get('id');
           if (targetId) {
             openProductDetail(targetId, false);
+          } else {
+            applyShopCategorySync();
           }
         } catch (err) {
           shopProductsContainer.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; padding: 30px; color: var(--danger);">Помилка завантаження даних.</div>`;

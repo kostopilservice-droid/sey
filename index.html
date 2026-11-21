@@ -877,9 +877,14 @@
           <h3 id="modalArticleTitle" class="text-xl font-extrabold text-slate-800 mb-3 leading-snug"></h3>
           <div id="modalArticleContent" class="text-sm text-slate-600 leading-relaxed"></div>
         </div>
-        <div class="px-5 py-3 bg-slate-50 border-t border-slate-200 flex justify-between items-center">
+        <div class="px-5 py-3 bg-slate-50 border-t border-slate-200 flex justify-between items-center gap-2 flex-wrap">
           <a id="modalArticleLink" href="baza.html" class="text-xs font-bold text-blue-600 hover:underline no-underline">Перейти до розділу &rarr;</a>
-          <button onclick="closeDiscoverModal()" class="bg-slate-800 text-white text-xs font-bold px-4 py-2 rounded-lg cursor-pointer border-none">Закрити</button>
+          <div class="flex items-center gap-2">
+            <button type="button" id="modalHidePostBtn" style="display: none;" class="bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 text-xs font-bold px-3 py-2 rounded-lg cursor-pointer">
+              <i class="fa-solid fa-eye-slash"></i> Приховати з головної
+            </button>
+            <button onclick="closeDiscoverModal()" class="bg-slate-800 text-white text-xs font-bold px-4 py-2 rounded-lg cursor-pointer border-none">Закрити</button>
+          </div>
         </div>
       </div>
     </div>
@@ -988,6 +993,35 @@
         const tmp = document.createElement('div');
         tmp.innerHTML = String(html);
         return (tmp.textContent || tmp.innerText || '').trim();
+      }
+
+      const HIDDEN_DISCOVER_STORAGE_KEY = 'neoservice_hidden_home_posts_v1';
+
+      function getLocalHiddenDiscoverIds() {
+        try {
+          const raw = localStorage.getItem(HIDDEN_DISCOVER_STORAGE_KEY);
+          const parsed = raw ? JSON.parse(raw) : [];
+          return Array.isArray(parsed) ? parsed.map(String) : [];
+        } catch (e) {
+          return [];
+        }
+      }
+
+      function setLocalHiddenDiscoverIds(ids) {
+        try {
+          localStorage.setItem(HIDDEN_DISCOVER_STORAGE_KEY, JSON.stringify([...new Set(ids.map(String))]));
+        } catch (e) {}
+      }
+
+      function removeLocalHiddenDiscoverId(targetId) {
+        const strId = String(targetId);
+        const filtered = getLocalHiddenDiscoverIds().filter((id) => {
+          if (id === strId) return false;
+          if (strId.includes(':') && id === strId.split(':')[1]) return false;
+          if (!strId.includes(':') && id.endsWith(':' + strId)) return false;
+          return true;
+        });
+        setLocalHiddenDiscoverIds(filtered);
       }
 
       const FALLBACK_GENERAL_IMG = "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(`
@@ -1224,13 +1258,30 @@
                   <i class="fa-regular fa-thumbs-down"></i>
                 </button>
               </div>
-              <span class="text-[11px] font-bold text-[#1e3a8a]">Детальніше</span>
+              <div class="flex items-center gap-2">
+                ${item.isFirestore ? `
+                  <button type="button" data-admin-hide-btn="1" style="display: none;" onclick="event.stopPropagation(); hidePostFromHome('${String(item.id).replace(/'/g, "\\'")}', '${item.collectionName || ''}', '${String(item.rawDocId || '').replace(/'/g, "\\'")}')" class="bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 px-2 py-0.5 rounded text-[10px] font-bold cursor-pointer transition-colors" title="Приховати публікацію лише з головної сторінки">
+                    <i class="fa-solid fa-eye-slash"></i> Скрити
+                  </button>
+                ` : ''}
+                <span class="text-[11px] font-bold text-[#1e3a8a]">Детальніше</span>
+              </div>
             </div>
           `;
 
           container.appendChild(cardEl);
         });
+
+        if (typeof window.isCurrentUserHomeAdmin === 'function') {
+          window.syncAdminHideButtonsVisibility(Boolean(window.isCurrentUserHomeAdmin()));
+        }
       }
+
+      window.syncAdminHideButtonsVisibility = function(isAdmin) {
+        document.querySelectorAll('[data-admin-hide-btn="1"]').forEach((btn) => {
+          btn.style.display = isAdmin ? 'inline-flex' : 'none';
+        });
+      };
 
       function filterDiscoverFeed(category, btnEl) {
         currentDiscoverFilter = category;
@@ -1303,6 +1354,24 @@
         linkEl.textContent = catObj ? `Перейти до розділу: ${catObj.label} →` : 'Перейти до розділу →';
         linkEl.removeAttribute('target');
         linkEl.removeAttribute('rel');
+
+        const hideBtn = document.getElementById('modalHidePostBtn');
+        const canAdminHide = typeof window.isCurrentUserHomeAdmin === 'function' && window.isCurrentUserHomeAdmin();
+        if (hideBtn) {
+          if (canAdminHide && article.isFirestore) {
+            hideBtn.style.display = 'inline-flex';
+            hideBtn.onclick = async () => {
+              if (typeof window.hidePostFromHome === 'function') {
+                await window.hidePostFromHome(article.id, article.collectionName, article.rawDocId);
+                closeDiscoverModal();
+              }
+            };
+          } else {
+            hideBtn.style.display = 'none';
+            hideBtn.onclick = null;
+          }
+        }
+
         document.getElementById('discoverArticleModal').style.display = 'flex';
       }
 
@@ -1421,8 +1490,25 @@
           return user && user.email && ADMIN_EMAILS.includes(user.email.toLowerCase().trim());
       }
 
+      window.isCurrentUserHomeAdmin = function() {
+          return isAdminUser(auth.currentUser);
+      };
+
       function mapFirestoreDocToFeedItem(docSnap, collectionName) {
           const data = docSnap.data() || {};
+          const compositeId = `${collectionName}:${docSnap.id}`;
+          const localHidden = getLocalHiddenDiscoverIds();
+
+          if (
+              data.hideOnHome === true ||
+              data.hiddenOnHome === true ||
+              data.showOnHome === false ||
+              localHidden.includes(compositeId) ||
+              localHidden.includes(String(docSnap.id))
+          ) {
+              return null;
+          }
+
           const titleText = data.title || 'Без заголовка';
           const sourceText = data.source || '';
           const rawVideoUrl = data.youtubeUrl || data.videoUrl || '';
@@ -1449,7 +1535,7 @@
           const plainSummary = stripHtmlTags(data.summary || data.description || rawHtmlContent);
 
           return {
-              id: `${collectionName}:${docSnap.id}`,
+              id: compositeId,
               rawDocId: docSnap.id,
               collectionName: collectionName,
               sortTimestamp: sortTimestamp,
@@ -1476,7 +1562,8 @@
           onSnapshot(articlesQuery, (snapshot) => {
               const items = [];
               snapshot.forEach((docSnap) => {
-                  items.push(mapFirestoreDocToFeedItem(docSnap, "articles"));
+                  const mapped = mapFirestoreDocToFeedItem(docSnap, "articles");
+                  if (mapped) items.push(mapped);
               });
               if (typeof window.updateFirestoreDiscoverArticles === 'function') {
                   window.updateFirestoreDiscoverArticles(items, "articles");
@@ -1491,7 +1578,8 @@
           onSnapshot(postsQuery, (snapshot) => {
               const items = [];
               snapshot.forEach((docSnap) => {
-                  items.push(mapFirestoreDocToFeedItem(docSnap, "baza_posts"));
+                  const mapped = mapFirestoreDocToFeedItem(docSnap, "baza_posts");
+                  if (mapped) items.push(mapped);
               });
               if (typeof window.updateFirestoreDiscoverArticles === 'function') {
                   window.updateFirestoreDiscoverArticles(items, "baza_posts");
@@ -1500,6 +1588,53 @@
               console.warn("Помилка синхронізації baza_posts:", err.message);
           });
       }
+
+      window.hidePostFromHome = async function(compositeId, collectionName, rawDocId) {
+          const user = auth.currentUser;
+          if (!isAdminUser(user)) {
+              alert("Помилка доступу: приховувати публікації з головної можуть лише адміністратори!");
+              return;
+          }
+
+          const targetCol = collectionName || (String(compositeId).includes(':') ? String(compositeId).split(':')[0] : 'articles');
+          const docId = rawDocId || (String(compositeId).includes(':') ? String(compositeId).split(':')[1] : String(compositeId));
+
+          try {
+              await updateDoc(doc(db, targetCol, docId), {
+                  hideOnHome: true
+              });
+              removeLocalHiddenDiscoverId(`${targetCol}:${docId}`);
+              alert("Публікацію приховано з головної сторінки (вона залишається в базі).");
+          } catch (err) {
+              const currentHidden = getLocalHiddenDiscoverIds();
+              currentHidden.push(`${targetCol}:${docId}`);
+              setLocalHiddenDiscoverIds(currentHidden);
+              listenToBazaArticlesFeed();
+              listenToBazaPostsFeed();
+              alert("Публікацію приховано з головної сторінки у цьому браузері.");
+          }
+      };
+
+      window.unhidePostOnHome = async function(compositeId) {
+          const user = auth.currentUser;
+          if (!isAdminUser(user)) return;
+
+          const strId = String(compositeId);
+          const targetCol = strId.includes(':') ? strId.split(':')[0] : 'articles';
+          const docId = strId.includes(':') ? strId.split(':')[1] : strId;
+
+          removeLocalHiddenDiscoverId(`${targetCol}:${docId}`);
+          try {
+              await updateDoc(doc(db, targetCol, docId), {
+                  hideOnHome: false,
+                  hiddenOnHome: false,
+                  showOnHome: true
+              });
+          } catch (err) {
+              listenToBazaArticlesFeed();
+              listenToBazaPostsFeed();
+          }
+      };
 
       window.syncDiscoverLikeToFirestore = async function(compositeId, delta, collectionName) {
           const targetCol = collectionName || (String(compositeId).includes(':') ? String(compositeId).split(':')[0] : 'articles');
@@ -1660,12 +1795,16 @@
           loadUserOrders(user.email);
 
           // ПЕРЕВІРКА АДМІНІСТРАТОРІВ (kostopilservice@gmail.com та olegdriganec@gmail.com)
-          if (isAdminUser(user)) {
+          const adminActive = isAdminUser(user);
+          if (adminActive) {
             if (adminCollageBtn) adminCollageBtn.style.display = 'block';
             if (globalAdminBackupTools) globalAdminBackupTools.style.display = 'flex';
           } else {
             if (adminCollageBtn) adminCollageBtn.style.display = 'none';
             if (globalAdminBackupTools) globalAdminBackupTools.style.display = 'none';
+          }
+          if (typeof window.syncAdminHideButtonsVisibility === 'function') {
+            window.syncAdminHideButtonsVisibility(adminActive);
           }
 
         } else {
@@ -1673,6 +1812,9 @@
           if (loggedInView) loggedInView.style.display = 'none';
           if (adminCollageBtn) adminCollageBtn.style.display = 'none';
           if (globalAdminBackupTools) globalAdminBackupTools.style.display = 'none';
+          if (typeof window.syncAdminHideButtonsVisibility === 'function') {
+            window.syncAdminHideButtonsVisibility(false);
+          }
         }
       });
 

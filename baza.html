@@ -1,763 +1,813 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>База знань — Neoservice.ks.ua</title>
-  
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  
-  <!-- Font Awesome Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-  
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            brand: {
-              dark: '#0c192c',
-              header: '#11223f',
-              accent: '#1d4ed8'
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>База знань — NEOSERVICE.KS.UA</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            navy: '#0f2b5c',
+                            blue: '#1d4ed8',
+                            accent: '#2563eb'
+                        }
+                    }
+                }
             }
-          }
         }
-      }
-    }
-  </script>
-  <style>
-    .no-scrollbar::-webkit-scrollbar { display: none; }
-    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    
-    .article-formatted-text p { margin-bottom: 0.5rem; }
-    .article-formatted-text b, .article-formatted-text strong { font-weight: 700; }
-    .article-formatted-text i, .article-formatted-text em { font-style: italic; }
-    .article-formatted-text u { text-decoration: underline; }
-    .article-formatted-text ul { list-style-type: disc; padding-left: 1.25rem; margin-bottom: 0.5rem; }
-    .article-formatted-text ol { list-style-type: decimal; padding-left: 1.25rem; margin-bottom: 0.5rem; }
+    </script>
 
-    .editor-content {
-      min-height: 180px;
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
-  </style>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+            margin: 0;
+            padding: 0;
+        }
+        nav {
+            display: flex;
+            justify-content: center;
+            background: #0f172a;
+            overflow-x: auto;
+            border-bottom: 2px solid #1e3a8a;
+        }
+        nav a {
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            white-space: nowrap;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        nav a:hover, nav a.active-nav {
+            background-color: #d97706;
+        }
+        .cat-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: 9999px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            background: #ffffff;
+            color: #334155;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+        .cat-pill:hover {
+            background: #eff6ff;
+            border-color: #93c5fd;
+            color: #1d4ed8;
+            transform: translateY(-1px);
+        }
+        .cat-pill.active {
+            background: #1d4ed8 !important;
+            color: #ffffff !important;
+            border-color: #1d4ed8 !important;
+            box-shadow: 0 4px 12px rgba(29, 78, 216, 0.35);
+        }
+    </style>
+    <script src="categories-sync.js"></script>
 </head>
-<body class="bg-slate-100 text-slate-800 font-sans antialiased min-h-screen flex flex-col justify-between">
+<body class="min-h-screen flex flex-col">
 
-  <!-- ========================================== -->
-  <!-- HEADER                                     -->
-  <!-- ========================================== -->
-  <header class="bg-brand-header text-white shadow-lg sticky top-0 z-40">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-16">
-        
-        <!-- Логотип -->
-        <a href="index.html" class="flex items-center space-x-3 group">
-          <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center font-bold text-xl shadow-md">
-            🧙‍♂️
-          </div>
-          <div>
-            <div class="font-extrabold text-base tracking-tight text-white">NEOSERVICE.KS.UA</div>
-            <div class="text-[9px] text-blue-200">Служба технічної підтримки та База Знань</div>
-          </div>
-        </a>
+    <!-- ШАПКА ПОРТАЛУ -->
+    <header style="background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); color: white; padding: 15px 20px; border-bottom: 3px solid #3b82f6; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+        <div style="max-width: 1150px; margin: 0 auto; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 15px;">
+            <a href="index.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none; color: white;">
+                <div style="background: linear-gradient(135deg, #2563eb, #38bdf8); border: 1px solid rgba(255,255,255,0.2); border-radius: 14px; width: 46px; height: 46px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                    📚
+                </div>
+                <div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="font-size: 1.35rem; font-weight: 900; letter-spacing: 0.8px; text-transform: uppercase;">
+                            NEOSERVICE<span style="color: #60a5fa;">.KS.UA</span>
+                        </span>
+                        <span style="background: rgba(56, 189, 248, 0.2); color: #7dd3fc; border: 1px solid rgba(56, 189, 248, 0.4); font-size: 0.65rem; font-weight: 800; padding: 2px 8px; border-radius: 10px;">
+                            БАЗА ЗНАНЬ
+                        </span>
+                    </div>
+                    <div style="font-size: 0.78rem; color: #cbd5e1; margin-top: 2px;">
+                        Технічна документація, посібники, інструкції та корисні матеріали
+                    </div>
+                </div>
+            </a>
 
-        <!-- Пошук в шапці -->
-        <div class="hidden md:flex items-center flex-1 max-w-md mx-8">
-          <div class="relative w-full">
-            <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
-              <i class="fa-solid fa-magnifying-glass text-xs"></i>
-            </span>
-            <input type="text" id="searchInput" oninput="filterArticles()" placeholder="Пошук у базі знань (теми, закони, ECU, прикладки)..." class="w-full pl-9 pr-4 py-1.5 text-xs bg-slate-800 text-white placeholder-slate-400 border border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
-          </div>
+            <div class="flex items-center gap-2.5 flex-wrap">
+                <a href="index.html" class="bg-white/10 hover:bg-white/20 text-white border border-white/20 px-3.5 py-2 rounded-xl text-xs font-bold no-underline transition">
+                    <i class="fa-solid fa-house mr-1"></i> На головну
+                </a>
+                <button id="openAddPostBtn" type="button" onclick="openAddPostModal()" style="display: none;" class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-xl text-xs font-bold shadow cursor-pointer border-0 transition">
+                    <i class="fa-solid fa-plus mr-1"></i> Додати матеріал
+                </button>
+            </div>
         </div>
+    </header>
 
-        <!-- Навігаційні кнопки -->
-        <div class="flex items-center gap-2 text-xs">
-          <a href="index.html" class="px-3 py-1.5 hover:bg-slate-800 text-slate-300 rounded-lg transition-colors flex items-center gap-1.5">
-            <i class="fa-solid fa-house"></i> Головна
-          </a>
-          <a href="baza.html" class="px-3 py-1.5 bg-blue-600 text-white font-bold rounded-lg transition-colors flex items-center gap-1.5">
-            <i class="fa-solid fa-book-open"></i> База знань
-          </a>
-          <a href="admin.html" class="px-3 py-1.5 hover:bg-slate-800 text-slate-300 rounded-lg transition-colors flex items-center gap-1.5">
-            <i class="fa-solid fa-gear"></i> Адмінка
-          </a>
-        </div>
+    <!-- НАВІГАЦІЯ -->
+    <nav>
+        <a href="index.html"><i class="fa-solid fa-house mr-1"></i> Головна</a>
+        <a href="baza.html" class="active-nav"><i class="fa-solid fa-book-open mr-1"></i> База знань</a>
+        <a href="service.html"><i class="fa-solid fa-screwdriver-wrench mr-1"></i> Сервіс - Service</a>
+        <a href="chat.html"><i class="fa-solid fa-comments mr-1"></i> Чат спільноти</a>
+        <a href="account.html"><i class="fa-solid fa-user-lock mr-1"></i> Особистий</a>
+    </nav>
 
-      </div>
-    </div>
-  </header>
+    <!-- ОСНОВНИЙ КОНТЕНТ -->
+    <main class="max-w-[1150px] w-full mx-auto px-4 py-6 flex-1 box-border">
 
-  <!-- ========================================== -->
-  <!-- MAIN CONTAINER                             -->
-  <!-- ========================================== -->
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow w-full space-y-6">
-    
-    <!-- ГОЛОВНИЙ БАНЕР-КАРУСЕЛЬ (Hero Banner) -->
-    <section class="relative bg-brand-header rounded-3xl overflow-hidden shadow-xl text-white">
-      <div class="absolute inset-0 z-0">
-        <img src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1400&q=80" alt="Hero Background" class="w-full h-full object-cover opacity-30">
-        <div class="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-900/80 to-transparent"></div>
-      </div>
-      
-      <div class="relative z-10 p-6 sm:p-10 max-w-2xl flex flex-col justify-center min-h-[280px]">
-        <div class="flex items-center gap-2 mb-3">
-          <span class="bg-amber-500 text-slate-950 text-[10px] font-extrabold px-2.5 py-1 rounded-full uppercase tracking-wider">
-            🔥 ТОП ТЕМА: Автодіагностика
-          </span>
-          <span class="text-[11px] text-slate-300">Оновлено сьогодні</span>
-        </div>
-        
-        <h1 class="text-xl sm:text-2xl lg:text-3xl font-black leading-tight mb-3">
-          Пошук витоку струму акумулятора: Повний посібник для автовласників (Hantek)
-        </h1>
-        
-        <p class="text-xs sm:text-sm text-slate-300 mb-5 line-clamp-2">
-          Як правильно використовувати осцилограф та мультиметр для виявлення прихованих споживачів в бортовій мережі. Покрокова інструкція.
-        </p>
-
-        <div class="flex items-center gap-4">
-          <button onclick="openHeroModal()" class="px-5 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs rounded-xl shadow transition-colors flex items-center gap-2">
-            Читати повністю <i class="fa-solid fa-arrow-right text-[10px]"></i>
-          </button>
-          <span class="text-[11px] text-slate-400"><i class="fa-regular fa-clock mr-1"></i> 20 жовтня, 2026</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- ЗАГОЛОВОК СТРІЧКИ ТА КНОПКА ДОДАВАННЯ -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-2">
-      <div>
-        <div class="flex items-center gap-2">
-          <h2 class="text-lg font-black text-slate-900 flex items-center gap-2">
-            <i class="fa-solid fa-book-open text-blue-600"></i> База знань та технічні мануали
-          </h2>
-          <span id="adminBadge" class="hidden text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 border border-emerald-300">
-            <i class="fa-solid fa-shield-halved mr-1"></i> Режим Адміна активний
-          </span>
-        </div>
-        <p class="text-xs text-slate-500">Діагностика, закони, діловодство, посібники, інструкції з ремонту та корисні матеріали.</p>
-      </div>
-
-      <a href="admin.html" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-sm transition-colors flex items-center justify-center gap-1.5 shrink-0">
-        <i class="fa-solid fa-plus"></i> Опублікувати матеріал
-      </a>
-    </div>
-
-    <!-- КАТЕГОРІЇ -->
-    <div class="flex flex-wrap items-center gap-2 pb-2">
-      <button onclick="filterCategory('all', this)" class="cat-btn px-3.5 py-1.5 bg-blue-600 text-white text-xs font-bold rounded-xl shadow-sm transition-colors">
-        🔥 Всі
-      </button>
-      <button onclick="filterCategory('auto', this)" class="cat-btn px-3.5 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl transition-colors">
-        🚗 Автодіагностика & ECU
-      </button>
-      <button onclick="filterCategory('computers', this)" class="cat-btn px-3.5 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl transition-colors">
-        💻 Комп'ютери
-      </button>
-      <button onclick="filterCategory('printers', this)" class="cat-btn px-3.5 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl transition-colors">
-        🖨️ Оргтехніка
-      </button>
-      <button onclick="filterCategory('engineering', this)" class="cat-btn px-3.5 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl transition-colors">
-        ⚙️ Інженерія & Схеми
-      </button>
-      <button onclick="filterCategory('radio', this)" class="cat-btn px-3.5 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl transition-colors">
-        📻 Радіозв'язок
-      </button>
-      <button onclick="filterCategory('ev_battery', this)" class="cat-btn px-3.5 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl transition-colors">
-        🔋 Електротранспорт & АКБ
-      </button>
-      <button onclick="filterCategory('law', this)" class="cat-btn px-3.5 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl transition-colors">
-        ⚖️ Законодавство & Юриспруденція
-      </button>
-      <button onclick="filterCategory('paperwork', this)" class="cat-btn px-3.5 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl transition-colors">
-        📑 Діловодство & Документи
-      </button>
-      <button onclick="filterCategory('local_biz', this)" class="cat-btn px-3.5 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl transition-colors">
-        🏪 Місцевий бізнес & Послуги
-      </button>
-      <button onclick="filterCategory('construction', this)" class="cat-btn px-3.5 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl transition-colors">
-        🏗️ Будівництво & Ремонт
-      </button>
-      <button onclick="filterCategory('cybersecurity', this)" class="cat-btn px-3.5 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl transition-colors">
-        🛡️ Цифрова безпека & IT
-      </button>
-      <button onclick="filterCategory('education', this)" class="cat-btn px-3.5 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl transition-colors">
-        🎓 Навчання & Освіта
-      </button>
-      <button onclick="filterCategory('energy', this)" class="cat-btn px-3.5 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl transition-colors">
-        💡 Енергонезалежність & ДБЖ
-      </button>
-      <button onclick="filterCategory('youtube', this)" class="cat-btn px-3.5 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl transition-colors">
-        ▶️ YouTube Відео
-      </button>
-      <button onclick="filterCategory('sponsored', this)" class="cat-btn px-3.5 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl transition-colors">
-        📢 Спонсоровано
-      </button>
-    </div>
-
-    <!-- СІТКА СТАТЕЙ -->
-    <div id="articlesGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-      <!-- Картки генеруються автоматично -->
-    </div>
-
-  </main>
-
-  <!-- ========================================== -->
-  <!-- МОДАЛЬНЕ ВІКНО ПЕРЕГЛЯДУ СТАТТІ / YOUTUBE  -->
-  <!-- ========================================== -->
-  <div id="articleModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
-    <div class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm" onclick="closeModal()"></div>
-    <div class="relative bg-white rounded-2xl shadow-2xl max-w-2xl w-full z-10 overflow-hidden max-h-[90vh] flex flex-col">
-      <div class="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
-        <span id="modalCategory" class="text-[10px] font-bold px-2.5 py-1 rounded-full bg-blue-100 text-blue-700">Категорія</span>
-        <div class="flex items-center gap-2">
-          <!-- Кнопки швидкого керування у вікні перегляду (тільки для Адміна) -->
-          <button id="modalEditBtn" class="hidden px-3 py-1 bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold rounded-lg transition-colors">
-            <i class="fa-solid fa-pen mr-1"></i> Редагувати
-          </button>
-          <button id="modalDeleteBtn" class="hidden px-3 py-1 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-lg transition-colors">
-            <i class="fa-solid fa-trash-can mr-1"></i> Видалити
-          </button>
-          <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-slate-200 hover:bg-slate-300 text-slate-700 flex items-center justify-center transition-colors">
-            <i class="fa-solid fa-xmark"></i>
-          </button>
-        </div>
-      </div>
-      <div class="p-6 overflow-y-auto space-y-4">
-        <h2 id="modalTitle" class="text-xl font-black text-slate-900 leading-tight">Заголовок</h2>
-        <div class="text-[11px] text-slate-400 flex items-center gap-3">
-          <span><i class="fa-regular fa-clock mr-1"></i> <span id="modalDate">Дата</span></span>
-          <span><i class="fa-regular fa-user mr-1"></i> <span id="modalAuthor">Автор</span></span>
-        </div>
-        
-        <div id="modalYouTubeContainer" class="w-full aspect-video rounded-xl overflow-hidden bg-black hidden">
-          <iframe id="modalYouTubeIframe" class="w-full h-full" src="" frameborder="0" allowfullscreen></iframe>
-        </div>
-
-        <!-- Галерея або зображення у модалці -->
-        <div id="modalImageContainer" class="w-full rounded-xl overflow-hidden bg-slate-900 hidden space-y-2">
-          <div class="w-full h-64 bg-slate-950 flex items-center justify-center">
-            <img id="modalImage" src="" alt="" class="w-full h-full object-contain">
-          </div>
-          <div id="modalThumbnails" class="flex gap-2 p-2 overflow-x-auto bg-slate-900"></div>
-        </div>
-
-        <div id="modalText" class="text-xs text-slate-700 leading-relaxed space-y-2 article-formatted-text">
-          Текст статті...
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ========================================== -->
-  <!-- МОДАЛЬНЕ ВІКНО ШВИДКОГО РЕДАГУВАННЯ (АДМІН)-->
-  <!-- ========================================== -->
-  <div id="editModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
-    <div class="fixed inset-0 bg-slate-950/75 backdrop-blur-sm" onclick="closeEditModal()"></div>
-    <div class="relative bg-white rounded-2xl shadow-2xl max-w-2xl w-full z-10 overflow-hidden max-h-[90vh] flex flex-col">
-      <div class="p-4 border-b border-slate-200 flex items-center justify-between bg-slate-900 text-white">
-        <span class="text-xs font-extrabold flex items-center gap-2">
-          <i class="fa-solid fa-pen-to-square text-amber-400"></i> Швидке редагування картки знань
-        </span>
-        <button onclick="closeEditModal()" class="w-7 h-7 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-      </div>
-      
-      <form onsubmit="saveEditedArticle(event)" class="p-6 overflow-y-auto space-y-4">
-        <input type="hidden" id="editArticleId">
-
-        <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">Заголовок *</label>
-          <input type="text" id="editTitle" required class="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600">
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">Категорія *</label>
-            <select id="editCategory" required class="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-600">
-              <option value="auto">🚗 Автодіагностика & ECU</option>
-              <option value="computers">💻 Комп'ютери</option>
-              <option value="printers">🖨️ Оргтехніка</option>
-              <option value="engineering">⚙️ Інженерія & Схеми</option>
-              <option value="radio">📻 Радіозв'язок</option>
-              <option value="ev_battery">🔋 Електротранспорт & АКБ</option>
-              <option value="law">⚖️ Законодавство & Юриспруденція</option>
-              <option value="paperwork">📑 Діловодство & Документи</option>
-              <option value="local_biz">🏪 Місцевий бізнес & Послуги</option>
-              <option value="construction">🏗️ Будівництво & Ремонт</option>
-              <option value="cybersecurity">🛡️ Цифрова безпека & IT</option>
-              <option value="education">🎓 Навчання & Освіта</option>
-              <option value="energy">💡 Енергонезалежність & ДБЖ</option>
-              <option value="youtube">▶️ YouTube Відео</option>
-              <option value="sponsored">📢 Спонсоровано</option>
-            </select>
-          </div>
-
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">URL обкладинки</label>
-            <input type="url" id="editImageUrl" class="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600">
-          </div>
-        </div>
-
-        <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">YouTube посилання (опціонально)</label>
-          <input type="url" id="editYoutubeUrl" placeholder="https://www.youtube.com/watch?v=..." class="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500">
-        </div>
-
-        <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">Короткий анонс *</label>
-          <textarea id="editSummary" rows="2" required class="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600"></textarea>
-        </div>
-
-        <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">Повний текст статті *</label>
-          <div class="flex flex-wrap items-center gap-1 p-1.5 bg-slate-100 border border-slate-300 border-b-0 rounded-t-xl text-xs">
-            <button type="button" onclick="execEditCmd('bold')" class="px-2 py-1 hover:bg-slate-200 rounded font-bold">B</button>
-            <button type="button" onclick="execEditCmd('italic')" class="px-2 py-1 hover:bg-slate-200 rounded italic">I</button>
-            <button type="button" onclick="execEditCmd('underline')" class="px-2 py-1 hover:bg-slate-200 rounded underline">U</button>
-            <button type="button" onclick="execEditCmd('insertUnorderedList')" class="px-2 py-1 hover:bg-slate-200 rounded"><i class="fa-solid fa-list-ul"></i></button>
-            <button type="button" onclick="execEditCmd('insertHTML', '<br><br>')" class="px-2 py-1 hover:bg-slate-200 rounded text-[10px] font-bold">⏎ Рядок</button>
-          </div>
-          <div id="editEditor" contenteditable="true" class="editor-content w-full p-3 text-xs border border-slate-300 rounded-b-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-600"></div>
-        </div>
-
-        <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
-          <button type="button" onclick="closeEditModal()" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-xs rounded-xl">
-            Скасувати
-          </button>
-          <button type="submit" id="saveEditBtn" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow flex items-center gap-1.5">
-            <i class="fa-solid fa-floppy-disk"></i> Зберегти зміни
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- ========================================== -->
-  <!-- FOOTER                                     -->
-  <!-- ========================================== -->
-  <footer class="bg-brand-header text-slate-400 text-xs py-6 text-center border-t border-slate-800 mt-12">
-    <p>© 2026 Neoservice.ks.ua — Всі права захищені.</p>
-  </footer>
-
-  <!-- ========================================== -->
-  <!-- SCRIPTS                                    -->
-  <!-- ========================================== -->
-  <script>
-    // СПИСОК ДОЗВОЛЕНИХ АДМІНІСТРАТОРІВ
-    const ALLOWED_ADMINS = [
-      "kostopilservice@gmail.com",
-      "olegdriganec@gmail.com"
-    ];
-
-    function isAdminEmail(email) {
-      if (!email) return false;
-      return ALLOWED_ADMINS.some(adminEmail => adminEmail.toLowerCase() === email.trim().toLowerCase());
-    }
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyBlKoP6-M8tdrKq88bSdnWSnak5Gpddnpk",
-      authDomain: "neoservice-ks-ua.firebaseapp.com",
-      projectId: "neoservice-ks-ua",
-      storageBucket: "neoservice-ks-ua.firebasestorage.app",
-      messagingSenderId: "528941827813",
-      appId: "1:528941827813:web:354ef989d200087634b60c",
-      measurementId: "G-BYGHEHVYY3"
-    }; 
-
-    if (!firebase.apps.length) {
-      firebase.initializeApp(firebaseConfig);
-    }
-    const db = firebase.firestore();
-    const auth = firebase.auth();
-
-    let isAdmin = false;
-
-    const staticArticles = [
-      {
-        id: 'static-1',
-        isStatic: true,
-        category: 'auto',
-        title: 'Пошук витоку струму акумулятора: Повний посібник для автовласників (Hantek)',
-        summary: 'Детальний покроковий посібник із пошуку прихованих споживачів в електриці автомобіля за допомогою осцилографа Hantek та мультиметра.',
-        text: 'Комплексна перевірка бортової мережі на наявність витоків струму. Використання кліщів та осцилографа для діагностики.',
-        imageUrl: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80',
-        date: '20 жовтня, 2026 р.',
-        author: 'Admin Neoservice'
-      },
-      {
-        id: 'static-2',
-        isStatic: true,
-        category: 'sponsored',
-        title: 'Надійний хмарний хостинг та сервери для бізнесу',
-        summary: 'Швидкі віртуальні сервери для розміщення сайтів і баз даних із захистом від DDoS. Спеціальні умови для наших користувачів.',
-        text: 'Оренда надійних серверів для корпоративних клієнтів з повною підтримкою та високим аптаймом.',
-        imageUrl: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=600&q=80',
-        date: '15 жовтня, 2026 р.',
-        author: 'Партнер'
-      },
-      {
-        id: 'static-3',
-        isStatic: true,
-        category: 'computers',
-        title: 'Чому гріється ноутбук і коли пора його обслуговувати?',
-        summary: 'Ознаки забивання системи охолодження та алгоритм повної чистки з заміною термопасти.',
-        text: 'Правильний догляд за ноутбуком подовжує термін служби компонентів материнської плати та процесора.',
-        imageUrl: 'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?auto=format&fit=crop&w=600&q=80',
-        date: '12 жовтня, 2026 р.',
-        author: 'Admin Neoservice'
-      },
-      {
-        id: 'static-4',
-        isStatic: true,
-        category: 'printers',
-        title: 'Як відновити картридж лазерного принтера',
-        summary: 'Покрокові правила заправки тонером при друці на виходах із прасуванням.',
-        text: 'Інструкція щодо очищення бункера та заміни фотобарабана для збереження якості друку.',
-        imageUrl: 'https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?auto=format&fit=crop&w=600&q=80',
-        date: '10 жовтня, 2026 р.',
-        author: 'Сервіс-центр'
-      },
-      {
-        id: 'static-5',
-        isStatic: true,
-        category: 'ev_battery',
-        title: 'Збереження акумулятора електротранспорту взимку',
-        summary: 'Правила експлуатації батарей на холодний період року.',
-        text: 'Як правильно заряджати та зберігати тягові акумулятори електровелосипедів та самокатів.',
-        imageUrl: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=600&q=80',
-        date: '5 жовтня, 2026 р.',
-        author: 'Admin'
-      }
-    ];
-
-    let allArticles = [...staticArticles];
-    let activeCategory = 'all';
-
-    // Перевірка прав адміністратора при вході
-    auth.onAuthStateChanged(user => {
-      const adminBadge = document.getElementById('adminBadge');
-      if (user && user.email && isAdminEmail(user.email)) {
-        isAdmin = true;
-        adminBadge.classList.remove('hidden');
-      } else {
-        isAdmin = false;
-        adminBadge.classList.add('hidden');
-      }
-      filterArticles();
-    });
-
-    function execEditCmd(command, value = null) {
-      document.execCommand(command, false, value);
-      document.getElementById('editEditor').focus();
-    }
-
-    function extractYouTubeID(url) {
-      if (!url) return null;
-      const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-      const match = url.match(regExp);
-      return (match && match[2].length === 11) ? match[2] : null;
-    }
-
-    // Реальне оновлення з Firebase
-    function listenToArticles() {
-      db.collection('articles').orderBy('createdAt', 'desc').onSnapshot(snapshot => {
-        const firebaseArticles = [];
-        snapshot.forEach(doc => {
-          firebaseArticles.push({ id: doc.id, isStatic: false, ...doc.data() });
-        });
-        allArticles = [...firebaseArticles, ...staticArticles];
-        filterArticles();
-      }, err => {
-        console.error("Помилка завантаження з Firebase:", err);
-        renderGrid(allArticles);
-      });
-    }
-
-    function renderGrid(data) {
-      const grid = document.getElementById('articlesGrid');
-      grid.innerHTML = '';
-
-      if (data.length === 0) {
-        grid.innerHTML = '<div class="col-span-full py-12 text-center text-slate-400 text-xs">Матеріалів у цій категорії поки немає.</div>';
-        return;
-      }
-
-      data.forEach(art => {
-        let catName = art.category;
-        let badgeColor = "bg-blue-600 text-white";
-
-        if (art.category === 'auto') { catName = 'Автодіагностика'; badgeColor = "bg-amber-500 text-slate-950"; }
-        else if (art.category === 'computers') { catName = "Комп'ютери"; badgeColor = "bg-blue-600 text-white"; }
-        else if (art.category === 'printers') { catName = 'Оргтехніка'; badgeColor = "bg-indigo-600 text-white"; }
-        else if (art.category === 'engineering') { catName = 'Інженерія & Схеми'; badgeColor = "bg-purple-600 text-white"; }
-        else if (art.category === 'radio') { catName = "Радіозв'язок"; badgeColor = "bg-emerald-600 text-white"; }
-        else if (art.category === 'ev_battery') { catName = 'Електротранспорт & АКБ'; badgeColor = "bg-red-600 text-white"; }
-        else if (art.category === 'law') { catName = 'Законодавство'; badgeColor = "bg-sky-700 text-white"; }
-        else if (art.category === 'paperwork') { catName = 'Діловодство'; badgeColor = "bg-teal-600 text-white"; }
-        else if (art.category === 'local_biz') { catName = 'Місцевий бізнес'; badgeColor = "bg-orange-600 text-white"; }
-        else if (art.category === 'construction') { catName = 'Будівництво'; badgeColor = "bg-yellow-600 text-white"; }
-        else if (art.category === 'cybersecurity') { catName = 'Цифрова безпека'; badgeColor = "bg-rose-700 text-white"; }
-        else if (art.category === 'education') { catName = 'Освіта & Курси'; badgeColor = "bg-violet-600 text-white"; }
-        else if (art.category === 'energy') { catName = 'Енергонезалежність'; badgeColor = "bg-green-600 text-white"; }
-        else if (art.category === 'youtube') { catName = 'YouTube'; badgeColor = "bg-red-600 text-white"; }
-        else if (art.category === 'sponsored') { catName = 'Спонсоровано'; badgeColor = "bg-amber-500 text-slate-950"; }
-
-        // Перевірка наявності YouTube (якщо є youtubeId або youtubeUrl)
-        const hasYoutube = (art.youtubeId && art.youtubeId.trim() !== '') || (art.youtubeUrl && art.youtubeUrl.trim() !== '');
-
-        const adminControls = (isAdmin && !art.isStatic) ? `
-          <div class="absolute top-3 right-3 flex items-center gap-1.5 z-10">
-            <button onclick="event.stopPropagation(); openEditModal('${art.id}')" class="w-7 h-7 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-lg shadow flex items-center justify-center transition-colors" title="Редагувати картку">
-              <i class="fa-solid fa-pen text-[11px]"></i>
-            </button>
-            <button onclick="event.stopPropagation(); deleteArticle('${art.id}')" class="w-7 h-7 bg-rose-600 hover:bg-rose-500 text-white rounded-lg shadow flex items-center justify-center transition-colors" title="Видалити картку">
-              <i class="fa-solid fa-trash-can text-[11px]"></i>
-            </button>
-          </div>
-        ` : '';
-
-        // Зображення картки (пріоритет imageUrl, потім images[0], потім прев'ю YouTube, потім дефолтне)
-        const coverImg = art.imageUrl || (art.images && art.images.length > 0 ? art.images[0] : (art.youtubeId ? `https://img.youtube.com/vi/${art.youtubeId}/hqdefault.jpg` : 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80'));
-
-        const card = `
-          <article class="bg-white rounded-2xl border border-slate-200 overflow-hidden flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow">
+        <!-- Заголовок розділу + Пошук -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-5">
             <div>
-              <div class="h-40 w-full overflow-hidden relative bg-slate-900 cursor-pointer" onclick="openModal('${art.id}')">
-                <img src="${coverImg}" alt="" class="w-full h-full object-cover">
-                <span class="absolute top-3 left-3 ${badgeColor} text-[10px] font-bold px-2.5 py-0.5 rounded-full shadow">
-                  ${catName}
-                </span>
-                ${adminControls}
-                <!-- Відображаємо кнопку YouTube ТІЛЬКИ якщо це реальний YouTube пост -->
-                ${hasYoutube ? `<div class="absolute inset-0 flex items-center justify-center bg-black/30 pointer-events-none"><div class="w-12 h-12 bg-red-600 text-white rounded-xl flex items-center justify-center shadow-lg"><i class="fa-solid fa-play text-base pl-0.5"></i></div></div>` : ''}
-              </div>
-              <div class="p-4">
-                <span class="text-[10px] text-slate-400 block mb-1"><i class="fa-regular fa-clock mr-1"></i> ${art.date || 'Нещодавно'}</span>
-                <h3 class="font-bold text-slate-900 text-sm leading-snug hover:text-blue-600 cursor-pointer mb-1.5 line-clamp-2" onclick="openModal('${art.id}')">
-                  ${art.title}
-                </h3>
-                <p class="text-slate-600 text-xs line-clamp-2">
-                  ${art.summary}
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 m-0">База знань та інструкцій</h1>
+                <p class="text-sm text-slate-500 mt-1 mb-0">
+                    Діагностика, закони, діловодство, посібники, інструкції з ремонту та корисні матеріали.
                 </p>
-              </div>
             </div>
 
-            <div class="p-4 pt-0 border-t border-slate-100 mt-2 flex items-center justify-between">
-              <span class="text-[10px] text-slate-400"><i class="fa-regular fa-user mr-1"></i> ${art.author || 'Admin'}</span>
-              <button onclick="openModal('${art.id}')" class="text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1">
-                Читати <i class="fa-solid fa-chevron-right text-[10px]"></i>
-              </button>
+            <div class="flex items-center gap-2 w-full md:w-auto">
+                <div class="relative flex-1 md:w-72">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                    <input
+                        type="text"
+                        id="bazaSearchInput"
+                        placeholder="Пошук у базі знань..."
+                        class="w-full pl-9 pr-3 py-2.5 text-sm bg-white border border-slate-200 rounded-xl shadow-sm focus:outline-none focus:border-blue-600"
+                    />
+                </div>
+                <button
+                    type="button"
+                    onclick="resetBazaFilters()"
+                    class="px-3.5 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-bold rounded-xl border-0 cursor-pointer transition whitespace-nowrap"
+                    title="Скинути фільтри"
+                >
+                    Скинути
+                </button>
             </div>
-          </article>
-        `;
-        grid.insertAdjacentHTML('beforeend', card);
-      });
-    }
+        </div>
 
-    function filterCategory(cat, btn) {
-      activeCategory = cat;
-      document.querySelectorAll('.cat-btn').forEach(b => {
-        b.className = "cat-btn px-3.5 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold rounded-xl transition-colors";
-      });
-      btn.className = "cat-btn px-3.5 py-1.5 bg-blue-600 text-white text-xs font-bold rounded-xl shadow-sm transition-colors";
-      filterArticles();
-    }
+        <!-- ПАНЕЛЬ КАТЕГОРІЙ (ТОЧНО ЯК НА СКРІНШОТІ) -->
+        <section aria-label="Категорії бази знань" class="mb-6">
+            <div id="bazaCategoryButtons" class="flex flex-wrap items-center gap-2.5">
+                <!-- Кнопки генеруються динамічно та автоматично підсвічують активну -->
+            </div>
+        </section>
 
-    function filterArticles() {
-      const query = document.getElementById('searchInput').value.toLowerCase();
-      const filtered = allArticles.filter(art => {
-        const matchesCat = (activeCategory === 'all' || art.category === activeCategory);
-        const matchesQuery = art.title.toLowerCase().includes(query) || art.summary.toLowerCase().includes(query);
-        return matchesCat && matchesQuery;
-      });
-      renderGrid(filtered);
-    }
+        <!-- Індикатор активної категорії та кількості матеріалів -->
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-4 pb-2 border-b border-slate-200 text-xs text-slate-500">
+            <div id="activeCategoryStatus" class="font-semibold text-slate-700">
+                Категорія: <span class="text-blue-700 font-bold">🔥 Всі</span>
+            </div>
+            <div id="bazaResultsCount">Завантаження матеріалів...</div>
+        </div>
 
-    // ВИДАЛЕННЯ КАРТКИ З FIREBASE
-    async function deleteArticle(id) {
-      if (!isAdmin) return;
-      if (!confirm("Ви дійсно хочете видалити цю картку назавжди?")) return;
+        <!-- СІТКА МАТЕРІАЛІВ -->
+        <div id="bazaPostsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            <!-- Картки рендеряться динамічно -->
+        </div>
 
-      try {
-        await db.collection('articles').doc(id).delete();
-        closeModal();
-      } catch (err) {
-        alert("Помилка при видаленні: " + err.message);
-      }
-    }
+        <!-- Порожній стан -->
+        <div id="bazaEmptyState" style="display: none;" class="bg-white rounded-2xl border border-slate-200 p-10 text-center my-6 shadow-sm">
+            <div class="text-4xl mb-3">🔍</div>
+            <h3 class="text-lg font-bold text-slate-800 mb-1">У цій категорії поки немає матеріалів</h3>
+            <p class="text-sm text-slate-500 mb-4">Спробуйте змінити пошуковий запит або перегляньте всі доступні публікації.</p>
+            <button type="button" onclick="resetBazaFilters()" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-5 py-2.5 rounded-full border-0 cursor-pointer">
+                Показати всі матеріали
+            </button>
+        </div>
 
-    // ВІДКРИТТЯ МОДАЛЬНОГО ВІКНА РЕДАГУВАННЯ
-    function openEditModal(id) {
-      if (!isAdmin) return;
-      const art = allArticles.find(a => a.id === id);
-      if (!art || art.isStatic) return;
+    </main>
 
-      closeModal();
+    <!-- МОДАЛЬНЕ ВІКНО ПЕРЕГЛЯДУ СТАТТІ -->
+    <div id="bazaArticleModal" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(6px); z-index: 9999; align-items: center; justify-content: center; padding: 15px;">
+        <div class="bg-white rounded-2xl max-w-2xl w-full overflow-hidden shadow-2xl border border-slate-200 flex flex-col max-h-[90vh]">
+            <div class="relative h-56 sm:h-64 bg-slate-900">
+                <img id="bazaModalImg" src="" alt="" class="w-full h-full object-cover">
+                <button type="button" onclick="closeBazaModal()" class="absolute top-3 right-3 w-8 h-8 rounded-full bg-slate-900/75 text-white hover:bg-slate-900 flex items-center justify-center cursor-pointer border-0">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+                <span id="bazaModalBadge" class="absolute bottom-3 left-4 bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow"></span>
+            </div>
+            <div class="p-6 overflow-y-auto">
+                <div id="bazaModalMeta" class="text-xs text-slate-400 mb-1.5"></div>
+                <h2 id="bazaModalTitle" class="text-xl font-extrabold text-slate-800 mb-3 leading-snug"></h2>
+                <div id="bazaModalContent" class="text-sm text-slate-600 leading-relaxed whitespace-pre-line"></div>
+            </div>
+            <div class="px-6 py-3.5 bg-slate-50 border-t border-slate-200 flex justify-between items-center gap-3">
+                <a id="bazaModalExternalLink" href="#" target="_blank" rel="noopener" style="display: none;" class="text-xs font-bold text-blue-600 hover:underline no-underline">
+                    Відкрити джерело / відео &rarr;
+                </a>
+                <button type="button" onclick="closeBazaModal()" class="ml-auto bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold px-5 py-2 rounded-lg cursor-pointer border-0">
+                    Закрити
+                </button>
+            </div>
+        </div>
+    </div>
 
-      document.getElementById('editArticleId').value = art.id;
-      document.getElementById('editTitle').value = art.title || '';
-      document.getElementById('editCategory').value = art.category || 'auto';
-      document.getElementById('editImageUrl').value = art.imageUrl || '';
-      document.getElementById('editYoutubeUrl').value = art.youtubeUrl || '';
-      document.getElementById('editSummary').value = art.summary || '';
-      document.getElementById('editEditor').innerHTML = art.text || '';
+    <!-- МОДАЛЬНЕ ВІКНО ДОДАВАННЯ МАТЕРІАЛУ (ДЛЯ АВТОРИЗОВАНИХ / АДМІНІВ) -->
+    <div id="addPostModal" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(6px); z-index: 9999; align-items: center; justify-content: center; padding: 15px;">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border-t-4 border-blue-700 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center pb-3 mb-4 border-b border-slate-200">
+                <h3 class="text-lg font-extrabold text-slate-800 m-0">➕ Новий матеріал у Базу знань</h3>
+                <button type="button" onclick="closeAddPostModal()" class="bg-transparent border-0 text-slate-500 text-lg cursor-pointer">✕</button>
+            </div>
+            <form id="addBazaPostForm" class="flex flex-col gap-3">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Категорія:</label>
+                    <select id="newPostCategory" class="w-full p-2.5 text-sm border border-slate-300 rounded-lg bg-white" required></select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Заголовок матеріалу:</label>
+                    <input type="text" id="newPostTitle" placeholder="Наприклад: Конспект з діагностики CAN-шини..." class="w-full p-2.5 text-sm border border-slate-300 rounded-lg" required>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Посилання на зображення (необов'язково):</label>
+                    <input type="url" id="newPostImage" placeholder="https://..." class="w-full p-2.5 text-sm border border-slate-300 rounded-lg">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Посилання на YouTube або зовнішній ресурс (необов'язково):</label>
+                    <input type="url" id="newPostExternalUrl" placeholder="https://www.youtube.com/..." class="w-full p-2.5 text-sm border border-slate-300 rounded-lg">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Текст публікації / Інструкція:</label>
+                    <textarea id="newPostContent" rows="5" placeholder="Детальний опис, інструкція, корисні поради..." class="w-full p-2.5 text-sm border border-slate-300 rounded-lg" required></textarea>
+                </div>
+                <div class="flex gap-2.5 mt-2">
+                    <button type="button" onclick="closeAddPostModal()" class="flex-1 py-2.5 bg-slate-200 text-slate-700 font-bold text-xs rounded-lg border-0 cursor-pointer">Скасувати</button>
+                    <button type="submit" class="flex-1 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-lg border-0 cursor-pointer">Опублікувати</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
-      const modal = document.getElementById('editModal');
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
-    }
+    <footer class="bg-slate-900 text-white text-center py-5 mt-10 text-xs">
+        <p class="m-0">&copy; 2026 Neoservice.ks.ua — База знань та міський інформаційно-сервісний портал.</p>
+    </footer>
 
-    function closeEditModal() {
-      const modal = document.getElementById('editModal');
-      modal.classList.remove('flex');
-      modal.classList.add('hidden');
-    }
+    <!-- ЛОГІКА КАТЕГОРІЙ, URL-ФІЛЬТРАЦІЇ ТА БАЗОВИХ МАТЕРІАЛІВ -->
+    <script>
+        const FALLBACK_CARD_IMG = "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(`
+            <svg xmlns="http://www.w3.org/2000/svg" width="600" height="360" viewBox="0 0 600 360">
+                <defs>
+                    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0%" stop-color="#0f172a"/>
+                        <stop offset="100%" stop-color="#1e3a8a"/>
+                    </linearGradient>
+                </defs>
+                <rect width="600" height="360" fill="url(#bg)"/>
+                <text x="300" y="165" font-size="42" text-anchor="middle" fill="#ffffff">📚</text>
+                <text x="300" y="220" font-family="Segoe UI, Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#ffffff">БАЗА ЗНАНЬ NEOSERVICE</text>
+            </svg>
+        `);
 
-    // ЗБЕРЕЖЕННЯ ЗМІН ПІСЛЯ РЕДАГУВАННЯ
-    async function saveEditedArticle(event) {
-      event.preventDefault();
-      if (!isAdmin) return;
+        const BAZA_CATEGORIES = Array.isArray(window.PORTAL_CATEGORIES)
+            ? [{ key: 'all', emoji: '🔥', label: 'Всі' }, ...window.PORTAL_CATEGORIES]
+            : [
+                { key: 'all', emoji: '🔥', label: 'Всі' },
+                { key: 'auto', emoji: '🚗', label: 'Автодіагностика & ECU' },
+                { key: 'pc', emoji: '💻', label: "Комп'ютери" },
+                { key: 'office', emoji: '🖨️', label: 'Оргтехніка' },
+                { key: 'engineering', emoji: '⚙️', label: 'Інженерія & Схеми' },
+                { key: 'radio', emoji: '📻', label: "Радіозв'язок" },
+                { key: 'ev', emoji: '🔋', label: 'Електротранспорт & АКБ' },
+                { key: 'law', emoji: '⚖️', label: 'Законодавство & Юриспруденція' },
+                { key: 'docs', emoji: '📑', label: 'Діловодство & Документи' },
+                { key: 'business', emoji: '🏪', label: 'Місцевий бізнес & Послуги' },
+                { key: 'construction', emoji: '🏗️', label: 'Будівництво & Ремонт' },
+                { key: 'security', emoji: '🛡️', label: 'Цифрова безпека & IT' },
+                { key: 'education', emoji: '🎓', label: 'Навчання & Освіта' },
+                { key: 'energy', emoji: '💡', label: 'Енергонезалежність & ДБЖ' },
+                { key: 'youtube', emoji: '▶️', label: 'YouTube Відео' },
+                { key: 'sponsored', emoji: '📢', label: 'Спонсоровано' }
+            ];
 
-      const id = document.getElementById('editArticleId').value;
-      const btn = document.getElementById('saveEditBtn');
-      btn.disabled = true;
-      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Збереження...';
+        const STATIC_BAZA_POSTS = [
+            {
+                id: 'base-auto-1',
+                category: 'auto',
+                title: 'Автодіагностика & ECU: сканування, осцилографія та перевірка CAN-шини',
+                image: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?auto=format&fit=crop&w=800&q=80',
+                date: 'Базовий посібник',
+                content: 'Покрокова методика перевірки опорної напруги CAN-H / CAN-L, вимірювання термінуючого опору 60 Ом, аналіз сигналів датчиків колінвала й розпредвала осцилографом та безпечне зчитування дампів EEPROM/Flash.'
+            },
+            {
+                id: 'base-pc-1',
+                category: 'pc',
+                title: "Комп'ютери: діагностика перегріву, тестування SSD/RAM та оптимізація Windows",
+                image: 'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?auto=format&fit=crop&w=800&q=80',
+                date: 'Базовий посібник',
+                content: 'Регламент профілактики системи охолодження, перевірка SMART-атрибутів накопичувачів, тестування оперативної пам’яті та налаштування стабільної роботи робочих станцій.'
+            },
+            {
+                id: 'base-office-1',
+                category: 'office',
+                title: 'Оргтехніка: усунення дефектів друку, заміна термоплівки та роликів подачі',
+                image: 'https://images.unsplash.com/photo-1612815154858-ac3c4e4a1f3f?auto=format&fit=crop&w=800&q=80',
+                date: 'Інструкція майстра',
+                content: 'Типові несправності лазерних принтерів і МФУ: блідий друк, чорні смуги, застрягання паперу в пічці, вибір мастила для термоплівки та профілактика вузла захоплення.'
+            },
+            {
+                id: 'base-eng-1',
+                category: 'engineering',
+                title: 'Інженерія & Схеми: читання принципових схем, SMD-компоненти та паяльні профілі',
+                image: 'https://images.unsplash.com/photo-1555664424-778a1e5e1b48?auto=format&fit=crop&w=800&q=80',
+                date: 'Технічна довідка',
+                content: 'Маркування SMD-резисторів і конденсаторів, безпечний демонтаж мікросхем з нижнім підігрівом плати, пошук короткого замикання на лініях живлення.'
+            },
+            {
+                id: 'base-radio-1',
+                category: 'radio',
+                title: "Радіозв'язок: налаштування NFM-каналів, ретрансляторів та вимірювання КСВ антен",
+                image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80',
+                date: 'Довідник зв’язку',
+                content: 'Робота з рознесенням частот (Offset), субтонами CTCSS/DCS, перевірка узгодження антени та зниження втрат у коаксіальному кабелі.'
+            },
+            {
+                id: 'base-ev-1',
+                category: 'ev',
+                title: 'Електротранспорт & АКБ: перевірка комірок Li-ion/LiFePO4, балансування та BMS',
+                image: 'https://images.unsplash.com/photo-1593941707882-a5bba14938c7?auto=format&fit=crop&w=800&q=80',
+                date: 'Електротранспорт',
+                content: 'Вимірювання внутрішнього опору (IR) елементів, діагностика дисбалансу секцій, підбір та підключення плат захисту BMS.'
+            },
+            {
+                id: 'base-law-1',
+                category: 'law',
+                title: 'Законодавство & Юриспруденція: порядок подання звернень громадян та запитів на інформацію',
+                image: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=800&q=80',
+                date: 'Правовий довідник',
+                content: 'Строки розгляду звернень громадян та запитів на публічну інформацію, обов’язкові реквізити заяви, порядок оскарження бездіяльності посадових осіб.'
+            },
+            {
+                id: 'base-docs-1',
+                category: 'docs',
+                title: 'Діловодство & Документи: шаблони актів виконаних робіт, дефектних відомостей та заяв',
+                image: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=800&q=80',
+                date: 'Шаблони документів',
+                content: 'Структура оформлення актів прийому-передачі техніки в ремонт, дефектних актів, комерційних пропозицій та облікової документації.'
+            },
+            {
+                id: 'base-business-1',
+                category: 'business',
+                title: 'Місцевий бізнес & Послуги: організація сервісної майстерні та робота з клієнтами',
+                image: 'https://images.unsplash.com/photo-1556740738-b6a63e27c4df?auto=format&fit=crop&w=800&q=80',
+                date: 'Бізнес-гід',
+                content: 'Облік замовлень, прозоре погодження вартості ремонту з клієнтом, гарантійні зобов’язання та розвиток локального сервісу.'
+            },
+            {
+                id: 'base-const-1',
+                category: 'construction',
+                title: 'Будівництво & Ремонт: розрахунок перерізу кабелю, автоматика захисту та монтаж щитка',
+                image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=800&q=80',
+                date: 'Будівельний довідник',
+                content: 'Вибір перерізу мідного кабелю під навантаження, підбір автоматичних вимикачів та ПЗВ, правила безпечного монтажу електропроводки.'
+            },
+            {
+                id: 'base-sec-1',
+                category: 'security',
+                title: 'Цифрова безпека & IT: двофакторна автентифікація, резервні копії та захист від фішингу',
+                image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80',
+                date: 'Кібергігієна',
+                content: 'Правило резервного копіювання 3-2-1, захист облікових записів, перевірка підозрілих посилань та безпечне зберігання паролів.'
+            },
+            {
+                id: 'base-edu-1',
+                category: 'education',
+                title: 'Навчання & Освіта: базовий курс з читання електросхем та роботи з мультиметром й осцилографом',
+                image: 'https://images.unsplash.com/photo-1513258496099-48168024aec0?auto=format&fit=crop&w=800&q=80',
+                date: 'Навчальний курс',
+                content: 'Покроковий навчальний посібник для початківців: вимірювання напруги, струму, опору, прозвонка ланцюгів, основи роботи з осцилографом та практичні завдання.'
+            },
+            {
+                id: 'base-edu-2',
+                category: 'education',
+                title: 'Навчання & Освіта: конспект з основ цифровізації, веб-розробки та роботи з базами даних',
+                image: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=800&q=80',
+                date: 'Конспект',
+                content: 'Структура сучасних веб-застосунків (HTML/CSS/JS + хмарні бази даних), принципи побудови інтерфейсів, фільтрації запитів та резервного копіювання.'
+            },
+            {
+                id: 'base-energy-1',
+                category: 'energy',
+                title: 'Енергонезалежність & ДБЖ: розрахунок автономності зарядної станції та підбір інвертора',
+                image: 'https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=800&q=80',
+                date: 'Енергоефективність',
+                content: 'Формула розрахунку часу автономної роботи від ємності АКБ (Вт·год), врахування ККД інвертора та пускових струмів холодильників і котлів.'
+            },
+            {
+                id: 'base-yt-1',
+                category: 'youtube',
+                title: 'YouTube Відео: огляди обладнання, практична діагностика та випуски каналу NeoService',
+                image: 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&w=800&q=80',
+                date: 'Відеоканал',
+                externalUrl: 'https://www.youtube.com/@NeoService-3',
+                content: 'Добірка практичних відеоматеріалів з діагностики, ремонту електроніки, тестування приладів та корисних оглядів на каналі NeoService.'
+            },
+            {
+                id: 'base-spons-1',
+                category: 'sponsored',
+                title: 'Спонсоровано: розміщення партнерських матеріалів та підтримка порталу NEOSERVICE.KS.UA',
+                image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80',
+                date: 'Партнерський розділ',
+                externalUrl: 'service.html',
+                content: 'Інформація для партнерів та рекламодавців: публікація експертних оглядів, банерна підтримка та просування послуг у регіоні.'
+            }
+        ];
 
-      const youtubeUrl = document.getElementById('editYoutubeUrl').value.trim();
-      const youtubeId = extractYouTubeID(youtubeUrl);
+        let firestoreBazaPosts = [];
+        let activeCategory = 'all';
+        let searchQuery = '';
 
-      try {
-        await db.collection('articles').doc(id).update({
-          title: document.getElementById('editTitle').value,
-          category: document.getElementById('editCategory').value,
-          imageUrl: document.getElementById('editImageUrl').value.trim(),
-          youtubeUrl: youtubeUrl,
-          youtubeId: youtubeId || '',
-          summary: document.getElementById('editSummary').value,
-          text: document.getElementById('editEditor').innerHTML
-        });
-        closeEditModal();
-      } catch (err) {
-        alert("Помилка при оновленні: " + err.message);
-      } finally {
-        btn.disabled = false;
-        btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Зберегти зміни';
-      }
-    }
+        function resolveBazaCategory(rawValue, title = '') {
+            const val = String(rawValue || '').toLowerCase().trim();
+            const combined = `${val} ${String(title).toLowerCase()}`;
 
-    function openHeroModal() {
-      document.getElementById('modalTitle').textContent = "Пошук витоку струму акумулятора: Повний посібник для автовласників (Hantek)";
-      document.getElementById('modalDate').textContent = "20 жовтня, 2026 р.";
-      document.getElementById('modalAuthor').textContent = "Admin Neoservice";
-      document.getElementById('modalCategory').textContent = "АВТОДІАГНОСТИКА";
-      document.getElementById('modalText').innerHTML = "Детальний посібник з використання осцилографа Hantek та мультиметра для виявлення прихованих витоків струму в автомобільній проводці. Покрокова інструкція діагностики запобіжників та блоків управління.";
-      
-      document.getElementById('modalEditBtn').classList.add('hidden');
-      document.getElementById('modalDeleteBtn').classList.add('hidden');
-      document.getElementById('modalYouTubeContainer').classList.add('hidden');
-      document.getElementById('modalYouTubeIframe').src = "";
+            if (!val && !title) return 'all';
+            if (val === 'all' || val === 'всі') return 'all';
 
-      const imgContainer = document.getElementById('modalImageContainer');
-      const modalImg = document.getElementById('modalImage');
-      modalImg.src = "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1400&q=80";
-      document.getElementById('modalThumbnails').innerHTML = '';
-      imgContainer.classList.remove('hidden');
+            if (typeof window.resolvePortalCategoryKey === 'function') {
+                const synced = window.resolvePortalCategoryKey(rawValue, title);
+                if (synced && synced !== 'all') return synced;
+            }
 
-      const modal = document.getElementById('articleModal');
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
-    }
+            const direct = BAZA_CATEGORIES.find(
+                c => c.key.toLowerCase() === val || c.label.toLowerCase() === val
+            );
+            if (direct) return direct.key;
 
-    function openModal(id) {
-      const art = allArticles.find(a => a.id === id);
-      if (!art) return;
+            if (combined.includes('навчання') || combined.includes('освіт') || combined.includes('посібник') || combined.includes('конспект') || combined.includes('education')) return 'education';
+            if (combined.includes('законодавств') || combined.includes('юриспруденц') || combined.includes('право') || combined.includes('law')) return 'law';
+            if (combined.includes('авто') || combined.includes('ecu') || combined.includes('діагност')) return 'auto';
+            if (combined.includes("комп'ютер") || combined.includes('компютер') || combined.includes('пк') || val === 'pc') return 'pc';
+            if (combined.includes('оргтехнік') || combined.includes('принтер') || val === 'office') return 'office';
+            if (combined.includes('інженер') || combined.includes('схем') || val === 'engineering') return 'engineering';
+            if (combined.includes('радіозв') || combined.includes('радіо') || val === 'radio') return 'radio';
+            if (combined.includes('електротранспорт') || combined.includes('акб') || val === 'ev') return 'ev';
+            if (combined.includes('діловодств') || combined.includes('документ') || val === 'docs') return 'docs';
+            if (combined.includes('бізнес') || combined.includes('послуг') || val === 'business') return 'business';
+            if (combined.includes('будівництв') || combined.includes('ремонт') || val === 'construction') return 'construction';
+            if (combined.includes('безпек') || combined.includes('кібер') || val === 'security') return 'security';
+            if (combined.includes('енергонезалежн') || combined.includes('дбж') || val === 'energy') return 'energy';
+            if (combined.includes('youtube') || combined.includes('відео')) return 'youtube';
+            if (combined.includes('спонсор') || combined.includes('реклам') || val === 'sponsored') return 'sponsored';
 
-      document.getElementById('modalTitle').textContent = art.title;
-      document.getElementById('modalDate').textContent = art.date || 'Нещодавно';
-      document.getElementById('modalAuthor').textContent = art.author || 'Admin';
-      document.getElementById('modalCategory').textContent = (art.category || '').toUpperCase();
-      document.getElementById('modalText').innerHTML = art.text ? art.text : art.summary;
-
-      const editBtn = document.getElementById('modalEditBtn');
-      const deleteBtn = document.getElementById('modalDeleteBtn');
-
-      if (isAdmin && !art.isStatic) {
-        editBtn.classList.remove('hidden');
-        deleteBtn.classList.remove('hidden');
-        editBtn.onclick = () => openEditModal(art.id);
-        deleteBtn.onclick = () => deleteArticle(art.id);
-      } else {
-        editBtn.classList.add('hidden');
-        deleteBtn.classList.add('hidden');
-      }
-
-      const ytContainer = document.getElementById('modalYouTubeContainer');
-      const ytIframe = document.getElementById('modalYouTubeIframe');
-      const imgContainer = document.getElementById('modalImageContainer');
-      const modalImg = document.getElementById('modalImage');
-      const thumbsContainer = document.getElementById('modalThumbnails');
-
-      const ytId = art.youtubeId || (art.youtubeUrl ? extractYouTubeID(art.youtubeUrl) : null);
-
-      if (ytId) {
-        ytIframe.src = `https://www.youtube.com/embed/${ytId}?autoplay=1`;
-        ytContainer.classList.remove('hidden');
-        imgContainer.classList.add('hidden');
-      } else {
-        ytIframe.src = "";
-        ytContainer.classList.add('hidden');
-        
-        // Перевіряємо наявність галереї images або одиночного imageUrl
-        const imagesList = art.images && art.images.length > 0 ? art.images : (art.imageUrl ? [art.imageUrl] : []);
-
-        if (imagesList.length > 0) {
-          modalImg.src = imagesList[0];
-          imgContainer.classList.remove('hidden');
-          thumbsContainer.innerHTML = '';
-
-          if (imagesList.length > 1) {
-            imagesList.forEach((imgUrl, idx) => {
-              const thumb = document.createElement('button');
-              thumb.className = `w-14 h-14 rounded-lg overflow-hidden border-2 flex-shrink-0 transition-all ${idx === 0 ? 'border-blue-600 opacity-100' : 'border-transparent opacity-60 hover:opacity-100'}`;
-              thumb.innerHTML = `<img src="${imgUrl}" alt="" class="w-full h-full object-cover">`;
-              thumb.onclick = () => {
-                modalImg.src = imgUrl;
-                Array.from(thumbsContainer.children).forEach((t, i) => {
-                  t.className = `w-14 h-14 rounded-lg overflow-hidden border-2 flex-shrink-0 transition-all ${i === idx ? 'border-blue-600 opacity-100' : 'border-transparent opacity-60 hover:opacity-100'}`;
-                });
-              };
-              thumbsContainer.appendChild(thumb);
-            });
-          }
-        } else {
-          imgContainer.classList.add('hidden');
+            return 'all';
         }
-      }
 
-      const modal = document.getElementById('articleModal');
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
-    }
+        function getCategoryDestinationUrl(categoryKey, customUrl = '') {
+            if (customUrl) return customUrl;
+            const key = resolveBazaCategory(categoryKey);
+            if (key === 'all') return 'baza.html';
+            if (typeof window.buildCategoryTargetUrl === 'function') {
+                return window.buildCategoryTargetUrl(key);
+            }
+            return `baza.html?category=${encodeURIComponent(key)}`;
+        }
 
-    function closeModal() {
-      const modal = document.getElementById('articleModal');
-      modal.classList.remove('flex');
-      modal.classList.add('hidden');
-      document.getElementById('modalYouTubeIframe').src = "";
-    }
+        function getAllBazaPosts() {
+            return [...firestoreBazaPosts, ...STATIC_BAZA_POSTS];
+        }
 
-    window.addEventListener('DOMContentLoaded', listenToArticles);
-  </script>
+        function renderCategoryButtons() {
+            const container = document.getElementById('bazaCategoryButtons');
+            if (!container) return;
+
+            container.innerHTML = BAZA_CATEGORIES.map(cat => {
+                const isActive = activeCategory === cat.key;
+                return `
+                    <button
+                        type="button"
+                        data-category="${cat.key}"
+                        onclick="selectBazaCategory('${cat.key}')"
+                        class="cat-pill ${isActive ? 'active' : ''}"
+                    >
+                        <span>${cat.emoji}</span>
+                        <span>${cat.label}</span>
+                    </button>
+                `;
+            }).join('');
+
+            const activeBtn = container.querySelector('.cat-pill.active');
+            if (activeBtn) {
+                activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            }
+        }
+
+        function updateCategoryStatusHeader(filteredCount) {
+            const statusEl = document.getElementById('activeCategoryStatus');
+            const countEl = document.getElementById('bazaResultsCount');
+            const catObj = BAZA_CATEGORIES.find(c => c.key === activeCategory) || BAZA_CATEGORIES[0];
+
+            if (statusEl) {
+                statusEl.innerHTML = `Категорія: <span class="text-blue-700 font-bold">${catObj.emoji} ${catObj.label}</span>`;
+            }
+            if (countEl) {
+                countEl.textContent = `Знайдено матеріалів: ${filteredCount}`;
+            }
+        }
+
+        function renderBazaPosts() {
+            const grid = document.getElementById('bazaPostsGrid');
+            const emptyState = document.getElementById('bazaEmptyState');
+            if (!grid) return;
+
+            const q = searchQuery.trim().toLowerCase();
+            const items = getAllBazaPosts().filter(post => {
+                const matchCat = activeCategory === 'all' || post.category === activeCategory;
+                const matchSearch = !q ||
+                    (post.title && post.title.toLowerCase().includes(q)) ||
+                    (post.content && post.content.toLowerCase().includes(q));
+                return matchCat && matchSearch;
+            });
+
+            updateCategoryStatusHeader(items.length);
+
+            if (items.length === 0) {
+                grid.innerHTML = '';
+                if (emptyState) emptyState.style.display = 'block';
+                return;
+            }
+
+            if (emptyState) emptyState.style.display = 'none';
+
+            grid.innerHTML = items.map(post => {
+                const catObj = BAZA_CATEGORIES.find(c => c.key === post.category) || BAZA_CATEGORIES[0];
+                return `
+                    <article
+                        onclick="openBazaModal('${String(post.id).replace(/'/g, "\\'")}')"
+                        class="bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between cursor-pointer group"
+                    >
+                        <div>
+                            <div class="relative h-44 bg-slate-100 overflow-hidden">
+                                <img
+                                    src="${post.image || FALLBACK_CARD_IMG}"
+                                    alt="${post.title}"
+                                    onerror="if(this.dataset.fb!=='1'){this.dataset.fb='1';this.src='${FALLBACK_CARD_IMG}';}"
+                                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                >
+                                <span class="absolute top-3 left-3 bg-slate-900/80 backdrop-blur-sm text-white text-[11px] font-bold px-2.5 py-1 rounded-full">
+                                    ${catObj.emoji} ${catObj.label}
+                                </span>
+                            </div>
+                            <div class="p-4">
+                                <div class="text-[11px] text-slate-400 font-medium mb-1">${post.date || 'Матеріал бази'}</div>
+                                <h3 class="text-base font-bold text-slate-800 group-hover:text-blue-700 transition-colors leading-snug m-0 mb-2">
+                                    ${post.title}
+                                </h3>
+                                <p class="text-xs text-slate-500 line-clamp-3 m-0 leading-relaxed">
+                                    ${post.content || ''}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="px-4 py-3 bg-slate-50 border-t border-slate-100 flex items-center justify-between text-xs">
+                            <span class="text-slate-400">${post.isFirestore ? 'Хмарна база' : 'Довідник'}</span>
+                            <span class="font-bold text-blue-600 group-hover:underline">Читати повністю &rarr;</span>
+                        </div>
+                    </article>
+                `;
+            }).join('');
+        }
+
+        function syncUrlWithState() {
+            const url = new URL(window.location.href);
+            if (activeCategory && activeCategory !== 'all') {
+                url.searchParams.set('category', activeCategory);
+            } else {
+                url.searchParams.delete('category');
+            }
+            if (searchQuery.trim()) {
+                url.searchParams.set('search', searchQuery.trim());
+            } else {
+                url.searchParams.delete('search');
+            }
+            window.history.replaceState({}, '', url.toString());
+        }
+
+        window.selectBazaCategory = function(categoryKey, skipUrlSync = false) {
+            activeCategory = resolveBazaCategory(categoryKey);
+            renderCategoryButtons();
+            renderBazaPosts();
+            if (!skipUrlSync) {
+                syncUrlWithState();
+            }
+        };
+
+        window.resetBazaFilters = function() {
+            activeCategory = 'all';
+            searchQuery = '';
+            const searchInput = document.getElementById('bazaSearchInput');
+            if (searchInput) searchInput.value = '';
+            renderCategoryButtons();
+            renderBazaPosts();
+            syncUrlWithState();
+        };
+
+        window.openBazaModal = function(postId) {
+            const post = getAllBazaPosts().find(p => String(p.id) === String(postId));
+            if (!post) return;
+
+            const catObj = BAZA_CATEGORIES.find(c => c.key === post.category) || BAZA_CATEGORIES[0];
+            const imgEl = document.getElementById('bazaModalImg');
+            imgEl.dataset.fb = '0';
+            imgEl.onerror = function() {
+                if (this.dataset.fb !== '1') {
+                    this.dataset.fb = '1';
+                    this.src = FALLBACK_CARD_IMG;
+                }
+            };
+            imgEl.src = post.image || FALLBACK_CARD_IMG;
+
+            document.getElementById('bazaModalBadge').textContent = `${catObj.emoji} ${catObj.label}`;
+            document.getElementById('bazaModalMeta').textContent = post.date || 'База знань NEOSERVICE';
+            document.getElementById('bazaModalTitle').textContent = post.title;
+            document.getElementById('bazaModalContent').textContent = post.content || '';
+
+            const extLink = document.getElementById('bazaModalExternalLink');
+            if (post.externalUrl) {
+                extLink.href = getCategoryDestinationUrl(post.category, post.externalUrl);
+                extLink.style.display = 'inline-block';
+            } else {
+                extLink.style.display = 'none';
+            }
+
+            document.getElementById('bazaArticleModal').style.display = 'flex';
+        };
+
+        window.closeBazaModal = function() {
+            document.getElementById('bazaArticleModal').style.display = 'none';
+        };
+
+        window.openAddPostModal = function() {
+            document.getElementById('addPostModal').style.display = 'flex';
+        };
+
+        window.closeAddPostModal = function() {
+            document.getElementById('addPostModal').style.display = 'none';
+        };
+
+        window.updateFirestoreBazaPosts = function(posts) {
+            firestoreBazaPosts = Array.isArray(posts) ? posts : [];
+            renderBazaPosts();
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Заповнити селект категорій у формі додавання
+            const catSelect = document.getElementById('newPostCategory');
+            if (catSelect) {
+                catSelect.innerHTML = BAZA_CATEGORIES
+                    .filter(c => c.key !== 'all')
+                    .map(c => `<option value="${c.key}">${c.emoji} ${c.label}</option>`)
+                    .join('');
+            }
+
+            // Зчитати ?category=... та ?search=... з URL при відкритті сторінки
+            const params = new URLSearchParams(window.location.search);
+            const urlCat = params.get('category') || params.get('cat');
+            const urlSearch = params.get('search') || params.get('q') || '';
+
+            if (urlSearch) {
+                searchQuery = urlSearch;
+                const searchInput = document.getElementById('bazaSearchInput');
+                if (searchInput) searchInput.value = urlSearch;
+            }
+
+            if (urlCat) {
+                activeCategory = resolveBazaCategory(urlCat);
+            } else {
+                activeCategory = 'all';
+            }
+
+            renderCategoryButtons();
+            renderBazaPosts();
+
+            if (typeof window.applyPortalCategoryFromUrl === 'function') {
+                window.applyPortalCategoryFromUrl((resolvedKey) => {
+                    activeCategory = resolveBazaCategory(resolvedKey);
+                    renderCategoryButtons();
+                    renderBazaPosts();
+                });
+            }
+
+            const searchInput = document.getElementById('bazaSearchInput');
+            searchInput?.addEventListener('input', (e) => {
+                searchQuery = e.target.value;
+                renderBazaPosts();
+                syncUrlWithState();
+            });
+        });
+    </script>
+
+    <!-- ПІДКЛЮЧЕННЯ FIREBASE FIRESTORE -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBlKoP6-M8tdrKq88bSdnWSnak5Gpddnpk",
+            authDomain: "neoservice-ks-ua.firebaseapp.com",
+            projectId: "neoservice-ks-ua",
+            storageBucket: "neoservice-ks-ua.firebasestorage.app",
+            messagingSenderId: "528941827813",
+            appId: "1:528941827813:web:354ef989d200087634b60c",
+            measurementId: "G-BYGHEHVYY3"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        const ADMIN_EMAILS = [
+            'kostopilservice@gmail.com',
+            'olegdriganec@gmail.com'
+        ];
+
+        onAuthStateChanged(auth, (user) => {
+            const addBtn = document.getElementById('openAddPostBtn');
+            if (!addBtn) return;
+            if (user && user.email && ADMIN_EMAILS.includes(user.email.toLowerCase().trim())) {
+                addBtn.style.display = 'inline-flex';
+            } else {
+                addBtn.style.display = 'none';
+            }
+        });
+
+        // Синхронізація публікацій з колекції baza_posts
+        const q = query(collection(db, "baza_posts"), orderBy("createdAt", "desc"));
+        onSnapshot(q, (snapshot) => {
+            const posts = [];
+            snapshot.forEach((docSnap) => {
+                const data = docSnap.data() || {};
+                const title = data.title || 'Без заголовка';
+                const catKey = resolveBazaCategory(data.category, title);
+                const dateStr = data.createdAt && typeof data.createdAt.toDate === 'function'
+                    ? data.createdAt.toDate().toLocaleDateString('uk-UA')
+                    : 'Щойно';
+
+                posts.push({
+                    id: docSnap.id,
+                    isFirestore: true,
+                    category: catKey === 'all' ? 'education' : catKey,
+                    title,
+                    image: data.image || '',
+                    externalUrl: data.externalUrl || data.link || '',
+                    date: dateStr,
+                    content: data.content || data.description || ''
+                });
+            });
+
+            if (typeof window.updateFirestoreBazaPosts === 'function') {
+                window.updateFirestoreBazaPosts(posts);
+            }
+        }, (err) => {
+            console.warn("Помилка завантаження baza_posts:", err.message);
+        });
+
+        // Додавання нового матеріалу в baza_posts
+        document.getElementById('addBazaPostForm')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const user = auth.currentUser;
+            if (!user) {
+                alert("Увійдіть в акаунт адміністратора, щоб додати матеріал.");
+                return;
+            }
+
+            try {
+                const selectedCat = document.getElementById('newPostCategory').value;
+                await addDoc(collection(db, "baza_posts"), {
+                    category: selectedCat,
+                    title: document.getElementById('newPostTitle').value.trim(),
+                    image: document.getElementById('newPostImage').value.trim(),
+                    externalUrl: document.getElementById('newPostExternalUrl').value.trim(),
+                    content: document.getElementById('newPostContent').value.trim(),
+                    authorEmail: user.email,
+                    likes: 0,
+                    createdAt: serverTimestamp()
+                });
+
+                document.getElementById('addBazaPostForm').reset();
+                closeAddPostModal();
+                selectBazaCategory(selectedCat);
+                alert("✅ Матеріал успішно додано до Бази знань!");
+            } catch (err) {
+                alert("❌ Помилка збереження: " + err.message);
+            }
+        });
+    </script>
 </body>
 </html>

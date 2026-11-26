@@ -9,16 +9,19 @@
     
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Синхронізація категорій порталу -->
+    <script src="categories-sync.js"></script>
 
     <style>
         :root {
             --primary: #1e3a8a;
-            --sport-color: #16a34a; /* Зелений спортивний колір */
+            --sport-color: #16a34a;
             --sport-hover: #15803d;
             --bg: #f8fafc;
             --card-bg: #ffffff;
             --text: #1e293b;
         }
+        * { box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
@@ -34,6 +37,9 @@
             background: #0f172a;
             overflow-x: auto;
             border-bottom: 2px solid var(--sport-color);
+            position: sticky;
+            top: 0;
+            z-index: 900;
         }
         nav a {
             color: white;
@@ -47,7 +53,7 @@
         nav a:hover { background-color: var(--sport-color); }
 
         .container {
-            max-width: 1100px;
+            max-width: 1120px;
             margin: 20px auto;
             padding: 0 15px;
         }
@@ -57,10 +63,10 @@
             display: flex;
             gap: 8px;
             flex-wrap: wrap;
-            margin-top: 20px;
+            margin-top: 8px;
             max-height: 200px;
             overflow-y: auto;
-            padding: 5px;
+            padding: 8px;
             background: #ffffff;
             border-radius: 10px;
             border: 1px solid #e2e8f0;
@@ -90,7 +96,7 @@
         .promo-banner {
             background: linear-gradient(135deg, #065f46 0%, #047857 100%);
             color: white;
-            padding: 20px;
+            padding: 18px 20px;
             border-radius: 12px;
             margin-top: 20px;
             display: flex;
@@ -134,10 +140,10 @@
         }
         .btn-add:hover { background: var(--sport-hover); }
 
-        /* Сітка новин та статей */
+        /* Сітка новин та матчів */
         .knowledge-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
             gap: 20px;
             margin-top: 20px;
         }
@@ -160,8 +166,8 @@
 
         .card-image-wrapper {
             width: 100%;
-            height: 180px;
-            background: #e2e8f0;
+            height: 185px;
+            background: #0f172a;
             overflow: hidden;
             position: relative;
         }
@@ -175,10 +181,23 @@
             transform: scale(1.03);
         }
 
-        /* Обгортка для вбудованого відеоплеєра YouTube */
+        .match-score-pill {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            background: rgba(15, 23, 42, 0.88);
+            color: #4ade80;
+            border: 1px solid rgba(74, 222, 128, 0.4);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            font-weight: 800;
+            backdrop-filter: blur(4px);
+        }
+
         .card-video-wrapper {
             width: 100%;
-            height: 180px;
+            height: 185px;
             background: #000;
             display: none;
             position: relative;
@@ -190,14 +209,12 @@
         }
 
         .card-body {
-            padding: 18px;
+            padding: 16px 18px 10px 18px;
             display: flex;
             flex-direction: column;
             flex: 1;
-            justify-content: space-between;
         }
 
-        /* Обрізання заголовків та тексту для рівної сітки */
         .knowledge-card h3 {
             display: -webkit-box;
             -webkit-line-clamp: 2;
@@ -214,10 +231,10 @@
             -webkit-line-clamp: 3;
             -webkit-box-orient: vertical;
             overflow: hidden;
-            font-size: 0.85rem;
+            font-size: 0.84rem;
             color: #475569;
-            line-height: 1.4;
-            margin: 12px 0;
+            line-height: 1.45;
+            margin: 6px 0 0 0;
         }
 
         .category-badge {
@@ -233,20 +250,100 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            padding: 8px 14px;
-            background: #ef4444; /* червоний акцент для YouTube */
+            padding: 8px 13px;
+            background: #ef4444;
             color: white;
             border-radius: 6px;
             border: none;
             text-decoration: none;
-            font-size: 0.8rem;
+            font-size: 0.78rem;
             font-weight: bold;
             cursor: pointer;
-            transition: background 0.2s, transform 0.2s;
-            width: fit-content;
+            transition: background 0.2s;
         }
-        .watch-btn:hover {
-            background: #dc2626;
+        .watch-btn:hover { background: #dc2626; }
+
+        .btn-comments {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 12px;
+            background: #f1f5f9;
+            color: #0f172a;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-comments:hover {
+            background: #e2e8f0;
+            border-color: #94a3b8;
+        }
+
+        /* АДМІН-ЗВЕДЕННЯ МОНЕТИЗАЦІЇ КАТЕГОРІЙ */
+        .monetization-admin-box {
+            display: none;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #f8fafc;
+            border-radius: 12px;
+            padding: 18px 20px;
+            margin-top: 20px;
+            border: 1px solid #334155;
+            box-shadow: 0 8px 20px rgba(15, 23, 42, 0.15);
+        }
+        .monetization-admin-box.visible { display: block; }
+        .monetization-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 12px;
+            margin-top: 12px;
+        }
+        .mon-stat-card {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 10px;
+            padding: 12px;
+        }
+
+        /* МОДАЛЬНЕ ВІКНО КОМЕНТАРІВ ТА АНАЛІТИКИ */
+        .comments-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(4px);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+        }
+        .comments-dialog {
+            background: #ffffff;
+            border-radius: 14px;
+            width: 100%;
+            max-width: 620px;
+            max-height: 88vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 20px 45px rgba(0,0,0,0.28);
+        }
+        .comments-list {
+            padding: 16px 20px;
+            overflow-y: auto;
+            flex: 1;
+            background: #f8fafc;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .comment-item {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 10px 12px;
         }
 
         footer {
@@ -262,7 +359,7 @@
 
     <!-- ШАПКА -->
     <header style="background: linear-gradient(135deg, #0f172a 0%, #16a34a 100%); color: white; padding: 15px 20px; border-bottom: 3px solid #22c55e;">
-      <div style="max-width: 1100px; margin: 0 auto; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 15px;">
+      <div style="max-width: 1120px; margin: 0 auto; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 15px;">
         
         <a href="index.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none; color: white;">
           <div style="background: rgba(255, 255, 255, 0.15); border-radius: 14px; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem;">
@@ -273,18 +370,18 @@
               NEO<span style="color: #4ade80;">SPORT</span>
             </div>
             <div style="font-size: 0.78rem; color: #bbf7d0; font-style: italic; margin-top: 2px;">
-              Новини • Аналітика • Відео
+              Історія матчів • YouTube огляди • Аналітика • Спільнота
             </div>
           </div>
         </a>
 
-        <!-- Пошук по новинах -->
-        <div style="flex: 1; max-width: 320px; min-width: 240px;">
+        <!-- Пошук по матчах та статтях -->
+        <div style="flex: 1; max-width: 340px; min-width: 240px;">
           <div style="position: relative; width: 100%;">
-            <span style="position: absolute; inset-y: 0; left: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8; pointer-events: none; font-size: 0.85rem;">
+            <span style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #cbd5e1; pointer-events: none; font-size: 0.85rem;">
               <i class="fa-solid fa-magnifying-glass"></i>
             </span>
-            <input type="text" id="sportSearch" placeholder="Пошук статті чи новини..." style="width: 100%; box-sizing: border-box; padding: 8px 12px 8px 34px; font-size: 0.82rem; background: rgba(255, 255, 255, 0.15); color: white; border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 10px; outline: none;" />
+            <input type="text" id="sportSearch" placeholder="Пошук матчу, команди чи турніру..." style="width: 100%; padding: 8px 12px 8px 34px; font-size: 0.82rem; background: rgba(255, 255, 255, 0.15); color: white; border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 10px; outline: none;" />
           </div>
         </div>
 
@@ -303,40 +400,54 @@
 
     <div class="container">
       
-      <!-- Заголовок + Кнопка публікації -->
+      <!-- Заголовок + Кнопка публікації (видима лише адміністраторам) -->
       <div style="background: white; border-radius: 12px; padding: 20px; border-left: 5px solid var(--sport-color); box-shadow: 0 4px 6px rgba(0,0,0,0.04); display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 15px;">
         <div>
-          <h1 style="margin: 0 0 6px 0; font-size: 1.3rem; color: #1e3a8a;">📰 Спортивні Новини та Відео</h1>
+          <h1 style="margin: 0 0 6px 0; font-size: 1.3rem; color: #1e3a8a;">📰 Історія Матчів, YouTube Огляди та Аналітика</h1>
           <p style="margin: 0; font-size: 0.85rem; color: #64748b;">
-            Публікація свіжих новин, аналізу матчів та перегляд відео прямо на сайті.
+            Архів ключових поєдинків із відеооглядами та розбором. Зареєстровані користувачі можуть залишати коментарі під кожним матчем.
           </p>
         </div>
 
-        <div>
+        <div id="adminPublishControl" style="display: none;">
           <button id="toggleFormBtn" class="btn-add">
-            <i class="fa-solid fa-plus"></i> Додати новину з відео
+            <i class="fa-solid fa-plus"></i> Опублікувати матч / аналітику
           </button>
         </div>
       </div>
 
-      <!-- ФОРМА ДОДАВАННЯ НОВИНИ -->
+      <!-- ФОРМА ДОДАВАННЯ МАТЧУ / АНАЛІТИКИ (ТІЛЬКИ ДЛЯ АДМІНІВ) -->
       <div id="newNewsFormCard" style="display: none; background: white; border-radius: 12px; padding: 20px; margin-top: 20px; border: 2px dashed var(--sport-color); box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
-        <h3 style="margin-top: 0; color: #1e3a8a; font-size: 1.05rem;"><i class="fa-solid fa-pen-to-square"></i> Публікація новини</h3>
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+          <h3 style="margin: 0; color: #1e3a8a; font-size: 1.05rem;"><i class="fa-solid fa-pen-to-square"></i> Публікація матчу в історію (Режим Адміністратора)</h3>
+          <span style="font-size: 0.75rem; color: #16a34a; font-weight: 700;"><i class="fa-solid fa-wand-magic-sparkles"></i> Вставте YouTube посилання — назва підтягнеться автоматично</span>
+        </div>
         
         <form id="addNewsForm" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px;">
           
-          <!-- Заголовок з лімітом 70 символів -->
+          <!-- YouTube посилання + автозаповнення через oEmbed -->
+          <div style="grid-column: 1 / -1;">
+            <label style="font-size: 0.78rem; font-weight: bold; color: #475569;">Посилання на YouTube огляд матчу:</label>
+            <div style="display: flex; gap: 8px; margin-top: 4px; flex-wrap: wrap;">
+              <input type="url" id="newsPhotoUrl" placeholder="https://www.youtube.com/watch?v=... або https://youtu.be/..." required style="flex: 1; min-width: 240px; padding: 8px 10px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.85rem;" />
+              <button type="button" id="fetchYtMetaBtn" style="background: #0f172a; color: white; border: none; border-radius: 6px; padding: 8px 14px; font-size: 0.8rem; font-weight: 700; cursor: pointer;">
+                <i class="fa-brands fa-youtube" style="color: #ef4444;"></i> Підтягнути назву з YouTube
+              </button>
+            </div>
+          </div>
+
+          <!-- Заголовок з лімітом 90 символів -->
           <div style="grid-column: 1 / -1;">
             <div style="display: flex; justify-content: space-between; align-items: center;">
-              <label style="font-size: 0.78rem; font-weight: bold; color: #475569;">Заголовок новини:</label>
-              <span id="titleCounter" style="font-size: 0.72rem; color: #94a3b8;">0/70</span>
+              <label style="font-size: 0.78rem; font-weight: bold; color: #475569;">Назва матчу / Заголовок:</label>
+              <span id="titleCounter" style="font-size: 0.72rem; color: #94a3b8;">0/90</span>
             </div>
-            <input type="text" id="newsTitle" maxlength="70" placeholder="напр. Огляд центрального матчу туру (макс. 70 симв.)" required style="width: 100%; box-sizing: border-box; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.85rem; margin-top: 4px;" />
+            <input type="text" id="newsTitle" maxlength="90" placeholder="напр. Динамо Київ — Шахтар Донецьк | Огляд матчу" required style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.85rem; margin-top: 4px;" />
           </div>
 
           <div>
             <label style="font-size: 0.78rem; font-weight: bold; color: #475569;">Категорія / Турнір:</label>
-            <select id="newsCategory" style="width: 100%; box-sizing: border-box; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.85rem; margin-top: 4px; background: white;">
+            <select id="newsCategory" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.85rem; margin-top: 4px; background: white;">
               <optgroup label="🌟 Топ турніри">
                 <option value="ucl">🏆 Ліга Чемпіонів</option>
                 <option value="uel">⚽ Ліга Європи</option>
@@ -367,41 +478,101 @@
           </div>
 
           <div>
-            <label style="font-size: 0.78rem; font-weight: bold; color: #475569;">Посилання на YouTube відео:</label>
-            <input type="url" id="newsPhotoUrl" placeholder="https://www.youtube.com/watch?v=..." required style="width: 100%; box-sizing: border-box; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.85rem; margin-top: 4px;" />
+            <label style="font-size: 0.78rem; font-weight: bold; color: #475569;">Рахунок / Підсумок матчу:</label>
+            <input type="text" id="matchScore" placeholder="напр. 2:1 (Тайми: 1:0, 1:1)" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.85rem; margin-top: 4px;" />
           </div>
 
-          <div style="grid-column: 1 / -1;">
-            <label style="font-size: 0.78rem; font-weight: bold; color: #475569;">Реферальне посилання (необов'язково):</label>
-            <input type="url" id="newsAffiliateUrl" placeholder="https://beton.ua/?ref=..." style="width: 100%; box-sizing: border-box; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.85rem; margin-top: 4px;" />
+          <div>
+            <label style="font-size: 0.78rem; font-weight: bold; color: #475569;">Дата матчу:</label>
+            <input type="date" id="matchDate" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.85rem; margin-top: 4px;" />
           </div>
 
-          <!-- Текст новини з лімітом 1000 символів -->
+          <div>
+            <label style="font-size: 0.78rem; font-weight: bold; color: #475569;">Монетизація / Партнерське посилання категорії:</label>
+            <input type="url" id="newsAffiliateUrl" placeholder="Автопідбір за категорією або власне URL..." style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.85rem; margin-top: 4px;" />
+          </div>
+
+          <!-- Аналітика матчу -->
           <div style="grid-column: 1 / -1;">
             <div style="display: flex; justify-content: space-between; align-items: center;">
-              <label style="font-size: 0.78rem; font-weight: bold; color: #475569;">Текст новини / Аналіз:</label>
+              <label style="font-size: 0.78rem; font-weight: bold; color: #475569;">Аналітика матчу / Ключові моменти:</label>
               <span id="descCounter" style="font-size: 0.72rem; color: #94a3b8;">0/1000</span>
             </div>
-            <textarea id="newsContent" rows="4" maxlength="1000" placeholder="Напишіть текст статті (макс. 1000 симв.)..." required style="width: 100%; box-sizing: border-box; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.85rem; margin-top: 4px; font-family: inherit;"></textarea>
+            <textarea id="newsContent" rows="4" maxlength="1000" placeholder="Короткий розбір гри, ключові хвилини, статистика ударів чи висновки..." required style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.85rem; margin-top: 4px; font-family: inherit;"></textarea>
           </div>
 
           <div style="grid-column: 1 / -1; display: flex; justify-content: flex-end; gap: 10px;">
             <button type="button" id="cancelFormBtn" style="padding: 8px 16px; border-radius: 6px; border: 1px solid #cbd5e1; background: #f1f5f9; cursor: pointer; font-size: 0.85rem;">Скасувати</button>
-            <button type="submit" class="btn-add" style="padding: 8px 20px;">Опублікувати</button>
+            <button type="submit" class="btn-add" style="padding: 8px 20px;">Опублікувати в архів</button>
           </div>
         </form>
       </div>
 
-      <!-- БАННЕР МОНЕТИЗАЦІЇ -->
-      <div class="promo-banner">
+      <!-- АДМІН-ЗВЕДЕННЯ МОНЕТИЗАЦІЇ КАТЕГОРІЙ (ФУНДАМЕНТ ДЛЯ ЗАРОБІТКУ КАТЕГОРІЙ) -->
+      <section id="categoryMonetizationPanel" class="monetization-admin-box">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+          <div>
+            <h3 style="margin: 0; font-size: 1rem; color: #fbbf24;"><i class="fa-solid fa-chart-line"></i> Злагодження монетизації категорій (Адмін-аналітика)</h3>
+            <p style="margin: 3px 0 0 0; font-size: 0.76rem; color: #cbd5e1;">Облік переходів та налаштування партнерських посилань окремо по кожній спортивній категорії.</p>
+          </div>
+          <button type="button" id="toggleMonetizationConfigBtn" style="background: #f59e0b; color: #0f172a; border: none; padding: 7px 13px; border-radius: 8px; font-size: 0.78rem; font-weight: 800; cursor: pointer;">
+            <i class="fa-solid fa-sliders"></i> Налаштувати оффер категорії
+          </button>
+        </div>
+
+        <form id="categoryOfferForm" style="display: none; margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.12); grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
+          <div>
+            <label style="font-size: 0.74rem; color: #93c5fd;">Категорія:</label>
+            <select id="offerCategoryKey" style="width: 100%; padding: 7px; border-radius: 6px; border: 1px solid #475569; background: #0f172a; color: white; font-size: 0.82rem; margin-top: 3px;">
+              <option value="all">За замовчуванням (Усі категорії)</option>
+              <option value="ucl">🏆 Ліга Чемпіонів</option>
+              <option value="upl">🇺🇦 УПЛ (Україна)</option>
+              <option value="epl">🏴󠁧󠁢󠁥󠁮󠁧󠁿 АПЛ (Англія)</option>
+              <option value="laliga">🇪🇸 Ла Ліга</option>
+              <option value="seriea">🇮🇹 Серія А</option>
+              <option value="bundesliga">🇩🇪 Бундесліга</option>
+              <option value="news">📌 Інші новини</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size: 0.74rem; color: #93c5fd;">Партнерське посилання (URL):</label>
+            <input type="url" id="offerTargetUrl" required placeholder="https://..." style="width: 100%; padding: 7px; border-radius: 6px; border: 1px solid #475569; background: #0f172a; color: white; font-size: 0.82rem; margin-top: 3px;" />
+          </div>
+          <div>
+            <label style="font-size: 0.74rem; color: #93c5fd;">Текст кнопки / Промо:</label>
+            <input type="text" id="offerButtonLabel" placeholder="Коефіцієнти матчу" style="width: 100%; padding: 7px; border-radius: 6px; border: 1px solid #475569; background: #0f172a; color: white; font-size: 0.82rem; margin-top: 3px;" />
+          </div>
+          <div style="display: flex; align-items: flex-end;">
+            <button type="submit" style="width: 100%; background: #10b981; color: #022c22; border: none; padding: 8px 12px; border-radius: 6px; font-weight: 800; font-size: 0.8rem; cursor: pointer;">Зберегти для категорії</button>
+          </div>
+        </form>
+
+        <div class="monetization-grid" id="monetizationStatsGrid">
+          <div class="mon-stat-card">
+            <div style="font-size: 0.72rem; color: #94a3b8;">Загалом кліків по категоріях</div>
+            <div id="totalMonClicks" style="font-size: 1.25rem; font-weight: 900; color: #4ade80; margin-top: 2px;">0</div>
+          </div>
+          <div class="mon-stat-card">
+            <div style="font-size: 0.72rem; color: #94a3b8;">Топ категорія за переходами</div>
+            <div id="topMonCategory" style="font-size: 0.95rem; font-weight: 800; color: #fbbf24; margin-top: 4px;">—</div>
+          </div>
+          <div class="mon-stat-card">
+            <div style="font-size: 0.72rem; color: #94a3b8;">Матчів у YouTube-архіві</div>
+            <div id="totalArchiveCount" style="font-size: 1.25rem; font-weight: 900; color: #38bdf8; margin-top: 2px;">0</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ДИНАМІЧНИЙ БАННЕР МОНЕТИЗАЦІЇ КАТЕГОРІЇ -->
+      <div class="promo-banner" id="categoryPromoBanner">
         <div>
-          <h3 style="margin: 0 0 6px 0; font-size: 1.1rem; color: #fbbf24;"><i class="fa-solid fa-trophy"></i> Кращі Коефіцієнти та Бонуси</h3>
-          <p style="margin: 0; font-size: 0.82rem; opacity: 0.9;">
-            Переходьте на партнерську платформу, реєструйтеся та отримуйте бонуси.
+          <h3 id="promoBannerTitle" style="margin: 0 0 6px 0; font-size: 1.1rem; color: #fbbf24;"><i class="fa-solid fa-trophy"></i> Кращі Коефіцієнти та Бонуси</h3>
+          <p id="promoBannerDesc" style="margin: 0; font-size: 0.82rem; opacity: 0.92;">
+            Переходьте на партнерську платформу обраної категорії та отримуйте актуальні бонуси.
           </p>
         </div>
-        <a href="https://beton.ua" target="_blank" rel="nofollow" class="btn-bet">
-          Отримати Бонус <i class="fa-solid fa-arrow-right"></i>
+        <a id="promoBannerLink" href="https://beton.ua" target="_blank" rel="nofollow noopener" class="btn-bet">
+          <span id="promoBannerBtnText">Отримати Бонус</span> <i class="fa-solid fa-arrow-right"></i>
         </a>
       </div>
 
@@ -409,7 +580,7 @@
       <div style="margin-top: 20px;">
         <span style="font-size: 0.8rem; font-weight: bold; color: #475569; margin-bottom: 6px; display: block;">Фільтр за турнірами та країнами:</span>
         <div class="filter-container" id="categoryFilters">
-          <button class="filter-btn active" data-category="all"><i class="fa-solid fa-globe"></i> Всі новини</button>
+          <button class="filter-btn active" data-category="all"><i class="fa-solid fa-globe"></i> Вся історія</button>
           
           <!-- Топ Турніри -->
           <button class="filter-btn" data-category="ucl">🏆 Ліга Чемпіонів</button>
@@ -438,24 +609,86 @@
         </div>
       </div>
 
-      <!-- СІТКА НОВИН З FIREBASE -->
+      <!-- СІТКА ІСТОРІЇ МАТЧІВ З FIREBASE -->
       <div class="knowledge-grid" id="newsContainer">
-        <p style="grid-column: 1 / -1; text-align: center; color: #64748b; padding: 30px;">Завантаження новин...</p>
+        <p style="grid-column: 1 / -1; text-align: center; color: #64748b; padding: 30px;">Завантаження історії матчів...</p>
       </div>
 
     </div>
 
+    <!-- МОДАЛЬНЕ ВІКНО ПОВНОГО ОПИСУ ТА КОМЕНТАРІВ КОРИСТУВАЧІВ -->
+    <div id="commentsModal" class="comments-modal">
+      <div class="comments-dialog">
+        <div style="padding: 16px 20px; background: #0f172a; color: white; display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+          <div>
+            <span id="modalMatchCategory" style="font-size: 0.7rem; color: #4ade80; font-weight: 800; text-transform: uppercase;">Турнір</span>
+            <h3 id="modalMatchTitle" style="margin: 2px 0 0 0; font-size: 1.05rem;">Назва матчу</h3>
+          </div>
+          <button type="button" id="closeCommentsModalBtn" style="background: #ef4444; color: white; border: none; border-radius: 6px; padding: 6px 12px; font-weight: bold; cursor: pointer;">✕</button>
+        </div>
+
+        <div style="padding: 14px 20px; background: #ffffff; border-bottom: 1px solid #e2e8f0; max-height: 160px; overflow-y: auto;">
+          <p id="modalMatchFullText" style="margin: 0; font-size: 0.85rem; color: #334155; line-height: 1.5; white-space: pre-line;"></p>
+        </div>
+
+        <div class="comments-list" id="modalCommentsList">
+          <p style="text-align: center; color: #64748b; font-size: 0.85rem;">Завантаження коментарів...</p>
+        </div>
+
+        <div style="padding: 14px 20px; background: #ffffff; border-top: 1px solid #e2e8f0;">
+          <form id="addCommentForm" style="display: none; gap: 8px;">
+            <input type="text" id="commentInput" maxlength="400" required placeholder="Напишіть ваш коментар до матчу..." style="flex: 1; padding: 9px 12px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 0.85rem; outline: none;" />
+            <button type="submit" class="btn-add" style="padding: 9px 16px;"><i class="fa-solid fa-paper-plane"></i> Надіслати</button>
+          </form>
+          <div id="commentLoginPrompt" style="font-size: 0.82rem; color: #64748b; text-align: center;">
+            <i class="fa-solid fa-lock"></i> Коментувати можуть усі зареєстровані користувачі. <a href="index.html#auth-section" style="color: #16a34a; font-weight: bold;">Увійти в акаунт</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <footer>
-        <p>&copy; 2026 Neoservice.ks.ua — Спортивна аналітика та новини.</p>
+        <p>&copy; 2026 Neoservice.ks.ua — Спортивна аналітика, YouTube-архів матчів та спільнота.</p>
     </footer>
 
     <!-- Firebase модуль -->
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
       import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-      import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, doc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+      import {
+        getFirestore,
+        collection,
+        addDoc,
+        query,
+        orderBy,
+        onSnapshot,
+        doc,
+        deleteDoc,
+        setDoc,
+        updateDoc,
+        increment,
+        serverTimestamp
+      } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-      const ADMIN_EMAIL = "admin@neoservice.ks.ua"; 
+      const ADMIN_EMAILS = [
+        "kostopilservice@gmail.com",
+        "admin@neoservice.ks.ua",
+        "olegdriganec@gmail.com"
+      ];
+
+      function isAdminUser(user) {
+        return Boolean(user && user.email && ADMIN_EMAILS.includes(String(user.email).trim().toLowerCase()));
+      }
+
+      function escapeHtml(text) {
+        if (!text) return '';
+        return String(text)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
 
       const firebaseConfig = {
         apiKey: "AIzaSyBlKoP6-M8tdrKq88bSdnWSnak5Gpddnpk",
@@ -471,20 +704,21 @@
       const auth = getAuth(app);
       const db = getFirestore(app);
 
+      const adminPublishControl = document.getElementById('adminPublishControl');
       const toggleFormBtn = document.getElementById('toggleFormBtn');
       const newNewsFormCard = document.getElementById('newNewsFormCard');
       const cancelFormBtn = document.getElementById('cancelFormBtn');
       const addNewsForm = document.getElementById('addNewsForm');
       const newsContainer = document.getElementById('newsContainer');
+      const categoryMonetizationPanel = document.getElementById('categoryMonetizationPanel');
 
-      // Лічильники символів
       const newsTitleInput = document.getElementById('newsTitle');
       const newsContentInput = document.getElementById('newsContent');
       const titleCounter = document.getElementById('titleCounter');
       const descCounter = document.getElementById('descCounter');
 
       newsTitleInput?.addEventListener('input', () => {
-        titleCounter.textContent = `${newsTitleInput.value.length}/70`;
+        titleCounter.textContent = `${newsTitleInput.value.length}/90`;
       });
 
       newsContentInput?.addEventListener('input', () => {
@@ -493,8 +727,11 @@
 
       let currentUser = null;
       let activeCategory = 'all';
+      let cachedItems = [];
+      let categoryMonetizationMap = {};
+      let currentModalDocId = null;
+      let unsubscribeComments = null;
 
-      // Мапа назв та стилів категорій
       const categoryMap = {
         ucl: { name: "🏆 Ліга Чемпіонів", bg: "#dbeafe", color: "#1e40af" },
         uel: { name: "⚽ Ліга Європи", bg: "#ffedd5", color: "#c2410c" },
@@ -518,109 +755,233 @@
         news: { name: "📌 Новини", bg: "#f1f5f9", color: "#475569" }
       };
 
-      onAuthStateChanged(auth, (user) => {
-        currentUser = user;
-        if (!user) {
-          toggleFormBtn.innerHTML = `<i class="fa-solid fa-lock"></i> Увійдіть, щоб додавати новини`;
-        } else {
-          toggleFormBtn.innerHTML = `<i class="fa-solid fa-plus"></i> Додати новину з відео`;
+      // Автоматичне підтягування назви відео з YouTube (oEmbed)
+      document.getElementById('fetchYtMetaBtn')?.addEventListener('click', async () => {
+        const ytUrl = document.getElementById('newsPhotoUrl').value.trim();
+        if (!ytUrl) {
+          alert('Вставте спочатку посилання на YouTube відео.');
+          return;
+        }
+        try {
+          const res = await fetch(`https://www.youtube.com/oembed?url=${encodeURIComponent(ytUrl)}&format=json`);
+          if (!res.ok) throw new Error('Не вдалося отримати дані відео');
+          const meta = await res.json();
+          if (meta.title) {
+            newsTitleInput.value = meta.title.slice(0, 90);
+            titleCounter.textContent = `${newsTitleInput.value.length}/90`;
+          }
+        } catch (err) {
+          alert('Не вдалося автоматично завантажити назву. Введіть заголовок вручну.');
         }
       });
 
-      toggleFormBtn.addEventListener('click', () => {
-        if (!currentUser) {
-          alert('Будь ласка, авторизуйтесь на головній сторінці, щоб додавати новини!');
-          window.location.href = 'index.html#auth-section';
-          return;
+      // Стан авторизації: публікувати можуть ТІЛЬКИ адміни, коментувати — УСІ зареєстровані
+      onAuthStateChanged(auth, (user) => {
+        currentUser = user;
+        const admin = isAdminUser(user);
+
+        if (admin) {
+          adminPublishControl.style.display = 'block';
+          categoryMonetizationPanel.classList.add('visible');
+        } else {
+          adminPublishControl.style.display = 'none';
+          newNewsFormCard.style.display = 'none';
+          categoryMonetizationPanel.classList.remove('visible');
         }
+
+        const commentForm = document.getElementById('addCommentForm');
+        const loginPrompt = document.getElementById('commentLoginPrompt');
+        if (user) {
+          commentForm.style.display = 'flex';
+          loginPrompt.style.display = 'none';
+        } else {
+          commentForm.style.display = 'none';
+          loginPrompt.style.display = 'block';
+        }
+
+        renderNewsCards();
+      });
+
+      toggleFormBtn?.addEventListener('click', () => {
+        if (!isAdminUser(currentUser)) return;
         newNewsFormCard.style.display = newNewsFormCard.style.display === 'none' ? 'block' : 'none';
       });
 
-      cancelFormBtn.addEventListener('click', () => {
+      cancelFormBtn?.addEventListener('click', () => {
         newNewsFormCard.style.display = 'none';
       });
 
-      // Функція для отримання ID YouTube відео з посилання
-      function getYouTubeEmbedUrl(url) {
-        if (!url) return null;
-        let videoId = null;
-        if (url.includes('youtu.be/')) {
-          videoId = url.split('youtu.be/')[1]?.split('?')[0];
-        } else if (url.includes('watch?v=')) {
-          videoId = url.split('watch?v=')[1]?.split('&')[0];
-        } else if (url.includes('embed/')) {
-          videoId = url.split('embed/')[1]?.split('?')[0];
+      // Підключення налаштувань та статистики монетизації категорій (колекція sport_category_monetization)
+      document.getElementById('toggleMonetizationConfigBtn')?.addEventListener('click', () => {
+        const f = document.getElementById('categoryOfferForm');
+        f.style.display = f.style.display === 'none' ? 'grid' : 'none';
+      });
+
+      document.getElementById('categoryOfferForm')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (!isAdminUser(currentUser)) return;
+        const catKey = document.getElementById('offerCategoryKey').value;
+        const targetUrl = document.getElementById('offerTargetUrl').value.trim();
+        const buttonLabel = document.getElementById('offerButtonLabel').value.trim() || 'Коефіцієнти / Промо';
+
+        try {
+          await setDoc(doc(db, "sport_category_monetization", catKey), {
+            categoryKey: catKey,
+            targetUrl,
+            buttonLabel,
+            updatedBy: currentUser.email,
+            updatedAt: serverTimestamp()
+          }, { merge: true });
+          alert('Налаштування монетизації для категорії збережено!');
+          document.getElementById('categoryOfferForm').style.display = 'none';
+        } catch (err) {
+          alert('Помилка збереження налаштувань: ' + err.message);
         }
-        return videoId ? `https://www.youtube.com/embed/${videoId}?autoplay=1` : null;
+      });
+
+      onSnapshot(collection(db, "sport_category_monetization"), (snap) => {
+        categoryMonetizationMap = {};
+        let totalClicks = 0;
+        let topCat = '—';
+        let maxClicks = 0;
+
+        snap.forEach((d) => {
+          const data = d.data();
+          categoryMonetizationMap[d.id] = data;
+          const c = Number(data.clicks || 0);
+          totalClicks += c;
+          if (c > maxClicks) {
+            maxClicks = c;
+            topCat = (categoryMap[d.id]?.name || d.id) + ` (${c})`;
+          }
+        });
+
+        document.getElementById('totalMonClicks').textContent = totalClicks;
+        document.getElementById('topMonCategory').textContent = topCat;
+        updateCategoryPromoBanner();
+      });
+
+      function resolveCategoryOffer(catKey) {
+        return categoryMonetizationMap[catKey] || categoryMonetizationMap['all'] || {
+          targetUrl: 'https://beton.ua',
+          buttonLabel: 'Отримати Бонус'
+        };
       }
 
-      // Збереження новини в базі Firestore
-      addNewsForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        if (!currentUser) return;
+      function updateCategoryPromoBanner() {
+        const offer = resolveCategoryOffer(activeCategory);
+        const catTitle = activeCategory === 'all' ? 'Усі турніри' : (categoryMap[activeCategory]?.name || activeCategory);
+        document.getElementById('promoBannerTitle').innerHTML = `<i class="fa-solid fa-trophy"></i> Партнерська пропозиція • ${escapeHtml(catTitle)}`;
+        document.getElementById('promoBannerBtnText').textContent = offer.buttonLabel || 'Отримати Бонус';
+        const linkEl = document.getElementById('promoBannerLink');
+        linkEl.href = offer.targetUrl || 'https://beton.ua';
+        linkEl.onclick = () => trackCategoryMonetizationClick(activeCategory);
+      }
 
+      window.trackCategoryMonetizationClick = async function(catKey) {
+        const key = catKey || 'all';
+        try {
+          await setDoc(doc(db, "sport_category_monetization", key), {
+            categoryKey: key,
+            clicks: increment(1),
+            lastClickAt: serverTimestamp()
+          }, { merge: true });
+        } catch (_) {}
+      };
+
+      // Отримання YouTube ID з будь-якого формату посилання
+      function extractYouTubeId(url) {
+        if (!url) return null;
+        const regExp = /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/))([a-zA-Z0-9_-]{11})/;
+        const match = String(url).match(regExp);
+        return match ? match[1] : null;
+      }
+
+      // Публікація матчу / новини (тільки адмін)
+      addNewsForm?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (!isAdminUser(currentUser)) {
+          alert('Публікація дозволена тільки адміністраторам!');
+          return;
+        }
+
+        const cat = document.getElementById('newsCategory').value;
         const photoUrl = document.getElementById('newsPhotoUrl').value.trim();
-        const affiliateUrl = document.getElementById('newsAffiliateUrl').value.trim() || "https://beton.ua";
+        const defaultOffer = resolveCategoryOffer(cat);
+        const affiliateUrl = document.getElementById('newsAffiliateUrl').value.trim() || defaultOffer.targetUrl || "https://beton.ua";
 
         try {
           await addDoc(collection(db, "sport_news"), {
-            title: document.getElementById('newsTitle').value,
-            category: document.getElementById('newsCategory').value,
+            title: document.getElementById('newsTitle').value.trim(),
+            category: cat,
+            matchScore: document.getElementById('matchScore').value.trim(),
+            matchDate: document.getElementById('matchDate').value,
             photoUrl: photoUrl,
-            content: document.getElementById('newsContent').value,
+            content: document.getElementById('newsContent').value.trim(),
             affiliateUrl: affiliateUrl,
+            commentsCount: 0,
             userEmail: currentUser.email,
             createdAt: serverTimestamp()
           });
 
           addNewsForm.reset();
-          titleCounter.textContent = "0/70";
+          titleCounter.textContent = "0/90";
           descCounter.textContent = "0/1000";
           newNewsFormCard.style.display = 'none';
-          alert('Новину успішно опубліковано!');
+          alert('Матч успішно додано в історію!');
         } catch (err) {
           alert('Помилка при публікації: ' + err.message);
         }
       });
 
-      // Рендеринг новин
+      // Підписка на колекцію sport_news
       const q = query(collection(db, "sport_news"), orderBy("createdAt", "desc"));
       onSnapshot(q, (snapshot) => {
+        cachedItems = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+        document.getElementById('totalArchiveCount').textContent = cachedItems.length;
+        renderNewsCards();
+      });
+
+      function renderNewsCards() {
         newsContainer.innerHTML = '';
 
-        if (snapshot.empty) {
+        if (!cachedItems.length) {
           newsContainer.innerHTML = `
             <div style="grid-column: 1 / -1; text-align: center; padding: 40px; background: white; border-radius: 12px; border: 1px dashed #cbd5e1;">
-              <p style="color: #64748b; margin: 0;">Спортивних новин поки немає. Будьте першим, хто опублікує новину!</p>
+              <p style="color: #64748b; margin: 0;">В історії матчів поки немає записів.</p>
             </div>
           `;
           return;
         }
 
-        snapshot.forEach((documentSnap) => {
-          const item = documentSnap.data();
-          const docId = documentSnap.id;
+        const admin = isAdminUser(currentUser);
+
+        cachedItems.forEach((item) => {
+          const docId = item.id;
           const card = document.createElement('div');
           card.className = 'knowledge-card';
-          card.setAttribute('data-category', item.category);
+          card.setAttribute('data-category', item.category || 'news');
 
           const catInfo = categoryMap[item.category] || categoryMap.news;
-          const isOwnerOrAdmin = currentUser && (currentUser.email === ADMIN_EMAIL || currentUser.email === item.userEmail);
-          const dateStr = item.createdAt ? new Date(item.createdAt.toDate()).toLocaleDateString('uk-UA') : 'Щойно';
+          const dateStr = item.matchDate
+            ? item.matchDate
+            : (item.createdAt ? new Date(item.createdAt.toDate()).toLocaleDateString('uk-UA') : 'Щойно');
 
-          const embedUrl = getYouTubeEmbedUrl(item.photoUrl);
-          
+          const ytId = extractYouTubeId(item.photoUrl);
+          const embedUrl = ytId ? `https://www.youtube.com/embed/${ytId}?autoplay=1` : null;
+          const scoreBadge = item.matchScore
+            ? `<div class="match-score-pill"><i class="fa-solid fa-scoreboard"></i> ${escapeHtml(item.matchScore)}</div>`
+            : '';
+
           let mediaHtml = '';
           if (embedUrl) {
-            // Якщо це посилання YouTube — генеруємо обгортку зображення (з прев'ю) та прихований блок з iframe
-            const ytVidId = embedUrl.split('/embed/')[1]?.split('?')[0];
-            const thumbUrl = ytVidId ? `https://img.youtube.com/vi/${ytVidId}/hqdefault.jpg` : 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=600&q=80';
-            
+            const thumbUrl = `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`;
             mediaHtml = `
               <div class="card-image-wrapper" id="img-wrap-${docId}">
-                <img src="${thumbUrl}" alt="Прев'ю відео" onerror="this.src='https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=600&q=80'" />
-                <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; cursor: pointer;" onclick="playCardVideo('${docId}', '${embedUrl}')">
-                  <div style="width: 50px; height: 50px; background: #ef4444; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">
+                <img src="${thumbUrl}" alt="Прев'ю матчу" onerror="this.src='https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=600&q=80'" />
+                ${scoreBadge}
+                <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.28); display: flex; align-items: center; justify-content: center; cursor: pointer;" onclick="playCardVideo('${docId}', '${embedUrl}')">
+                  <div style="width: 50px; height: 50px; background: #ef4444; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem; box-shadow: 0 4px 10px rgba(0,0,0,0.35);">
                     <i class="fa-solid fa-play" style="margin-left: 3px;"></i>
                   </div>
                 </div>
@@ -628,35 +989,44 @@
               <div class="card-video-wrapper" id="vid-wrap-${docId}"></div>
             `;
           } else {
-            // Звичайна картинка
             mediaHtml = `
               <div class="card-image-wrapper">
-                <img src="${item.photoUrl || 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=600&q=80'}" alt="Фото новини" onerror="this.src='https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=600&q=80'" />
+                <img src="${escapeHtml(item.photoUrl || 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=600&q=80')}" alt="Фото матчу" onerror="this.src='https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=600&q=80'" />
+                ${scoreBadge}
               </div>
             `;
           }
+
+          const offer = resolveCategoryOffer(item.category);
+          const targetOfferUrl = item.affiliateUrl || offer.targetUrl || 'https://beton.ua';
+          const commentsCount = Number(item.commentsCount || 0);
 
           card.innerHTML = `
             <div>
               ${mediaHtml}
               <div class="card-body">
                 <div>
-                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; gap: 6px;">
                     <span class="category-badge" style="background: ${catInfo.bg}; color: ${catInfo.color};">${catInfo.name}</span>
-                    <span style="font-size: 0.75rem; color: #64748b; font-weight: bold;"><i class="fa-regular fa-calendar"></i> ${dateStr}</span>
+                    <span style="font-size: 0.74rem; color: #64748b; font-weight: bold;"><i class="fa-regular fa-calendar"></i> ${escapeHtml(dateStr)}</span>
                   </div>
-                  <h3>${item.title}</h3>
-                  <p class="article-content">${item.content}</p>
+                  <h3>${escapeHtml(item.title)}</h3>
+                  <p class="article-content">${escapeHtml(item.content)}</p>
                 </div>
               </div>
             </div>
 
-            <div style="padding: 0 18px 18px 18px; display: flex; justify-content: space-between; align-items: center; gap: 8px;">
-              <a href="${item.affiliateUrl}" target="_blank" rel="nofollow" class="watch-btn">
-                <i class="fa-solid fa-trophy"></i> Коефіцієнти / Ставка
-              </a>
-              ${isOwnerOrAdmin ? `
-                <button class="delete-btn" data-id="${docId}" style="background: #ef4444; color: white; border: none; border-radius: 6px; padding: 6px 10px; cursor: pointer; font-size: 0.8rem;" title="Видалити новину">
+            <div style="padding: 10px 18px 16px 18px; display: flex; justify-content: space-between; align-items: center; gap: 6px; flex-wrap: wrap;">
+              <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
+                <button type="button" class="btn-comments" onclick="openMatchComments('${docId}')">
+                  <i class="fa-regular fa-comments"></i> Коментарі (${commentsCount})
+                </button>
+                <a href="${escapeHtml(targetOfferUrl)}" target="_blank" rel="nofollow noopener" class="watch-btn" onclick="trackCategoryMonetizationClick('${escapeHtml(item.category || 'all')}')">
+                  <i class="fa-solid fa-trophy"></i> Промо
+                </a>
+              </div>
+              ${admin ? `
+                <button class="delete-btn" data-id="${docId}" style="background: #ef4444; color: white; border: none; border-radius: 6px; padding: 7px 10px; cursor: pointer; font-size: 0.78rem;" title="Видалити запис">
                   <i class="fa-solid fa-trash"></i>
                 </button>
               ` : ''}
@@ -667,23 +1037,122 @@
 
         filterNews();
 
-        // Видалення новини
         document.querySelectorAll('.delete-btn').forEach(btn => {
           btn.addEventListener('click', async (e) => {
+            if (!isAdminUser(currentUser)) return;
             const id = e.currentTarget.getAttribute('data-id');
-            if (confirm('Ви дійсно бажаєте видалити цю новину?')) {
+            if (confirm('Ви дійсно бажаєте видалити цей запис з історії?')) {
               try {
                 await deleteDoc(doc(db, "sport_news", id));
-                alert('Новину видалено!');
               } catch (err) {
                 alert('Помилка видалення: ' + err.message);
               }
             }
           });
         });
+      }
+
+      // Відкриття модального вікна коментарів до матчу (для всіх зареєстрованих користувачів)
+      window.openMatchComments = function(docId) {
+        const item = cachedItems.find(x => x.id === docId);
+        if (!item) return;
+
+        currentModalDocId = docId;
+        const catInfo = categoryMap[item.category] || categoryMap.news;
+        document.getElementById('modalMatchCategory').textContent = catInfo.name;
+        document.getElementById('modalMatchTitle').textContent = item.title || 'Матч';
+        document.getElementById('modalMatchFullText').textContent = item.content || '';
+        document.getElementById('commentsModal').style.display = 'flex';
+
+        if (unsubscribeComments) {
+          unsubscribeComments();
+          unsubscribeComments = null;
+        }
+
+        const listEl = document.getElementById('modalCommentsList');
+        listEl.innerHTML = '<p style="text-align: center; color: #64748b; font-size: 0.85rem;">Завантаження коментарів...</p>';
+
+        const commentsQuery = query(collection(db, "sport_news", docId, "comments"), orderBy("createdAt", "asc"));
+        unsubscribeComments = onSnapshot(commentsQuery, (snap) => {
+          listEl.innerHTML = '';
+          if (snap.empty) {
+            listEl.innerHTML = '<p style="text-align: center; color: #64748b; font-size: 0.84rem; margin: 16px 0;">Коментарів ще немає. Поділіться враженнями від матчу!</p>';
+            return;
+          }
+
+          const admin = isAdminUser(currentUser);
+          snap.forEach((cDoc) => {
+            const c = cDoc.data();
+            const canDelete = admin || (currentUser && currentUser.uid === c.userId);
+            const timeStr = c.createdAt ? new Date(c.createdAt.toDate()).toLocaleString('uk-UA', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) : 'щойно';
+            const authorName = c.authorName || (c.userEmail ? c.userEmail.split('@')[0] : 'Користувач');
+
+            const div = document.createElement('div');
+            div.className = 'comment-item';
+            div.innerHTML = `
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; gap: 8px;">
+                <strong style="font-size: 0.8rem; color: #0f172a;"><i class="fa-solid fa-user-circle" style="color: #16a34a;"></i> ${escapeHtml(authorName)}</strong>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span style="font-size: 0.72rem; color: #94a3b8;">${escapeHtml(timeStr)}</span>
+                  ${canDelete ? `<button type="button" onclick="deleteMatchComment('${docId}', '${cDoc.id}')" style="background: none; border: none; color: #ef4444; cursor: pointer; font-size: 0.75rem;" title="Видалити коментар"><i class="fa-solid fa-trash"></i></button>` : ''}
+                </div>
+              </div>
+              <div style="font-size: 0.84rem; color: #334155; line-height: 1.4;">${escapeHtml(c.text)}</div>
+            `;
+            listEl.appendChild(div);
+          });
+        });
+      };
+
+      window.deleteMatchComment = async function(newsId, commentId) {
+        if (!currentUser) return;
+        if (!confirm('Видалити коментар?')) return;
+        try {
+          await deleteDoc(doc(db, "sport_news", newsId, "comments", commentId));
+          await updateDoc(doc(db, "sport_news", newsId), { commentsCount: increment(-1) }).catch(() => {});
+        } catch (err) {
+          alert('Помилка видалення коментаря: ' + err.message);
+        }
+      };
+
+      document.getElementById('closeCommentsModalBtn')?.addEventListener('click', () => {
+        document.getElementById('commentsModal').style.display = 'none';
+        if (unsubscribeComments) {
+          unsubscribeComments();
+          unsubscribeComments = null;
+        }
+        currentModalDocId = null;
       });
 
-      // Глобальна функція для вбудовування і запуску відео без переходу на YouTube
+      document.getElementById('addCommentForm')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (!currentUser || !currentModalDocId) {
+          alert('Коментувати можуть лише авторизовані користувачі.');
+          return;
+        }
+
+        const inputEl = document.getElementById('commentInput');
+        const text = inputEl.value.trim();
+        if (!text) return;
+
+        try {
+          await addDoc(collection(db, "sport_news", currentModalDocId, "comments"), {
+            text,
+            userId: currentUser.uid,
+            userEmail: currentUser.email,
+            authorName: currentUser.displayName || currentUser.email.split('@')[0],
+            createdAt: serverTimestamp()
+          });
+          await updateDoc(doc(db, "sport_news", currentModalDocId), {
+            commentsCount: increment(1)
+          }).catch(() => {});
+          inputEl.value = '';
+        } catch (err) {
+          alert('Не вдалося додати коментар: ' + err.message);
+        }
+      });
+
+      // Запуск YouTube відео прямо в картці
       window.playCardVideo = function(docId, embedUrl) {
         const imgWrap = document.getElementById(`img-wrap-${docId}`);
         const vidWrap = document.getElementById(`vid-wrap-${docId}`);
@@ -694,31 +1163,28 @@
         }
       };
 
-      // Фільтрація
+      // Фільтрація та синхронізація промо-банера за обраною категорією
       const filterButtons = document.querySelectorAll('.filter-btn');
       filterButtons.forEach(btn => {
         btn.addEventListener('click', () => {
           filterButtons.forEach(b => b.classList.remove('active'));
           btn.classList.add('active');
           activeCategory = btn.getAttribute('data-category');
+          updateCategoryPromoBanner();
           filterNews();
         });
       });
 
       function filterNews() {
-        const query = document.getElementById('sportSearch').value.toLowerCase();
+        const queryStr = document.getElementById('sportSearch').value.toLowerCase();
         const cards = document.querySelectorAll('.knowledge-card');
 
         cards.forEach(card => {
           const cardCategory = card.getAttribute('data-category');
           const matchesCategory = (activeCategory === 'all' || cardCategory === activeCategory);
-          const matchesSearch = card.innerText.toLowerCase().includes(query);
+          const matchesSearch = card.innerText.toLowerCase().includes(queryStr);
 
-          if (matchesCategory && matchesSearch) {
-            card.style.display = 'flex';
-          } else {
-            card.style.display = 'none';
-          }
+          card.style.display = (matchesCategory && matchesSearch) ? 'flex' : 'none';
         });
       }
 

@@ -93,18 +93,42 @@
         .gallery-nav-btn:hover { background: rgba(255, 255, 255, 0.5); }
 
         .thumb-img {
-            width: 60px;
-            height: 45px;
+            width: 64px;
+            height: 46px;
             object-fit: cover;
             border-radius: 4px;
             cursor: pointer;
             opacity: 0.6;
             border: 2px solid transparent;
             transition: all 0.2s;
+            flex-shrink: 0;
         }
         .thumb-img.active {
             opacity: 1;
             border-color: #29b6f6;
+        }
+        .thumb-video {
+            width: 72px;
+            height: 46px;
+            border-radius: 4px;
+            cursor: pointer;
+            opacity: 0.7;
+            border: 2px solid transparent;
+            background: #1f2937;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            font-size: 11px;
+            font-weight: 700;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+        .thumb-video.active {
+            opacity: 1;
+            border-color: #ef4444;
+            background: #991b1b;
         }
     </style>
 </head>
@@ -353,22 +377,31 @@
                     </div>
                 </div>
 
-                <div class="font-bold text-gray-800 text-xs border-b pb-1 pt-2">3. Ціна ($ USD) та Фотографії</div>
+                <div class="font-bold text-gray-800 text-xs border-b pb-1 pt-2">3. Ціна ($ USD), Розширена галерея фото та YouTube</div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                         <label class="block font-semibold mb-1 text-gray-600">Ціна ($ USD) *</label>
                         <input type="number" id="adPrice" required placeholder="25000" class="w-full p-2 border rounded font-bold text-green-700">
                     </div>
                     <div>
-                        <label class="block font-semibold mb-1 text-gray-600">Фото 1 (Головне посилання URL) *</label>
-                        <input type="url" id="adPhoto1" required placeholder="https://..." class="w-full p-2 border rounded">
+                        <label class="block font-semibold mb-1 text-gray-600">Відеоогляд (YouTube URL, опціонально)</label>
+                        <input type="url" id="adYoutube" placeholder="https://youtu.be/... або https://www.youtube.com/watch?v=..." class="w-full p-2 border rounded">
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <input type="url" id="adPhoto2" placeholder="Фото 2 https://..." class="p-2 border rounded">
-                    <input type="url" id="adPhoto3" placeholder="Фото 3 https://..." class="p-2 border rounded">
-                    <input type="url" id="adPhoto4" placeholder="Фото 4 https://..." class="p-2 border rounded">
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between">
+                        <label class="block font-semibold text-gray-600">Фотографії об'єкта (перше фото — головне *)</label>
+                        <button type="button" onclick="addPhotoField('add')" class="px-2.5 py-1 bg-blue-50 text-blue-700 border border-blue-200 rounded font-bold hover:bg-blue-100">
+                            <i class="fa-solid fa-plus"></i> Додати ще фото
+                        </button>
+                    </div>
+                    <div id="addPhotoFieldsList" class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <input type="url" data-photo-input required placeholder="Фото 1 (Головне посилання URL) *" class="p-2 border rounded">
+                        <input type="url" data-photo-input placeholder="Фото 2 https://..." class="p-2 border rounded">
+                        <input type="url" data-photo-input placeholder="Фото 3 https://..." class="p-2 border rounded">
+                        <input type="url" data-photo-input placeholder="Фото 4 https://..." class="p-2 border rounded">
+                    </div>
                 </div>
 
                 <div>
@@ -437,17 +470,158 @@
         </div>
     </section>
 
-    <!-- LIGHTBOX ДЛЯ ГАЛЕРЕЇ -->
+    <!-- МОДАЛЬНЕ ВІКНО РЕДАГУВАННЯ ОГОЛОШЕННЯ (АДМІНІСТРАТОР / АВТОР) -->
+    <div id="editModal" class="hidden fixed inset-0 z-[9998] bg-black/70 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto p-6 shadow-2xl space-y-4 text-xs">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h3 class="font-bold text-base text-gray-900 flex items-center gap-2">
+                    <i class="fa-solid fa-pen-to-square text-blue-600"></i> Редагування комерційного об'єкта
+                </h3>
+                <button type="button" onclick="closeEditModal()" class="text-gray-400 font-bold hover:text-black text-lg">✕</button>
+            </div>
+
+            <form id="editListingForm" class="space-y-4">
+                <input type="hidden" id="editDocId">
+
+                <div class="bg-blue-50 p-3 rounded border border-blue-200 flex flex-wrap items-center gap-6">
+                    <span class="font-bold text-blue-900">Категорія:</span>
+                    <label class="flex items-center gap-1.5 cursor-pointer font-semibold text-gray-800">
+                        <input type="radio" name="editListingCategory" value="office"> 🏢 Офіс / Приміщення
+                    </label>
+                    <label class="flex items-center gap-1.5 cursor-pointer font-semibold text-gray-800">
+                        <input type="radio" name="editListingCategory" value="land"> 🌿 Земельна ділянка
+                    </label>
+                    <label class="flex items-center gap-1.5 cursor-pointer font-semibold text-gray-800">
+                        <input type="radio" name="editListingCategory" value="warehouse"> 🏭 Склад / Виробництво
+                    </label>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                    <div>
+                        <label class="block font-semibold mb-1 text-gray-600">Тип угоди *</label>
+                        <select id="editDealType" class="w-full p-2 border rounded font-semibold bg-white" required>
+                            <option value="Продаж">Продаж</option>
+                            <option value="Оренда довгострокова">Оренда довгострокова</option>
+                            <option value="Оренда посуточна">Оренда посуточна</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1 text-gray-600">Заголовок *</label>
+                        <input type="text" id="editTitle" required class="w-full p-2 border rounded">
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1 text-gray-600">Призначення</label>
+                        <select id="editSubtype" class="w-full p-2 border rounded font-semibold bg-white">
+                            <option value="Офіс">Офіс</option>
+                            <option value="Магазин">Магазин / Торгова точка</option>
+                            <option value="Склад">Склад / Ангар</option>
+                            <option value="Ділянка">Земельна ділянка</option>
+                            <option value="Виробництво">Виробнича база</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1 text-gray-600">Площа *</label>
+                        <input type="number" id="editArea" required class="w-full p-2 border rounded">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div>
+                        <label class="block font-semibold mb-1 text-gray-600">Область *</label>
+                        <select id="editRegion" onchange="updateEditCities()" class="w-full p-2 border rounded font-semibold bg-white" required>
+                            <option value="">Оберіть область *</option>
+                            <option value="Рівненська область">Рівненська область</option>
+                            <option value="Київська область">Київська область</option>
+                            <option value="Львівська область">Львівська область</option>
+                            <option value="Волинська область">Волинська область</option>
+                            <option value="Житомирська область">Житомирська область</option>
+                            <option value="Вінницька область">Вінницька область</option>
+                            <option value="Дніпропетровська область">Дніпропетровська область</option>
+                            <option value="Одеська область">Одеська область</option>
+                            <option value="Харківська область">Харківська область</option>
+                            <option value="Черкаська область">Черкаська область</option>
+                            <option value="Хмельницька область">Хмельницька область</option>
+                            <option value="Івано-Франківська область">Івано-Франківська область</option>
+                            <option value="Закарпатська область">Закарпатська область</option>
+                            <option value="Тернопільська область">Тернопільська область</option>
+                            <option value="Чернівецька область">Чернівецька область</option>
+                            <option value="Чернігівська область">Чернігівська область</option>
+                            <option value="Сумська область">Сумська область</option>
+                            <option value="Полтавська область">Полтавська область</option>
+                            <option value="Кіровоградська область">Кіровоградська область</option>
+                            <option value="Миколаївська область">Миколаївська область</option>
+                            <option value="Херсонська область">Херсонська область</option>
+                            <option value="Запорізька область">Запорізька область</option>
+                            <option value="Донецька область">Донецька область</option>
+                            <option value="Луганська область">Луганська область</option>
+                            <option value="Крим">АР Крим</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1 text-gray-600">Місто *</label>
+                        <select id="editCity" class="w-full p-2 border rounded font-semibold bg-white" required>
+                            <option value="">Оберіть місто *</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1 text-gray-600">Телефон *</label>
+                        <input type="tel" id="editContact" required class="w-full p-2 border rounded">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-semibold mb-1 text-gray-600">Ціна ($ USD) *</label>
+                        <input type="number" id="editPrice" required class="w-full p-2 border rounded font-bold text-green-700">
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1 text-gray-600">YouTube URL (відеоогляд)</label>
+                        <input type="url" id="editYoutube" placeholder="https://youtu.be/..." class="w-full p-2 border rounded">
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between">
+                        <label class="block font-semibold text-gray-600">Фотографії галереї</label>
+                        <button type="button" onclick="addPhotoField('edit')" class="px-2.5 py-1 bg-blue-50 text-blue-700 border border-blue-200 rounded font-bold hover:bg-blue-100">
+                            <i class="fa-solid fa-plus"></i> Додати ще фото
+                        </button>
+                    </div>
+                    <div id="editPhotoFieldsList" class="grid grid-cols-1 sm:grid-cols-2 gap-2"></div>
+                </div>
+
+                <div>
+                    <label class="block font-semibold mb-1 text-gray-600">Опис *</label>
+                    <textarea id="editDescription" rows="3" required class="w-full p-2 border rounded"></textarea>
+                </div>
+
+                <div class="flex justify-end gap-3 pt-2 border-t">
+                    <button type="button" onclick="closeEditModal()" class="px-5 py-2 bg-gray-200 text-gray-700 font-bold rounded">Скасувати</button>
+                    <button type="submit" class="btn-blue-search text-white font-bold px-6 py-2 rounded shadow">
+                        <i class="fa-solid fa-floppy-disk"></i> Зберегти зміни
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- LIGHTBOX ДЛЯ РОЗШИРЕНОЇ ГАЛЕРЕЇ (ФОТО + YOUTUBE) -->
     <div id="lightboxModal" class="lightbox-modal">
         <span class="absolute top-4 right-6 text-white text-3xl cursor-pointer font-bold z-50 hover:text-red-400" onclick="closeGallery()">&times;</span>
         
         <div id="galleryCounter" class="text-white text-xs font-semibold mb-3 bg-black/60 px-3 py-1 rounded-full">
-            Фото 1 з 1
+            Елемент 1 з 1
         </div>
 
-        <div class="relative flex items-center justify-center max-w-[90vw] max-h-[70vh]">
+        <div class="relative flex items-center justify-center w-full max-w-[92vw] max-h-[72vh]">
             <button type="button" class="gallery-nav-btn absolute left-2 sm:-left-12 z-40" onclick="prevGalleryImage(event)">‹</button>
-            <img id="lightboxImg" class="max-w-[85vw] max-h-[70vh] rounded object-contain shadow-2xl" src="" alt="Перегляд фото">
+            
+            <img id="lightboxImg" class="max-w-[85vw] max-h-[70vh] rounded object-contain shadow-2xl hidden" src="" alt="Перегляд фото">
+            
+            <div id="lightboxVideoWrapper" class="w-full max-w-3xl aspect-video bg-black rounded overflow-hidden shadow-2xl hidden">
+                <iframe id="lightboxYoutubeFrame" class="w-full h-full" src="" title="YouTube відеоогляд" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            </div>
+
             <button type="button" class="gallery-nav-btn absolute right-2 sm:-right-12 z-40" onclick="nextGalleryImage(event)">›</button>
         </div>
 
@@ -494,7 +668,43 @@
             return cleaned ? `tel:${cleaned}` : '#';
         }
 
-        // Функція форматування дати українською (динамічний час тому)
+        function extractYoutubeId(url) {
+            const raw = String(url ?? '').trim();
+            if (!raw) return '';
+            const patterns = [
+                /(?:youtube\.com\/watch\?v=|youtube\.com\/watch\?.+&v=)([a-zA-Z0-9_-]{11})/,
+                /youtu\.be\/([a-zA-Z0-9_-]{11})/,
+                /youtube\.com\/embed\/([a-zA-Z0-9_-]{11})/,
+                /youtube\.com\/shorts\/([a-zA-Z0-9_-]{11})/,
+                /youtube\.com\/live\/([a-zA-Z0-9_-]{11})/
+            ];
+            for (const re of patterns) {
+                const match = raw.match(re);
+                if (match && match[1]) return match[1];
+            }
+            return '';
+        }
+
+        function buildGalleryMedia(item) {
+            const rawPhotos = Array.isArray(item.photosArray) && item.photosArray.length > 0
+                ? item.photosArray
+                : [DEFAULT_PHOTO];
+            const media = rawPhotos.map(url => ({
+                type: 'image',
+                src: sanitizeUrl(url)
+            }));
+
+            const ytId = extractYoutubeId(item.youtubeUrl || item.videoUrl || '');
+            if (ytId) {
+                media.push({
+                    type: 'youtube',
+                    src: `https://www.youtube.com/embed/${ytId}`,
+                    thumb: `https://img.youtube.com/vi/${ytId}/mqdefault.jpg`
+                });
+            }
+            return media;
+        }
+
         function formatTimeAgo(timestamp) {
             if (!timestamp) return 'Нещодавно';
             
@@ -547,6 +757,27 @@
             "Крим": ["Сімферополь", "Севастополь", "Ялта", "Керч", "Євпаторія"]
         };
 
+        function populateCitySelect(citySelect, regionName, selectedCity = '') {
+            citySelect.innerHTML = '<option value="">Оберіть місто *</option>';
+            const cities = ukraineRegions[regionName] || [];
+            cities.forEach(city => {
+                const opt = document.createElement('option');
+                opt.value = city;
+                opt.textContent = city;
+                if (selectedCity && city.toLowerCase() === selectedCity.toLowerCase()) {
+                    opt.selected = true;
+                }
+                citySelect.appendChild(opt);
+            });
+            if (selectedCity && !cities.some(c => c.toLowerCase() === selectedCity.toLowerCase())) {
+                const customOpt = document.createElement('option');
+                customOpt.value = selectedCity;
+                customOpt.textContent = selectedCity;
+                customOpt.selected = true;
+                citySelect.appendChild(customOpt);
+            }
+        }
+
         window.updateFilterCities = function() {
             const regionSel = document.getElementById('filterRegion').value;
             const citySel = document.getElementById('filterCity');
@@ -564,16 +795,65 @@
         window.updateFormCities = function() {
             const regionSel = document.getElementById('formRegion').value;
             const citySel = document.getElementById('formCity');
-            citySel.innerHTML = '<option value="">Оберіть місто *</option>';
-            if (ukraineRegions[regionSel]) {
-                ukraineRegions[regionSel].forEach(city => {
-                    const opt = document.createElement('option');
-                    opt.value = city;
-                    opt.textContent = city;
-                    citySel.appendChild(opt);
-                });
-            }
+            populateCitySelect(citySel, regionSel);
         };
+
+        window.updateEditCities = function(selectedCity = '') {
+            const regionSel = document.getElementById('editRegion').value;
+            const citySel = document.getElementById('editCity');
+            populateCitySelect(citySel, regionSel, selectedCity);
+        };
+
+        window.addPhotoField = function(mode, value = '', isRequired = false) {
+            const container = document.getElementById(mode === 'edit' ? 'editPhotoFieldsList' : 'addPhotoFieldsList');
+            if (!container) return;
+            const count = container.querySelectorAll('[data-photo-input]').length + 1;
+
+            const wrapper = document.createElement('div');
+            wrapper.className = 'flex items-center gap-1';
+
+            const input = document.createElement('input');
+            input.type = 'url';
+            input.setAttribute('data-photo-input', '');
+            input.placeholder = `Фото ${count} https://...`;
+            input.className = 'w-full p-2 border rounded';
+            if (isRequired) input.required = true;
+            if (value) input.value = value;
+
+            wrapper.appendChild(input);
+
+            if (!isRequired) {
+                const removeBtn = document.createElement('button');
+                removeBtn.type = 'button';
+                removeBtn.className = 'px-2 py-2 bg-gray-100 text-gray-500 hover:text-red-600 rounded border';
+                removeBtn.title = 'Прибрати поле';
+                removeBtn.textContent = '✕';
+                removeBtn.onclick = () => wrapper.remove();
+                wrapper.appendChild(removeBtn);
+            }
+
+            container.appendChild(wrapper);
+        };
+
+        function collectPhotosFromContainer(containerId) {
+            const container = document.getElementById(containerId);
+            if (!container) return [DEFAULT_PHOTO];
+            const inputs = Array.from(container.querySelectorAll('[data-photo-input]'));
+            const validUrls = inputs
+                .map(el => el.value.trim())
+                .filter(url => /^https?:\/\//i.test(url));
+            return validUrls.length > 0 ? validUrls : [DEFAULT_PHOTO];
+        }
+
+        function resetAddPhotoFields() {
+            const container = document.getElementById('addPhotoFieldsList');
+            if (!container) return;
+            container.innerHTML = '';
+            addPhotoField('add', '', true);
+            addPhotoField('add', '', false);
+            addPhotoField('add', '', false);
+            addPhotoField('add', '', false);
+        }
 
         const firebaseConfig = {
             apiKey: "AIzaSyBlKoP6-M8tdrKq88bSdnWSnak5Gpddnpk",
@@ -593,10 +873,16 @@
         let allListingsData = [];
         const listingsById = new Map();
 
-        let currentGalleryPhotos = [];
+        let currentGalleryMedia = [];
         let currentPhotoIndex = 0;
         let activeCategoryFilter = 'all';
         let favoritesUnsubscribe = null;
+
+        function canManageListing(item) {
+            if (!currentUser) return false;
+            const userEmail = (currentUser.email || '').toLowerCase();
+            return userEmail === ADMIN_EMAIL.toLowerCase() || userEmail === (item.userEmail || '').toLowerCase();
+        }
 
         onAuthStateChanged(auth, (user) => {
             currentUser = user;
@@ -610,7 +896,8 @@
             
             if (user) {
                 const loginName = user.email ? user.email.split('@')[0] : 'Користувач';
-                if (badge) badge.textContent = `👤 ${loginName}`;
+                const isAdmin = (user.email || '').toLowerCase() === ADMIN_EMAIL.toLowerCase();
+                if (badge) badge.textContent = `👤 ${loginName}${isAdmin ? ' (Адмін)' : ''}`;
                 if (toggleFormBtn) toggleFormBtn.innerHTML = `<i class="fa-solid fa-plus-circle"></i> Додати об'єкт`;
                 
                 favoritesUnsubscribe = onSnapshot(doc(db, "commercial_favorites", user.uid), (docSnap) => {
@@ -729,30 +1016,24 @@
             const region = document.getElementById('formRegion').value;
             const city = (document.getElementById('formCity').value || '').replace(/,/g, '').trim();
             const contact = document.getElementById('adContact').value.trim();
+            const youtubeUrl = document.getElementById('adYoutube').value.trim();
             const description = document.getElementById('adDescription').value.trim();
-
-            const rawPhotos = [
-                document.getElementById('adPhoto1').value.trim(),
-                document.getElementById('adPhoto2').value.trim(),
-                document.getElementById('adPhoto3').value.trim(),
-                document.getElementById('adPhoto4').value.trim()
-            ].filter(url => /^https?:\/\//i.test(url));
-
-            const photosArray = rawPhotos.length > 0 ? rawPhotos : [DEFAULT_PHOTO];
+            const photosArray = collectPhotosFromContainer('addPhotoFieldsList');
 
             const payload = {
-                category: category,
-                dealType: dealType,
-                title: title,
-                subtype: subtype,
-                area: area,
+                category,
+                dealType,
+                title,
+                subtype,
+                area,
                 priceUSD: priceVal,
                 priceUAH: priceUahVal,
-                region: region,
-                city: city,
-                contact: contact,
-                description: description,
-                photosArray: photosArray,
+                region,
+                city,
+                contact,
+                youtubeUrl,
+                description,
+                photosArray,
                 userEmail: currentUser.email,
                 dateStr: new Date().toLocaleDateString('uk-UA'),
                 createdAt: serverTimestamp()
@@ -761,10 +1042,105 @@
             try {
                 await addDoc(collection(db, "commercial_listings"), payload);
                 document.getElementById('addListingForm').reset();
+                resetAddPhotoFields();
                 document.getElementById('newAdFormCard').classList.add('hidden');
                 alert("Комерційний об'єкт успішно додано до бази!");
             } catch (err) {
                 alert("Помилка при збереженні: " + err.message);
+            }
+        });
+
+        window.openEditModal = function(docId) {
+            const item = listingsById.get(docId);
+            if (!item || !canManageListing(item)) {
+                alert("Недостатньо прав для редагування цього оголошення.");
+                return;
+            }
+
+            document.getElementById('editDocId').value = docId;
+
+            const catValue = item.category || 'office';
+            const catRadio = document.querySelector(`input[name="editListingCategory"][value="${catValue}"]`);
+            if (catRadio) catRadio.checked = true;
+
+            document.getElementById('editDealType').value = item.dealType || 'Продаж';
+            document.getElementById('editTitle').value = item.title || '';
+            document.getElementById('editSubtype').value = item.subtype || 'Офіс';
+            document.getElementById('editArea').value = item.area ?? '';
+            document.getElementById('editPrice').value = item.priceUSD ?? '';
+            document.getElementById('editContact').value = item.contact || '';
+            document.getElementById('editYoutube').value = item.youtubeUrl || item.videoUrl || '';
+            document.getElementById('editDescription').value = item.description || '';
+
+            const regionSel = document.getElementById('editRegion');
+            regionSel.value = item.region || '';
+            window.updateEditCities(item.city || '');
+
+            const photosContainer = document.getElementById('editPhotoFieldsList');
+            photosContainer.innerHTML = '';
+            const existingPhotos = Array.isArray(item.photosArray) && item.photosArray.length > 0
+                ? item.photosArray
+                : [DEFAULT_PHOTO];
+
+            existingPhotos.forEach((url, idx) => {
+                window.addPhotoField('edit', url, idx === 0);
+            });
+            if (existingPhotos.length < 2) {
+                window.addPhotoField('edit', '', false);
+            }
+
+            document.getElementById('editModal').classList.remove('hidden');
+        };
+
+        window.closeEditModal = function() {
+            document.getElementById('editModal').classList.add('hidden');
+            document.getElementById('editListingForm').reset();
+        };
+
+        document.getElementById('editListingForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const docId = document.getElementById('editDocId').value;
+            const existing = listingsById.get(docId);
+            if (!docId || !existing || !canManageListing(existing)) {
+                alert("Недостатньо прав для збереження змін.");
+                return;
+            }
+
+            const category = document.querySelector('input[name="editListingCategory"]:checked')?.value || 'office';
+            const dealType = document.getElementById('editDealType').value;
+            const title = document.getElementById('editTitle').value.trim();
+            const subtype = document.getElementById('editSubtype').value;
+            const area = Number(document.getElementById('editArea').value);
+            const priceVal = Number(document.getElementById('editPrice').value);
+            const priceUahVal = Math.round(priceVal * USD_TO_UAH_RATE);
+            const region = document.getElementById('editRegion').value;
+            const city = (document.getElementById('editCity').value || '').replace(/,/g, '').trim();
+            const contact = document.getElementById('editContact').value.trim();
+            const youtubeUrl = document.getElementById('editYoutube').value.trim();
+            const description = document.getElementById('editDescription').value.trim();
+            const photosArray = collectPhotosFromContainer('editPhotoFieldsList');
+
+            try {
+                await updateDoc(doc(db, "commercial_listings", docId), {
+                    category,
+                    dealType,
+                    title,
+                    subtype,
+                    area,
+                    priceUSD: priceVal,
+                    priceUAH: priceUahVal,
+                    region,
+                    city,
+                    contact,
+                    youtubeUrl,
+                    description,
+                    photosArray,
+                    updatedAt: serverTimestamp()
+                });
+                window.closeEditModal();
+                alert("Зміни успішно збережено!");
+            } catch (err) {
+                alert("Помилка при оновленні: " + err.message);
             }
         });
 
@@ -788,13 +1164,13 @@
             const rawPhotos = Array.isArray(item.photosArray) && item.photosArray.length > 0
                 ? item.photosArray
                 : [DEFAULT_PHOTO];
-            const safePhotos = rawPhotos.map(sanitizeUrl);
-            const mainPhoto = escapeHtml(safePhotos[0]);
-            const photosCount = safePhotos.length;
+            const mainPhoto = escapeHtml(sanitizeUrl(rawPhotos[0]));
+            const photosCount = rawPhotos.length;
+            const hasVideo = Boolean(extractYoutubeId(item.youtubeUrl || item.videoUrl || ''));
             const priceUsd = Number(item.priceUSD) || 0;
             const priceUah = Math.round(priceUsd * USD_TO_UAH_RATE);
 
-            const isOwnerOrAdmin = Boolean(currentUser && (currentUser.email === ADMIN_EMAIL || currentUser.email === item.userEmail));
+            const isOwnerOrAdmin = canManageListing(item);
             const isFav = userFavoritesList.includes(docId);
             const pubDateFormatted = escapeHtml(formatTimeAgo(item.createdAt));
 
@@ -828,6 +1204,7 @@
                     <div class="w-full sm:w-64 h-40 bg-gray-900 rounded overflow-hidden relative flex-shrink-0 cursor-pointer group" onclick="openGalleryById('${safeId}')">
                         <img src="${mainPhoto}" alt="${safeTitle}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                         <span class="absolute top-2 left-2 px-2 py-0.5 bg-orange-600 text-white font-bold text-[10px] rounded">${safeDealType}</span>
+                        ${hasVideo ? `<span class="absolute top-2 right-2 px-2 py-0.5 bg-red-600 text-white font-bold text-[10px] rounded flex items-center gap-1"><i class="fa-brands fa-youtube"></i> Відео</span>` : ''}
                         <span class="absolute bottom-2 right-2 px-2 py-0.5 bg-black/75 text-white font-bold text-[10px] rounded flex items-center gap-1">
                             <i class="fa-solid fa-camera"></i> ${photosCount}
                         </span>
@@ -864,6 +1241,7 @@
                                     <i class="${isFav ? 'fa-solid' : 'fa-regular'} fa-heart"></i>
                                 </button>
 
+                                ${isOwnerOrAdmin ? `<button type="button" onclick="openEditModal('${safeId}')" class="text-blue-600 font-bold hover:underline">Редагувати</button>` : ''}
                                 ${isOwnerOrAdmin ? `<button type="button" class="delete-btn text-red-500 font-bold hover:underline" data-id="${safeId}">Видалити</button>` : ''}
                             </div>
                         </div>
@@ -969,67 +1347,110 @@
 
         window.openGalleryById = function(docId) {
             const item = listingsById.get(docId);
-            const rawPhotos = item && Array.isArray(item.photosArray) && item.photosArray.length > 0
-                ? item.photosArray
-                : [DEFAULT_PHOTO];
-            window.openGallery(rawPhotos.map(sanitizeUrl));
+            if (!item) return;
+            currentGalleryMedia = buildGalleryMedia(item);
+            if (currentGalleryMedia.length === 0) return;
+            currentPhotoIndex = 0;
+            updateGalleryUI();
+            document.getElementById('lightboxModal').style.display = 'flex';
         };
 
         window.openGallery = function(photos) {
             if (!photos || photos.length === 0) return;
-            currentGalleryPhotos = photos.map(sanitizeUrl);
+            currentGalleryMedia = photos.map(url => ({ type: 'image', src: sanitizeUrl(url) }));
             currentPhotoIndex = 0;
             updateGalleryUI();
             document.getElementById('lightboxModal').style.display = 'flex';
         };
 
         window.closeGallery = function() {
+            const ytFrame = document.getElementById('lightboxYoutubeFrame');
+            if (ytFrame) ytFrame.src = '';
             document.getElementById('lightboxModal').style.display = 'none';
         };
 
         window.prevGalleryImage = function(e) {
             if (e) e.stopPropagation();
-            if (currentGalleryPhotos.length <= 1) return;
-            currentPhotoIndex = (currentPhotoIndex - 1 + currentGalleryPhotos.length) % currentGalleryPhotos.length;
+            if (currentGalleryMedia.length <= 1) return;
+            currentPhotoIndex = (currentPhotoIndex - 1 + currentGalleryMedia.length) % currentGalleryMedia.length;
             updateGalleryUI();
         };
 
         window.nextGalleryImage = function(e) {
             if (e) e.stopPropagation();
-            if (currentGalleryPhotos.length <= 1) return;
-            currentPhotoIndex = (currentPhotoIndex + 1) % currentGalleryPhotos.length;
+            if (currentGalleryMedia.length <= 1) return;
+            currentPhotoIndex = (currentPhotoIndex + 1) % currentGalleryMedia.length;
             updateGalleryUI();
         };
 
         function updateGalleryUI() {
             const imgEl = document.getElementById('lightboxImg');
+            const videoWrapper = document.getElementById('lightboxVideoWrapper');
+            const ytFrame = document.getElementById('lightboxYoutubeFrame');
             const counterEl = document.getElementById('galleryCounter');
             const thumbsContainer = document.getElementById('galleryThumbs');
 
-            imgEl.src = currentGalleryPhotos[currentPhotoIndex];
-            counterEl.textContent = `Фото ${currentPhotoIndex + 1} з ${currentGalleryPhotos.length}`;
+            const currentItem = currentGalleryMedia[currentPhotoIndex];
+            if (!currentItem) return;
+
+            if (currentItem.type === 'youtube') {
+                imgEl.classList.add('hidden');
+                videoWrapper.classList.remove('hidden');
+                ytFrame.src = currentItem.src;
+                counterEl.textContent = `Відео YouTube (${currentPhotoIndex + 1} з ${currentGalleryMedia.length})`;
+            } else {
+                ytFrame.src = '';
+                videoWrapper.classList.add('hidden');
+                imgEl.classList.remove('hidden');
+                imgEl.src = currentItem.src;
+                counterEl.textContent = `Фото ${currentPhotoIndex + 1} з ${currentGalleryMedia.length}`;
+            }
 
             thumbsContainer.innerHTML = '';
-            currentGalleryPhotos.forEach((url, idx) => {
-                const thumb = document.createElement('img');
-                thumb.src = url;
-                thumb.alt = `Мініатюра ${idx + 1}`;
-                thumb.className = `thumb-img ${idx === currentPhotoIndex ? 'active' : ''}`;
-                thumb.onclick = (e) => {
-                    e.stopPropagation();
-                    currentPhotoIndex = idx;
-                    updateGalleryUI();
-                };
-                thumbsContainer.appendChild(thumb);
+            currentGalleryMedia.forEach((mediaItem, idx) => {
+                if (mediaItem.type === 'youtube') {
+                    const thumbBtn = document.createElement('button');
+                    thumbBtn.type = 'button';
+                    thumbBtn.className = `thumb-video ${idx === currentPhotoIndex ? 'active' : ''}`;
+                    thumbBtn.innerHTML = `<i class="fa-brands fa-youtube text-sm"></i> Відео`;
+                    thumbBtn.onclick = (e) => {
+                        e.stopPropagation();
+                        currentPhotoIndex = idx;
+                        updateGalleryUI();
+                    };
+                    thumbsContainer.appendChild(thumbBtn);
+                } else {
+                    const thumb = document.createElement('img');
+                    thumb.src = mediaItem.src;
+                    thumb.alt = `Мініатюра ${idx + 1}`;
+                    thumb.className = `thumb-img ${idx === currentPhotoIndex ? 'active' : ''}`;
+                    thumb.onclick = (e) => {
+                        e.stopPropagation();
+                        currentPhotoIndex = idx;
+                        updateGalleryUI();
+                    };
+                    thumbsContainer.appendChild(thumb);
+                }
             });
         }
 
         document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const editModal = document.getElementById('editModal');
+                if (editModal && !editModal.classList.contains('hidden')) {
+                    window.closeEditModal();
+                    return;
+                }
+                const modal = document.getElementById('lightboxModal');
+                if (modal && modal.style.display === 'flex') {
+                    window.closeGallery();
+                }
+            }
             const modal = document.getElementById('lightboxModal');
-            if (!modal || modal.style.display !== 'flex') return;
-            if (e.key === 'Escape') window.closeGallery();
-            if (e.key === 'ArrowLeft') window.prevGalleryImage(e);
-            if (e.key === 'ArrowRight') window.nextGalleryImage(e);
+            if (modal && modal.style.display === 'flex') {
+                if (e.key === 'ArrowLeft') window.prevGalleryImage(e);
+                if (e.key === 'ArrowRight') window.nextGalleryImage(e);
+            }
         });
 
         window.filterCards = function() {

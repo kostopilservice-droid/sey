@@ -125,7 +125,7 @@
                 
                 <div class="flex items-center gap-4">
                     <a href="#favoritesSection" class="hover:text-red-600"><i class="fa-regular fa-heart"></i> Обране</a>
-                    <span id="authStatusBadge" class="font-bold text-gray-700 cursor-pointer hover:text-red-600" onClick="handleAuthClick()">👤 Особистий кабінет (Гість)</span>
+                    <span id="authStatusBadge" class="font-bold text-gray-700 cursor-pointer hover:text-red-600" onclick="handleAuthClick()">👤 Особистий кабінет (Гість)</span>
                 </div>
             </div>
         </div>
@@ -134,7 +134,7 @@
         <div class="ria-header-main py-3">
             <div class="max-w-6xl mx-auto px-4 flex items-center justify-between">
                 
-                <a href="index.html" class="flex items-center gap-2 text-decoration-none">
+                <a href="index.html" class="flex items-center gap-2 no-underline">
                     <div class="bg-[#db4437] text-white font-black text-xl px-3 py-1 rounded tracking-tight shadow-sm flex items-center gap-1">
                         <i class="fa-solid fa-store"></i> NEO<span class="text-yellow-300">SERVICE</span>
                     </div>
@@ -144,12 +144,12 @@
                 </a>
 
                 <nav class="hidden md:flex items-center gap-6 text-sm font-bold text-gray-800">
-                    <a href="#office" onClick="setMainCategory('office')" class="hover:text-red-600 pb-1">Офіси та приміщення</a>
-                    <a href="#land" onClick="setMainCategory('land')" class="hover:text-red-600 pb-1">Земельні ділянки</a>
-                    <a href="#warehouse" onClick="setMainCategory('warehouse')" class="hover:text-red-600 pb-1">Склади / Виробництво</a>
+                    <a href="#office" onclick="setMainCategory('office')" class="hover:text-red-600 pb-1">Офіси та приміщення</a>
+                    <a href="#land" onclick="setMainCategory('land')" class="hover:text-red-600 pb-1">Земельні ділянки</a>
+                    <a href="#warehouse" onclick="setMainCategory('warehouse')" class="hover:text-red-600 pb-1">Склади / Виробництво</a>
                 </nav>
 
-                <button id="toggleFormBtn" onClick="toggleAddForm()" class="btn-green-add text-white font-bold px-4 py-2 rounded text-xs flex items-center gap-1.5 shadow-md">
+                <button id="toggleFormBtn" onclick="toggleAddForm()" class="btn-green-add text-white font-bold px-4 py-2 rounded text-xs flex items-center gap-1.5 shadow-md">
                     <i class="fa-solid fa-plus-circle"></i> Додати комерційний об'єкт
                 </button>
             </div>
@@ -175,19 +175,19 @@
                 
                 <div class="space-y-3">
                     <div class="flex gap-1 text-[11px] font-bold">
-                        <button id="btnCatAll" onClick="setMainCategory('all')" class="px-3 py-1 bg-white text-red-600 rounded-t font-bold">Всі об'єкти</button>
-                        <button id="btnCatOffice" onClick="setMainCategory('office')" class="px-3 py-1 bg-red-700 text-white rounded-t hover:bg-red-800">Офіси</button>
-                        <button id="btnCatLand" onClick="setMainCategory('land')" class="px-3 py-1 bg-red-700 text-white rounded-t hover:bg-red-800">Земля</button>
+                        <button id="btnCatAll" onclick="setMainCategory('all')" class="px-3 py-1 bg-white text-red-600 rounded-t font-bold">Всі об'єкти</button>
+                        <button id="btnCatOffice" onclick="setMainCategory('office')" class="px-3 py-1 bg-red-700 text-white rounded-t hover:bg-red-800">Офіси</button>
+                        <button id="btnCatLand" onclick="setMainCategory('land')" class="px-3 py-1 bg-red-700 text-white rounded-t hover:bg-red-800">Земля</button>
                     </div>
 
-                    <select id="filterType" onChange="filterCards()" class="w-full px-3 py-2 text-xs bg-white text-gray-800 rounded border-none outline-none font-semibold">
+                    <select id="filterType" onchange="onFilterControlChange()" class="w-full px-3 py-2 text-xs bg-white text-gray-800 rounded border-none outline-none font-semibold">
                         <option value="">Тип угоди (продаж / оренда)</option>
                         <option value="Продаж">Продаж</option>
                         <option value="Оренда довгострокова">Оренда довгострокова</option>
                         <option value="Оренда посуточна">Оренда посуточна</option>
                     </select>
 
-                    <select id="filterSubtype" onChange="filterCards()" class="w-full px-3 py-2 text-xs bg-white text-gray-800 rounded border-none outline-none font-semibold">
+                    <select id="filterSubtype" onchange="onFilterControlChange()" class="w-full px-3 py-2 text-xs bg-white text-gray-800 rounded border-none outline-none font-semibold">
                         <option value="">Призначення (будь-яке)</option>
                         <option value="Офіс">Офісне приміщення</option>
                         <option value="Магазин">Магазин / Торгова точка</option>
@@ -198,7 +198,7 @@
                 </div>
 
                 <div class="space-y-3 pt-2 md:pt-7">
-                    <select id="filterRegion" onChange="updateFilterCities(); filterCards();" class="w-full px-3 py-2 text-xs bg-white text-gray-800 rounded border-none outline-none font-semibold">
+                    <select id="filterRegion" onchange="updateFilterCities(); onFilterControlChange();" class="w-full px-3 py-2 text-xs bg-white text-gray-800 rounded border-none outline-none font-semibold">
                         <option value="">Регіон: Всі області України</option>
                         <option value="Рівненська область">Рівненська область</option>
                         <option value="Київська область">Київська область</option>
@@ -227,27 +227,27 @@
                         <option value="Крим">АР Крим</option>
                     </select>
 
-                    <select id="filterCity" onChange="filterCards()" class="w-full px-3 py-2 text-xs bg-white text-gray-800 rounded border-none outline-none font-semibold">
+                    <select id="filterCity" onchange="onFilterControlChange()" class="w-full px-3 py-2 text-xs bg-white text-gray-800 rounded border-none outline-none font-semibold">
                         <option value="">Місто: Всі міста області</option>
                     </select>
 
                     <div class="grid grid-cols-2 gap-2">
-                        <input type="number" id="filterPriceMin" placeholder="Ціна від ($)" onInput="filterCards()" class="px-2 py-2 text-xs bg-white text-gray-800 rounded outline-none">
-                        <input type="number" id="filterPriceMax" placeholder="до ($)" onInput="filterCards()" class="px-2 py-2 text-xs bg-white text-gray-800 rounded outline-none">
+                        <input type="number" id="filterPriceMin" placeholder="Ціна від ($)" oninput="onFilterControlChange()" class="px-2 py-2 text-xs bg-white text-gray-800 rounded outline-none">
+                        <input type="number" id="filterPriceMax" placeholder="до ($)" oninput="onFilterControlChange()" class="px-2 py-2 text-xs bg-white text-gray-800 rounded outline-none">
                     </div>
                 </div>
 
                 <div class="space-y-3 flex flex-col justify-end pt-2 md:pt-0">
                     <div>
                         <label class="block text-[10px] font-bold uppercase tracking-wider mb-1 text-red-100">Сортування оголошень:</label>
-                        <select id="filterSort" onChange="filterCards()" class="w-full px-3 py-2 text-xs bg-white text-gray-800 rounded border-none outline-none font-semibold">
+                        <select id="filterSort" onchange="onFilterControlChange()" class="w-full px-3 py-2 text-xs bg-white text-gray-800 rounded border-none outline-none font-semibold">
                             <option value="newest">Свіжіші спочатку</option>
                             <option value="price_asc">Від дешевших до дорожчих</option>
                             <option value="price_desc">Від дорожчих до дешевших</option>
                         </select>
                     </div>
 
-                    <button onClick="filterCards()" class="w-full py-3 btn-blue-search text-white font-black text-sm rounded shadow flex items-center justify-center gap-2">
+                    <button onclick="onFilterControlChange()" class="w-full py-3 btn-blue-search text-white font-black text-sm rounded shadow flex items-center justify-center gap-2">
                         <i class="fa-solid fa-magnifying-glass"></i> Знайти об'єкт
                     </button>
                 </div>
@@ -260,12 +260,12 @@
                 <h3 class="font-bold text-base text-gray-900 flex items-center gap-2">
                     <i class="fa-solid fa-plus-circle text-red-600"></i> Подання комерційного оголошення або ділянки
                 </h3>
-                <button onClick="toggleAddForm()" class="text-gray-400 font-bold hover:text-black text-lg">✕</button>
+                <button type="button" onclick="toggleAddForm()" class="text-gray-400 font-bold hover:text-black text-lg">✕</button>
             </div>
 
             <form id="addListingForm" class="space-y-4 text-xs">
                 
-                <div class="bg-blue-50 p-3 rounded border border-blue-200 flex items-center gap-6">
+                <div class="bg-blue-50 p-3 rounded border border-blue-200 flex flex-wrap items-center gap-6">
                     <span class="font-bold text-blue-900">Категорія:</span>
                     <label class="flex items-center gap-1.5 cursor-pointer font-semibold text-gray-800">
                         <input type="radio" name="listingCategory" value="office" checked> 🏢 Офіс / Приміщення
@@ -312,7 +312,7 @@
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div>
                         <label class="block font-semibold mb-1 text-gray-600">Область *</label>
-                        <select id="formRegion" onChange="updateFormCities()" class="w-full p-2 border rounded font-semibold bg-white" required>
+                        <select id="formRegion" onchange="updateFormCities()" class="w-full p-2 border rounded font-semibold bg-white" required>
                             <option value="">Оберіть область *</option>
                             <option value="Рівненська область">Рівненська область</option>
                             <option value="Київська область">Київська область</option>
@@ -377,7 +377,7 @@
                 </div>
 
                 <div class="flex justify-end gap-3 pt-2">
-                    <button type="button" onClick="toggleAddForm()" class="px-5 py-2 bg-gray-200 text-gray-700 font-bold rounded">Скасувати</button>
+                    <button type="button" onclick="toggleAddForm()" class="px-5 py-2 bg-gray-200 text-gray-700 font-bold rounded">Скасувати</button>
                     <button type="submit" class="btn-green-add text-white font-bold px-6 py-2 rounded shadow">
                         <i class="fa-solid fa-check"></i> Опублікувати об'єкт
                     </button>
@@ -397,11 +397,11 @@
 
                 <!-- ПАГІНАЦІЯ -->
                 <div id="paginationControls" class="flex justify-center items-center gap-3 pt-4 border-t border-gray-300 text-xs">
-                    <button id="prevPageBtn" onClick="changePage(-1)" class="px-4 py-2 bg-white border border-gray-300 text-gray-700 font-bold rounded shadow-sm disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50">
+                    <button id="prevPageBtn" onclick="changePage(-1)" class="px-4 py-2 bg-white border border-gray-300 text-gray-700 font-bold rounded shadow-sm disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50">
                         ‹ Попередня
                     </button>
                     <span id="pageIndicator" class="font-bold text-gray-700">Сторінка 1</span>
-                    <button id="nextPageBtn" onClick="changePage(1)" class="px-4 py-2 bg-white border border-gray-300 text-gray-700 font-bold rounded shadow-sm disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50">
+                    <button id="nextPageBtn" onclick="changePage(1)" class="px-4 py-2 bg-white border border-gray-300 text-gray-700 font-bold rounded shadow-sm disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50">
                         Наступна ›
                     </button>
                 </div>
@@ -412,9 +412,9 @@
                 <div class="bg-white p-4 rounded border border-gray-200 shadow-sm">
                     <h3 class="font-bold text-gray-900 mb-2 border-b pb-1">Категорії розділу</h3>
                     <ul class="space-y-2 font-semibold">
-                        <li><a href="#office" onClick="setMainCategory('office')" class="hover:underline flex justify-between text-blue-700">Офіси та приміщення <span>&rsaquo;</span></a></li>
-                        <li><a href="#land" onClick="setMainCategory('land')" class="hover:underline flex justify-between text-blue-700">Земельні ділянки <span>&rsaquo;</span></a></li>
-                        <li><a href="#warehouse" onClick="setMainCategory('warehouse')" class="hover:underline flex justify-between text-blue-700">Склади / Виробництво <span>&rsaquo;</span></a></li>
+                        <li><a href="#office" onclick="setMainCategory('office')" class="hover:underline flex justify-between text-blue-700">Офіси та приміщення <span>&rsaquo;</span></a></li>
+                        <li><a href="#land" onclick="setMainCategory('land')" class="hover:underline flex justify-between text-blue-700">Земельні ділянки <span>&rsaquo;</span></a></li>
+                        <li><a href="#warehouse" onclick="setMainCategory('warehouse')" class="hover:underline flex justify-between text-blue-700">Склади / Виробництво <span>&rsaquo;</span></a></li>
                     </ul>
                 </div>
             </div>
@@ -439,16 +439,16 @@
 
     <!-- LIGHTBOX ДЛЯ ГАЛЕРЕЇ -->
     <div id="lightboxModal" class="lightbox-modal">
-        <span class="absolute top-4 right-6 text-white text-3xl cursor-pointer font-bold z-50 hover:text-red-400" onClick="closeGallery()">&times;</span>
+        <span class="absolute top-4 right-6 text-white text-3xl cursor-pointer font-bold z-50 hover:text-red-400" onclick="closeGallery()">&times;</span>
         
         <div id="galleryCounter" class="text-white text-xs font-semibold mb-3 bg-black/60 px-3 py-1 rounded-full">
             Фото 1 з 1
         </div>
 
         <div class="relative flex items-center justify-center max-w-[90vw] max-h-[70vh]">
-            <button class="gallery-nav-btn absolute left-2 sm:-left-12 z-40" onClick="prevGalleryImage(event)">‹</button>
+            <button type="button" class="gallery-nav-btn absolute left-2 sm:-left-12 z-40" onclick="prevGalleryImage(event)">‹</button>
             <img id="lightboxImg" class="max-w-[85vw] max-h-[70vh] rounded object-contain shadow-2xl" src="" alt="Перегляд фото">
-            <button class="gallery-nav-btn absolute right-2 sm:-right-12 z-40" onClick="nextGalleryImage(event)">›</button>
+            <button type="button" class="gallery-nav-btn absolute right-2 sm:-right-12 z-40" onclick="nextGalleryImage(event)">›</button>
         </div>
 
         <div id="galleryThumbs" class="flex gap-2 mt-4 overflow-x-auto max-w-[90vw] p-1"></div>
@@ -467,15 +467,40 @@
 
         const ADMIN_EMAIL = "kostopilservice@gmail.com";
         const USD_TO_UAH_RATE = 45.41;
+        const DEFAULT_PHOTO = "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600";
 
         const ITEMS_PER_PAGE = 12;
         let currentPage = 1;
+
+        function escapeHtml(value) {
+            return String(value ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function sanitizeUrl(url) {
+            const trimmed = String(url ?? '').trim();
+            if (/^https?:\/\//i.test(trimmed)) {
+                return trimmed;
+            }
+            return DEFAULT_PHOTO;
+        }
+
+        function sanitizePhoneHref(phone) {
+            const cleaned = String(phone ?? '').replace(/[^+\d]/g, '');
+            return cleaned ? `tel:${cleaned}` : '#';
+        }
 
         // Функція форматування дати українською (динамічний час тому)
         function formatTimeAgo(timestamp) {
             if (!timestamp) return 'Нещодавно';
             
             const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+            if (Number.isNaN(date.getTime())) return 'Нещодавно';
+
             const now = new Date();
             const diffMs = now - date;
             const diffMins = Math.floor(diffMs / 60000);
@@ -566,28 +591,34 @@
         let currentUser = null;
         let userFavoritesList = [];
         let allListingsData = [];
+        const listingsById = new Map();
 
         let currentGalleryPhotos = [];
         let currentPhotoIndex = 0;
         let activeCategoryFilter = 'all';
+        let favoritesUnsubscribe = null;
 
         onAuthStateChanged(auth, (user) => {
             currentUser = user;
             const badge = document.getElementById('authStatusBadge');
             const toggleFormBtn = document.getElementById('toggleFormBtn');
+
+            if (favoritesUnsubscribe) {
+                favoritesUnsubscribe();
+                favoritesUnsubscribe = null;
+            }
             
             if (user) {
-                if (badge) badge.textContent = `👤 ${user.email.split('@')[0]}`;
+                const loginName = user.email ? user.email.split('@')[0] : 'Користувач';
+                if (badge) badge.textContent = `👤 ${loginName}`;
                 if (toggleFormBtn) toggleFormBtn.innerHTML = `<i class="fa-solid fa-plus-circle"></i> Додати об'єкт`;
                 
-                onSnapshot(doc(db, "commercial_favorites", user.uid), (docSnap) => {
-                    if (docSnap.exists()) {
-                        userFavoritesList = docSnap.data().favorites || [];
-                    } else {
-                        userFavoritesList = [];
-                    }
+                favoritesUnsubscribe = onSnapshot(doc(db, "commercial_favorites", user.uid), (docSnap) => {
+                    userFavoritesList = docSnap.exists() ? (docSnap.data().favorites || []) : [];
                     renderListings(allListingsData);
                     renderFavoritesSection();
+                }, (err) => {
+                    console.error("Помилка читання обраного:", err);
                 });
             } else {
                 if (badge) badge.textContent = "👤 Особистий кабінет (Гість)";
@@ -653,6 +684,11 @@
             window.filterCards();
         };
 
+        window.onFilterControlChange = function() {
+            currentPage = 1;
+            window.filterCards();
+        };
+
         window.toggleFavorite = async function(docId) {
             if (!currentUser) {
                 alert("Будь ласка, увійдіть у свій акаунт, щоб зберігати об'єкти в обране!");
@@ -685,24 +721,24 @@
 
             const category = document.querySelector('input[name="listingCategory"]:checked').value;
             const dealType = document.getElementById('formDealType').value;
-            const title = document.getElementById('formTitle').value;
+            const title = document.getElementById('formTitle').value.trim();
             const subtype = document.getElementById('formSubtype').value;
             const area = Number(document.getElementById('formArea').value);
             const priceVal = Number(document.getElementById('adPrice').value);
             const priceUahVal = Math.round(priceVal * USD_TO_UAH_RATE);
             const region = document.getElementById('formRegion').value;
             const city = (document.getElementById('formCity').value || '').replace(/,/g, '').trim();
-            const contact = document.getElementById('adContact').value;
-            const description = document.getElementById('adDescription').value;
+            const contact = document.getElementById('adContact').value.trim();
+            const description = document.getElementById('adDescription').value.trim();
 
-            const p1 = document.getElementById('adPhoto1').value.trim();
-            const p2 = document.getElementById('adPhoto2').value.trim();
-            const p3 = document.getElementById('adPhoto3').value.trim();
-            const p4 = document.getElementById('adPhoto4').value.trim();
-            const photosArray = [p1, p2, p3, p4].filter(url => url.startsWith('http'));
-            if (photosArray.length === 0) {
-                photosArray.push('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600');
-            }
+            const rawPhotos = [
+                document.getElementById('adPhoto1').value.trim(),
+                document.getElementById('adPhoto2').value.trim(),
+                document.getElementById('adPhoto3').value.trim(),
+                document.getElementById('adPhoto4').value.trim()
+            ].filter(url => /^https?:\/\//i.test(url));
+
+            const photosArray = rawPhotos.length > 0 ? rawPhotos : [DEFAULT_PHOTO];
 
             const payload = {
                 category: category,
@@ -735,8 +771,12 @@
         const q = query(collection(db, "commercial_listings"), orderBy("createdAt", "desc"));
         onSnapshot(q, (snapshot) => {
             allListingsData = [];
+            listingsById.clear();
+
             snapshot.forEach((docSnap) => {
-                allListingsData.push({ id: docSnap.id, ...docSnap.data() });
+                const entry = { id: docSnap.id, ...docSnap.data() };
+                allListingsData.push(entry);
+                listingsById.set(docSnap.id, entry);
             });
 
             renderListings(allListingsData);
@@ -745,35 +785,49 @@
         });
 
         function createListingCardHTML(item, docId) {
-            const photos = item.photosArray || ['https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600'];
-            const mainPhoto = photos[0];
-            const photosCount = photos.length;
-            const priceUsd = item.priceUSD || 0;
+            const rawPhotos = Array.isArray(item.photosArray) && item.photosArray.length > 0
+                ? item.photosArray
+                : [DEFAULT_PHOTO];
+            const safePhotos = rawPhotos.map(sanitizeUrl);
+            const mainPhoto = escapeHtml(safePhotos[0]);
+            const photosCount = safePhotos.length;
+            const priceUsd = Number(item.priceUSD) || 0;
             const priceUah = Math.round(priceUsd * USD_TO_UAH_RATE);
 
-            const isOwnerOrAdmin = currentUser && (currentUser.email === ADMIN_EMAIL || currentUser.email === item.userEmail);
+            const isOwnerOrAdmin = Boolean(currentUser && (currentUser.email === ADMIN_EMAIL || currentUser.email === item.userEmail));
             const isFav = userFavoritesList.includes(docId);
-            const photosJSON = JSON.stringify(photos).replace(/"/g, '&quot;');
-            const pubDateFormatted = formatTimeAgo(item.createdAt);
+            const pubDateFormatted = escapeHtml(formatTimeAgo(item.createdAt));
 
-            const timestampVal = item.createdAt?.toMillis ? item.createdAt.toMillis() : (item.createdAt?.seconds ? item.createdAt.seconds * 1000 : Date.now());
+            const timestampVal = item.createdAt?.toMillis
+                ? item.createdAt.toMillis()
+                : (item.createdAt?.seconds ? item.createdAt.seconds * 1000 : Date.now());
 
-            const rawCity = (item.city || 'Костопіль').replace(/,/g, '').trim();
+            const rawCity = String(item.city || 'Костопіль').replace(/,/g, '').trim();
             const formattedCity = rawCity.charAt(0).toUpperCase() + rawCity.slice(1);
+            const safeId = escapeHtml(docId);
+            const safeTitle = escapeHtml(item.title || '');
+            const safeDealType = escapeHtml(item.dealType || 'Продаж');
+            const safeSubtype = escapeHtml(item.subtype || '');
+            const safeArea = escapeHtml(item.area ?? 0);
+            const safeRegion = escapeHtml(item.region || '');
+            const safeDesc = escapeHtml(item.description || "Опис комерційного об'єкта.");
+            const safeAuthor = escapeHtml(item.userEmail || 'Не вказано');
+            const safeContact = escapeHtml(item.contact || '');
+            const safePhoneHref = escapeHtml(sanitizePhoneHref(item.contact));
 
             return `
                 <div class="product-card p-4 bg-white rounded flex flex-col sm:flex-row gap-4 items-start w-full"
-                     data-category="${item.category || 'office'}"
-                     data-deal="${item.dealType || ''}"
-                     data-subtype="${(item.subtype || '').toLowerCase()}"
-                     data-region="${(item.region || '').toLowerCase()}"
-                     data-city="${rawCity.toLowerCase()}"
+                     data-category="${escapeHtml(item.category || 'office')}"
+                     data-deal="${safeDealType}"
+                     data-subtype="${safeSubtype.toLowerCase()}"
+                     data-region="${safeRegion.toLowerCase()}"
+                     data-city="${escapeHtml(rawCity.toLowerCase())}"
                      data-price="${priceUsd}"
                      data-timestamp="${timestampVal}">
                     
-                    <div class="w-full sm:w-64 h-40 bg-gray-900 rounded overflow-hidden relative flex-shrink-0 cursor-pointer group" onclick="openGallery(${photosJSON})">
-                        <img src="${mainPhoto}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-                        <span class="absolute top-2 left-2 px-2 py-0.5 bg-orange-600 text-white font-bold text-[10px] rounded">${item.dealType || 'Продаж'}</span>
+                    <div class="w-full sm:w-64 h-40 bg-gray-900 rounded overflow-hidden relative flex-shrink-0 cursor-pointer group" onclick="openGalleryById('${safeId}')">
+                        <img src="${mainPhoto}" alt="${safeTitle}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                        <span class="absolute top-2 left-2 px-2 py-0.5 bg-orange-600 text-white font-bold text-[10px] rounded">${safeDealType}</span>
                         <span class="absolute bottom-2 right-2 px-2 py-0.5 bg-black/75 text-white font-bold text-[10px] rounded flex items-center gap-1">
                             <i class="fa-solid fa-camera"></i> ${photosCount}
                         </span>
@@ -782,8 +836,8 @@
                     <div class="flex-grow space-y-1.5 text-xs w-full">
                         <div class="flex justify-between items-start">
                             <div>
-                                <h3 class="font-bold text-blue-700 text-lg hover:underline cursor-pointer leading-tight" onclick="openGallery(${photosJSON})">${item.title}</h3>
-                                <div class="text-[11px] text-gray-500 font-semibold">${item.subtype ? item.subtype + ' • ' : ''} Площа / Ділянка: <b>${item.area || 0}</b></div>
+                                <h3 class="font-bold text-blue-700 text-lg hover:underline cursor-pointer leading-tight" onclick="openGalleryById('${safeId}')">${safeTitle}</h3>
+                                <div class="text-[11px] text-gray-500 font-semibold">${safeSubtype ? safeSubtype + ' • ' : ''} Площа / Ділянка: <b>${safeArea}</b></div>
                             </div>
                         </div>
 
@@ -793,24 +847,24 @@
                         </div>
 
                         <div class="grid grid-cols-2 gap-y-1 text-gray-700 text-xs pt-1">
-                            <div class="flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-red-500"></i> ${formattedCity}, ${item.region || ''}</div>
+                            <div class="flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-red-500"></i> ${escapeHtml(formattedCity)}, ${safeRegion}</div>
                         </div>
 
-                        <p class="text-gray-600 text-xs line-clamp-1 pt-1">${item.description || "Опис комерційного об'єкта."}</p>
+                        <p class="text-gray-600 text-xs line-clamp-1 pt-1">${safeDesc}</p>
 
-                        <div class="flex justify-between items-center pt-2 border-t border-gray-100 text-[11px] text-gray-400">
+                        <div class="flex justify-between items-center pt-2 border-t border-gray-100 text-[11px] text-gray-400 flex-wrap gap-2">
                             <div class="flex items-center gap-3">
                                 <span><i class="fa-regular fa-clock"></i> ${pubDateFormatted}</span>
-                                <span class="text-gray-500 font-semibold">• Автор: ${item.userEmail || 'Не вказано'}</span>
+                                <span class="text-gray-500 font-semibold">• Автор: ${safeAuthor}</span>
                             </div>
                             <div class="flex items-center gap-4 text-gray-500">
-                                <a href="tel:${item.contact}" class="font-bold text-blue-600 hover:underline">📞 ${item.contact}</a>
+                                <a href="${safePhoneHref}" class="font-bold text-blue-600 hover:underline">📞 ${safeContact}</a>
                                 
-                                <button onclick="toggleFavorite('${docId}')" class="text-base transition-transform active:scale-125 ${isFav ? 'text-red-600' : 'text-gray-400 hover:text-red-500'}">
+                                <button type="button" onclick="toggleFavorite('${safeId}')" class="text-base transition-transform active:scale-125 ${isFav ? 'text-red-600' : 'text-gray-400 hover:text-red-500'}">
                                     <i class="${isFav ? 'fa-solid' : 'fa-regular'} fa-heart"></i>
                                 </button>
 
-                                ${isOwnerOrAdmin ? `<button class="delete-btn text-red-500 font-bold hover:underline" data-id="${docId}">Видалити</button>` : ''}
+                                ${isOwnerOrAdmin ? `<button type="button" class="delete-btn text-red-500 font-bold hover:underline" data-id="${safeId}">Видалити</button>` : ''}
                             </div>
                         </div>
                     </div>
@@ -857,30 +911,35 @@
             const favItems = allListingsData.filter(item => userFavoritesList.includes(item.id));
 
             favItems.forEach(item => {
-                const photos = item.photosArray || ['https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600'];
-                const mainPhoto = photos[0];
-                const priceUsd = item.priceUSD || 0;
-                const photosJSON = JSON.stringify(photos).replace(/"/g, '&quot;');
-                const pubDateFormatted = formatTimeAgo(item.createdAt);
-                const rawCity = (item.city || 'Костопіль').replace(/,/g, '').trim();
+                const rawPhotos = Array.isArray(item.photosArray) && item.photosArray.length > 0
+                    ? item.photosArray
+                    : [DEFAULT_PHOTO];
+                const mainPhoto = escapeHtml(sanitizeUrl(rawPhotos[0]));
+                const priceUsd = Number(item.priceUSD) || 0;
+                const pubDateFormatted = escapeHtml(formatTimeAgo(item.createdAt));
+                const rawCity = String(item.city || 'Костопіль').replace(/,/g, '').trim();
                 const formattedCity = rawCity.charAt(0).toUpperCase() + rawCity.slice(1);
+                const safeId = escapeHtml(item.id);
+                const safeTitle = escapeHtml(item.title || '');
+                const safeContact = escapeHtml(item.contact || '');
+                const safePhoneHref = escapeHtml(sanitizePhoneHref(item.contact));
 
                 const miniCard = document.createElement('div');
                 miniCard.className = "bg-white border rounded p-3 flex flex-col justify-between shadow-sm relative group";
                 miniCard.innerHTML = `
                     <div>
-                        <div class="h-28 bg-gray-900 rounded overflow-hidden relative cursor-pointer mb-2" onclick="openGallery(${photosJSON})">
-                            <img src="${mainPhoto}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
-                            <button onclick="event.stopPropagation(); toggleFavorite('${item.id}')" class="absolute top-2 right-2 bg-white/80 p-1.5 rounded-full text-red-600 hover:bg-white shadow">
+                        <div class="h-28 bg-gray-900 rounded overflow-hidden relative cursor-pointer mb-2" onclick="openGalleryById('${safeId}')">
+                            <img src="${mainPhoto}" alt="${safeTitle}" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
+                            <button type="button" onclick="event.stopPropagation(); toggleFavorite('${safeId}')" class="absolute top-2 right-2 bg-white/80 p-1.5 rounded-full text-red-600 hover:bg-white shadow">
                                 <i class="fa-solid fa-heart"></i>
                             </button>
                         </div>
-                        <h4 class="font-bold text-blue-700 text-sm line-clamp-1 cursor-pointer" onclick="openGallery(${photosJSON})">${item.title}</h4>
+                        <h4 class="font-bold text-blue-700 text-sm line-clamp-1 cursor-pointer" onclick="openGalleryById('${safeId}')">${safeTitle}</h4>
                         <div class="text-xs font-black text-green-700 mt-1">${priceUsd.toLocaleString()} $</div>
-                        <div class="text-[11px] text-gray-500 mt-0.5"><i class="fa-solid fa-location-dot text-red-500"></i> ${formattedCity}</div>
+                        <div class="text-[11px] text-gray-500 mt-0.5"><i class="fa-solid fa-location-dot text-red-500"></i> ${escapeHtml(formattedCity)}</div>
                     </div>
                     <div class="pt-2 mt-2 border-t border-gray-100 flex justify-between items-center text-[11px]">
-                        <a href="tel:${item.contact}" class="font-bold text-blue-600 hover:underline">📞 ${item.contact}</a>
+                        <a href="${safePhoneHref}" class="font-bold text-blue-600 hover:underline">📞 ${safeContact}</a>
                         <span class="text-gray-400">${pubDateFormatted}</span>
                     </div>
                 `;
@@ -897,6 +956,7 @@
 
         async function handleDelete(e) {
             const id = e.currentTarget.getAttribute('data-id');
+            if (!id) return;
             if (confirm("Видалити цей об'єкт з бази?")) {
                 try {
                     await deleteDoc(doc(db, "commercial_listings", id));
@@ -907,9 +967,17 @@
             }
         }
 
+        window.openGalleryById = function(docId) {
+            const item = listingsById.get(docId);
+            const rawPhotos = item && Array.isArray(item.photosArray) && item.photosArray.length > 0
+                ? item.photosArray
+                : [DEFAULT_PHOTO];
+            window.openGallery(rawPhotos.map(sanitizeUrl));
+        };
+
         window.openGallery = function(photos) {
             if (!photos || photos.length === 0) return;
-            currentGalleryPhotos = photos;
+            currentGalleryPhotos = photos.map(sanitizeUrl);
             currentPhotoIndex = 0;
             updateGalleryUI();
             document.getElementById('lightboxModal').style.display = 'flex';
@@ -945,6 +1013,7 @@
             currentGalleryPhotos.forEach((url, idx) => {
                 const thumb = document.createElement('img');
                 thumb.src = url;
+                thumb.alt = `Мініатюра ${idx + 1}`;
                 thumb.className = `thumb-img ${idx === currentPhotoIndex ? 'active' : ''}`;
                 thumb.onclick = (e) => {
                     e.stopPropagation();
@@ -954,6 +1023,14 @@
                 thumbsContainer.appendChild(thumb);
             });
         }
+
+        document.addEventListener('keydown', (e) => {
+            const modal = document.getElementById('lightboxModal');
+            if (!modal || modal.style.display !== 'flex') return;
+            if (e.key === 'Escape') window.closeGallery();
+            if (e.key === 'ArrowLeft') window.prevGalleryImage(e);
+            if (e.key === 'ArrowRight') window.nextGalleryImage(e);
+        });
 
         window.filterCards = function() {
             const typeVal = (document.getElementById('filterType')?.value || '').toLowerCase();
@@ -977,15 +1054,15 @@
                 const cardCity = (card.getAttribute('data-city') || '').replace(/,/g, '').trim();
                 const cardPrice = parseFloat(card.getAttribute('data-price')) || 0;
 
-                let matchCategory = (activeCategoryFilter === 'all' || cardCategory === activeCategoryFilter);
-                let matchType = (!typeVal || cardDeal.includes(typeVal));
-                let matchSubtype = (!subtypeVal || cardSubtype.includes(subtypeVal));
+                const matchCategory = (activeCategoryFilter === 'all' || cardCategory === activeCategoryFilter);
+                const matchType = (!typeVal || cardDeal.includes(typeVal));
+                const matchSubtype = (!subtypeVal || cardSubtype.includes(subtypeVal));
                 
                 const regionKeyword = regionVal.split(' ')[0];
-                let matchRegion = (!regionVal || cardRegion.includes(regionKeyword) || text.includes(regionKeyword));
-                let matchCity = (!cityVal || cardCity.includes(cityVal));
+                const matchRegion = (!regionVal || cardRegion.includes(regionKeyword) || text.includes(regionKeyword));
+                const matchCity = (!cityVal || cardCity.includes(cityVal));
                 
-                let matchPrice = (cardPrice >= minPrice && cardPrice <= maxPrice);
+                const matchPrice = (cardPrice >= minPrice && cardPrice <= maxPrice);
 
                 if (matchCategory && matchType && matchSubtype && matchRegion && matchCity && matchPrice) {
                     matchingCards.push(card);
@@ -994,7 +1071,6 @@
                 }
             });
 
-            // Сортування карток
             matchingCards.sort((a, b) => {
                 const priceA = parseFloat(a.getAttribute('data-price')) || 0;
                 const priceB = parseFloat(b.getAttribute('data-price')) || 0;
@@ -1003,7 +1079,7 @@
 
                 if (sortVal === 'price_asc') return priceA - priceB;
                 if (sortVal === 'price_desc') return priceB - priceA;
-                return timeB - timeA; // 'newest'
+                return timeB - timeA;
             });
 
             const totalPages = Math.ceil(matchingCards.length / ITEMS_PER_PAGE) || 1;

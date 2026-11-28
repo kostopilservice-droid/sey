@@ -185,25 +185,25 @@
         </div>
 
         <!-- ЧЕРВОНИЙ БЛОК ФІЛЬТРІВ ТА СОРТУВАННЯ -->
-        <div class="search-box-red p-4 text-white">
+        <div class="search-box-red p-4 sm:p-5 text-white text-sm">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 
                 <div class="space-y-3">
-                    <div class="flex flex-wrap gap-1 text-[11px] font-bold">
-                        <button id="btnCatAll" onClick="setMainCategory('all')" class="px-2.5 py-1 bg-white text-red-600 rounded-t font-bold">Всі</button>
-                        <button id="btnCatApt" onClick="setMainCategory('apartment')" class="px-2.5 py-1 bg-red-700 text-white rounded-t hover:bg-red-800">Квартири</button>
-                        <button id="btnCatHouse" onClick="setMainCategory('house')" class="px-2.5 py-1 bg-red-700 text-white rounded-t hover:bg-red-800">Будинки</button>
-                        <a href="commercial.html" class="px-2.5 py-1 bg-red-700 text-white rounded-t hover:bg-red-800 flex items-center">Комерція</a>
+                    <div class="flex flex-wrap gap-1.5 text-xs sm:text-sm font-bold">
+                        <button id="btnCatAll" onClick="setMainCategory('all')" class="px-3 py-1.5 bg-white text-red-600 rounded-t font-bold">Всі</button>
+                        <button id="btnCatApt" onClick="setMainCategory('apartment')" class="px-3 py-1.5 bg-red-700 text-white rounded-t hover:bg-red-800">Квартири</button>
+                        <button id="btnCatHouse" onClick="setMainCategory('house')" class="px-3 py-1.5 bg-red-700 text-white rounded-t hover:bg-red-800">Будинки</button>
+                        <a href="commercial.html" class="px-3 py-1.5 bg-red-700 text-white rounded-t hover:bg-red-800 flex items-center">Комерція</a>
                     </div>
 
-                    <select id="filterType" onChange="filterCards()" class="w-full px-3 py-2 text-xs bg-white text-gray-800 rounded border-none outline-none font-semibold">
+                    <select id="filterType" onChange="filterCards()" class="w-full px-3.5 py-2.5 text-sm bg-white text-gray-800 rounded border-none outline-none font-semibold">
                         <option value="">Операція (продаж / оренда)</option>
                         <option value="Продаж">Продаж</option>
                         <option value="Оренда довгострокова">Оренда довгострокова</option>
                         <option value="Оренда посуточна">Оренда посуточна</option>
                     </select>
 
-                    <select id="filterRooms" onChange="filterCards()" class="w-full px-3 py-2 text-xs bg-white text-gray-800 rounded border-none outline-none font-semibold">
+                    <select id="filterRooms" onChange="filterCards()" class="w-full px-3.5 py-2.5 text-sm bg-white text-gray-800 rounded border-none outline-none font-semibold">
                         <option value="">Кількість кімнат (будь-яка)</option>
                         <option value="1">1 кімната</option>
                         <option value="2">2 кімнати</option>
@@ -212,8 +212,8 @@
                     </select>
                 </div>
 
-                <div class="space-y-3 pt-2 md:pt-7">
-                    <select id="filterRegion" onChange="updateFilterCities(); filterCards();" class="w-full px-3 py-2 text-xs bg-white text-gray-800 rounded border-none outline-none font-semibold">
+                <div class="space-y-3 pt-2 md:pt-8">
+                    <select id="filterRegion" onChange="updateFilterCities(); filterCards();" class="w-full px-3.5 py-2.5 text-sm bg-white text-gray-800 rounded border-none outline-none font-semibold">
                         <option value="">Регіон: Всі області України</option>
                         <option value="Рівненська область">Рівненська область</option>
                         <option value="Київська область">Київська область</option>
@@ -242,28 +242,28 @@
                         <option value="Крим">АР Крим</option>
                     </select>
 
-                    <select id="filterCity" onChange="filterCards()" class="w-full px-3 py-2 text-xs bg-white text-gray-800 rounded border-none outline-none font-semibold">
+                    <select id="filterCity" onChange="filterCards()" class="w-full px-3.5 py-2.5 text-sm bg-white text-gray-800 rounded border-none outline-none font-semibold">
                         <option value="">Місто: Всі міста області</option>
                     </select>
 
                     <div class="grid grid-cols-2 gap-2">
-                        <input type="number" id="filterPriceMin" placeholder="Ціна від ($)" onInput="filterCards()" class="px-2 py-2 text-xs bg-white text-gray-800 rounded outline-none">
-                        <input type="number" id="filterPriceMax" placeholder="до ($)" onInput="filterCards()" class="px-2 py-2 text-xs bg-white text-gray-800 rounded outline-none">
+                        <input type="number" id="filterPriceMin" placeholder="Ціна від ($)" onInput="filterCards()" class="px-3 py-2.5 text-sm bg-white text-gray-800 rounded outline-none font-semibold">
+                        <input type="number" id="filterPriceMax" placeholder="до ($)" onInput="filterCards()" class="px-3 py-2.5 text-sm bg-white text-gray-800 rounded outline-none font-semibold">
                     </div>
                 </div>
 
                 <div class="space-y-3 flex flex-col justify-end pt-2 md:pt-0">
                     <!-- ВИПАДАЮЧИЙ СПИСОК СОРТУВАННЯ -->
                     <div>
-                        <label class="block text-[10px] font-bold uppercase tracking-wider mb-1 text-red-100">Сортування оголошень:</label>
-                        <select id="filterSort" onChange="filterCards()" class="w-full px-3 py-2 text-xs bg-white text-gray-800 rounded border-none outline-none font-semibold">
+                        <label class="block text-xs font-bold uppercase tracking-wider mb-1 text-red-100">Сортування оголошень:</label>
+                        <select id="filterSort" onChange="filterCards()" class="w-full px-3.5 py-2.5 text-sm bg-white text-gray-800 rounded border-none outline-none font-semibold">
                             <option value="newest">Свіжіші спочатку</option>
                             <option value="price_asc">Від дешевших до дорожчих</option>
                             <option value="price_desc">Від дорожчих до дешевших</option>
                         </select>
                     </div>
 
-                    <button onClick="filterCards()" class="w-full py-3 btn-blue-search text-white font-black text-sm rounded shadow flex items-center justify-center gap-2">
+                    <button onClick="filterCards()" class="w-full py-3.5 btn-blue-search text-white font-black text-base rounded shadow flex items-center justify-center gap-2">
                         <i class="fa-solid fa-magnifying-glass"></i> Знайти об'єкт
                     </button>
                 </div>
@@ -577,6 +577,94 @@
                     </div>
                 </form>
             </div>
+        </div>
+    </div>
+
+    <!-- МОДАЛЬНЕ ВІКНО РЕДАГУВАННЯ ОГОЛОШЕННЯ / ПОВІДОМЛЕННЯ (ДЛЯ АДМІНА) -->
+    <div id="adminEditListingModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/75 backdrop-blur-sm">
+        <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full overflow-hidden text-xs max-h-[90vh] flex flex-col">
+            <div class="bg-slate-900 text-white p-4 flex justify-between items-center flex-shrink-0">
+                <h3 class="font-extrabold text-sm flex items-center gap-2">
+                    <i class="fa-solid fa-pen-to-square text-amber-400"></i> Редагування повідомлення / об'єкта (Адміністратор)
+                </h3>
+                <button type="button" onClick="closeEditListingModal()" class="text-slate-400 hover:text-white font-bold text-base">&times;</button>
+            </div>
+
+            <form id="editListingForm" class="p-5 space-y-3 overflow-y-auto">
+                <input type="hidden" id="editListingId" value="">
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div>
+                        <label class="block font-bold text-gray-700 mb-1">Категорія *</label>
+                        <select id="editListingCategory" class="w-full p-2 border border-gray-300 rounded font-semibold bg-white" required>
+                            <option value="apartment">Квартира</option>
+                            <option value="house">Будинок / Дача</option>
+                            <option value="commercial">Комерція / Ділянка</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-bold text-gray-700 mb-1">Тип угоди *</label>
+                        <select id="editListingDealType" class="w-full p-2 border border-gray-300 rounded font-semibold bg-white" required>
+                            <option value="Продаж">Продаж</option>
+                            <option value="Оренда довгострокова">Оренда довгострокова</option>
+                            <option value="Оренда посуточна">Оренда посуточна</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-bold text-gray-700 mb-1">Кімнат / приміщень</label>
+                        <input type="text" id="editListingRooms" class="w-full p-2 border border-gray-300 rounded font-semibold">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div class="sm:col-span-2">
+                        <label class="block font-bold text-gray-700 mb-1">Заголовок *</label>
+                        <input type="text" id="editListingTitle" required class="w-full p-2 border border-gray-300 rounded font-semibold">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-gray-700 mb-1">Площа (м²) *</label>
+                        <input type="number" id="editListingArea" required class="w-full p-2 border border-gray-300 rounded font-semibold">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div>
+                        <label class="block font-bold text-gray-700 mb-1">Область *</label>
+                        <input type="text" id="editListingRegion" required class="w-full p-2 border border-gray-300 rounded font-semibold">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-gray-700 mb-1">Місто *</label>
+                        <input type="text" id="editListingCity" required class="w-full p-2 border border-gray-300 rounded font-semibold">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-gray-700 mb-1">Ціна ($ USD) *</label>
+                        <input type="number" id="editListingPrice" required class="w-full p-2 border border-gray-300 rounded font-bold text-green-700">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold text-gray-700 mb-1">Контактний телефон *</label>
+                        <input type="text" id="editListingContact" required class="w-full p-2 border border-gray-300 rounded">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-gray-700 mb-1">Головне фото (URL) *</label>
+                        <input type="url" id="editListingPhoto1" required class="w-full p-2 border border-gray-300 rounded">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-gray-700 mb-1">Текст повідомлення / опис об'єкта *</label>
+                    <textarea id="editListingDescription" rows="4" required class="w-full p-2 border border-gray-300 rounded"></textarea>
+                </div>
+
+                <div class="pt-3 flex justify-end gap-2 border-t">
+                    <button type="button" onClick="closeEditListingModal()" class="px-4 py-2 bg-gray-200 text-gray-700 font-bold rounded">Скасувати</button>
+                    <button type="submit" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded shadow">
+                        <i class="fa-solid fa-floppy-disk mr-1"></i> Зберегти зміни
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -1096,7 +1184,8 @@
             const priceUsd = item.priceUSD || 0;
             const priceUah = Math.round(priceUsd * USD_TO_UAH_RATE);
 
-            const isOwnerOrAdmin = currentUser && (currentUser.email === ADMIN_EMAIL || currentUser.email === item.userEmail);
+            const isAdminUser = Boolean(currentUser && currentUser.email && currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase());
+            const isOwnerOrAdmin = currentUser && (isAdminUser || currentUser.email === item.userEmail);
             const isFav = userFavoritesList.includes(docId);
             const photosJSON = JSON.stringify(photos).replace(/"/g, '&quot;');
             const pubDateFormatted = formatTimeAgo(item.createdAt);
@@ -1156,6 +1245,7 @@
                                     <i class="${isFav ? 'fa-solid' : 'fa-regular'} fa-heart"></i>
                                 </button>
 
+                                ${isAdminUser ? `<button type="button" onclick="openEditListing('${docId}')" class="text-blue-600 font-bold hover:underline">Редагувати</button>` : ''}
                                 ${isOwnerOrAdmin ? `<button class="delete-btn text-red-500 font-bold hover:underline" data-id="${docId}">Видалити</button>` : ''}
                             </div>
                         </div>
@@ -1386,6 +1476,78 @@
                 }
             }
         };
+
+        window.openEditListing = function(docId) {
+            if (!currentUser || !currentUser.email || currentUser.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+                alert("Редагувати оголошення може лише адміністратор.");
+                return;
+            }
+            const item = allListingsData.find(x => x.id === docId);
+            if (!item) return;
+
+            document.getElementById('editListingId').value = item.id;
+            document.getElementById('editListingCategory').value = item.category || 'apartment';
+            document.getElementById('editListingDealType').value = item.dealType || 'Продаж';
+            document.getElementById('editListingRooms').value = item.rooms || '';
+            document.getElementById('editListingTitle').value = item.title || '';
+            document.getElementById('editListingArea').value = item.area || 0;
+            document.getElementById('editListingRegion').value = item.region || '';
+            document.getElementById('editListingCity').value = item.city || '';
+            document.getElementById('editListingPrice').value = item.priceUSD || 0;
+            document.getElementById('editListingContact').value = item.contact || '';
+            document.getElementById('editListingPhoto1').value = (item.photosArray && item.photosArray[0]) || 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600';
+            document.getElementById('editListingDescription').value = item.description || '';
+
+            const modal = document.getElementById('adminEditListingModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        };
+
+        window.closeEditListingModal = function() {
+            const modal = document.getElementById('adminEditListingModal');
+            modal.classList.remove('flex');
+            modal.classList.add('hidden');
+        };
+
+        document.getElementById('editListingForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!currentUser || !currentUser.email || currentUser.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) return;
+
+            const docId = document.getElementById('editListingId').value;
+            if (!docId) return;
+
+            const existing = allListingsData.find(x => x.id === docId);
+            const priceVal = Number(document.getElementById('editListingPrice').value);
+            const priceUahVal = Math.round(priceVal * USD_TO_UAH_RATE);
+            const newPhoto1 = document.getElementById('editListingPhoto1').value.trim();
+            const restPhotos = (existing && Array.isArray(existing.photosArray)) ? existing.photosArray.slice(1) : [];
+            const updatedPhotos = [newPhoto1 || 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600', ...restPhotos];
+
+            const updatedPayload = {
+                category: document.getElementById('editListingCategory').value,
+                dealType: document.getElementById('editListingDealType').value,
+                rooms: document.getElementById('editListingRooms').value.trim(),
+                title: document.getElementById('editListingTitle').value.trim(),
+                area: Number(document.getElementById('editListingArea').value),
+                region: document.getElementById('editListingRegion').value.trim(),
+                city: document.getElementById('editListingCity').value.replace(/,/g, '').trim(),
+                priceUSD: priceVal,
+                priceUAH: priceUahVal,
+                contact: document.getElementById('editListingContact').value.trim(),
+                description: document.getElementById('editListingDescription').value.trim(),
+                photosArray: updatedPhotos,
+                editedAt: serverTimestamp(),
+                editedBy: currentUser.email
+            };
+
+            try {
+                await updateDoc(doc(db, "real_estate_listings", docId), updatedPayload);
+                closeEditListingModal();
+                alert("Зміни успішно збережено!");
+            } catch (err) {
+                alert("Помилка оновлення: " + err.message);
+            }
+        });
 
         window.changePage = function(direction) {
             currentPage += direction;
